@@ -1,0 +1,22 @@
+torch
+datasets
+evaluate
+accelerate
+sacrebleu
+deepspeed
+scikit-learn
+flask
+waitress
+flask_cors
+jsonify
+datetime
+flexgen
+wandb
+GitPython
+pathlib
+pandas
+openai
+trl @ git+https://github.com/lvwerra/trl.git#egg=trl-0.4.1
+sentencepiece
+transformers
+peft @ git+https://github.com/huggingface/peft@df0e1fb

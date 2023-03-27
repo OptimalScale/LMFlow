@@ -1,0 +1,35 @@
+name: Docs
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+      - name: Install dependencies
+        run: |
+          pip install sphinx
+          pip install matplotlib
+          pip install numpydoc
+      - name: Install torch       
+        run: |
+          pip install torch 
+      - name: Install numpy       
+        run: |
+          pip install numpy
+      - name: Install dependencies
+        run: |
+          pip install -r ./docs/requirements.txt
+      - name: Install current pkg          
+        run: |
+          pip install -e .
+      - name: Sphinx build
+        run: |
+          sphinx-build docs/source _build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _build/
+          force_orphan: true
