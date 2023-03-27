@@ -32,7 +32,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 |   Task-tuned LLaMA 7B (Full) |   **75.1**   |     44.5    |  49.9   | 56.5 |
 | Task-tuned LLaMA 30B (LoRA) |  74.0  |  51.3   | **50.2**|**58.5**|
 
-The LLaMA 30B (LoRA) performance is achieved with only **~16h** finetuning on training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
+The LLaMA 30B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
 For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
 
 ## Supported Pipelines
