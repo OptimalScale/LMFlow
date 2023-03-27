@@ -7,9 +7,9 @@
 
 
 
-[![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/shizhediao/LMFlow/blob/main/LICENSE)
+[![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
-[![Doc](https://img.shields.io/badge/Website-Doc-orange.svg)](https://shizhediao.github.io/LMFlow/)
+[![Doc](https://img.shields.io/badge/Website-Doc-orange.svg)](https://optimalscale.github.io/LMFlow/)
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/NcMPyDVP)
 
 
@@ -37,7 +37,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 The LLaMA 30B (LoRA) performance is achieved with only **~16h** finetuning in a
 single 8 \* A100 server. For more performance, including instruction tuning
 results, please refer to our
-[Documentation](https://shizhediao.github.io/LMFlow/).
+[Documentation](https://optimalscale.github.io/LMFlow/).
 
 ## Supported Pipelines
 
@@ -243,10 +243,10 @@ You can also directly download our model via google drive link : [instruction_ck
 
 After downloading the model checkpoints. You can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_inference_with_lora.sh` and run this shell script to reproduce the result.
 
-Then you can check the model performance at our [Doc](https://shizhediao.github.io/LMFlow/).
+Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
 
 ## Documentation
-Please refer to our [Documentation](https://shizhediao.github.io/LMFlow/) for more API reference and experimental results.
+Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
 
 ## Citation
 
