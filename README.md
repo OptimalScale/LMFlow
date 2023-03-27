@@ -5,8 +5,6 @@
 
 # LMFlow
 
-
-
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-orange.svg)](https://optimalscale.github.io/LMFlow/)
@@ -21,7 +19,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 ## Model Performance
 
-|                |  PubMedQA | MedQA-USMLE | MedMCQA |  Average |
+|                |  PubMedQA (ID) | MedQA-USMLE (OOD) | MedMCQA (ID) |  Average |
 |:---------:|:--------:|:-----------:|:-------:|:----:|
 | Human (pass)   |  60.0   |     50.0    |         |      |
 | Human (expert) |    78.0   |     87.0    |  90.0   | 85.0 |
@@ -32,12 +30,10 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 |      LLaMA 30B |    1.8   |     43.4    |  30.3   | 25.2 |
 |   |      |             |            |    |  |
 |   Task-tuned LLaMA 7B (Full) |   **75.1**   |     44.5    |  49.9   | 56.5 |
-| Task-tuned LLaMA 30B (LoRA) |  74  |  51.3   | **50.2**|**58.5**|
+| Task-tuned LLaMA 30B (LoRA) |  74.0  |  51.3   | **50.2**|**58.5**|
 
-The LLaMA 30B (LoRA) performance is achieved with only **~16h** finetuning in a
-single 8 \* A100 server. For more performance, including instruction tuning
-results, please refer to our
-[Documentation](https://optimalscale.github.io/LMFlow/).
+The LLaMA 30B (LoRA) performance is achieved with only **~16h** finetuning on training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
+For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
 
 ## Supported Pipelines
 
