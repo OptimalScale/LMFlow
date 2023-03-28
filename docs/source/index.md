@@ -1,4 +1,4 @@
-![alt text](_static/logo.png)
+<img src="_static/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 
 # LMFlow
 

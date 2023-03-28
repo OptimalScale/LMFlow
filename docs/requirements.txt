@@ -1,5 +1,7 @@
-sphinx
-pydata-sphinx-theme
-sphinx_design
-myst-parser
-sphinx-autoapi
+sphinx==5.3.0
+pydata-sphinx-theme==0.13.1
+sphinx_design==0.3.0
+myst-parser==1.0.0
+sphinx-autoapi==2.0.0
+matplotlib==3.4.1
+numpydoc==0.9.1
