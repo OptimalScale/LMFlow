@@ -1,7 +1,7 @@
 # Changelog
 
 
-## Version 0.0.1
+## Version 0.0.1 (Mar 28, 2023)
 
 The first public version. 
 

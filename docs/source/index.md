@@ -13,11 +13,11 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
     .. grid-item-card::  Light-Weight
 
-        Extremely few parameters with LoRA  (LLaMA 30B: only 25MB storage) 
+        Extremely few parameters with LoRA  (LLaMA 33B: only 25MB storage) 
 
     .. grid-item-card::  Task-Oriented
 
-      Comparable with ChatGPT on 7B/30B models.
+      Comparable with ChatGPT on 7B/33B models.
 
     .. grid-item-card::  Open
 
@@ -56,10 +56,10 @@ To emphasize its significance, we applied task tuning to LLaMA models on PubMedQ
 |  InstructGPT 175B   |   73.2   |     46.0    |  44.0   | 54.4 |
 |    ChatGPT     |    63.9   |     **57.0**    |  44.7   | 55.2 |
 |      LLaMA 7B   |    5.2   |     27.1    |  24.3   | 18.9 |
-|      LLaMA 30B |    1.8   |     43.4    |  30.3   | 25.2 |
+|      LLaMA 33B |    1.8   |     43.4    |  30.3   | 25.2 |
 |   |      |             |            |    |  |
 |   Task-tuned LLaMA 7B (Full) |   **75.1**   |     44.5    |  49.9   | 56.5 |
-| Task-tuned LLaMA 30B (LoRA) |  74  |  51.3   | **50.2**|**58.5**|
+| Task-tuned LLaMA 33B (LoRA) |  74  |  51.3   | **50.2**|**58.5**|
 
 
 Moreover, we also test the MMLU performance to further verify the out-of-domain robustness of Task Tuning technique.
@@ -68,7 +68,7 @@ Moreover, we also test the MMLU performance to further verify the out-of-domain 
 
 |    MMLU task    | anatomy | clinical knowledge | college biology | college medicine | medical genetics | professional medicine |
 |:-----------:|:-------:|:-----------:|:---------:|:----------:|:----------:|:---------------:|
-|    LLaMA 30B    |   39.2  |        40.3        |       44.4      |       32.9       |        36        |          43.0         |
+|    LLaMA 33B    |   39.2  |        40.3        |       44.4      |       32.9       |        36        |          43.0         |
 |  Galactica 30B  |   32.5  |         26         |       30.5      |       25.4       |        39        |          23.1         |
 |  Galactica 120B |   58.5  |        59.2        |       68.7      |       57.2       |       68.0       |          59.6         |
 |     OPT 175B    |   28.9  |        21.9        |       30.6      |         -        |       35.0       |          27.9         |
@@ -76,7 +76,7 @@ Moreover, we also test the MMLU performance to further verify the out-of-domain 
 |   Gopher 280B   |   56.3  |        67.2        |       70.8      |       60.1       |       69.0       |          64.0         |
 |   GPT3.5 175B   |   56.3  |        69.8        |       72.2      |       61.3       |        70        |          70.2         |
 |                 |         |                    |                 |                  |                  |                       |
-| Task-tuned LLaMA 30B (LoRA)  |   51.8  |        65.2        |       70.1      |       58.3       |       65.6       |          66.5         |
+| Task-tuned LLaMA 33B (LoRA)  |   51.8  |        65.2        |       70.1      |       58.3       |       65.6       |          66.5         |
 
 
 
