@@ -47,13 +47,13 @@ come in several checkpoints they each contain a part of each weight of the model
 INTERMEDIATE_SIZE_MAP = {
     "7B": 11008,
     "13B": 13824,
-    "30B": 17920,
+    "33B": 17920,
     "65B": 22016,
 }
 NUM_SHARDS = {
     "7B": 1,
     "13B": 2,
-    "30B": 4,
+    "33B": 4,
     "65B": 8,
 }
 
@@ -256,7 +256,7 @@ def main():
     )
     parser.add_argument(
         "--model_size",
-        choices=["7B", "13B", "30B", "65B", "tokenizer_only"],
+        choices=["7B", "13B", "33B", "65B", "tokenizer_only"],
     )
     parser.add_argument(
         "--output_dir",
