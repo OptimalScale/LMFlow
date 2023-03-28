@@ -5,19 +5,5 @@ torch==2.0.0
 transformers==4.27.3
 wandb==0.14.0
 deepspeed==0.8.3
-evaluate
-accelerate
-sacrebleu
-scikit-learn
-flask
-waitress
-flask_cors
-jsonify
-datetime
-flexgen
-GitPython
-pathlib
-pandas
-openai
 trl @ git+https://github.com/lvwerra/trl.git#egg=trl-0.4.1
 sentencepiece
