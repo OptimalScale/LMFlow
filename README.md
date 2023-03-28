@@ -245,7 +245,7 @@ Then you can check the model performance at our [Doc](https://optimalscale.githu
 Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
 
 ## Citation
-
+```
 @misc{lmflow,
   author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
   title = {LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models},
@@ -254,7 +254,7 @@ Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for 
   journal = {GitHub repository},
   howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
 }
-
+```
 ## Disclaimer
 
 This package aims to provide a streamlined and user-friendly pipeline for large model tuning. Its functionalities serve as a reference and are intended for use by the user. However, it is important to note that the responsibility for the preparation of the data and pretrained models lies solely with the user. This package does not guarantee the accuracy, completeness, applicability, or legality of the components from the user's preparation. Users must be aware of and assume all risks and liabilities associated with the preparation of the models and data, and obtain legal, commercial, and technical advice before utilizing this package. The pipeline shall not be held responsible for any direct, indirect, special, incidental, or consequential damages resulting from the user's improper preparation of the data and pretrained models.   
