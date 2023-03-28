@@ -70,7 +70,7 @@ pip install -e .
 You can easily download the example training dataset and test dataset by running 
 ```bash
 cd data
-bash download.sh --all
+bash download.sh all
 cd -
 ``` 
 If you cannot access Google Drive, you can download the data by [BaiduNetDisk](https://pan.baidu.com/s/1L7AC5Oy-3YhbCp2aNX4tnQ?pwd=dm2s).
