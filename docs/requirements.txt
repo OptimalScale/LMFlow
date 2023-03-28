@@ -4,3 +4,4 @@ sphinx_design==0.3.0
 myst-parser==1.0.0
 sphinx-autoapi==2.0.0
 matplotlib==3.4.1
+numpydoc==0.9.1
