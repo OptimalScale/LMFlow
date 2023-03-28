@@ -6,23 +6,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - name: Install dependencies
+      - name: Install current pkg
         run: |
-          pip install sphinx
-          pip install matplotlib
-          pip install numpydoc
-      - name: Install torch       
-        run: |
-          pip install torch 
-      - name: Install numpy       
-        run: |
-          pip install numpy
+          pip install -e .
       - name: Install dependencies
         run: |
           pip install -r ./docs/requirements.txt
-      - name: Install current pkg          
-        run: |
-          pip install -e .
       - name: Sphinx build
         run: |
           sphinx-build docs/source _build
