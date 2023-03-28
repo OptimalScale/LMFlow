@@ -5,7 +5,6 @@ torch==2.0.0
 transformers==4.27.3
 wandb==0.14.0
 deepspeed==0.8.3
-wandb==0.14.0
 evaluate
 accelerate
 sacrebleu
