@@ -85,6 +85,22 @@ class Inferencer(BasePipeline):
 
     # TODO: Split for better unittest
 
+    def _match(self, predicted_answer, groundtruth, answer_type=None):
+        case_insensitive_types = [
+            "strategyqa",
+            "coin_flip",
+            "pubmedqa",
+            "binary_choice",
+            "medmcqa",
+            "usmle",
+        ]
+        if answer_type in case_insensitive_types:
+            return predicted_answer.lower() == groundtruth.lower()
+        else:
+            return predicted_answer == groundtruth
+        return False
+
+
     def inference(self, model, dataset: Dataset):
         """
         Perform inference for a model
@@ -135,9 +151,10 @@ class Inferencer(BasePipeline):
             # # only return the generation, trucating the input
             prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
             text_out = text_out[prompt_length:]
+            answer_type = self.inferencer_args.answer_type
             pred_answer = answer_extraction(
                 text_out,
-                answer_type=self.inferencer_args.answer_type,
+                answer_type=answer_type,
             )
             print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
             print(f"predicted answer: {pred_answer} \n")
@@ -149,7 +166,7 @@ class Inferencer(BasePipeline):
             else:
                 correct_ = 0
                 total_ = 1
-                if pred_answer == output:
+                if self._match(pred_answer, output, answer_type):
                     correct_ = 1
 
             # collect accuracy from all gpus
