@@ -1,5 +1,4 @@
 #!/bin/bash
-export PYTHONPATH="${PYTHONPATH}:./src"
 
 CUDA_VISIBLE_DEVICES=0 \
     deepspeed examples/inference.py \
