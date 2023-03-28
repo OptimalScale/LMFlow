@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-<img src="assets/logo.png" alt="LMFlow" style="width: 80%; min-width: 300px; display: block; margin: auto;">
+<img src="assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 </p>
 
 
@@ -59,7 +59,9 @@ Seamlessly supported the models in 🤗 huggingface.
 | Galactica-1.3B |  :white_check_mark: Tested | |LLaMA-65B |  :construction: Untested |
 
 ## 1.Setup
-```
+```bash
+git clone https://github.com/OptimalScale/LMFlow.git
+cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
 conda install mpi4py
