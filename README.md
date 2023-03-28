@@ -246,7 +246,14 @@ Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for 
 
 ## Citation
 
-TBD
+@misc{lmflow,
+  author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
+  title = {LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models},
+  year = {2023},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
+}
 
 ## Disclaimer
 
