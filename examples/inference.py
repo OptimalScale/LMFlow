@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding=utf-8
+# Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A one-line summary of the module or program, terminated by a period.
 
 Leave one blank line.  The rest of this docstring should contain an
