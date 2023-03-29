@@ -326,10 +326,10 @@ class FinetunerArguments(TrainingArguments):
 
 
 @dataclass
-class InferencerArguments:
+class EvaluatorArguments:
     """
-    Define a class InferencerArguments using the dataclass decorator. The class contains several optional
-    parameters that can be used to configure a inference model. 
+    Define a class EvaluatorArguments using the dataclass decorator. The class contains several optional
+    parameters that can be used to configure a evaluator.
 
     local_rank : str
         For distributed training: local_rank
@@ -439,13 +439,13 @@ class InferencerArguments:
 
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
-    "inferencer": InferencerArguments,
+    "evaluator": EvaluatorArguments,
 }
 
 
 class AutoArguments:
     """
-    Automatically choose arguments from FinetunerArguments or InferencerArguments.
+    Automatically choose arguments from FinetunerArguments or EvaluatorArguments.
     """
     def get_pipeline_args_class(pipeline_name: str):
         return PIPELINE_ARGUMENT_MAPPING[pipeline_name]

@@ -22,7 +22,7 @@ from lmflow.models.auto_model import AutoModel
 from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
 
 
-pipeline_name = "inferencer"
+pipeline_name = "evaluator"
 PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
 parser = HfArgumentParser((ModelArguments, DatasetArguments, PipelineArguments))
@@ -34,10 +34,10 @@ with open (pipeline_args.deepspeed, "r") as f:
 model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config)
 dataset = Dataset(data_args)
 
-inferencer = AutoPipeline.get_pipeline(
+evaluator = AutoPipeline.get_pipeline(
     pipeline_name=pipeline_name,
     model_args=model_args,
     data_args=data_args,
     pipeline_args=pipeline_args,
 )
-inferencer.inference(model=model, dataset=dataset)
+evaluator.evaluate(model=model, dataset=dataset)

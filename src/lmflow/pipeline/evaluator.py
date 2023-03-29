@@ -1,6 +1,6 @@
-"""The Inferencer class simplifies the process of running inference on a language model provided by a HFDecoderModel instance imported from the lmflow package. The class constructor takes three dictionaries as arguments: model_args containing arguments related to the language model, data_args containing arguments related to the data used for inference, and inferencer_args containing other arguments for the inference process.
+"""The Evaluator class simplifies the process of running evaluation on a language model provided by a HFDecoderModel instance imported from the lmflow package. The class constructor takes three dictionaries as arguments: model_args containing arguments related to the language model, data_args containing arguments related to the data used for evaluation, and evaluator_args containing other arguments for the evaluation process.
 
-The class has two methods: create_dataloader() that loads the data from the test file, creates a data loader, and returns it with the size of the data, and inference(model) that generates output text given input text. It uses the create_dataloader() method to load the data, iterates over the data in mini-batches, and encodes the input text with the encode() method of the HFDecoderModel class. Then, it generates output text using the inference() method of the HFDecoderModel class, decodes the generated output text using the decode() method of the HFDecoderModel class, and writes the output to a file in the output directory. The method also logs some information to the console and Weights and Biases if the use_wandb argument is True.
+The class has two methods: create_dataloader() that loads the data from the test file, creates a data loader, and returns it with the size of the data, and evaluate(model) that generates output text given input text. It uses the create_dataloader() method to load the data, iterates over the data in mini-batches, and encodes the input text with the encode() method of the HFDecoderModel class. Then, it generates output text using the evaluate() method of the HFDecoderModel class, decodes the generated output text using the decode() method of the HFDecoderModel class, and writes the output to a file in the output directory. The method also logs some information to the console and Weights and Biases if the use_wandb argument is True.
 """
 import os
 # import deepspeed
@@ -21,9 +21,9 @@ from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.utils.data_utils import set_random_seed, batchlize, answer_extraction
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
 
-class Inferencer(BasePipeline):
+class Evaluator(BasePipeline):
     """
-    Initializes the `Inferencer` class with given arguments.
+    Initializes the `Evaluator` class with given arguments.
 
     Parameters
     ------------
@@ -33,26 +33,26 @@ class Inferencer(BasePipeline):
     data_args : DatasetArguments object.
         Contains the arguments required to load the dataset.
 
-    inferencer_args : FinetunerArguments object.
-        Contains the arguments required to perform inference.
+    evaluator_args : EvaluatorArguments object.
+        Contains the arguments required to perform evaluation.
 
 
     """
-    def __init__(self, model_args, data_args, inferencer_args):
+    def __init__(self, model_args, data_args, evaluator_args):
     # our method
         self.data_args = data_args
-        self.inferencer_args = inferencer_args
+        self.evaluator_args = evaluator_args
         self.model_args = model_args
-        print("--------Begin Inferencer Arguments----------")
+        print("--------Begin Evaluator Arguments----------")
         print(f"model_args : {self.model_args}")
         print(f"data_args : {self.data_args}")
-        print(f"inferencer_args : {self.inferencer_args}")
-        print("--------End Inferencer Arguments----------")
+        print(f"evaluator_args : {self.evaluator_args}")
+        print("--------End Evaluator Arguments----------")
         # logger
-        if(self.inferencer_args.use_wandb == True):
-            wandb.init(project="lmflow_inference")
+        if(self.evaluator_args.use_wandb == True):
+            wandb.init(project="lmflow_evaluation")
         # random seed
-        set_random_seed(self.inferencer_args.random_seed)
+        set_random_seed(self.evaluator_args.random_seed)
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
         torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
@@ -68,7 +68,7 @@ class Inferencer(BasePipeline):
         print(f"model_hidden_size = {self.model_hidden_size}")
         # batch size has to be divisible by world_size, but can be bigger than world_size
         train_batch_size = 1 * self.world_size
-        self.inferencer_args.minibatch_size = train_batch_size
+        self.evaluator_args.minibatch_size = train_batch_size
         # dataloader, data_size = create_dataloader(args)    # load dataset
 
 
@@ -87,8 +87,8 @@ class Inferencer(BasePipeline):
 
         dataloader = batchlize(
             dataset_buf,
-            self.inferencer_args.minibatch_size,
-            self.inferencer_args.random_shuffle
+            self.evaluator_args.minibatch_size,
+            self.evaluator_args.random_shuffle
         )
         print(f"Successfully create dataloader with size {len(dataloader)}.")
         return dataloader, dataset_size
@@ -112,9 +112,9 @@ class Inferencer(BasePipeline):
         return False
 
 
-    def inference(self, model, dataset: Dataset):
+    def evaluate(self, model, dataset: Dataset):
         """
-        Perform inference for a model
+        Perform Evaluation for a model
 
         Parameters
         ------------
@@ -128,9 +128,9 @@ class Inferencer(BasePipeline):
         dataloader, data_size = self.create_dataloader(dataset)
 
         if not dist.is_initialized() or dist.get_rank() == 0:
-            if not os.path.exists(self.inferencer_args.output_dir):
-                os.makedirs(self.inferencer_args.output_dir)
-            output_writer = open(f"{self.inferencer_args.output_dir}/evaluation.json", "w")
+            if not os.path.exists(self.evaluator_args.output_dir):
+                os.makedirs(self.evaluator_args.output_dir)
+            output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
         acc_list = []
         total = 0
@@ -145,7 +145,7 @@ class Inferencer(BasePipeline):
                 # the batch in current process
                 current_batch = batch[self.local_rank] 
             
-            prompt_structure = self.inferencer_args.prompt_structure
+            prompt_structure = self.evaluator_args.prompt_structure
             input = prompt_structure.format(input=current_batch['input'])
             output = current_batch['output']
             input_idx = current_batch['input_idx']
@@ -161,7 +161,7 @@ class Inferencer(BasePipeline):
             # # only return the generation, trucating the input
             prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
             text_out = text_out[prompt_length:]
-            answer_type = self.inferencer_args.answer_type
+            answer_type = self.evaluator_args.answer_type
             pred_answer = answer_extraction(
                 text_out,
                 answer_type=answer_type,
@@ -199,7 +199,7 @@ class Inferencer(BasePipeline):
                 current_accuracy = np.mean(acc_list)
                 print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
                 
-                if(self.inferencer_args.use_wandb == True):
+                if(self.evaluator_args.use_wandb == True):
                     wandb.log({"Accuracy": current_accuracy})
 
                 for index, output in enumerate(all_process_list):
