@@ -19,6 +19,13 @@ from datasets import Dataset as HFDataset
 
 from lmflow.args import DatasetArguments
 
+DATASET_TYPES = [
+    "text_only",
+    "text2text",
+]
+
+KEY_TYPE = "type"
+KEY_INSTANCES = "instances"
 
 class Dataset:
     r"""
@@ -58,21 +65,21 @@ class Dataset:
             for single_file in data_files:
                 with open(single_file) as fin:
                     json_data = json.load(fin)
-                    if "type" not in json_data.keys():
+                    if KEY_TYPE not in json_data.keys():
                         raise ValueError(
-                            '"type" field must be specified for data, e.g.'
+                            f'"{KEY_TYPE}" field must be specified for data, e.g.'
                             '{\n'
-                            '   "type": "text_only",\n'
-                            '   "instances": [\n'
-                            '       "Sentence 1: This is a sentence."\n'
-                            '       "Sentence 2: This is another sentence."\n'
-                            '   ]\n'
+                            f'   "{KEY_TYPE}: "text_only",\n'
+                            f'   "{KEY_INSTANCES}": [\n'
+                            '       { "text": "Sentence 1: This is a sentence." }\n'
+                            '       { "text": "Sentence 2: This is another sentence." }\n'
+                            f'   ]\n'
                             '}'
                         )
 
                     if self.type is None:
-                        self.type = json_data["type"]
-                    elif self.type != json_data["type"]:
+                        self.type = json_data[KEY_TYPE]
+                    elif self.type != json_data[KEY_TYPE]:
                         raise ValueError(
                             'All task files must have same data types. Previous'
                             f' files have type "{self.type}", but in file'
@@ -84,7 +91,7 @@ class Dataset:
             raw_dataset = load_dataset(
                 extensions,
                 data_files=data_files,
-                field="instances",
+                field=KEY_INSTANCES,
                 split="train",
                 use_auth_token=None,
             )
@@ -106,7 +113,7 @@ class Dataset:
         r"""
         Create a Dataset object from a dictionary.
 
-        Given a dataset with format:
+        Return a Dataset given a dict with format:
             {
                 "type": TYPE,
                 "instances": [
@@ -122,12 +129,6 @@ class Dataset:
                     },
                     ...
                 ]
-            }
-        The input dict should be
-            {
-                "key_1": [ VALUE_1.1, VALUE_2.1, ... ],
-                "key_2": [ VALUE_1.2, VALUE_2.2, ... ],
-                ...
             }
 
         Parameters
@@ -148,10 +149,23 @@ class Dataset:
         self : Dataset object.
         """
         if self.backend == "huggingface":
-            self.backend_dataset = HFDataset.from_dict(
-                dict_obj["instances"], *args, **kwargs
-            )
-            self.type = dict_obj["type"]
+            if KEY_TYPE not in dict_obj:
+                raise ValueError(
+                    f'"{KEY_TYPE}" must be provided to initialize a dataset'
+                )
+            if KEY_INSTANCES not in dict_obj:
+                raise ValueError(
+                    f'"{KEY_INSTANCES}" must be provided to initialize a dataset'
+                )
+
+            self.type = dict_obj[KEY_TYPE]
+
+            hf_dict = {}
+            if len(dict_obj[KEY_INSTANCES]) > 0:
+                for key in dict_obj[KEY_INSTANCES][0].keys():
+                    hf_dict[key] = [ instance[key] for instance in dict_obj[KEY_INSTANCES] ]
+
+            self.backend_dataset = HFDataset.from_dict(hf_dict, *args, **kwargs)
             return self
         else:
             raise NotImplementedError(
@@ -164,7 +178,7 @@ class Dataset:
         Returns
         ---------
 
-        Given a dataset with format:
+        Return a dict represents the dataset:
             {
                 "type": TYPE,
                 "instances": [
@@ -181,17 +195,31 @@ class Dataset:
                     ...
                 ]
             }
-        The output dict will be
-            {
-                "key_1": [ VALUE_1.1, VALUE_2.1, ... ],
-                "key_2": [ VALUE_1.2, VALUE_2.2, ... ],
-                ...
-            }
 
         A python dict object represents the content of this dataset.
         """
         if self.backend == "huggingface":
-            return self.backend_dataset.to_dict()
+            dict_obj = {}
+            dict_obj[KEY_TYPE] = self.get_type()
+
+            hf_dict = self.backend_dataset.to_dict()
+            dict_obj[KEY_INSTANCES] = []
+
+            first_key = None
+            for key in hf_dict.keys():
+                first_key = key
+                break
+
+            if first_key is not None:
+                num_instances = len(hf_dict[first_key])
+                dict_obj[KEY_INSTANCES] = [
+                    {
+                        key: hf_dict[key][i] for key in hf_dict.keys()
+                    }
+                    for i in range(num_instances)
+                ]
+
+            return dict_obj
         else:
             raise NotImplementedError(
                 f'Current .to_dict is not supported for backend "{backend}"'

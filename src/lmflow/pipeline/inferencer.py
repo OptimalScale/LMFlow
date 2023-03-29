@@ -74,7 +74,8 @@ class Inferencer(BasePipeline):
 
     def create_dataloader(self, dataset: Dataset):
         data_dict = dataset.to_dict()
-        inputs, outputs, = data_dict["input"], data_dict["output"]
+        inputs = [ instance["input"] for instance in data_dict["instances"] ]
+        outputs = [ instance["output"] for instance in data_dict["instances"] ]
         dataset_size = len(outputs)
         dataset_buf = []
         for idx in range(dataset_size):
