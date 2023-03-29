@@ -198,7 +198,7 @@ more API-related examples, one may refer to the methods in the unittest
 
 4. (optional) Now you have the original llama-7b-hf pretrained model. With
 ```sh
-cd output_models && ./download.sh && cd -
+cd output_models && ./download.sh all && cd -
 ```
 You can obtain the model difference finetuned by ours. By a way similar to `./scripts/run_inference_with_lora.sh`,
 ```sh
