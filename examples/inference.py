@@ -12,7 +12,6 @@ Typical usage example:
 """
 import json
 from transformers import HfArgumentParser
-from transformers.deepspeed import HfDeepSpeedConfig
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
@@ -28,7 +27,6 @@ model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
 
 with open (pipeline_args.deepspeed, "r") as f:
     ds_config = json.load(f)
-dschf = HfDeepSpeedConfig(ds_config)    # Must be initialized before model inits
 
 model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config)
 dataset = Dataset(data_args)
