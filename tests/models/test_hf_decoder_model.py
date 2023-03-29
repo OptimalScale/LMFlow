@@ -27,11 +27,11 @@ from lmflow.models.hf_decoder_model import HFDecoderModel
 
 groundtruth_dataset = {
     "type": "text_only",
-    "instances": {
-        "text": [
-            "Defintion: In this task, we ask you to write an answer to a question that involves events that may be stationary (not changing over time) or transient (changing over time). For example, the sentence \"he was born in the U.S.\" contains a stationary event since it will last forever; however, \"he is hungry\" contains a transient event since it will remain true for a short period of time. Note that a lot of the questions could have more than one correct answer. We only need a single most-likely answer. Please try to keep your \"answer\" as simple as possible. Concise and simple \"answer\" is preferred over those complex and verbose ones. \\n Input: Sentence: It's hail crackled across the comm, and Tara spun to retake her seat at the helm. \nQuestion: Will the hail storm ever end? \\n Output: NA \\n\\n"
-        ],
-    },
+    "instances": [
+        {
+            "text": "Defintion: In this task, we ask you to write an answer to a question that involves events that may be stationary (not changing over time) or transient (changing over time). For example, the sentence \"he was born in the U.S.\" contains a stationary event since it will last forever; however, \"he is hungry\" contains a transient event since it will remain true for a short period of time. Note that a lot of the questions could have more than one correct answer. We only need a single most-likely answer. Please try to keep your \"answer\" as simple as possible. Concise and simple \"answer\" is preferred over those complex and verbose ones. \\n Input: Sentence: It's hail crackled across the comm, and Tara spun to retake her seat at the helm. \nQuestion: Will the hail storm ever end? \\n Output: NA \\n\\n"
+        },
+    ],
 }
 
 groundtruth_tokenized_dataset = {
@@ -57,10 +57,7 @@ class HFDecoderModelTest(unittest.TestCase):
         dataset = Dataset(data_args, backend="huggingface")
         dataset = dataset.from_dict(groundtruth_dataset)
 
-        self.assertEqual(
-            dataset.get_backend_dataset().to_dict(),
-            groundtruth_dataset["instances"],
-        )
+        self.assertEqual(dataset.to_dict(), groundtruth_dataset)
 
         model_name = 'gpt2'
         model_args = ModelArguments(model_name_or_path=model_name)
