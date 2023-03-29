@@ -25,7 +25,7 @@ function main() {
         rm ${filename}
     fi
 
-    if [ "$1" = "ni"]; then
+    if [ "$1" = "ni" ]; then
         echo "downloading natural-instructions"
         filename='natural-instructions.tar.gz'
         fileid='1uq62MnN3V2gV1pWtrl8TBIEzxgeX-AGR'
