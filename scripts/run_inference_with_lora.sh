@@ -8,6 +8,6 @@ CUDA_VISIBLE_DEVICES=0 \
     --answer_type text \
     --model_name_or_path facebook/galactica-1.3b \
     --lora_model_path output_models/finetune_with_lora \
-    --test_file data/alpaca/test/test_252.json \
+    --dataset_path data/alpaca/test \
     --prompt_structure "Input: {input}" \
     --deepspeed examples/ds_config.json

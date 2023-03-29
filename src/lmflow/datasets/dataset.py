@@ -106,6 +106,30 @@ class Dataset:
         r"""
         Create a Dataset object from a dictionary.
 
+        Given a dataset with format:
+            {
+                "type": TYPE,
+                "instances": [
+                    {
+                        "key_1": VALUE_1.1,
+                        "key_2": VALUE_1.2,
+                        ...
+                    },
+                    {
+                        "key_1": VALUE_2.1,
+                        "key_2": VALUE_2.2,
+                        ...
+                    },
+                    ...
+                ]
+            }
+        The input dict should be
+            {
+                "key_1": [ VALUE_1.1, VALUE_2.1, ... ],
+                "key_2": [ VALUE_1.2, VALUE_2.2, ... ],
+                ...
+            }
+
         Parameters
         -----------
 
@@ -134,6 +158,44 @@ class Dataset:
                 f'Currently .from_dict is not supported for backend "{backend}"'
             )
 
+
+    def to_dict(self):
+        r"""
+        Returns
+        ---------
+
+        Given a dataset with format:
+            {
+                "type": TYPE,
+                "instances": [
+                    {
+                        "key_1": VALUE_1.1,
+                        "key_2": VALUE_1.2,
+                        ...
+                    },
+                    {
+                        "key_1": VALUE_2.1,
+                        "key_2": VALUE_2.2,
+                        ...
+                    },
+                    ...
+                ]
+            }
+        The output dict will be
+            {
+                "key_1": [ VALUE_1.1, VALUE_2.1, ... ],
+                "key_2": [ VALUE_1.2, VALUE_2.2, ... ],
+                ...
+            }
+
+        A python dict object represents the content of this dataset.
+        """
+        if self.backend == "huggingface":
+            return self.backend_dataset.to_dict()
+        else:
+            raise NotImplementedError(
+                f'Current .to_dict is not supported for backend "{backend}"'
+            )
 
 
     def map(self, *args, **kwargs):
