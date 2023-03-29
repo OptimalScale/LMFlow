@@ -103,11 +103,6 @@ We list some examples below. Full example list is saved as a [Jsonl file](https:
 ![Instruction Tuning Sample](_static/IT_sample7.png)
 
 
-### RLHF
-
-Coming soon.
-
-
 
 
 
