@@ -18,7 +18,7 @@ import torch.distributed as dist
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.models.hf_decoder_model import HFDecoderModel
-from lmflow.utils.data_utils import set_random_seed, load_data, batchlize, answer_extraction
+from lmflow.utils.data_utils import set_random_seed, batchlize, answer_extraction
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
 
 class Inferencer(BasePipeline):
@@ -72,15 +72,25 @@ class Inferencer(BasePipeline):
         # dataloader, data_size = create_dataloader(args)    # load dataset
 
 
-    def create_dataloader(self):
-        inputs, outputs, datasize = load_data(self.data_args.test_file)
-        dataset = []
-        for idx in range(len(outputs)):
-            dataset.append({"input":inputs[idx], "output":outputs[idx], "input_idx":idx})
-        
-        dataloader = batchlize(dataset, self.inferencer_args.minibatch_size, self.inferencer_args.random_shuffle)
+    def create_dataloader(self, dataset: Dataset):
+        data_dict = dataset.to_dict()
+        inputs, outputs, = data_dict["input"], data_dict["output"]
+        dataset_size = len(outputs)
+        dataset_buf = []
+        for idx in range(dataset_size):
+            dataset_buf.append({
+                "input": inputs[idx],
+                "output": outputs[idx],
+                "input_idx": idx
+            })
+
+        dataloader = batchlize(
+            dataset_buf,
+            self.inferencer_args.minibatch_size,
+            self.inferencer_args.random_shuffle
+        )
         print(f"Successfully create dataloader with size {len(dataloader)}.")
-        return dataloader, datasize
+        return dataloader, dataset_size
 
 
     # TODO: Split for better unittest
@@ -113,9 +123,8 @@ class Inferencer(BasePipeline):
         dataset : Dataset object.
             
 
-        """        
-
-        dataloader, data_size = self.create_dataloader()
+        """
+        dataloader, data_size = self.create_dataloader(dataset)
 
         if not dist.is_initialized() or dist.get_rank() == 0:
             if not os.path.exists(self.inferencer_args.output_dir):

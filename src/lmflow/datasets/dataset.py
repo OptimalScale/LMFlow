@@ -135,6 +135,20 @@ class Dataset:
             )
 
 
+    def to_dict(self):
+        r"""
+        Returns
+        ---------
+
+        A python dict object represents the content of this dataset.
+        """
+        if self.backend == "huggingface":
+            return self.backend_dataset.to_dict()
+        else:
+            raise NotImplementedError(
+                f'Current .to_dict is not supported for backend "{backend}"'
+            )
+
 
     def map(self, *args, **kwargs):
         r"""
