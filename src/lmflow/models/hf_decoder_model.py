@@ -33,6 +33,7 @@ from peft import (
 
 import torch
 import transformers
+from transformers.deepspeed import HfDeepSpeedConfig
 
 from transformers.testing_utils import CaptureLogger
 
@@ -178,6 +179,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             self.tune_strategy = tune_strategy
 
         elif tune_strategy == 'none':
+            dschf = HfDeepSpeedConfig(ds_config)
             self.backend_model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path)
             self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
             peft_model_id = model_args.lora_model_path
