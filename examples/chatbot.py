@@ -3,6 +3,7 @@
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A simple shell chatbot implemented with lmflow APIs.
 """
+import logging
 import json
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
@@ -11,6 +12,9 @@ from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
 from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
+
+
+logging.disable(logging.ERROR)
 
 
 @dataclass
