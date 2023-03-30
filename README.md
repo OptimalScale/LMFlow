@@ -43,7 +43,7 @@ For more performance, including instruction tuning results, please refer to our 
 | Instruction Tuning |  :white_check_mark: Supported |
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
-| Reinforced Tuning |  :construction: Developing |
+| Reinforced Tuning |  :wrench: Developing |
 
 
 ## Supported Models
@@ -51,12 +51,12 @@ Seamlessly supported the models in 🤗 huggingface.
 
 | Models   |  Status | |  Models | Status | 
 |----------|:-------------:|----------|----------|:-------------:|
-| GPT2-large |  :white_check_mark: Tested | | Galactica-6.7B |  :construction: Untested |
-| GPT2-xl |  :white_check_mark: Tested | | Galactica-30B |  :construction: Untested |
-| GPT-Neo-1.3B |  :construction: Untested | | LLaMA-7B |  :white_check_mark: Tested :star: |
-| GPT-Neo-2.7B |  :construction: Untested | | LLaMA-13B |  :white_check_mark: Tested :star: |
-| GPT-Neox-20B |  :construction: Untested | | LLaMA-33B |  :white_check_mark: Tested :star: |
-| Galactica-1.3B |  :white_check_mark: Tested | |LLaMA-65B |  :construction: Untested |
+| GPT2-large |  :white_check_mark: Tested | | Galactica-6.7B |  :wrench: Untested |
+| GPT2-xl |  :white_check_mark: Tested | | Galactica-30B |  :wrench: Untested |
+| GPT-Neo-1.3B |  :wrench: Untested | | LLaMA-7B |  :white_check_mark: Tested :star: |
+| GPT-Neo-2.7B |  :wrench: Untested | | LLaMA-13B |  :white_check_mark: Tested :star: |
+| GPT-Neox-20B |  :wrench: Untested | | LLaMA-33B |  :white_check_mark: Tested :star: |
+| Galactica-1.3B |  :white_check_mark: Tested | |LLaMA-65B |  :wrench: Untested |
 
 ## 1.Setup
 ```bash
