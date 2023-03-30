@@ -53,8 +53,11 @@ def main():
 
     # Chats
     guide_message = (
-        f"A chatbot with backend {model_args.model_name_or_path} is"
-        " now chatting with you!\n"
+        "\n"
+        f"#############################################################################\n"
+        f"##   A {model_args.model_name_or_path} chatbot is now chatting with you!\n"
+        f"#############################################################################\n"
+        "\n"
     )
     print(guide_message, end="")
 
