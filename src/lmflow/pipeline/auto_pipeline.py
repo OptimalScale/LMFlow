@@ -5,11 +5,13 @@
 
 from lmflow.pipeline.finetuner import Finetuner
 from lmflow.pipeline.evaluator import Evaluator
+from lmflow.pipeline.inferencer import Inferencer
 
 
 PIPELINE_MAPPING = {
     "finetuner": Finetuner,
     "evaluator": Evaluator,
+    "inferencer": Inferencer,
 }
 
 

@@ -343,14 +343,14 @@ class EvaluatorArguments:
     output_dir : str, default = './output_dir',
 
     mixed_precision : str, choice from ["bf16","fp16"].
-        mixed precision mode, whether to use bf16 or fp16 
+        mixed precision mode, whether to use bf16 or fp16
 
     deepspeed : 
         Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
         loaded json file as a dict
     """
     local_rank: int = field(
-        default=-1, 
+        default=-1,
         metadata={"help": "For distributed training: local_rank"
         }
     )
@@ -437,9 +437,61 @@ class EvaluatorArguments:
     )
 
 
+@dataclass
+class InferencerArguments:
+    """
+    Define a class InferencerArguments using the dataclass decorator. The class contains several optional
+    parameters that can be used to configure a inferencer.
+
+    local_rank : str
+        For distributed training: local_rank
+
+    random_seed : int, default = 1
+
+    deepspeed :
+        Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
+        loaded json file as a dict
+    mixed_precision : str, choice from ["bf16","fp16"].
+        mixed precision mode, whether to use bf16 or fp16
+
+    """
+    local_rank: int = field(
+        default=-1,
+        metadata={"help": "For distributed training: local_rank"
+        }
+    )
+    random_seed: Optional[int] = field(
+        default=1,
+        metadata={
+            "help": (
+                "used to set random seed"
+            )
+        },
+    )
+    deepspeed: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already"
+                " loaded json file as a dict"
+            )
+        },
+    )
+    mixed_precision: Optional[str] = field(
+        default="bf16",
+        metadata={
+            "help": (
+                "mixed precision mode, whether to use bf16 or fp16"
+            ),
+            "choices": ["bf16","fp16"],
+        },
+    )
+
+
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
+    "inferencer": InferencerArguments,
 }
 
 
