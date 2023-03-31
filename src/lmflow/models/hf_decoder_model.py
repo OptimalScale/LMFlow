@@ -153,11 +153,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                 logger.info(f"Training new model from scratch - Total size={n_params/2**20:.2f}M params")
 
             if model_args.use_lora:
+                
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
                     r=model_args.lora_r,
-                    #target_modules=["q_proj","v_proj"],
+                    target_modules=["q_proj","v_proj"] if "llama" in model_args.model_name_or_path else None,
                     lora_alpha=model_args.lora_alpha,
                     lora_dropout=model_args.lora_dropout
                 )
