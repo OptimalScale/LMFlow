@@ -2,7 +2,7 @@ numpy==1.24.2
 datasets==2.10.1
 peft @ git+https://github.com/huggingface/peft@df0e1fb
 torch==2.0.0
-transformers==4.27.3
+transformers @ git+https://github.com/huggingface/transformers.git@d143087
 wandb==0.14.0
 deepspeed==0.8.3
 trl @ git+https://github.com/lvwerra/trl.git#egg=trl-0.4.1
