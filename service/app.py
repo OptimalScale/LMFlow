@@ -49,7 +49,7 @@ def predict():
                 history_input = model.decode(inputs)
             
             inputs = model.encode(history_input, return_tensors="pt").to(device=local_rank)
-            outputs = model.inference(inputs, max_new_tokens=400,temperature=0.0, do_sample=False)
+            outputs = model.inference(inputs, max_new_tokens=150,temperature=0.0, do_sample=False)
             text_out = model.decode(outputs[0], skip_special_tokens=True)
             prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
             text_out = text_out[prompt_length:].strip("\n")
