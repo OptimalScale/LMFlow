@@ -5,6 +5,8 @@
 """
 import logging
 import json
+import warnings
+
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
 
@@ -15,6 +17,7 @@ from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
 
 
 logging.disable(logging.ERROR)
+warnings.filterwarnings("ignore")
 
 
 @dataclass
@@ -56,10 +59,14 @@ def main():
     )
 
     # Chats
+    model_name = model_args.model_name_or_path
+    if model_args.lora_model_path is not None:
+        model_name += f" + {model_args.lora_model_path}"
+
     guide_message = (
         "\n"
         f"#############################################################################\n"
-        f"##   A {model_args.model_name_or_path} chatbot is now chatting with you!\n"
+        f"##   A {model_name} chatbot is now chatting with you!\n"
         f"#############################################################################\n"
         "\n"
     )
@@ -89,7 +96,7 @@ def main():
             model=model,
             dataset=input_dataset,
             max_new_tokens=200,
-            temperature=0.5,
+            temperature=0.7,
         )
 
         response = output_dataset.to_dict()["instances"][0]["text"]
