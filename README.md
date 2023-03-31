@@ -157,17 +157,17 @@ python examples/finetune.py -h
 to view all possible finetuning arguments. The finetuned model checkpoint will
 be saved in the argument specified by `--output_dir`, which is
 `output_models/finetune` in the above example.
-### 3.2 Run Inference
+### 3.2 Run Evaluation
 
-One can directly run inference with an existing huggingface model, e.g. to run
+One can directly run evaluation with an existing huggingface model, e.g. to run
 GPT2 large, one may execute
 ```sh
-./scripts/run_inference.sh
+./scripts/run_evaluation.sh
 ```
 or run the corresponding python script
 ```python
 CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/inference.py \
+    deepspeed examples/evaluate.py \
     --answer_type medmcqa \
     --model_name_or_path gpt2-large \
     --test_file data/MedQA-USMLE/validation/valid_1273.json \
@@ -178,7 +178,7 @@ model checkpoint directory path.
 
 For LoRA finetuned models, one may refer to
 ```sh
-./scripts/run_inference_with_lora.sh
+./scripts/run_evaluation_with_lora.sh
 ```
 
 Those scripts invoke the examples `examples/*.py` built based on our APIs. For
@@ -200,17 +200,17 @@ more API-related examples, one may refer to the methods in the unittest
 ```sh
 cd output_models && ./download.sh all && cd -
 ```
-You can obtain the model difference finetuned by ours. By a way similar to `./scripts/run_inference_with_lora.sh`,
+You can obtain the model difference finetuned by ours. By a way similar to `./scripts/run_evaluation_with_lora.sh`,
 ```sh
 CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/inference.py \
+    deepspeed examples/evaluate.py \
     --answer_type text \
     --model_name_or_path ${llama-hf-path}/llama-7b-hf \
     --lora_model_path output_models/${llama-model-diff-path} \
     --test_file data/alpaca/test/test_252.json \
     --deepspeed examples/ds_config.json
 ```
-You can now inference with the finetuned llama model.
+You can now evaluate with the finetuned llama model.
 
 ### 4.2 DeepSpeed Config
 You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
@@ -239,7 +239,7 @@ You can also directly download our model via google drive link : [instruction_ck
 
 ### 5.3 Begin Reproduce
 
-After downloading the model checkpoints. You can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_inference_with_lora.sh` and run this shell script to reproduce the result.
+After downloading the model checkpoints. You can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
 
 Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
 
