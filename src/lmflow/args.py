@@ -157,6 +157,10 @@ class ModelArguments:
         default=0.1,
         metadata={"help": "The dropout rate in lora.linear."},
     )
+    save_aggregated_lora: bool = field(
+        default=False,
+        metadata={"help": "Whether to save aggregated lora."},
+    )
 
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):

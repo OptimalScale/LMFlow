@@ -1,6 +1,6 @@
 numpy==1.24.2
 datasets==2.10.1
-peft @ git+https://github.com/huggingface/peft@df0e1fb
+peft @ git+https://github.com/huggingface/peft
 torch==2.0.0
 transformers==4.27.3
 wandb==0.14.0
