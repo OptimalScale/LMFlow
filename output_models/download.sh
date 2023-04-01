@@ -7,10 +7,28 @@ function main() {
         echo "Example: bash $(basename $0) all"
     fi
 
-    if [ "$1" = "medical_ckpt" -o "$1" = "all" ]; then
-        echo "downloading medical_ckpt.tar.gz"
-        filename='medical_ckpt.tar.gz'
-        fileid='1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw'
+    if [ "$1" = "llama7b-lora-medical" -o "$1" = "medical_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama7b-lora-medical.tar.gz"
+        filename='llama7b-lora-medical.tar.gz'
+        fileid='1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-'
+        wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/uc?export=download&id=${fileid}' -O- | sed -rn 's/.confirm=([0-9A-Za-z_]+)./\1\n/p')&id=${fileid}" -O ${filename} && rm -rf /tmp/cookies.txt
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama13b-lora-medical" -o "$1" = "medical_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama13b-lora-medical.tar.gz"
+        filename='llama13b-lora-medical.tar.gz'
+        fileid='1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap'
+        wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/uc?export=download&id=${fileid}' -O- | sed -rn 's/.confirm=([0-9A-Za-z_]+)./\1\n/p')&id=${fileid}" -O ${filename} && rm -rf /tmp/cookies.txt
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama30b-lora-medical" -o "$1" = "medical_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama30b-lora-medical.tar.gz"
+        filename='llama30b-lora-medical.tar.gz'
+        fileid='14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM'
         wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/uc?export=download&id=${fileid}' -O- | sed -rn 's/.confirm=([0-9A-Za-z_]+)./\1\n/p')&id=${fileid}" -O ${filename} && rm -rf /tmp/cookies.txt
         tar zxvf ${filename}
         rm ${filename}
