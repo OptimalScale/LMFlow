@@ -19,7 +19,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 ## Latest News
 * [2023-04-01] [Web service is online!]()
-* [2023-04-01] [Release Chinese model zoo, Hetian (和田羊), Dongshan (东山羊)，Altay (阿勒泰羊).]()
+* [2023-04-01] [Release Chinese model zoo, Hetian (和田羊), Hu (湖羊), Dongshan (东山羊)，Altay (阿勒泰羊).]()
 * [2023-03-27] Support full tuning and lora tuning for GPT-2, Galactica, and LLaMA. 
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
@@ -52,41 +52,15 @@ For more performance, including instruction tuning results, please refer to our 
 | Large Model Inference |  :white_check_mark: Supported |
 | Reinforced Tuning |  :wrench: Developing |
 
-## Training Progress
-<style>
- 
-.container {
-  width: 100%;
-  background-color: #ddd;
-}
- 
-.skills {
-  text-align: right;
-  padding-right: 20px;
-  line-height: 40px;
-  color: white;
-}
-.hetian {width: 100%; background-color: #75bbfd;}
-.dongshan {width: 100%; background-color: #75bbfd;}
-.altay {width: 65%; background-color: #fbdd7e;}
-'''
-</style>
- 
+## Model Zoo
+We open-sourced the trained checkpoints to everyone for further training and inference.
 
-<p>Hetian (和田羊)</p>
-<div class="container">
-  <div class="skills hetian">100%</div>
-</div>
-
-<p>Dongshan (东山羊)</p>
-<div class="container">
-  <div class="skills dongshan">100%</div>
-</div>
-
-<p>Altay (阿勒泰羊)</p>
-<div class="container">
-  <div class="skills altay">65%</div>
-</div>
+| Models   |  Status | Base Model | Download | 
+|----------|:-------------:|----------|:-------------:|
+| Hetian (和田羊) | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive]() |
+| Hu (湖羊) | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive]() |
+| Dongshan (东山羊) | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive]() |
+| Altay (阿勒泰羊) | ![training](https://geps.dev/progress/65) | LLaMA-65B | [Google Drive]() |
 
 
 ## Supported Models
