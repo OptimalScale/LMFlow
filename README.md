@@ -17,6 +17,13 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
+## Latest News
+* [2023-04-01] [Web service is online!]()
+* [2023-04-01] [Release Chinese model zoo, Hetian (和田羊), Dongshan (东山羊)，Altay (阿勒泰羊).]()
+* [2023-03-27] Support full tuning and lora tuning for GPT-2, Galactica, and LLaMA. 
+* [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
+* [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
+
 ## Model Performance
 
 |                |  PubMedQA (ID) | MedQA-USMLE (OOD) | MedMCQA (ID) |  Average |
