@@ -14,7 +14,7 @@ from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
 from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
-
+import torch.distributed as dist
 
 logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
@@ -80,7 +80,14 @@ def main():
     end_string = "\n\n"
 
     while True:
-        input_text = input("User >>> ")
+        if dist.get_rank() == 0:
+            input_text = input("User >>> ")            
+            dist.broadcast_object_list([input_text])
+        else:
+            recev_object = [None] * 1
+            dist.broadcast_object_list([recev_object])
+            input_text = recev_object[0]
+
         if not input_text:
             print("exit...")
             break
