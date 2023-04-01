@@ -1,6 +1,6 @@
 #!/bin/bash
 
-model=circulus/llama-13b
+model=aleksickx/llama-7b-hf
 lora_args=""
 if [ $# -ge 1 ]; then
   model=$1

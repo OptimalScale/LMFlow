@@ -70,7 +70,8 @@ def main():
         f"#############################################################################\n"
         "\n"
     )
-    print(guide_message, end="")
+    if dist.get_rank() == 0:
+        print(guide_message, end="")
 
     # context = (
     #     "You are a helpful assistant who follows the given instructions"
@@ -85,10 +86,10 @@ def main():
             dist.broadcast_object_list([input_text])
         else:
             recev_object = [None] * 1
-            dist.broadcast_object_list([recev_object])
+            dist.broadcast_object_list(recev_object)
             input_text = recev_object[0]
 
-        if not input_text:
+        if input_text == "exit":
             print("exit...")
             break
 
@@ -115,7 +116,8 @@ def main():
             index = response.index(end_string)
 
         response = response[:index + 1]
-        print("Bot: " + response, end="")
+        if dist.get_rank() == 0:
+            print("Bot: " + response, end="")
         context += response
         context = context[-model.get_max_length():]     # Memory of the bot
 
