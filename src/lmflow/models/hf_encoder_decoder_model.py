@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
-"""This is a class called HFDecoderModel which is a wrapper around transformers model and
+"""This is a class called HFEncoderDecoder which is a wrapper around transformers model and
 tokenizer classes. It has several methods such as __init__, tokenize, and train that are 
 used for training and fine-tuning the model. The __init__ method takes in several arguments
 such as model_args, tune_strategy, and ds_config, which are used to load the pretrained 
@@ -17,12 +17,11 @@ Overall, this class provides a convenient interface for loading and fine-tuning 
 models and can be used for various NLP tasks such as language modeling, text classification,
 and question answering.
 """
-
 import logging
 from typing import List, Union
 
 import deepspeed
-
+from filelock import FileLock
 from peft import (
     LoraConfig,
     PeftModel,
@@ -31,7 +30,7 @@ from peft import (
     get_peft_model,
     prepare_model_for_int8_training,
 )
-
+import nltk  # Here to have a nice missing dependency error message early on
 import torch
 import transformers
 from transformers.deepspeed import HfDeepSpeedConfig
@@ -41,22 +40,28 @@ from transformers.testing_utils import CaptureLogger
 from transformers import (
     CONFIG_MAPPING,
     AutoConfig,
+    AutoModelForSeq2SeqLM,
     AutoTokenizer,
-    AutoModelForCausalLM,
+    DataCollatorForSeq2Seq,
+    HfArgumentParser,
+    MBart50Tokenizer,
+    MBart50TokenizerFast,
+    MBartTokenizer,
+    MBartTokenizerFast,
+    Seq2SeqTrainer,
+    Seq2SeqTrainingArguments,
+    set_seed,
 )
-
+from transformers.utils import check_min_version, is_offline_mode, send_example_telemetry
 from lmflow.datasets.dataset import Dataset
-from lmflow.models.decoder_model import DecoderModel
+from lmflow.models.encoder_decoder_model import EncoderDecoderModel
 from lmflow.models.interfaces.tunable import Tunable
 
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
-
-
-class HFDecoderModel(DecoderModel, Tunable):
+class HFDecoderModel(EncoderDecoderModel, Tunable):
     r"""
-    Initializes a HFDecoderModel instance.
+    Initializes a HFEncoderDecoderModel instance.
 
     Parameters
     ------------
@@ -86,7 +91,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         **kwargs
     ):
         """
-        Initializes a HFDecoderModel instance.
+        Initializes a HFEncoderDecoderModel instance.
         :param model_args: dictionary with model arguments such as model name, path, revision, etc.
         :param tune_strategy: tuning strategy: normal, none, lora or adapter
         :param ds_config: deepspeed configuration for distributed training
@@ -103,6 +108,19 @@ class HFDecoderModel(DecoderModel, Tunable):
 
 
         if tune_strategy == 'normal':
+            try:
+                nltk.data.find("tokenizers/punkt")
+            except (LookupError, OSError):
+                if is_offline_mode():
+                    raise LookupError(
+                        "Offline mode: run this script without TRANSFORMERS_OFFLINE first to download nltk data files"
+                    )
+                with FileLock(".lock") as lock:
+                    nltk.download("punkt", quiet=True)
+
+            # A list of all multilingual tokenizer which require lang attribute.
+            MULTILINGUAL_TOKENIZERS = [MBartTokenizer, MBartTokenizerFast, MBart50Tokenizer, MBart50TokenizerFast]
+
             config_kwargs = {
                 "cache_dir": model_args.cache_dir,
                 "revision": model_args.model_revision,
@@ -144,7 +162,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     if model_args.torch_dtype in ["auto", None]
                     else getattr(torch, model_args.torch_dtype)
                 )
-                model = AutoModelForCausalLM.from_pretrained(
+                model = AutoModelForSeq2SeqLM.from_pretrained(
                     model_args.model_name_or_path,
                     from_tf=bool(".ckpt" in model_args.model_name_or_path),
                     config=config,
@@ -154,13 +172,13 @@ class HFDecoderModel(DecoderModel, Tunable):
                     torch_dtype=torch_dtype,
                 )
             else:
-                model = AutoModelForCausalLM.from_config(config)
+                model = AutoModelForSeq2SeqLM.from_config(config)
                 n_params = sum(dict((p.data_ptr(), p.numel()) for p in model.parameters()).values())
                 logger.info(f"Training new model from scratch - Total size={n_params/2**20:.2f}M params")
 
             if model_args.use_lora:
                 peft_config = LoraConfig(
-                    task_type=TaskType.CAUSAL_LM,
+                    task_type=TaskType.SEQ_2_SEQ_LM,
                     inference_mode=False,
                     r=model_args.lora_r,
                     target_modules=["q_proj","v_proj"],
@@ -170,12 +188,60 @@ class HFDecoderModel(DecoderModel, Tunable):
                 model = get_peft_model(model, peft_config)
                 model.print_trainable_parameters()
 
-            # We resize the embeddings only when necessary to avoid index errors.
-            # If you are creating a model from scratch on a small vocab and want a
-            # smaller embedding size, remove this test.
+
+            # We resize the embeddings only when necessary to avoid index errors. If you are creating a model from scratch
+            # on a small vocab and want a smaller embedding size, remove this test.
             embedding_size = model.get_input_embeddings().weight.shape[0]
             if len(tokenizer) > embedding_size:
                 model.resize_token_embeddings(len(tokenizer))
+
+            if model.config.decoder_start_token_id is None and isinstance(tokenizer, (MBartTokenizer, MBartTokenizerFast)):
+                if isinstance(tokenizer, MBartTokenizer):
+                    model.config.decoder_start_token_id = tokenizer.lang_code_to_id[data_args.lang]
+                else:
+                    model.config.decoder_start_token_id = tokenizer.convert_tokens_to_ids(data_args.lang)
+
+            if model.config.decoder_start_token_id is None:
+                raise ValueError("Make sure that `config.decoder_start_token_id` is correctly defined")
+
+            if (
+                hasattr(model.config, "max_position_embeddings")
+                and model.config.max_position_embeddings < data_args.max_source_length
+            ):
+                if model_args.resize_position_embeddings is None:
+                    logger.warning(
+                        "Increasing the model's number of position embedding vectors from"
+                        f" {model.config.max_position_embeddings} to {data_args.max_source_length}."
+                    )
+                    model.resize_position_embeddings(data_args.max_source_length)
+                elif model_args.resize_position_embeddings:
+                    model.resize_position_embeddings(data_args.max_source_length)
+                else:
+                    raise ValueError(
+                        f"`--max_source_length` is set to {data_args.max_source_length}, but the model only has"
+                        f" {model.config.max_position_embeddings} position encodings. Consider either reducing"
+                        f" `--max_source_length` to {model.config.max_position_embeddings} or to automatically resize the"
+                        " model's position encodings by passing `--resize_position_embeddings`."
+                    )
+            prefix = data_args.source_prefix if data_args.source_prefix is not None else ""
+
+            # Preprocessing the datasets.
+            # We need to tokenize inputs and targets.
+            if training_args.do_train:
+                if "train" not in raw_datasets:
+                    raise ValueError("--do_train requires a train dataset")
+                column_names = raw_datasets["train"].column_names
+            elif training_args.do_eval:
+                if "validation" not in raw_datasets:
+                    raise ValueError("--do_eval requires a validation dataset")
+                column_names = raw_datasets["validation"].column_names
+            elif training_args.do_predict:
+                if "test" not in raw_datasets:
+                    raise ValueError("--do_predict requires a test dataset")
+                column_names = raw_datasets["test"].column_names
+            else:
+                logger.info("There is nothing to do. Please pass `do_train`, `do_eval` and/or `do_predict`.")
+                return
 
             self.model_args = model_args
             self.config = config
@@ -185,37 +251,9 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         elif tune_strategy == 'none':
             dschf = HfDeepSpeedConfig(ds_config)
-            peft_model_id = model_args.lora_model_path
-
-            if model_args.use_ram_optimized_load and peft_model_id is None:
-                try:
-                    # RAM-optimized load
-                    self.backend_model = AutoModelForCausalLM.from_pretrained(
-                        model_args.model_name_or_path,
-                        device_map="auto",
-                        offload_folder="offload",
-                        offload_state_dict=True,
-                    )
-                except:
-                    logger.warning(
-                        "Failed to use RAM optimized load. Automatically"
-                        " use original load instead."
-                    )
-                    # Normal load
-                    self.backend_model = AutoModelForCausalLM.from_pretrained(
-                        model_args.model_name_or_path,
-                    )
-            else:
-                if peft_model_id is not None:
-                    logger.warning(
-                        "LoRA does not support RAM optimized load currently."
-                        " Automatically use original load instead."
-                    )
-                self.backend_model = AutoModelForCausalLM.from_pretrained(
-                    model_args.model_name_or_path,
-                )
-
+            self.backend_model = AutoModelForSeq2SeqLM.from_pretrained(model_args.model_name_or_path)
             self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+            peft_model_id = model_args.lora_model_path
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
@@ -251,6 +289,21 @@ class HFDecoderModel(DecoderModel, Tunable):
         """
         model_args = self.model_args
 
+        if isinstance(tokenizer, tuple(MULTILINGUAL_TOKENIZERS)):
+            assert (
+                data_args.lang is not None
+            ), f"{tokenizer.__class__.__name__} is a multilingual tokenizer which requires --lang argument"
+
+            tokenizer.src_lang = data_args.lang
+            tokenizer.tgt_lang = data_args.lang
+
+            # For multilingual translation models like mBART-50 and M2M100 we need to force the target language token
+            # as the first generated token. We ask the user to explicitly provide this as --forced_bos_token argument.
+            forced_bos_token_id = (
+                tokenizer.lang_code_to_id[data_args.forced_bos_token] if data_args.forced_bos_token is not None else None
+            )
+            model.config.forced_bos_token_id = forced_bos_token_id
+        
         # Preprocessing the datasets.
         # First we tokenize all the texts.
         if dataset.get_backend() != "huggingface":

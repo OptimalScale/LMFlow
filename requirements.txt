@@ -6,6 +6,8 @@ wandb==0.14.0
 deepspeed==0.8.3
 trl @ git+https://github.com/lvwerra/trl.git#egg=trl-0.4.1
 sentencepiece
+icetk==0.0.7
+cpm_kernels==1.0.11
 transformers @ git+https://github.com/huggingface/transformers@c612628
 flask
 flask_cors
