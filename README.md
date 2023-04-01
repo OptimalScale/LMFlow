@@ -43,12 +43,16 @@ For more performance, including instruction tuning results, please refer to our 
 | Instruction Tuning |  :white_check_mark: Supported |
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
+<<<<<<< Updated upstream
 | Reinforced Tuning |  :wrench: Developing |
+=======
+| Alignment Tuning |  :construction: Developing |
+>>>>>>> Stashed changes
 
 
 ## Supported Models
-Seamlessly supported the models in 🤗 huggingface.
 
+<<<<<<< Updated upstream
 | Models   |  Status | |  Models | Status | 
 |----------|:-------------:|----------|----------|:-------------:|
 | GPT2-large |  :white_check_mark: Tested | | Galactica-6.7B |  :wrench: Untested |
@@ -57,6 +61,11 @@ Seamlessly supported the models in 🤗 huggingface.
 | GPT-Neo-2.7B |  :wrench: Untested | | LLaMA-13B |  :white_check_mark: Tested :star: |
 | GPT-Neox-20B |  :wrench: Untested | | LLaMA-33B |  :white_check_mark: Tested :star: |
 | Galactica-1.3B |  :white_check_mark: Tested | |LLaMA-65B |  :wrench: Untested |
+=======
+Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 huggingface. 
+LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
+
+>>>>>>> Stashed changes
 
 ## 1.Setup
 ```bash
