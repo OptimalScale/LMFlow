@@ -322,7 +322,10 @@ class FinetunerArguments(TrainingArguments):
     """
     Adapt transformers.TrainingArguments
     """
-    pass
+    is_seq2seq: bool = field(
+        default=False,
+        metadata={"help": "whether use seq2seq model"}
+    )
 
 
 @dataclass

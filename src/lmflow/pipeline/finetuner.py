@@ -3,6 +3,8 @@
 """The Finetuner class simplifies the process of running finetuning process on a language model for a TunableModel instance with given dataset. 
 """
 
+from __future__ import absolute_import
+
 import logging
 import os
 import sys
@@ -13,6 +15,8 @@ import transformers
 from itertools import chain
 from transformers import (
     Trainer,
+    Seq2SeqTrainer,
+    DataCollatorForSeq2Seq,
     default_data_collator,
     set_seed,
 )
@@ -20,7 +24,9 @@ from transformers.utils import send_example_telemetry
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
-
+import evaluate
+import numpy as np
+import nltk
 
 logger = logging.getLogger(__name__)
 
@@ -209,17 +215,79 @@ class Finetuner(BaseTuner):
 
         # Initialize our Trainer
         training_args = finetuner_args
-        trainer = Trainer(
-            model=model.get_backend_model(),
-            args=training_args,
-            train_dataset=train_dataset if training_args.do_train else None,
-            eval_dataset=None,
-            tokenizer=model.get_tokenizer(),
-            # Data collator will default to DataCollatorWithPadding, so we change it.
-            data_collator=default_data_collator,
-            compute_metrics=None,
-            preprocess_logits_for_metrics=None,
-        )
+
+        if finetuner_args.is_seq2seq:
+            # Data collator
+            label_pad_token_id = -100 if data_args.ignore_pad_token_for_loss else tokenizer.pad_token_id
+            data_collator = DataCollatorForSeq2Seq(
+                model.get_tokenizer(),
+                model=model,
+                label_pad_token_id=label_pad_token_id,
+                pad_to_multiple_of=8 if training_args.fp16 else None,
+            )
+
+            # Metric
+            metric = evaluate.load("rouge")
+            def postprocess_text(preds, labels):
+                preds = [pred.strip() for pred in preds]
+                labels = [label.strip() for label in labels]
+
+                # rougeLSum expects newline after each sentence
+                preds = ["\n".join(nltk.sent_tokenize(pred)) for pred in preds]
+                labels = ["\n".join(nltk.sent_tokenize(label)) for label in labels]
+
+                return preds, labels
+
+            def compute_metrics(eval_preds):
+                preds, labels = eval_preds
+                if isinstance(preds, tuple):
+                    preds = preds[0]
+                decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
+                if data_args.ignore_pad_token_for_loss:
+                    # Replace -100 in the labels as we can't decode them.
+                    labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+                decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+
+                # Some simple post-processing
+                decoded_preds, decoded_labels = postprocess_text(decoded_preds, decoded_labels)
+
+                result = metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
+                result = {k: round(v * 100, 4) for k, v in result.items()}
+                prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in preds]
+                result["gen_len"] = np.mean(prediction_lens)
+                return result
+            # Override the decoding parameters of Seq2SeqTrainer
+            training_args.generation_max_length = (
+                training_args.generation_max_length
+                if training_args.generation_max_length is not None
+                else data_args.val_max_target_length
+            )
+            training_args.generation_num_beams = (
+                data_args.num_beams if data_args.num_beams is not None else training_args.generation_num_beams
+            )
+            # Initialize our Trainer
+            trainer = Seq2SeqTrainer(
+                model=model,
+                args=training_args,
+                train_dataset=train_dataset if training_args.do_train else None,
+                eval_dataset=eval_dataset if training_args.do_eval else None,
+                tokenizer=tokenizer,
+                data_collator=data_collator,
+                compute_metrics=compute_metrics if training_args.predict_with_generate else None,
+            )
+
+        else:
+            trainer = Trainer(
+                model=model.get_backend_model(),
+                args=training_args,
+                train_dataset=train_dataset if training_args.do_train else None,
+                eval_dataset=None,
+                tokenizer=model.get_tokenizer(),
+                # Data collator will default to DataCollatorWithPadding, so we change it.
+                data_collator=default_data_collator,
+                compute_metrics=None,
+                preprocess_logits_for_metrics=None,
+            )
 
         # Training
         if training_args.do_train:
