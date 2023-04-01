@@ -43,7 +43,7 @@ For more performance, including instruction tuning results, please refer to our 
 | Instruction Tuning |  :white_check_mark: Supported |
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
-| Alignment Tuning |  :construction: Developing |
+| Alignment Tuning |  :wrench: Developing |
 
 
 
