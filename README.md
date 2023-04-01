@@ -11,6 +11,12 @@
 [![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/03/29/ik03sC.png)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 
+<div align="center">
+<a target="_blank" href="https://colab.research.google.com/github/GoogleCloudPlatform/vertex-ai-samples/blob/main/notebooks/official/model_monitoring/model_monitoring.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+</div>
+
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
 <p align="center" width="100%">
@@ -42,6 +48,17 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
 For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
 
+## Model Zoo
+We open-sourced the trained checkpoints to everyone for further training and inference.
+
+| Instruct-tuned Models   |  Status | Base Model | Download | 
+|----------|:-------------:|----------|:-------------:|
+| Hetian (和田羊) | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive]() |
+| Hu (湖羊) | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive]() |
+| Dongshan (东山羊) | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive]() |
+| Altay (阿勒泰羊) | ![training](https://geps.dev/progress/65) | LLaMA-65B | [Google Drive]() |
+
+
 ## Supported Pipelines
 
 | Pipelines   |   Status |
@@ -51,16 +68,6 @@ For more performance, including instruction tuning results, please refer to our 
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
 | Reinforced Tuning |  :wrench: Developing |
-
-## Model Zoo
-We open-sourced the trained checkpoints to everyone for further training and inference.
-
-| Models   |  Status | Base Model | Download | 
-|----------|:-------------:|----------|:-------------:|
-| Hetian (和田羊) | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive]() |
-| Hu (湖羊) | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive]() |
-| Dongshan (东山羊) | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive]() |
-| Altay (阿勒泰羊) | ![training](https://geps.dev/progress/65) | LLaMA-65B | [Google Drive]() |
 
 
 ## Supported Models
