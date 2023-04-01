@@ -70,10 +70,28 @@ function main() {
         rm ${filename}
     fi
 
+    if [ "$1" = "llama7b-lora-380k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama7b-lora-380k.tar.gz"
+        filename='llama7b-lora-380k.tar.gz'
+        fileid='1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb'
+        wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/uc?export=download&id=${fileid}' -O- | sed -rn 's/.confirm=([0-9A-Za-z_]+)./\1\n/p')&id=${fileid}" -O ${filename} && rm -rf /tmp/cookies.txt
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
     if [ "$1" = "llama13b-lora-170k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
         echo "downloading llama13b-lora-170k.tar.gz"
         filename='llama13b-lora-170k.tar.gz'
         fileid='1M1fS9N0OxqoNvzn9J9baooQm0TWVXBh6'
+        wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/uc?export=download&id=${fileid}' -O- | sed -rn 's/.confirm=([0-9A-Za-z_]+)./\1\n/p')&id=${fileid}" -O ${filename} && rm -rf /tmp/cookies.txt
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama13b-lora-380k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama13b-lora-380k.tar.gz"
+        filename='llama13b-lora-380k.tar.gz'
+        fileid='1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr'
         wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/uc?export=download&id=${fileid}' -O- | sed -rn 's/.confirm=([0-9A-Za-z_]+)./\1\n/p')&id=${fileid}" -O ${filename} && rm -rf /tmp/cookies.txt
         tar zxvf ${filename}
         rm ${filename}
