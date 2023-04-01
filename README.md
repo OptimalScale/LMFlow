@@ -52,6 +52,42 @@ For more performance, including instruction tuning results, please refer to our 
 | Large Model Inference |  :white_check_mark: Supported |
 | Reinforced Tuning |  :wrench: Developing |
 
+## Training Progress
+<style>
+ 
+.container {
+  width: 100%;
+  background-color: #ddd;
+}
+ 
+.skills {
+  text-align: right;
+  padding-right: 20px;
+  line-height: 40px;
+  color: white;
+}
+.hetian {width: 100%; background-color: #75bbfd;}
+.dongshan {width: 100%; background-color: #75bbfd;}
+.altay {width: 65%; background-color: #fbdd7e;}
+'''
+</style>
+ 
+
+<p>Hetian (和田羊)</p>
+<div class="container">
+  <div class="skills hetian">100%</div>
+</div>
+
+<p>Dongshan (东山羊)</p>
+<div class="container">
+  <div class="skills dongshan">100%</div>
+</div>
+
+<p>Altay (阿勒泰羊)</p>
+<div class="container">
+  <div class="skills altay">65%</div>
+</div>
+
 
 ## Supported Models
 Seamlessly supported the models in 🤗 huggingface.
@@ -254,6 +290,8 @@ Then you can check the model performance at our [Doc](https://optimalscale.githu
 Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
 
 ## Citation
+If you find this repository useful, please consider giving ⭐ and citing:
+
 ```
 @misc{lmflow,
   author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
