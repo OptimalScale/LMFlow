@@ -17,6 +17,26 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
+## Demos
+
+### [![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
+
+<p align="center" width="100%">
+<img src="assets/colab-shell-chatbot-demo.png">
+</p>
+
+We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
+Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
+unsatisfactory responses. To improve the performance, users can use their own
+dataset to finetune and obtain a better model with LMFlow. One can also try
+other available decoder-only models provided in
+[huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
+
+```sh
+./scripts/run_chatbot.sh {another-model-name}
+```
+
+
 ## Model Performance
 
 |                |  PubMedQA (ID) | MedQA-USMLE (OOD) | MedMCQA (ID) |  Average |
