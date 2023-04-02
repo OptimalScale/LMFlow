@@ -24,9 +24,9 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 </p>
 
 ## Latest News
-* [2023-04-01] [Web service is online!]()
-* [2023-04-01] [Release Chinese model zoo, Hetian (和田羊), Hu (湖羊), Dongshan (东山羊)，Altay (阿勒泰羊).]()
-* [2023-03-27] Support full tuning and lora tuning for GPT-2, Galactica, and LLaMA. 
+* [2023-04-01] [Web service is online!](lmflow.com)
+* [2023-04-01] [Release Chinese model zoo: Hu (湖羊), Dongshan (东山羊), Hetian (和田羊), Altay (阿勒泰羊).]()
+* [2023-03-27] [Support full tuning and lora tuning for all decoder models.]() 
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
@@ -53,10 +53,10 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 
 | Instruct-tuned Models   |  Status | Base Model | Download | 
 |----------|:-------------:|----------|:-------------:|
-| Hetian (和田羊) | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive]() |
-| Hu (湖羊) | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive]() |
-| Dongshan (东山羊) | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive]() |
-| Altay (阿勒泰羊) | ![training](https://geps.dev/progress/65) | LLaMA-65B | [Google Drive]() |
+| Hu (湖羊) | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
+| Dongshan (东山羊) | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
+| Hetian (和田羊) | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
+| Altay (阿勒泰羊) | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
 
 
 ## Supported Pipelines
