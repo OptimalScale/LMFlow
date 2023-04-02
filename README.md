@@ -31,13 +31,15 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
-## Demos
+## Chatbot Demos
 
 ### [![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
 
 <p align="center" width="100%">
 <img src="assets/colab-shell-chatbot-demo.png">
 </p>
+
+> Welcome to visit our [web service]((https://lmflow.com/)). We deploy Hu (湖羊), and Hetian (和田羊) online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot service by yourself easily.
 
 We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
 Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
@@ -50,7 +52,7 @@ other available decoder-only models provided in
 ./scripts/run_chatbot.sh {another-model-name}
 ```
 
-## Model Performance
+## Medical Performance
 
 |                |  PubMedQA (ID) | MedQA-USMLE (OOD) | MedMCQA (ID) |  Average |
 |:---------:|:--------:|:-----------:|:-------:|:----:|
