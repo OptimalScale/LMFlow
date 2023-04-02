@@ -180,14 +180,21 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         elif tune_strategy == 'none':
             dschf = HfDeepSpeedConfig(ds_config)
-            self.backend_model = AutoModelForCausalLM.from_pretrained(
-                model_args.model_name_or_path,
-                device_map="auto",
-                offload_folder="offload",
-                offload_state_dict=True,
-            )
-            self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
             peft_model_id = model_args.lora_model_path
+
+            if peft_model_id is not None:
+                self.backend_model = AutoModelForCausalLM.from_pretrained(
+                    model_args.model_name_or_path,
+                )
+            else:
+                # Enables RAM-optimized load
+                self.backend_model = AutoModelForCausalLM.from_pretrained(
+                    model_args.model_name_or_path,
+                    device_map="auto",
+                    offload_folder="offload",
+                    offload_state_dict=True,
+                )
+            self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
