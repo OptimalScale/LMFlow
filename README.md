@@ -11,13 +11,11 @@
 [![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/03/29/ik03sC.png)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 
-<div align="center">
-<a target="_blank" href="https://colab.research.google.com/github/GoogleCloudPlatform/vertex-ai-samples/blob/main/notebooks/official/model_monitoring/model_monitoring.ipynb">
-  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
-</a>
-</div>
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
+
+Large Language Model for All. See our [vision](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#vision).
+共建大模型社区，让每个人都能训得起大模型。查看我们的[愿景](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#vision)。
 
 <p align="center" width="100%">
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
@@ -298,7 +296,7 @@ Moreover, we aim to create an open and democratic LLM sharing platform where peo
 
 Whether you are a beginner or an expert, we believe that you can benefit from this platform. Let's work together to build a vibrant and innovative LLM community!
 
-我们很高兴地宣布即将发布我们的代码存储库，其中包括了完整的 LLM 培训流程，能够快速、高效地训练和部署自己的语言模型。
+我们很高兴地开源LMFlow代码库，其中包括了完整的 LLM 培训流程，能够快速、高效地训练和部署自己的语言模型。
 
 我们的代码库不仅仅是一个简单的模型； 它包括完整的训练工作流程、模型优化和测试工具。 您可以使用它来构建各种类型的语言模型，包括对话模型、问答模型和文本生成模型等。
 
