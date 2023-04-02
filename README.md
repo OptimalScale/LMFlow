@@ -24,7 +24,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 </p>
 
 ## Latest News
-* [2023-04-01] [Web service is online!](lmflow.com)
+* [2023-04-01] [Web service is online!](https://lmflow.com/)
 * [2023-04-01] [Release Chinese model zoo: Hu (湖羊), Dongshan (东山羊), Hetian (和田羊), Altay (阿勒泰羊).]()
 * [2023-03-27] [Support full tuning and lora tuning for all decoder models.]() 
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
