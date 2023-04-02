@@ -11,11 +11,25 @@
 [![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/03/29/ik03sC.png)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 
+<div align="center">
+<a target="_blank" href="https://colab.research.google.com/github/GoogleCloudPlatform/vertex-ai-samples/blob/main/notebooks/official/model_monitoring/model_monitoring.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+</div>
+
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
 <p align="center" width="100%">
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
+
+## Latest News
+* [2023-04-01] [Web service is online!](https://lmflow.com/)
+* [2023-04-01] [Release Chinese checkpoints in model zoo: Hu (湖羊), Dongshan (东山羊), and Hetian (和田羊).](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
+* [2023-04-01] [Release English checkpoints in model zoo: LLaMA7B-medical, LLaMA13B-medical, and LLaMA33B-medical.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
+* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#supported-models) 
+* [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
+* [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
 ## Model Performance
 
@@ -34,6 +48,21 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
 For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
+
+## Model Zoo
+We open-sourced the trained checkpoints to everyone for further training and inference.
+
+| Instruct-tuned Models   |  Status | Base Model | Download | 
+|----------|:-------------:|----------|:-------------:|
+| Hu (湖羊) | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
+| Dongshan (东山羊) | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
+| Hetian (和田羊) | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
+| Altay (阿勒泰羊) | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
+| LLaMA7B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-/view?usp=share_link) |
+| LLaMA13B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap/view?usp=share_link) |
+| LLaMA33B-medical | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM/view?usp=share_link) |
+| LLaMA65B-medical | ![training](https://geps.dev/progress/90) | LLaMA-65B | Google Drive |
+
 
 ## Supported Pipelines
 
@@ -244,6 +273,8 @@ Then you can check the model performance at our [Doc](https://optimalscale.githu
 Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
 
 ## Citation
+If you find this repository useful, please consider giving ⭐ and citing:
+
 ```
 @misc{lmflow,
   author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
@@ -254,6 +285,24 @@ Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for 
   howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
 }
 ```
+
+## Vision
+Hello there! We are excited to announce the upcoming release of our code repository that includes a complete LLM training process, enabling users to quickly build their own language models and train them effectively.
+
+Our code repository is not just a simple model; it includes the complete training workflow, model optimization, and testing tools. You can use it to build various types of language models, including conversation models, question-answering models, and text generation models, among others.
+
+Moreover, we aim to create an open and democratic LLM sharing platform where people can share their checkpoints and experiences to collectively improve the skills of the community. We welcome anyone who is interested in LLM to participate and join us in building an open and friendly community!
+
+Whether you are a beginner or an expert, we believe that you can benefit from this platform. Let's work together to build a vibrant and innovative LLM community!
+
+我们很高兴地宣布即将发布我们的代码存储库，其中包括了完整的 LLM 培训流程，能够快速、高效地训练和部署自己的语言模型。
+
+我们的代码库不仅仅是一个简单的模型； 它包括完整的训练工作流程、模型优化和测试工具。 您可以使用它来构建各种类型的语言模型，包括对话模型、问答模型和文本生成模型等。
+
+此外，我们旨在创建一个开放和民主的 LLM 共享平台，任何人都可以在这个平台上分享训练模型权重和经验。 我们欢迎任何对大模型感兴趣的人参与进来，与我们一起建设一个开放友好的社区！
+
+无论您是初学者还是专家，我们相信您都能从这个平台中获益。让我们共同努力，建立一个充满活力和创新的大模型社区！
+
 ## Disclaimer
 
 This package aims to provide a streamlined and user-friendly pipeline for large model tuning. Its functionalities serve as a reference and are intended for use by the user. However, it is important to note that the responsibility for the preparation of the data and pretrained models lies solely with the user. This package does not guarantee the accuracy, completeness, applicability, or legality of the components from the user's preparation. Users must be aware of and assume all risks and liabilities associated with the preparation of the models and data, and obtain legal, commercial, and technical advice before utilizing this package. The pipeline shall not be held responsible for any direct, indirect, special, incidental, or consequential damages resulting from the user's improper preparation of the data and pretrained models.   
