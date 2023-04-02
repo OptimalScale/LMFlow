@@ -25,8 +25,9 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 ## Latest News
 * [2023-04-01] [Web service is online!](https://lmflow.com/)
-* [2023-04-01] [Release Chinese model zoo: Hu (湖羊), Dongshan (东山羊), Hetian (和田羊), Altay (阿勒泰羊).]()
-* [2023-03-27] [Support full tuning and lora tuning for all decoder models.]() 
+* [2023-04-01] [Release Chinese checkpoints in model zoo: Hu (湖羊), Dongshan (东山羊), and Hetian (和田羊).](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
+* [2023-04-01] [Release English checkpoints in model zoo: LLaMA7B-medical, LLaMA13B-medical, and LLaMA33B-medical.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
+* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#supported-models) 
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
@@ -57,6 +58,10 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 | Dongshan (东山羊) | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
 | Hetian (和田羊) | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
 | Altay (阿勒泰羊) | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
+| LLaMA7B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-/view?usp=share_link) |
+| LLaMA13B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap/view?usp=share_link) |
+| LLaMA33B-medical | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM/view?usp=share_link) |
+| LLaMA65B-medical | ![training](https://geps.dev/progress/90) | LLaMA-65B | Google Drive |
 
 
 ## Supported Pipelines
