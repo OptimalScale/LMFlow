@@ -355,3 +355,16 @@ If you need any help, please submit a [Github](https://github.com/OptimalScale/L
   <img src="https://contrib.rocks/image?repo=OptimalScale/LMFlow" />
 </a>
 
+## Citation
+If you find this repository useful, please consider giving ⭐ and citing:
+
+```
+@misc{lmflow,
+  author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
+  title = {LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models},
+  year = {2023},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
+}
+```
