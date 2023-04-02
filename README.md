@@ -32,7 +32,7 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 
 ## Demos
 
-### Currently our checkpoint download service is at capacity (too many HTTP requests), we are allocating more servers to support that. Please wait for 2-3 hours and try again. Thanks for your understanding.:pray:
+### Currently our checkpoint download service is at capacity. We have allocated one more server to support that. If you encounter error "_too many HTTP requests_", please wait for several minutes and try again. Thanks for your understanding.:pray:
 
 We provide four kinds of demos which include
 - Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA-7B and LLaMA-33B for you to have a try.
