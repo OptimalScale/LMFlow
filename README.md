@@ -21,6 +21,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
+
 ## Latest News
 * [2023-04-01] [Web service is online!](https://lmflow.com/)
 * [2023-04-01] [Release Chinese checkpoints in model zoo: Hu (湖羊), Dongshan (东山羊), and Hetian (和田羊).](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
@@ -28,6 +29,25 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 * [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#supported-models) 
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
+
+## Demos
+
+### [![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
+
+<p align="center" width="100%">
+<img src="assets/colab-shell-chatbot-demo.png">
+</p>
+
+We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
+Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
+unsatisfactory responses. To improve the performance, users can use their own
+dataset to finetune and obtain a better model with LMFlow. One can also try
+other available decoder-only models provided in
+[huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
+
+```sh
+./scripts/run_chatbot.sh {another-model-name}
+```
 
 ## Model Performance
 
