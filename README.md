@@ -10,8 +10,6 @@
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
 [![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/02/iHtF23.png)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
-[![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
-
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
@@ -331,17 +329,3 @@ If you need any help, please submit a [Github](https://github.com/OptimalScale/L
   <img src="https://contrib.rocks/image?repo=OptimalScale/LMFlow" />
 </a>
 
-
-## Citation
-If you find this repository useful, please consider giving ⭐ and citing:
-
-```
-@misc{lmflow,
-  author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
-  title = {LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models},
-  year = {2023},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
-}
-```
