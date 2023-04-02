@@ -10,6 +10,9 @@
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
 [![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/02/iHtF23.png)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
+<a target="_blank" href="https://colab.research.google.com/github/GoogleCloudPlatform/vertex-ai-samples/blob/main/notebooks/official/model_monitoring/model_monitoring.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
 
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
@@ -21,6 +24,7 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
+
 ## Latest News
 * [2023-04-02] [Web service is online!](https://lmflow.com/)
 * [2023-04-01] [Release Chinese checkpoints in model zoo: Hu (湖羊), Dongshan (东山羊), and Hetian (和田羊).](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
@@ -28,6 +32,25 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 * [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#supported-models) 
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
+
+## Demos
+
+### [![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
+
+<p align="center" width="100%">
+<img src="assets/colab-shell-chatbot-demo.png">
+</p>
+
+We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
+Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
+unsatisfactory responses. To improve the performance, users can use their own
+dataset to finetune and obtain a better model with LMFlow. One can also try
+other available decoder-only models provided in
+[huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
+
+```sh
+./scripts/run_chatbot.sh {another-model-name}
+```
 
 ## Model Performance
 
@@ -70,20 +93,17 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 | Instruction Tuning |  :white_check_mark: Supported |
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
-| Reinforced Tuning |  :wrench: Developing |
+| Alignment Tuning |  :wrench: Developing |
+
 
 
 ## Supported Models
-Seamlessly supported the models in 🤗 huggingface.
 
-| Models   |  Status | |  Models | Status | 
-|----------|:-------------:|----------|----------|:-------------:|
-| GPT2-large |  :white_check_mark: Tested | | Galactica-6.7B |  :wrench: Untested |
-| GPT2-xl |  :white_check_mark: Tested | | Galactica-30B |  :wrench: Untested |
-| GPT-Neo-1.3B |  :wrench: Untested | | LLaMA-7B |  :white_check_mark: Tested :star: |
-| GPT-Neo-2.7B |  :wrench: Untested | | LLaMA-13B |  :white_check_mark: Tested :star: |
-| GPT-Neox-20B |  :wrench: Untested | | LLaMA-33B |  :white_check_mark: Tested :star: |
-| Galactica-1.3B |  :white_check_mark: Tested | |LLaMA-65B |  :wrench: Untested |
+
+Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 huggingface. 
+LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
+
+
 
 ## 1.Setup
 ```bash
@@ -297,6 +317,8 @@ Whether you are a beginner or an expert, we believe that you can benefit from th
 ## Disclaimer
 
 This package aims to provide a streamlined and user-friendly pipeline for large model tuning. Its functionalities serve as a reference and are intended for use by the user. However, it is important to note that the responsibility for the preparation of the data and pretrained models lies solely with the user. This package does not guarantee the accuracy, completeness, applicability, or legality of the components from the user's preparation. Users must be aware of and assume all risks and liabilities associated with the preparation of the models and data, and obtain legal, commercial, and technical advice before utilizing this package. The pipeline shall not be held responsible for any direct, indirect, special, incidental, or consequential damages resulting from the user's improper preparation of the data and pretrained models.   
+
+Our checkpoints, which include both English and Chinese versions, are provided solely for research purposes. The training data contained within these checkpoints includes generated results from the ChatGPT language model. We do not endorse or encourage the distribution or usage of these checkpoints for commercial purposes. Users of these checkpoints are solely responsible for ensuring that they are used correctly and appropriately.
 
 It is also crucial to highlight that the results generated by the model are based on probabilistic models and not directly related to this pipeline. The accuracy, reliability, applicability, and legality of the results are not guaranteed by this pipeline. Therefore, users must also be aware of the risks and liabilities associated with the results and seek legal, commercial, and technical advice before relying on the model-generated outcomes. This pipeline shall not be accountable for any direct, indirect, special, incidental, or consequential damages resulting from the user's reliance on the model-generated results.
 
