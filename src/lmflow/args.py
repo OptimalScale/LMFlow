@@ -71,6 +71,10 @@ class ModelArguments:
     torch_dtype :  str
         a string representing the dtype to load the model under. If auto is
         passed, the dtype will be automatically derived from the model's weights.
+
+    use_ram_optimized_load : bool
+        a boolean indicating whether to use disk mapping when memory is not
+        enough.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -156,6 +160,10 @@ class ModelArguments:
     lora_dropout: float = field(
         default=0.1,
         metadata={"help": "The dropout rate in lora.linear."},
+    )
+    use_ram_optimized_load: bool = field(
+        default=True,
+        metadata={"help": "Whether use disk mapping when memory is not enough."}
     )
 
     def __post_init__(self):
