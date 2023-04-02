@@ -39,7 +39,7 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 <img src="assets/colab-shell-chatbot-demo.png">
 </p>
 
-Welcome to visit our [web service]((https://lmflow.com/)). We deploy Hu (湖羊), and Hetian (和田羊) online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot service by yourself easily.
+> Welcome to visit our [web service](https://lmflow.com/). We deploy Hu (湖羊), and Hetian (和田羊) online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot service by yourself easily.
 
 We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
 Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
