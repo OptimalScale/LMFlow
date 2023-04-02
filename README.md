@@ -288,6 +288,24 @@ If you find this repository useful, please consider giving ⭐ and citing:
   howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
 }
 ```
+
+## Vision
+Hello there! We are excited to announce the upcoming release of our code repository that includes a complete LLM training process, enabling users to quickly build their own language models and train them effectively.
+
+Our code repository is not just a simple model; it includes the complete training workflow, model optimization, and testing tools. You can use it to build various types of language models, including conversation models, question-answering models, and text generation models, among others.
+
+Moreover, we aim to create an open and democratic LLM sharing platform where people can share their checkpoints and experiences to collectively improve the skills of the community. We welcome anyone who is interested in LLM to participate and join us in building an open and friendly community!
+
+Whether you are a beginner or an expert, we believe that you can benefit from this platform. Let's work together to build a vibrant and innovative LLM community!
+
+我们很高兴地宣布即将发布我们的代码存储库，其中包括了完整的 LLM 培训流程，能够快速、高效地训练和部署自己的语言模型。
+
+我们的代码库不仅仅是一个简单的模型； 它包括完整的训练工作流程、模型优化和测试工具。 您可以使用它来构建各种类型的语言模型，包括对话模型、问答模型和文本生成模型等。
+
+此外，我们旨在创建一个开放和民主的 LLM 共享平台，任何人都可以在这个平台上分享训练模型权重和经验。 我们欢迎任何对大模型感兴趣的人参与进来，与我们一起建设一个开放友好的社区！
+
+无论您是初学者还是专家，我们相信您都能从这个平台中获益。让我们共同努力，建立一个充满活力和创新的大模型社区！
+
 ## Disclaimer
 
 This package aims to provide a streamlined and user-friendly pipeline for large model tuning. Its functionalities serve as a reference and are intended for use by the user. However, it is important to note that the responsibility for the preparation of the data and pretrained models lies solely with the user. This package does not guarantee the accuracy, completeness, applicability, or legality of the components from the user's preparation. Users must be aware of and assume all risks and liabilities associated with the preparation of the models and data, and obtain legal, commercial, and technical advice before utilizing this package. The pipeline shall not be held responsible for any direct, indirect, special, incidental, or consequential damages resulting from the user's improper preparation of the data and pretrained models.   
