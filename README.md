@@ -13,8 +13,8 @@
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
-Large Language Model for All. See our [vision](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#vision).
-共建大模型社区，让每个人都能训得起大模型。查看我们的[愿景](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#vision)。
+Large Language Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vision).
+共建大模型社区，让每个人都能训得起大模型。查看我们的[愿景](https://github.com/OptimalScale/LMFlow#vision)。
 
 <p align="center" width="100%">
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
@@ -23,9 +23,9 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 
 ## Latest News
 * [2023-04-02] [Web service is online!](https://lmflow.com/)
-* [2023-04-01] [Release Chinese checkpoints in model zoo: Hu (湖羊), Dongshan (东山羊), and Hetian (和田羊).](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
-* [2023-04-01] [Release English checkpoints in model zoo: LLaMA7B-medical, LLaMA13B-medical, and LLaMA33B-medical.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
-* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#supported-models) 
+* [2023-04-01] [Release Chinese checkpoints in model zoo: Hu (湖羊), Dongshan (东山羊), and Hetian (和田羊).](https://github.com/OptimalScale/LMFlow#model-zoo)
+* [2023-04-01] [Release English checkpoints in model zoo: LLaMA7B-medical, LLaMA13B-medical, and LLaMA33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
+* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models) 
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
