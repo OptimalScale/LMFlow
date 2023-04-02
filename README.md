@@ -34,13 +34,25 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
 ## Demos
+We provide four kinds of demos which include
+- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA-7B and LLaMA-33B for you to have a try.
+- Colab Chatbot(shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
+- Colab Chatbot(web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
+- Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
 
-### [![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
 
+[![Code License](https://img.shields.io/badge/Online%20Service-Web-green.svg)](https://lmflow.com)
+[![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
+[![colab badge](https://img.shields.io/badge/Colab-(web)%20%20chatbot:%20gpt--neo-blue?logo=google-colab&amp)](https://colab.research.google.com/drive/1LLtiiQO-ZIIFsTKxYzGWYX9BDRc-v8dq?usp=sharing)
+
+
+### Online Service
+You can directly access our webpage via the badge above and click the `Begin user LMFlow` button to start a chat with our chatbot.
+
+### Colab chatbot(shell)
 <p align="center" width="100%">
 <img src="assets/colab-shell-chatbot-demo.png">
 </p>
-
 We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
 Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
 unsatisfactory responses. To improve the performance, users can use their own
@@ -50,6 +62,18 @@ other available decoder-only models provided in
 
 ```sh
 ./scripts/run_chatbot.sh {another-model-name}
+```
+### Colab chatbot(web)
+We provide a simple web demo of chatbot with Google Colab's T4/P100/V100 GPU.
+Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
+unsatisfactory responses. 
+
+
+### Local Deploy
+If you have resources and want to deploy your own model locally. We provide you an easy way to run a flask server to launch a backend (to further provide services to other frontend) and an interactive web frontend (to let you communicate directly) by 
+```sh
+cd ./service
+python app.py
 ```
 
 ## Model Performance
