@@ -7,8 +7,8 @@
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-orange.svg)](https://optimalscale.github.io/LMFlow/)
-[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/NcMPyDVP)
-[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/03/29/ik03sC.png)
+[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
+[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/02/iHtF23.png)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 
 
@@ -22,7 +22,7 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 </p>
 
 ## Latest News
-* [2023-04-01] [Web service is online!](https://lmflow.com/)
+* [2023-04-02] [Web service is online!](https://lmflow.com/)
 * [2023-04-01] [Release Chinese checkpoints in model zoo: Hu (湖羊), Dongshan (东山羊), and Hetian (和田羊).](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
 * [2023-04-01] [Release English checkpoints in model zoo: LLaMA7B-medical, LLaMA13B-medical, and LLaMA33B-medical.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#model-zoo)
 * [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow/tree/shizhe-update-readme4#supported-models) 
@@ -290,8 +290,8 @@ Whether you are a beginner or an expert, we believe that you can benefit from th
 
 无论您是初学者还是专家，我们相信大家都能从这个平台中获益。让我们共同努力，建立一个充满活力和创新的大模型社区！
 
-[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/NcMPyDVP)
-[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/03/29/ik03sC.png)
+[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
+[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/02/iHtF23.png)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 
 ## Disclaimer
