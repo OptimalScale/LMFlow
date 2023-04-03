@@ -7,20 +7,90 @@ function main() {
         echo "Example: bash $(basename $0) all"
     fi
 
-    if [ "$1" = "medical_ckpt" -o "$1" = "all" ]; then
-        echo "downloading medical_ckpt.tar.gz"
-        filename='medical_ckpt.tar.gz'
-        fileid='1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw'
-        wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/uc?export=download&id=${fileid}' -O- | sed -rn 's/.confirm=([0-9A-Za-z_]+)./\1\n/p')&id=${fileid}" -O ${filename} && rm -rf /tmp/cookies.txt
+    if [ "$1" = "llama7b-lora-medical" -o "$1" = "medical_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama7b-lora-medical.tar.gz"
+        filename='llama7b-lora-medical.tar.gz'
+        wget 144.214.54.164:5000/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
 
-    if [ "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
-        echo "downloading instruction_ckpt.tar.gz"
-        filename='instruction_ckpt.tar.gz'
-        fileid='1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO'
-        wget --load-cookies /tmp/cookies.txt "https://drive.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://drive.google.com/uc?export=download&id=${fileid}' -O- | sed -rn 's/.confirm=([0-9A-Za-z_]+)./\1\n/p')&id=${fileid}" -O ${filename} && rm -rf /tmp/cookies.txt
+    if [ "$1" = "llama13b-lora-medical" -o "$1" = "medical_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama13b-lora-medical.tar.gz"
+        filename='llama13b-lora-medical.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama30b-lora-medical" -o "$1" = "medical_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama30b-lora-medical.tar.gz"
+        filename='llama30b-lora-medical.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "gpt_neo2.7B_full_170k" -o "$1" = "gpt_ckpt" -o "$1" = "all" ]; then
+        echo "downloading gpt_neo2.7B_full_170k.tar.gz"
+        filename='gpt_neo2.7B_full_170k.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "gpt2_full_170k" -o "$1" = "gpt_ckpt" -o "$1" = "all" ]; then
+        echo "downloading gpt2_full_170k.tar.gz"
+        filename='gpt2_full_170k.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "gpt2_large_full_170k" -o "$1" = "gpt_ckpt" -o "$1" = "all" ]; then
+        echo "downloading gpt2_large_full_170k.tar.gz"
+        filename='gpt2_large_full_170k.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama7b-lora-170k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama7b-lora-170k.tar.gz"
+        filename='llama7b-lora-170k.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama7b-lora-380k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama7b-lora-380k.tar.gz"
+        filename='llama7b-lora-380k.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama13b-lora-170k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama13b-lora-170k.tar.gz"
+        filename='llama13b-lora-170k.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama13b-lora-380k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama13b-lora-380k.tar.gz"
+        filename='llama13b-lora-380k.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "llama30b-lora-170k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama30b-lora-170k.tar.gz"
+        filename='llama30b-lora-170k.tar.gz'
+        wget 144.214.54.164:5000/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi

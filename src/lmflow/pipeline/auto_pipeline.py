@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # coding=utf-8
-"""Return Finetuner or Inferencer pipeline automatically.
+"""Return a pipeline automatically based on its name.
 """
 
 from lmflow.pipeline.finetuner import Finetuner
+from lmflow.pipeline.evaluator import Evaluator
 from lmflow.pipeline.inferencer import Inferencer
 
 
 PIPELINE_MAPPING = {
     "finetuner": Finetuner,
+    "evaluator": Evaluator,
     "inferencer": Inferencer,
 }
 
 
 class AutoPipeline:
     """ 
-    The class designed to return Finetuner or Inferencer pipeline automatically.
+    The class designed to return a pipeline automatically based on its name.
     """
     @classmethod
     def get_pipeline(self,

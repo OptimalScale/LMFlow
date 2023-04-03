@@ -20,7 +20,7 @@ if os.path.exists(req_path):
 readme_path = os.path.join(folder, "README.md")
 readme_contents = ""
 if os.path.exists(readme_path):
-  with open(readme_path) as fp:
+  with open(readme_path, encoding='utf-8') as fp:
     readme_contents = fp.read().strip()
 
 setup(
