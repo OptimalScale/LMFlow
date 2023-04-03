@@ -60,8 +60,9 @@ docker run \
 ```
 
 Then you will be able to work inside the docker, just like in a physical
-machine. We have setup the dependency for you, so you can directly run our
-scripts, e.g.
+machine. Notice that to use multiple gpus, you need to allocate enough
+shared memory. We have setup the dependency for you, so you can directly
+run our scripts, e.g.
 
 ```
 ./scripts/run_chatbot.sh
