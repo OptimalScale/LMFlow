@@ -243,8 +243,8 @@ CUDA_VISIBLE_DEVICES=0 \
     deepspeed examples/evaluate.py \
     --answer_type medmcqa \
     --model_name_or_path gpt2-large \
-    --test_file data/MedQA-USMLE/validation/valid_1273.json \
-    --deepspeed examples/ds_config.json \
+    --dataset_path data/MedQA-USMLE/validation \
+    --deepspeed examples/ds_config.json
 ```
 To load the finetuned model, specify `--model_name_or_path` with the saved
 model checkpoint directory path.
@@ -280,7 +280,8 @@ CUDA_VISIBLE_DEVICES=0 \
     --answer_type text \
     --model_name_or_path ${llama-hf-path}/llama-7b-hf \
     --lora_model_path output_models/${llama-model-diff-path} \
-    --test_file data/alpaca/test/test_252.json \
+    --dataset_path data/alpaca/test \
+    --prompt_structure "Input: {input}" \
     --deepspeed examples/ds_config.json
 ```
 You can now evaluate with the finetuned llama model.
