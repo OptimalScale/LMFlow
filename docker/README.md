@@ -40,7 +40,8 @@ Use the following command to pull our docker image.
 docker pull optimalscale/lmflow
 ```
 
-The working directory in docker is `/LMFlow`, where LMFlow (commit: fa0e66f94)
+The working directory in docker is `/LMFlow`, where LMFlow (commit:
+[fa0e66f94](https://github.com/OptimalScale/LMFlow/tree/fa0e66f94eb5b7bfd624afdf9826b054641e3373))
 is cloned and installed.  Use the following command to enter the docker
 container, where `./LMFlow/log/finetune` in the container will be mapped to
 `./output_dir/log/finetune` on the host machine. You may add more directory
