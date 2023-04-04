@@ -24,10 +24,7 @@
     <p>
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README.md">English</a> |
         <b>简体中文</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_ko.md">한국어</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_ja.md">日本語</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_hd.md">हिन्दी</a>
     <p>
 </h4>
 

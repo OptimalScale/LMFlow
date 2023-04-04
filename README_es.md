@@ -8,12 +8,14 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
+[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
 
-An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
-Large Language Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vision).
+Una caja de herramientas extensible, conveniente y eficiente para ajustar modelos de aprendizaje automático grandes, diseñada para ser fácil de usar, rápida, confiable y accesible para toda la comunidad.
+
+Modelo de Lenguaje Grande para Todos. Vea nuestra [visión](https://github.com/OptimalScale/LMFlow#vision).
+
 
 <p align="center" width="100%">
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
@@ -21,9 +23,9 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 
 <h4 align="center">
     <p>
-        <b>English</b> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">English</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
+        <b>Español</b> |
     <p>
 </h4>
 
@@ -53,32 +55,26 @@ We provide four kinds of demos which include
 
 
 ### Online Service
-> Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned, and LLaMA-33B-tuned online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot referto `Local Deploy`.
+> Bienvenido/a a nuestro [servicio web](https://lmflow.com/). Tenemos desplegado en línea el modelo LLaMA-7B-tuned y LLaMA-33B-tuned para su vista previa. Debido al alto tráfico del sitio web, a veces puede que falle en responder. También puedes desplegar el chatbot haciendo referencia a `Local Deploy`.
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
 <img src="assets/colab-shell-chatbot-demo.png">
 </p>
 
+Proporcionamos una demostración simple de la línea de comandos del chatbot con T4/P100/V100 GPU de Google Colab. Es importante tener en cuenta que el modelo gpt-neo-2.7b proporcionado es un modelo bastante débil, que solo admite inglés y a veces puede generar respuestas insatisfactorias. Para mejorar su rendimiento, los usuarios pueden utilizar sus propios conjuntos de datos para ajustar y obtener un modelo mejor con LMFlow. También se pueden probar otros modelos solo decodificadores disponibles en 🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads).
 
-We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
-Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
-unsatisfactory responses. To improve the performance, users can use their own
-dataset to finetune and obtain a better model with LMFlow. One can also try
-other available decoder-only models provided in
-🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
 
 ```sh
 ./scripts/run_chatbot.sh {another-model-name}
 ```
 ### Colab chatbot(web)
-We provide a simple web demo of chatbot with Google Colab's T4/P100/V100 GPU.
-Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
-unsatisfactory responses. 
+Proporcionamos una demostración web simple del chatbot con T4/P100/V100 GPU de Google Colab. Es importante tener en cuenta que el modelo gpt-neo-2.7b proporcionado es un modelo bastante débil, que solo admite inglés y a veces puede generar respuestas insatisfactorias.
+
 
 
 ### Local Deploy
-If you have resources and want to deploy your own model locally. We provide you an easy way to run a flask server to launch a backend (to further provide services to other frontend) and an interactive web frontend (to let you communicate directly) by 
+Si tienes recursos y quieres desplegar tu propio modelo localmente, te proporcionamos una forma sencilla de ejecutar un servidor Flask para lanzar la parte trasera (para proporcionar servicios adicionales a otras partes delantera) y una interfaz web interactiva (para permitirte comunicarte directamente) mediante:
 ```sh
 cd ./service
 python app.py
@@ -99,11 +95,15 @@ python app.py
 |   Task-tuned LLaMA 7B (Full) |   **75.1**   |     44.5    |  49.9   | 56.5 |
 | Task-tuned LLaMA 33B (LoRA) |  74.0  |  51.3   | **50.2**|**58.5**|
 
-The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
-For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
+El rendimiento de LLaMA 33B (LoRA) se logra con solo **~16h** de ajuste fino en la división de entrenamiento de PubMedQA y MedMCQA con un único servidor 8 * A100. Para obtener más rendimiento, incluidos los resultados del ajuste de instrucciones, consulta nuestra [documentación](https://optimalscale.github.io/LMFlow/).
+
+
+
+
+
 
 ## Model Zoo
-We open-sourced the trained checkpoints to everyone for further training and inference.
+Hemos hecho públicos los checkpoints entrenados para que todos puedan utilizarlos para un mayor entrenamiento e inferencia.
 
 | Instruct-tuned Models   |  Status | Base Model | Download | 
 |----------|:-------------:|----------|:-------------:|
@@ -127,15 +127,9 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 | Large Model Inference |  :white_check_mark: Supported |
 | Alignment Tuning |  :wrench: Developing |
 
-
-
 ## Supported Models
 
-
-Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 huggingface. 
-LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
-
-
+Ofrecemos soporte para todos los modelos [decodificadores](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) en 🤗 huggingface. Hemos probado completamente LLaMA, GPT2, GPT-Neo, Galactica. Pronto también ofreceremos soporte para modelos codificadores.
 
 ## 1.Setup
 ```bash
@@ -148,14 +142,14 @@ pip install -e .
 ```
 
 ## 2.Prepare Dataset
-You can easily download the example training dataset and test dataset by running 
+Puedes descargar fácilmente los conjuntos de datos de entrenamiento y prueba de ejemplo ejecutando:
 ```bash
 cd data
 bash download.sh all
 cd -
 ``` 
 
-You can also use your own dataset by simply convert to the following format:
+También puedes utilizar tu propio conjunto de datos simplemente convirtiéndolo al siguiente formato:
 ```json
 {
   "type": "text2text",
@@ -182,27 +176,23 @@ You can also use your own dataset by simply convert to the following format:
 ## 3. Run Scripts
 ### 3.1 Run Finetuning
 
-You can run `scripts/run_finetune.sh` to finetune a GPT-2 base model
+Puedes ejecutar `scripts/run_finetune.sh` para ajustar finamente un modelo base GPT-2.
 ```sh
 ./scripts/run_finetune.sh
 ```
 
-If you would like to provide arguments for deepspeed to reflect your machine
-settings, you may pass the corresponding deepspeed arguments to the script. For
-example,
+Si deseas proporcionar argumentos para DeepSpeed que reflejen la configuración de tu máquina, puedes pasar los argumentos correspondientes a DeepSpeed al script. Por ejemplo:
 ```sh
 ./scripts/run_finetune.sh "--num_gpus=8 --master_port 10001"
 ```
 
-To enable LoRA finetuning, you may refer to
+Para habilitar el ajuste fino de LoRA, puedes consultar:
 ```sh
 ./scripts/run_finetune_with_lora.sh
 ```
 which can be run in similar manner.
 
-For detailed configurations, one may modify these scripts directly. These
-scripts actually just call python script `examples/finetune.py`, which can
-be run in following manner,
+Para obtener configuraciones detalladas, uno puede modificar estos scripts directamente. Estos scripts en realidad solo llaman al script de Python examples/finetune.py, que se puede ejecutar de la siguiente manera:
 
 ```sh
 deepspeed ${deepspeed_args} \
@@ -226,85 +216,57 @@ deepspeed ${deepspeed_args} \
     --save_steps 5000 \
     --dataloader_num_workers 1
 ```
-Here we set number of epochs `--num_train_epochs` to `0.01` so that the
-finetuning process can be finished quickly. If you wish to obtain a model with
-better performance, feel free to adjust those hyperparameters. You may run
+
 ```python
 python examples/finetune.py -h
 ```
-to view all possible finetuning arguments. The finetuned model checkpoint will
-be saved in the argument specified by `--output_dir`, which is
-`output_models/finetune` in the above example.
+
 ### 3.2 Run Evaluation
 
-One can directly run evaluation with an existing huggingface model, e.g. to run
-GPT2 large, one may execute
+Uno puede ejecutar la evaluación directamente con un modelo existente de Hugging Face, por ejemplo, para ejecutar GPT2 large, se puede ejecutar:
 ```sh
 ./scripts/run_evaluation.sh
 ```
-or run the corresponding python script
-```python
-CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/evaluate.py \
-    --answer_type medmcqa \
-    --model_name_or_path gpt2-large \
-    --dataset_path data/MedQA-USMLE/validation \
-    --deepspeed examples/ds_config.json
-```
-To load the finetuned model, specify `--model_name_or_path` with the saved
-model checkpoint directory path.
 
-For LoRA finetuned models, one may refer to
+Para modelos ajustados finamente con LoRA, uno puede consultar:
 ```sh
 ./scripts/run_evaluation_with_lora.sh
 ```
 
-Those scripts invoke the examples `examples/*.py` built based on our APIs. For
-more API-related examples, one may refer to the methods in the unittest
 `tests`.
+Esos scripts invocan los ejemplos `examples/*.py` construidos sobre nuestras APIs. Para obtener más ejemplos relacionados con las APIs, uno puede consultar los métodos en el unittest `tests`.
+
 
 ## 4. Additional Notes
 ### 4.1 LLaMA Checkpoint
 
-1. First, you need to get the access of LLaMA model from [facebookresearch/llama](https://github.com/facebookresearch/llama). Download the official checkpoints and save them into `${llama-path}`.
+1. Primero, necesitas obtener el acceso al modelo LLaMA desde [facebookresearch/llama](https://github.com/facebookresearch/llama). Descarga los checkpoints oficiales y guárdalos en ${llama-path}.
 
-2. Second, convert the official checkpoints `${llama-path}` to HuggingFace supported checkpoints `${llama-hf-path}` by running
+2. Segundo, convierte los checkpoints oficiales `${llama-path}` a checkpoints compatibles con HuggingFace $`${llama-hf-path}` ejecutando:
 
     `python ./scripts/convert_llama_weights_to_hf.py --input_dir ${llama-path} --model_size 7B --output_dir ${llama-hf-path}/llama-7b-hf`
 
-3. Then you are good to go by setting the checkpoint path to `${llama-hf-path}/llama-7b-hf`. Enjoy it!
+3. ¡Listo! Ahora puedes establecer la ruta del checkpoint en `${llama-hf-path}/llama-7b-hf`. ¡Disfrútalo!
 
-4. (optional) Now you have the original llama-7b-hf pretrained model. With
-```sh
-cd output_models && ./download.sh all && cd -
-```
-You can obtain the model difference finetuned by ours. By a way similar to `./scripts/run_evaluation_with_lora.sh`,
-```sh
-CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/evaluate.py \
-    --answer_type text \
-    --model_name_or_path ${llama-hf-path}/llama-7b-hf \
-    --lora_model_path output_models/${llama-model-diff-path} \
-    --dataset_path data/alpaca/test \
-    --prompt_structure "Input: {input}" \
-    --deepspeed examples/ds_config.json
-```
-You can now evaluate with the finetuned llama model.
 
 ### 4.2 DeepSpeed Config
-You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
+
+Puedes configurar DeepSpeed en configs. Los detalles se pueden consultar en [Configuración de DeepSpeed](https://www.deepspeed.ai/docs/config-json/).
+
+
+
 
 ## 5. Model Release
 
 ### 5.1 Medical Model Checkpoints
-You can run following script to download our medical model checkpoints :
+Puedes ejecutar el siguiente script para descargar los checkpoints de nuestro modelo médico::
 
 ```bash
 cd output_models
 bash download.sh medical_ckpt
 cd -
 ```
-You can also directly download our model via google drive link : [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
+También puedes descargar directamente nuestro modelo a través del enlace de Google Drive: [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
 
 ### 5.2 Instruction Model Checkpoints
 Similarly, you can run following script to download our instruction model checkpoints :
@@ -314,37 +276,38 @@ bash download.sh instruction_ckpt
 cd -
 ```
 
-You can also directly download our model via google drive link : [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
+Por supuesto, ¿podrías proporcionarme el enlace de Google Drive para que pueda ayudarte a descargar el modelo directamente: [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
 
 ### 5.3 Begin Reproduce
+Después de descargar los checkpoints del modelo, puedes reemplazar `--lora_model_path` con `output_models/instruction_ckpt/llama7b-lora` (ejemplo para llama-7b para instrucciones) y reemplazar `--model_name_or_path` con tu modelo LLaMA convertido dentro de `LMFlow/scripts/run_evaluation_with_lora.sh` y ejecutar este script de shell para reproducir el resultado.
 
-After downloading the model checkpoints. You can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
+Luego puedes verificar el rendimiento del modelo en nuestra [documentación](https://optimalscale.github.io/LMFlow/).
 
-Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
 
 ## Documentation
-Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
+Por favor, consulta nuestra [documentación](https://optimalscale.github.io/LMFlow/) para obtener más referencias a la API y resultados experimentales.
+
 
 ## Vision
-Hello there! We are excited to announce the upcoming release of our code repository that includes a complete LLM training process, enabling users to quickly build their own language models and train them effectively.
+¡Hola! ¡Estamos emocionados de anunciar el próximo lanzamiento de nuestro repositorio de código que incluye un proceso completo de entrenamiento de LLM, permitiendo a los usuarios construir rápidamente sus propios modelos de lenguaje y entrenarlos de manera efectiva!
 
-Our code repository is not just a simple model; it includes the complete training workflow, model optimization, and testing tools. You can use it to build various types of language models, including conversation models, question-answering models, and text generation models, among others.
+Nuestro repositorio de código no es solo un modelo simple; incluye todo el flujo de trabajo de entrenamiento, optimización de modelo y herramientas de prueba. Puedes usarlo para construir varios tipos de modelos de lenguaje, incluyendo modelos de conversación, modelos de pregunta-respuesta y modelos de generación de texto, entre otros.
 
-Moreover, we aim to create an open and democratic LLM sharing platform where people can share their checkpoints and experiences to collectively improve the skills of the community. We welcome anyone who is interested in LLM to participate and join us in building an open and friendly community!
+Además, nuestro objetivo es crear una plataforma abierta y democrática de intercambio de LLM donde las personas puedan compartir sus checkpoints y experiencias para mejorar colectivamente las habilidades de la comunidad. ¡Damos la bienvenida a cualquier persona interesada en LLM a participar y unirse a nosotros en la construcción de una comunidad abierta y amigable!
 
-Whether you are a beginner or an expert, we believe that you can benefit from this platform. Let's work together to build a vibrant and innovative LLM community!
+Ya seas principiante o experto, creemos que puedes beneficiarte de esta plataforma. ¡Trabajemos juntos para construir una comunidad vibrante e innovadora de LLM!
 
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 [![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
 
+
 ## Disclaimer
+Este paquete tiene como objetivo proporcionar un flujo de trabajo optimizado y fácil de usar para el ajuste de modelos grandes. Sus funcionalidades sirven como referencia y están destinadas a ser utilizadas por el usuario. Sin embargo, es importante tener en cuenta que la responsabilidad por la preparación de los datos y modelos pre-entrenados recae únicamente en el usuario. Este paquete no garantiza la precisión, integridad, aplicabilidad o legalidad de los componentes provenientes de la preparación del usuario. Los usuarios deben ser conscientes y asumir todos los riesgos y responsabilidades asociados con la preparación de los modelos y datos, y obtener asesoramiento legal, comercial y técnico antes de utilizar este paquete. El flujo de trabajo no será responsable de ningún daño directo, indirecto, especial, incidental o consecuente resultante de la preparación indebida de los datos y modelos pre-entrenados por parte del usuario.
 
-This package aims to provide a streamlined and user-friendly pipeline for large model tuning. Its functionalities serve as a reference and are intended for use by the user. However, it is important to note that the responsibility for the preparation of the data and pretrained models lies solely with the user. This package does not guarantee the accuracy, completeness, applicability, or legality of the components from the user's preparation. Users must be aware of and assume all risks and liabilities associated with the preparation of the models and data, and obtain legal, commercial, and technical advice before utilizing this package. The pipeline shall not be held responsible for any direct, indirect, special, incidental, or consequential damages resulting from the user's improper preparation of the data and pretrained models.   
+Nuestros checkpoints, que incluyen versiones en inglés y chino, se proporcionan únicamente con fines de investigación. Los datos de entrenamiento contenidos en estos checkpoints incluyen resultados generados a partir del modelo de lenguaje ChatGPT. No respaldamos ni fomentamos la distribución o uso de estos checkpoints con fines comerciales. Los usuarios de estos checkpoints son responsables únicamente de garantizar que se utilicen correctamente y de forma apropiada.
 
-Our checkpoints, which include both English and Chinese versions, are provided solely for research purposes. The training data contained within these checkpoints includes generated results from the ChatGPT language model. We do not endorse or encourage the distribution or usage of these checkpoints for commercial purposes. Users of these checkpoints are solely responsible for ensuring that they are used correctly and appropriately.
-
-It is also crucial to highlight that the results generated by the model are based on probabilistic models and not directly related to this pipeline. The accuracy, reliability, applicability, and legality of the results are not guaranteed by this pipeline. Therefore, users must also be aware of the risks and liabilities associated with the results and seek legal, commercial, and technical advice before relying on the model-generated outcomes. This pipeline shall not be accountable for any direct, indirect, special, incidental, or consequential damages resulting from the user's reliance on the model-generated results.
+También es crucial destacar que los resultados generados por el modelo se basan en modelos probabilísticos y no están directamente relacionados con este paquete. La precisión, confiabilidad, aplicabilidad y legalidad de los resultados no están garantizados por este paquete. Por lo tanto, los usuarios también deben ser conscientes de los riesgos y responsabilidades asociados con los resultados y buscar asesoramiento legal, comercial y técnico antes de confiar en los resultados generados por el modelo. Este paquete no será responsable de ningún daño directo, indirecto, especial, incidental o consecuente resultante de la dependencia de los resultados generados por el modelo por parte del usuario.
 
 ## Support
 
@@ -356,7 +319,7 @@ If you need any help, please submit a [Github](https://github.com/OptimalScale/L
 </a>
 
 ## Citation
-If you find this repository useful, please consider giving ⭐ and citing:
+Si encuentras este repositorio útil, por favor considera darle ⭐ y citarlo:
 
 ```
 @misc{lmflow,
@@ -368,3 +331,5 @@ If you find this repository useful, please consider giving ⭐ and citing:
   howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
 }
 ```
+
+
