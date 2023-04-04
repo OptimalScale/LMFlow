@@ -22,9 +22,9 @@
 
 <h4 align="center">
     <p>
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README.md">English</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README.md">English</a> |
         <b>简体中文</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
     <p>
 </h4>
 

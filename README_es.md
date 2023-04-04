@@ -23,8 +23,8 @@ Modelo de Lenguaje Grande para Todos. Vea nuestra [visión](https://github.com/O
 
 <h4 align="center">
     <p>
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">English</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">English</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_zh-hans.md">简体中文</a> |
         <b>Español</b> |
     <p>
 </h4>

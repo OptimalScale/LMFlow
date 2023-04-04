@@ -22,8 +22,8 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 <h4 align="center">
     <p>
         <b>English</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_zh-hans.md">简体中文</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
     <p>
 </h4>
 
