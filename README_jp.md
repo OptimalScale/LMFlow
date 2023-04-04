@@ -13,6 +13,8 @@
     <p>
 </h4>
 
+日文版はChatGPTによって翻訳されました。もし間違いがあれば、contributorに修正していただけると幸いです。また、英語版と内容に差異がある場合は、英語版を優先してください。
+
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
@@ -30,13 +32,12 @@
 
 
 ## Latest News
-* [2023-04-02] [Webサービスがオンラインです！](https://lmflow.com/)
-* [2023-04-01] [モデル・ズー内に中国語のチェックポイントをリリースしました：LLaMA-7B-tuned、LLaMA-13B-tuned、LLaMA-33B-tuned。](https://github.com/OptimalScale/LMFlow#model-zoo)
-* [2023-04-01] [モデル・ズー内に英語のチェックポイントをリリースしました：LLaMA-7B-medical、LLaMA-13B-medical、およびLLaMA-33B-medical。](https://github.com/OptimalScale/LMFlow#model-zoo)
-* [2023-03-27] [全てのデコーダー・モデルに対して、フルチューニングとローラチューニングをサポートしています。](https://github.com/OptimalScale/LMFlow#supported-models) 
-* [2023-03-27] [医療領域においてタスクに特化されたモデルがChatGPTを上回りました。](https://github.com/OptimalScale/LMFlow#model-performance)
-* [2023-03-27] [コードとチェックポイントをリリースしました - バージョン0.0.1](https://optimalscale.github.io/LMFlow/)
-
+* [2023-04-02] [Web service is online!](https://lmflow.com/)
+* [2023-04-01] [Release Chinese checkpoints in model zoo: LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
+* [2023-04-01] [Release English checkpoints in model zoo: LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
+* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models) 
+* [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
+* [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
 ## Demos
 
