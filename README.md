@@ -9,7 +9,6 @@
         <b>English</b> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_zh-hans.md">简体中文</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_jp.md">日本語</a> |
     <p>
 </h4>
 
@@ -140,9 +139,6 @@ LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder
 
 
 ## 1.Setup
-
-Our package has been full tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested. 
-
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
