@@ -39,12 +39,12 @@
 
 ## Demos
 
-### 当前我们的检查点下载服务已满负荷。我们增加了一个服务器来支持该服务。如果您遇到“太多HTTP请求”的错误，请等待几分钟后再试。谢谢您的理解。
+### 当前我们的检查点下载服务已满负荷。我们增加了一个服务器来支持该服务。如果您遇到"_too many HTTP requests_"的错误，请等待几分钟后再试。谢谢您的理解。
 
 我们提供四种演示，包括：
 - 在线服务：如果您不想运行任何代码，只是想尝试我们的模型，我们部署了调整指令的LLaMA-7B和LLaMA-33B供您尝试。
-- Colab Chatbot(shell)：一个基于交互式shell的聊天机器人，让您可以轻松在Colab上部署聊天机器人。
-- Colab Chatbot(web)：一个基于交互式Web的聊天机器人，让您可以轻松在Colab上部署自己的聊天机器人。
+- Colab Chatbot (shell)：一个基于交互式shell的聊天机器人，让您可以轻松在Colab上部署聊天机器人。
+- Colab Chatbot (web)：一个基于交互式Web的聊天机器人，让您可以轻松在Colab上部署自己的聊天机器人。
 - 本地部署：我们还提供一种方式，让您可以在本地部署模型/聊天机器人，这意味着如果您有足够的资源，您可以部署比前三种方法更大的模型。
 
 
@@ -55,7 +55,7 @@
 
 
 ### Online Service
->欢迎访问我们的[网络服务](https://lmflow.com/)。我们在线部署了经过LLaMA-7B和LLaMA-33B调整指令的模型进行预览。由于网站访问量较高，有时网站可能无法响应。您也可以参考“本地部署”来部署聊天机器人。
+>欢迎访问我们的[在线演示](https://lmflow.com/)。我们部署了经过LLaMA-7B和LLaMA-33B调整指令的模型进行预览。由于网站访问量较高，有时网站可能无法响应。您也可以参考“本地部署”来部署自己的聊天机器人。
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
@@ -63,13 +63,13 @@
 </p>
 
 
-我们提供了一个使用Google Colab的T4/P100/V100 GPU的聊天机器人简单shell演示。请注意，提供的gpt-neo-2.7b模型是相对较弱的模型，仅支持英文，并且有时会生成不理想的响应。为了改善性能，用户可以使用自己的数据集进行微调，并使用LMFlow获得更好的模型。也可以尝试其他可用的仅解码器模型。
+我们提供了一个使用Google Colab的T4/P100/V100 GPU的聊天机器人简单shell演示。请注意，提供的gpt-neo-2.7b模型是相对较弱的模型，仅支持英文，并且有时会生成不理想的响应。为了改善性能，用户可以使用自己的数据集进行微调，并使用LMFlow获得更好的模型。也可以尝试其他可用的仅解码器（decoder only）模型。
 🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
 
 ```sh
 ./scripts/run_chatbot.sh {another-model-name}
 ```
-### Colab chatbot(web)
+### Colab chatbot (web)
 我们提供了一个使用Google Colab的T4/P100/V100 GPU的聊天机器人简单web演示。请注意，提供的gpt-neo-2.7b模型是相对较弱的模型，仅支持英文，并且有时会生成不理想的响应。
 
 
@@ -126,7 +126,7 @@ LLaMA 33B（LoRA）的性能仅经过约16小时的微调，即可在PubMedQA和
 
 ## Supported Models
 
-我们完美支持🤗 huggingface中的所有[decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)，包括LLaMA、GPT2、GPT-Neo和Galactica等，均已进行了全面测试。我们很快将支持编码器模型。
+我们支持🤗 huggingface中的所有[decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)，包括LLaMA、GPT2、GPT-Neo和Galactica等，均已进行了全面测试。我们很快将支持编码器（encoder-decoder）模型。
 
 
 
@@ -264,7 +264,7 @@ cd output_models
 bash download.sh medical_ckpt
 cd -
 ```
-您可以直接通过谷歌云盘下载我们的模型: [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
+您可以直接通过Google Drive下载我们的模型: [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
 
 ### 5.2 Instruction Model Checkpoints
 ```bash
@@ -272,10 +272,10 @@ cd output_models
 bash download.sh instruction_ckpt
 cd -
 ```
-您可以直接通过谷歌云盘下载我们的模型: [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
+您可以直接通过Google Drive下载我们的模型: [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
 
 ### 5.3 Begin Reproduce
-在下载了模型检查点之后，您可以在`LMFlow/scripts/run_evaluation_with_lora.sh`中将`--lora_model_path`替换为`output_models/instruction_ckpt/llama7b-lora`（以instruction的llama-7b为例），并将--model_name_or_path替换为您转换的llama模型。然后运行这个shell脚本以重现结果。
+在下载了模型Checkpoints之后，您可以在`LMFlow/scripts/run_evaluation_with_lora.sh`中将`--lora_model_path`替换为`output_models/instruction_ckpt/llama7b-lora`（以instruction的llama-7b为例），并将--model_name_or_path替换为您转换的llama模型。然后运行这个shell脚本以重现结果。
 
 然后，您可以在我们的文档中检查模型性能。
 
