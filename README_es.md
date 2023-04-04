@@ -12,6 +12,8 @@
     <p>
 </h4>
 
+La versión en español fue traducida por ChatGPT, si hay algún error, bienvenido sea al contributor para corregirlo, gracias. Al mismo tiempo, si hay alguna diferencia o inconsistencia en el contenido con la versión en inglés, se debe considerar la versión en inglés como la correcta.
+
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
