@@ -41,13 +41,14 @@ Modelo de Lenguaje Grande para Todos. Vea nuestra [visión](https://github.com/O
 
 ## Demos
 
-### Currently our checkpoint download service is at capacity. We have allocated one more server to support that. If you encounter error "_too many HTTP requests_", please wait for several minutes and try again. Thanks for your understanding.:pray:
+### Actualmente, nuestro servicio de descarga de checkpoints está en capacidad máxima. Hemos asignado un servidor adicional para apoyar esto. Si encuentras el error "demasiadas solicitudes HTTP", por favor espera varios minutos e intenta nuevamente. Gracias por tu comprensión. :pray:
 
-We provide four kinds of demos which include
-- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA-7B and LLaMA-33B for you to have a try.
-- Colab Chatbot(shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
-- Colab Chatbot(web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
-- Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
+Ofrecemos cuatro tipos de demostraciones que incluyen:
+
+- Servicio en línea: Si no deseas ejecutar ningún código y simplemente quieres probar nuestros modelos, implementamos nuestros LLaMA-7B y LLaMA-33B ajustados con instrucciones para que puedas probarlos.
+- Chatbot Colab (shell): Un chatbot interactivo basado en shell para que puedas implementar fácilmente un chatbot en Colab.
+- Chatbot Colab (web): Un chatbot interactivo basado en web para que puedas implementar fácilmente tu propio chatbot en Colab.
+- Implementación local: También ofrecemos una forma de implementar tu modelo/chatbot localmente, lo que significa que puedes implementar un modelo mucho más grande que los tres métodos anteriores si tienes suficientes recursos.
 
 
 [![Code License](https://img.shields.io/badge/Online%20Service-Web-green.svg)](https://lmflow.com)
@@ -97,10 +98,6 @@ python app.py
 | Task-tuned LLaMA 33B (LoRA) |  74.0  |  51.3   | **50.2**|**58.5**|
 
 El rendimiento de LLaMA 33B (LoRA) se logra con solo **~16h** de ajuste fino en la división de entrenamiento de PubMedQA y MedMCQA con un único servidor 8 * A100. Para obtener más rendimiento, incluidos los resultados del ajuste de instrucciones, consulta nuestra [documentación](https://optimalscale.github.io/LMFlow/).
-
-
-
-
 
 
 ## Model Zoo
