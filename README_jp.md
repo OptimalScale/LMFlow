@@ -9,7 +9,7 @@
         <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">English</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_zh-hans.md">简体中文</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
-        <b>日本語</b> |
+        <b>日本語</b>
     <p>
 </h4>
 
