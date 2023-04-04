@@ -4,6 +4,14 @@
 
 # LMFlow
 
+<h4 align="center">
+    <p>
+        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README.md">English</a> |
+        <b>简体中文</b> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
+    <p>
+</h4>
+
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
@@ -20,13 +28,6 @@
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
-<h4 align="center">
-    <p>
-        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README.md">English</a> |
-        <b>简体中文</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
-    <p>
-</h4>
 
 ## Latest News
 * [2023-04-02] [Web service is online!](https://lmflow.com/)
