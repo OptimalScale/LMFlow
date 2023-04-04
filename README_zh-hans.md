@@ -11,9 +11,10 @@
 [![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 
-An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
+一个可扩展、方便和高效的工具箱，用于微调大型机器学习模型。我们的目标是开发一套用户友好、快速可靠，并对整个社区开放的全流程微调代码库。
 
-Large Language Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vision).
+所有人的大语言模型。请查看我们的[愿景](https://github.com/OptimalScale/LMFlow#vision)
+
 
 <p align="center" width="100%">
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
@@ -21,8 +22,8 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 
 <h4 align="center">
     <p>
-        <b>English</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README.md">English</a> |
+        <b>简体中文</b> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_ko.md">한국어</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_ja.md">日本語</a> |
@@ -38,16 +39,15 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
-
 ## Demos
 
-### Currently our checkpoint download service is at capacity. We have allocated one more server to support that. If you encounter error "_too many HTTP requests_", please wait for several minutes and try again. Thanks for your understanding.:pray:
+### 当前我们的检查点下载服务已满负荷。我们增加了一个服务器来支持该服务。如果您遇到“太多HTTP请求”的错误，请等待几分钟后再试。谢谢您的理解。
 
-We provide four kinds of demos which include
-- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA-7B and LLaMA-33B for you to have a try.
-- Colab Chatbot(shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
-- Colab Chatbot(web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
-- Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
+我们提供四种演示，包括：
+- 在线服务：如果您不想运行任何代码，只是想尝试我们的模型，我们部署了调整指令的LLaMA-7B和LLaMA-33B供您尝试。
+- Colab Chatbot(shell)：一个基于交互式shell的聊天机器人，让您可以轻松在Colab上部署聊天机器人。
+- Colab Chatbot(web)：一个基于交互式Web的聊天机器人，让您可以轻松在Colab上部署自己的聊天机器人。
+- 本地部署：我们还提供一种方式，让您可以在本地部署模型/聊天机器人，这意味着如果您有足够的资源，您可以部署比前三种方法更大的模型。
 
 
 [![Code License](https://img.shields.io/badge/Online%20Service-Web-green.svg)](https://lmflow.com)
@@ -55,8 +55,9 @@ We provide four kinds of demos which include
 [![colab badge](https://img.shields.io/badge/Colab-(web)%20%20chatbot:%20gpt--neo-blue?logo=google-colab&amp)](https://colab.research.google.com/drive/1LLtiiQO-ZIIFsTKxYzGWYX9BDRc-v8dq?usp=sharing)
 
 
+
 ### Online Service
-> Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned, and LLaMA-33B-tuned online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot referto `Local Deploy`.
+>欢迎访问我们的[网络服务](https://lmflow.com/)。我们在线部署了经过LLaMA-7B和LLaMA-33B调整指令的模型进行预览。由于网站访问量较高，有时网站可能无法响应。您也可以参考“本地部署”来部署聊天机器人。
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
@@ -64,24 +65,18 @@ We provide four kinds of demos which include
 </p>
 
 
-We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
-Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
-unsatisfactory responses. To improve the performance, users can use their own
-dataset to finetune and obtain a better model with LMFlow. One can also try
-other available decoder-only models provided in
+我们提供了一个使用Google Colab的T4/P100/V100 GPU的聊天机器人简单shell演示。请注意，提供的gpt-neo-2.7b模型是相对较弱的模型，仅支持英文，并且有时会生成不理想的响应。为了改善性能，用户可以使用自己的数据集进行微调，并使用LMFlow获得更好的模型。也可以尝试其他可用的仅解码器模型。
 🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
 
 ```sh
 ./scripts/run_chatbot.sh {another-model-name}
 ```
 ### Colab chatbot(web)
-We provide a simple web demo of chatbot with Google Colab's T4/P100/V100 GPU.
-Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
-unsatisfactory responses. 
+我们提供了一个使用Google Colab的T4/P100/V100 GPU的聊天机器人简单web演示。请注意，提供的gpt-neo-2.7b模型是相对较弱的模型，仅支持英文，并且有时会生成不理想的响应。
 
 
 ### Local Deploy
-If you have resources and want to deploy your own model locally. We provide you an easy way to run a flask server to launch a backend (to further provide services to other frontend) and an interactive web frontend (to let you communicate directly) by 
+如果您有资源并想在本地部署自己的模型，我们为您提供了一种简单的方法，可以通过以下方式运行一个Flask服务器来启动后端（以进一步向其他前端提供服务），并提供一个交互式Web前端（让您直接开始聊天）：
 ```sh
 cd ./service
 python app.py
@@ -102,11 +97,10 @@ python app.py
 |   Task-tuned LLaMA 7B (Full) |   **75.1**   |     44.5    |  49.9   | 56.5 |
 | Task-tuned LLaMA 33B (LoRA) |  74.0  |  51.3   | **50.2**|**58.5**|
 
-The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
-For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
+LLaMA 33B（LoRA）的性能仅经过约16小时的微调，即可在PubMedQA和MedMCQA的训练集上使用单个8 * A100服务器实现。要了解更多性能信息，包括指令微调结果，请参考我们的[Documentation](https://optimalscale.github.io/LMFlow/)
 
 ## Model Zoo
-We open-sourced the trained checkpoints to everyone for further training and inference.
+我们将训练好的检查点开源给所有人进行进一步的训练和推理。
 
 | Instruct-tuned Models   |  Status | Base Model | Download | 
 |----------|:-------------:|----------|:-------------:|
@@ -134,9 +128,7 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 
 ## Supported Models
 
-
-Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 huggingface. 
-LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
+我们完美支持🤗 huggingface中的所有[decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)，包括LLaMA、GPT2、GPT-Neo和Galactica等，均已进行了全面测试。我们很快将支持编码器模型。
 
 
 
@@ -151,14 +143,14 @@ pip install -e .
 ```
 
 ## 2.Prepare Dataset
-You can easily download the example training dataset and test dataset by running 
+您可以通过以下指令下载训练数据集和测试数据集:
 ```bash
 cd data
 bash download.sh all
 cd -
 ``` 
 
-You can also use your own dataset by simply convert to the following format:
+您也可以将您的数据转换成以下格式来使用自己的数据集:
 ```json
 {
   "type": "text2text",
@@ -185,27 +177,22 @@ You can also use your own dataset by simply convert to the following format:
 ## 3. Run Scripts
 ### 3.1 Run Finetuning
 
-You can run `scripts/run_finetune.sh` to finetune a GPT-2 base model
+您可以通过运行 `scripts/run_finetune.sh` 来微调一个GPT-2的模型
 ```sh
 ./scripts/run_finetune.sh
 ```
 
-If you would like to provide arguments for deepspeed to reflect your machine
-settings, you may pass the corresponding deepspeed arguments to the script. For
-example,
+如果您想要提供反映您机器设置的deepspeed参数，可以将相应的deepspeed参数传递给脚本。例如：
 ```sh
 ./scripts/run_finetune.sh "--num_gpus=8 --master_port 10001"
 ```
 
-To enable LoRA finetuning, you may refer to
+为了开启LoRA的训练，您可以参考:
 ```sh
 ./scripts/run_finetune_with_lora.sh
 ```
-which can be run in similar manner.
 
-For detailed configurations, one may modify these scripts directly. These
-scripts actually just call python script `examples/finetune.py`, which can
-be run in following manner,
+如果需要详细的配置，可以直接修改这些脚本。这些脚本实际上只是调用了python脚本`examples/finetune.py`，该脚本可以按以下方式运行：
 
 ```sh
 deepspeed ${deepspeed_args} \
@@ -229,114 +216,75 @@ deepspeed ${deepspeed_args} \
     --save_steps 5000 \
     --dataloader_num_workers 1
 ```
-Here we set number of epochs `--num_train_epochs` to `0.01` so that the
-finetuning process can be finished quickly. If you wish to obtain a model with
-better performance, feel free to adjust those hyperparameters. You may run
+
 ```python
 python examples/finetune.py -h
 ```
-to view all possible finetuning arguments. The finetuned model checkpoint will
-be saved in the argument specified by `--output_dir`, which is
-`output_models/finetune` in the above example.
+
 ### 3.2 Run Evaluation
 
-One can directly run evaluation with an existing huggingface model, e.g. to run
-GPT2 large, one may execute
+大家可以通过以下方式来对训练好的模型进行测评:
 ```sh
 ./scripts/run_evaluation.sh
 ```
-or run the corresponding python script
-```python
-CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/evaluate.py \
-    --answer_type medmcqa \
-    --model_name_or_path gpt2-large \
-    --dataset_path data/MedQA-USMLE/validation \
-    --deepspeed examples/ds_config.json
-```
-To load the finetuned model, specify `--model_name_or_path` with the saved
-model checkpoint directory path.
 
-For LoRA finetuned models, one may refer to
+`--model_name_or_path` 指定了模型存储的位置。
+
+对于LoRA模型的测评，执行以下指令:
 ```sh
 ./scripts/run_evaluation_with_lora.sh
 ```
 
-Those scripts invoke the examples `examples/*.py` built based on our APIs. For
-more API-related examples, one may refer to the methods in the unittest
-`tests`.
+这些脚本调用了基于我们API构建的示例`examples/*.py`。要获取更多与API相关的示例，可以参考单元测试中的方法`tests`.
+
+
 
 ## 4. Additional Notes
 ### 4.1 LLaMA Checkpoint
 
-1. First, you need to get the access of LLaMA model from [facebookresearch/llama](https://github.com/facebookresearch/llama). Download the official checkpoints and save them into `${llama-path}`.
+首先，您需要从[facebookresearch/llama](https://github.com/facebookresearch/llama)获取LLaMA模型的访问权限。下载官方检查点并将其保存到`${llama-path}`中。
 
-2. Second, convert the official checkpoints `${llama-path}` to HuggingFace supported checkpoints `${llama-hf-path}` by running
+其次，通过运行以下命令将官方检查点`${llama-path}`转换为HuggingFace支持的检查点`${llama-hf-path}`：
 
     `python ./scripts/convert_llama_weights_to_hf.py --input_dir ${llama-path} --model_size 7B --output_dir ${llama-hf-path}/llama-7b-hf`
 
-3. Then you are good to go by setting the checkpoint path to `${llama-hf-path}/llama-7b-hf`. Enjoy it!
+然后，将检查点路径设置为`${llama-hf-path}/llama-7b-hf`即可开始使用。祝您使用愉快！
 
-4. (optional) Now you have the original llama-7b-hf pretrained model. With
-```sh
-cd output_models && ./download.sh all && cd -
-```
-You can obtain the model difference finetuned by ours. By a way similar to `./scripts/run_evaluation_with_lora.sh`,
-```sh
-CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/evaluate.py \
-    --answer_type text \
-    --model_name_or_path ${llama-hf-path}/llama-7b-hf \
-    --lora_model_path output_models/${llama-model-diff-path} \
-    --dataset_path data/alpaca/test \
-    --prompt_structure "Input: {input}" \
-    --deepspeed examples/ds_config.json
-```
-You can now evaluate with the finetuned llama model.
+现在，您已经拥有了原始的llama-7b-hf预训练模型。
+
 
 ### 4.2 DeepSpeed Config
-You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
+您可以在config文件夹下设置DeepSpeed的config，具体可以参考 [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
 
 ## 5. Model Release
 
 ### 5.1 Medical Model Checkpoints
-You can run following script to download our medical model checkpoints :
+您可以运行以下脚本来下载我们的权重:
 
 ```bash
 cd output_models
 bash download.sh medical_ckpt
 cd -
 ```
-You can also directly download our model via google drive link : [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
+您可以直接通过谷歌云盘下载我们的模型: [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
 
 ### 5.2 Instruction Model Checkpoints
-Similarly, you can run following script to download our instruction model checkpoints :
 ```bash
 cd output_models
 bash download.sh instruction_ckpt
 cd -
 ```
-
-You can also directly download our model via google drive link : [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
+您可以直接通过谷歌云盘下载我们的模型: [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
 
 ### 5.3 Begin Reproduce
+在下载了模型检查点之后，您可以在`LMFlow/scripts/run_evaluation_with_lora.sh`中将`--lora_model_path`替换为`output_models/instruction_ckpt/llama7b-lora`（以instruction的llama-7b为例），并将--model_name_or_path替换为您转换的llama模型。然后运行这个shell脚本以重现结果。
 
-After downloading the model checkpoints. You can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
-
-Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
+然后，您可以在我们的文档中检查模型性能。
 
 ## Documentation
-Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
+请参考我们的[Documentation](https://optimalscale.github.io/LMFlow/)获取更多API参考和实验结果信息。
 
 ## Vision
-Hello there! We are excited to announce the upcoming release of our code repository that includes a complete LLM training process, enabling users to quickly build their own language models and train them effectively.
-
-Our code repository is not just a simple model; it includes the complete training workflow, model optimization, and testing tools. You can use it to build various types of language models, including conversation models, question-answering models, and text generation models, among others.
-
-Moreover, we aim to create an open and democratic LLM sharing platform where people can share their checkpoints and experiences to collectively improve the skills of the community. We welcome anyone who is interested in LLM to participate and join us in building an open and friendly community!
-
-Whether you are a beginner or an expert, we believe that you can benefit from this platform. Let's work together to build a vibrant and innovative LLM community!
-
 我们很高兴地开源LMFlow代码库，其中包括了完整的大模型训练流程，能够快速、高效地训练和部署自己的语言模型。
 
 我们的代码库不仅仅是一个简单的模型； 它包括完整的训练流程、模型权重和测试工具。 您可以使用它来构建各种类型的语言模型，包括对话模型、问答模型和文本生成模型等。
@@ -351,15 +299,15 @@ Whether you are a beginner or an expert, we believe that you can benefit from th
 
 ## Disclaimer
 
-This package aims to provide a streamlined and user-friendly pipeline for large model tuning. Its functionalities serve as a reference and are intended for use by the user. However, it is important to note that the responsibility for the preparation of the data and pretrained models lies solely with the user. This package does not guarantee the accuracy, completeness, applicability, or legality of the components from the user's preparation. Users must be aware of and assume all risks and liabilities associated with the preparation of the models and data, and obtain legal, commercial, and technical advice before utilizing this package. The pipeline shall not be held responsible for any direct, indirect, special, incidental, or consequential damages resulting from the user's improper preparation of the data and pretrained models.   
+此软件包旨在为大型模型调整提供简化和用户友好的流程。其功能可作为用户参考并供用户使用。然而，需要注意的是，数据和预训练模型的准备工作完全由用户负责。本软件包不保证用户准备组件的准确性、完整性、适用性或合法性。用户必须了解并承担与模型和数据准备相关的所有风险和责任，并在使用本软件包之前获取法律、商业和技术建议。该流程不应对用户不当准备数据和预训练模型所导致的任何直接、间接、特殊、偶然或后果性损害负责。
 
-Our checkpoints, which include both English and Chinese versions, are provided solely for research purposes. The training data contained within these checkpoints includes generated results from the ChatGPT language model. We do not endorse or encourage the distribution or usage of these checkpoints for commercial purposes. Users of these checkpoints are solely responsible for ensuring that they are used correctly and appropriately.
+我们提供的检查点仅供研究目的使用，包括英文和中文版本。这些检查点包含ChatGPT语言模型生成的结果。我们不支持或鼓励将这些检查点用于商业目的的分发或使用。这些检查点的用户应当负责确保正确和适当地使用它们。
 
-It is also crucial to highlight that the results generated by the model are based on probabilistic models and not directly related to this pipeline. The accuracy, reliability, applicability, and legality of the results are not guaranteed by this pipeline. Therefore, users must also be aware of the risks and liabilities associated with the results and seek legal, commercial, and technical advice before relying on the model-generated outcomes. This pipeline shall not be accountable for any direct, indirect, special, incidental, or consequential damages resulting from the user's reliance on the model-generated results.
+还需要强调的是，模型生成的结果是基于概率模型，与此流程没有直接关系。本流程不保证结果的准确性、可靠性、适用性和合法性。因此，在依赖模型生成的结果之前，用户还必须了解与结果相关的风险和责任，并寻求法律、商业和技术建议。该流程不应对用户依赖模型生成的结果所导致的任何直接、间接、特殊、偶然或后果性损害负责。
 
 ## Support
+如果您需要任何帮助，请提交[Github](https://github.com/OptimalScale/LMFlow)问题。
 
-If you need any help, please submit a [Github](https://github.com/OptimalScale/LMFlow) issue.
 
 ## Contributors
 <a href="https://github.com/OptimalScale/LMFlow/graphs/contributors">
@@ -367,7 +315,7 @@ If you need any help, please submit a [Github](https://github.com/OptimalScale/L
 </a>
 
 ## Citation
-If you find this repository useful, please consider giving ⭐ and citing:
+如果您觉得我们的软件包有用，欢迎点赞⭐、fork、转发和引用。谢谢大家的支持！
 
 ```
 @misc{lmflow,
