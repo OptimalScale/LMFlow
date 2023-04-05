@@ -199,7 +199,7 @@ class Finetuner(BaseTuner):
         model_args = self.model_args
         data_args = self.data_args
         finetuner_args = self.finetuner_args
-
+        model.get_tokenizer().save_pretrained(finetuner_args.output_dir)
         train_dataset = lm_dataset.get_backend_dataset()
 
         if finetuner_args.do_train:
@@ -236,7 +236,6 @@ class Finetuner(BaseTuner):
             else:
                 if model_args.save_aggregated_lora:
                     model.get_backend_model().merge_and_unload()
-                    model.get_tokenizer().save_pretrained(finetuner_args.output_dir)
                     model.backend_model_full.save_pretrained(finetuner_args.output_dir)
                     #trainer.save_model() 
                 else:
