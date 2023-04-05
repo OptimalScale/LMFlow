@@ -21,8 +21,10 @@ ds_config_path = "../examples/ds_config.json"
 with open (ds_config_path, "r") as f:
     ds_config = json.load(f)
 
-model_name_or_path = '../output_models/gpt_neo2.7B_inst_tuning/'
-# model_name_or_path = "gpt2"
+# NOTE: No need to download gpt neo now
+# model_name_or_path = '../output_models/gpt_neo2.7B_inst_tuning/'
+# NOTE: Directly donwload the checkpoint from hf
+model_name_or_path = "OptimalScale/gpt-neo2.7B-inst-tuning"
 # lora_path = '../output_models/instruction_ckpt/llama7b-lora/'
 model_args = ModelArguments(model_name_or_path=model_name_or_path)
 

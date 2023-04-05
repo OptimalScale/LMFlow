@@ -182,9 +182,37 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         elif tune_strategy == 'none':
             dschf = HfDeepSpeedConfig(ds_config)
-            self.backend_model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path)
-            self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
             peft_model_id = model_args.lora_model_path
+
+            if model_args.use_ram_optimized_load and peft_model_id is None:
+                try:
+                    # RAM-optimized load
+                    self.backend_model = AutoModelForCausalLM.from_pretrained(
+                        model_args.model_name_or_path,
+                        device_map="auto",
+                        offload_folder="offload",
+                        offload_state_dict=True,
+                    )
+                except:
+                    logger.warning(
+                        "Failed to use RAM optimized load. Automatically"
+                        " use original load instead."
+                    )
+                    # Normal load
+                    self.backend_model = AutoModelForCausalLM.from_pretrained(
+                        model_args.model_name_or_path,
+                    )
+            else:
+                if peft_model_id is not None:
+                    logger.warning(
+                        "LoRA does not support RAM optimized load currently."
+                        " Automatically use original load instead."
+                    )
+                self.backend_model = AutoModelForCausalLM.from_pretrained(
+                    model_args.model_name_or_path,
+                )
+
+            self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id

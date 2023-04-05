@@ -9,3 +9,5 @@ sentencepiece
 icetk==0.0.7
 cpm_kernels==1.0.11
 transformers @ git+https://github.com/huggingface/transformers@c612628
+flask
+flask_cors

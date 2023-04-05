@@ -4,20 +4,89 @@
 
 # LMFlow
 
+<h4 align="center">
+    <p>
+        <b>English</b> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_jp.md">日本語</a>
+    <p>
+</h4>
+
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
-[![Doc](https://img.shields.io/badge/Website-Doc-orange.svg)](https://optimalscale.github.io/LMFlow/)
-[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/NcMPyDVP)
-[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/03/29/ik03sC.png)
+[![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
+[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
+
+Large Language Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vision).
 
 <p align="center" width="100%">
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
-## Model Performance
+
+## Latest News
+* [2023-04-02] [Web service is online!](https://lmflow.com/)
+* [2023-04-01] [Release Chinese checkpoints in model zoo: LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
+* [2023-04-01] [Release English checkpoints in model zoo: LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
+* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models) 
+* [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
+* [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
+
+
+## Demos
+
+### Currently our checkpoint download service is at capacity. We have allocated one more server to support that. If you encounter error "_too many HTTP requests_", please wait for several minutes and try again. Thanks for your understanding.:pray:
+
+We provide four kinds of demos which include
+- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA-7B and LLaMA-33B for you to have a try.
+- Colab Chatbot (shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
+- Colab Chatbot (web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
+- Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
+
+
+[![Code License](https://img.shields.io/badge/Online%20Service-Web-green.svg)](https://lmflow.com)
+[![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
+[![colab badge](https://img.shields.io/badge/Colab-(web)%20%20chatbot:%20gpt--neo-blue?logo=google-colab&amp)](https://colab.research.google.com/drive/1LLtiiQO-ZIIFsTKxYzGWYX9BDRc-v8dq?usp=sharing)
+
+
+### Online Service
+> Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned, and LLaMA-33B-tuned online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot referto `Local Deploy`.
+
+### Colab chatbot(shell)
+<p align="center" width="100%">
+<img src="assets/colab-shell-chatbot-demo.png">
+</p>
+
+
+We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
+Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
+unsatisfactory responses. To improve the performance, users can use their own
+dataset to finetune and obtain a better model with LMFlow. One can also try
+other available decoder-only models provided in
+🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
+
+```sh
+./scripts/run_chatbot.sh {another-model-name}
+```
+### Colab chatbot(web)
+We provide a simple web demo of chatbot with Google Colab's T4/P100/V100 GPU.
+Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
+unsatisfactory responses. 
+
+
+### Local Deploy
+If you have resources and want to deploy your own model locally. We provide you an easy way to run a flask server to launch a backend (to further provide services to other frontend) and an interactive web frontend (to let you communicate directly) by 
+```sh
+cd ./service
+python app.py
+```
+
+## Medical Performance
 
 |                |  PubMedQA (ID) | MedQA-USMLE (OOD) | MedMCQA (ID) |  Average |
 |:---------:|:--------:|:-----------:|:-------:|:----:|
@@ -35,6 +104,21 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
 For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
 
+## Model Zoo
+We open-sourced the trained checkpoints to everyone for further training and inference.
+
+| Instruct-tuned Models   |  Status | Base Model | Download | 
+|----------|:-------------:|----------|:-------------:|
+| LLaMA-7B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
+| LLaMA-13B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
+| LLaMA-33B-tuned | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
+| LLaMA-65B-tuned | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
+| LLaMA7B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-/view?usp=share_link) |
+| LLaMA13B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap/view?usp=share_link) |
+| LLaMA33B-medical | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM/view?usp=share_link) |
+| LLaMA65B-medical | ![training](https://geps.dev/progress/90) | LLaMA-65B | Google Drive |
+
+
 ## Supported Pipelines
 
 | Pipelines   |   Status |
@@ -43,22 +127,22 @@ For more performance, including instruction tuning results, please refer to our 
 | Instruction Tuning |  :white_check_mark: Supported |
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
-| Reinforced Tuning |  :wrench: Developing |
+| Alignment Tuning |  :wrench: Developing |
+
 
 
 ## Supported Models
-Seamlessly supported the models in 🤗 huggingface.
 
-| Models   |  Status | |  Models | Status | 
-|----------|:-------------:|----------|----------|:-------------:|
-| GPT2-large |  :white_check_mark: Tested | | Galactica-6.7B |  :wrench: Untested |
-| GPT2-xl |  :white_check_mark: Tested | | Galactica-30B |  :wrench: Untested |
-| GPT-Neo-1.3B |  :wrench: Untested | | LLaMA-7B |  :white_check_mark: Tested :star: |
-| GPT-Neo-2.7B |  :wrench: Untested | | LLaMA-13B |  :white_check_mark: Tested :star: |
-| GPT-Neox-20B |  :wrench: Untested | | LLaMA-33B |  :white_check_mark: Tested :star: |
-| Galactica-1.3B |  :white_check_mark: Tested | |LLaMA-65B |  :wrench: Untested |
+
+Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 huggingface. 
+LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
+
+
 
 ## 1.Setup
+
+Our package has been full tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested. 
+
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
@@ -75,7 +159,6 @@ cd data
 bash download.sh all
 cd -
 ``` 
-If you cannot access Google Drive, you can download the data by [BaiduNetDisk](https://pan.baidu.com/s/1L7AC5Oy-3YhbCp2aNX4tnQ?pwd=dm2s).
 
 You can also use your own dataset by simply convert to the following format:
 ```json
@@ -170,8 +253,8 @@ CUDA_VISIBLE_DEVICES=0 \
     deepspeed examples/evaluate.py \
     --answer_type medmcqa \
     --model_name_or_path gpt2-large \
-    --test_file data/MedQA-USMLE/validation/valid_1273.json \
-    --deepspeed examples/ds_config.json \
+    --dataset_path data/MedQA-USMLE/validation \
+    --deepspeed examples/ds_config.json
 ```
 To load the finetuned model, specify `--model_name_or_path` with the saved
 model checkpoint directory path.
@@ -207,7 +290,8 @@ CUDA_VISIBLE_DEVICES=0 \
     --answer_type text \
     --model_name_or_path ${llama-hf-path}/llama-7b-hf \
     --lora_model_path output_models/${llama-model-diff-path} \
-    --test_file data/alpaca/test/test_252.json \
+    --dataset_path data/alpaca/test \
+    --prompt_structure "Input: {input}" \
     --deepspeed examples/ds_config.json
 ```
 You can now evaluate with the finetuned llama model.
@@ -246,7 +330,39 @@ Then you can check the model performance at our [Doc](https://optimalscale.githu
 ## Documentation
 Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
 
+## Vision
+Hello there! We are excited to announce the upcoming release of our code repository that includes a complete LLM training process, enabling users to quickly build their own language models and train them effectively.
+
+Our code repository is not just a simple model; it includes the complete training workflow, model optimization, and testing tools. You can use it to build various types of language models, including conversation models, question-answering models, and text generation models, among others.
+
+Moreover, we aim to create an open and democratic LLM sharing platform where people can share their checkpoints and experiences to collectively improve the skills of the community. We welcome anyone who is interested in LLM to participate and join us in building an open and friendly community!
+
+Whether you are a beginner or an expert, we believe that you can benefit from this platform. Let's work together to build a vibrant and innovative LLM community!
+
+[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
+[![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
+
+## Disclaimer
+
+This package aims to provide a streamlined and user-friendly pipeline for large model tuning. Its functionalities serve as a reference and are intended for use by the user. However, it is important to note that the responsibility for the preparation of the data and pretrained models lies solely with the user. This package does not guarantee the accuracy, completeness, applicability, or legality of the components from the user's preparation. Users must be aware of and assume all risks and liabilities associated with the preparation of the models and data, and obtain legal, commercial, and technical advice before utilizing this package. The pipeline shall not be held responsible for any direct, indirect, special, incidental, or consequential damages resulting from the user's improper preparation of the data and pretrained models.   
+
+Our checkpoints, which include both English and Chinese versions, are provided solely for research purposes. The training data contained within these checkpoints includes generated results from the ChatGPT language model. We do not endorse or encourage the distribution or usage of these checkpoints for commercial purposes. Users of these checkpoints are solely responsible for ensuring that they are used correctly and appropriately.
+
+It is also crucial to highlight that the results generated by the model are based on probabilistic models and not directly related to this pipeline. The accuracy, reliability, applicability, and legality of the results are not guaranteed by this pipeline. Therefore, users must also be aware of the risks and liabilities associated with the results and seek legal, commercial, and technical advice before relying on the model-generated outcomes. This pipeline shall not be accountable for any direct, indirect, special, incidental, or consequential damages resulting from the user's reliance on the model-generated results.
+
+## Support
+
+If you need any help, please submit a [Github](https://github.com/OptimalScale/LMFlow) issue.
+
+## Contributors
+<a href="https://github.com/OptimalScale/LMFlow/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=OptimalScale/LMFlow" />
+</a>
+
 ## Citation
+If you find this repository useful, please consider giving ⭐ and citing:
+
 ```
 @misc{lmflow,
   author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
@@ -257,15 +373,3 @@ Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for 
   howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
 }
 ```
-## Disclaimer
-
-This package aims to provide a streamlined and user-friendly pipeline for large model tuning. Its functionalities serve as a reference and are intended for use by the user. However, it is important to note that the responsibility for the preparation of the data and pretrained models lies solely with the user. This package does not guarantee the accuracy, completeness, applicability, or legality of the components from the user's preparation. Users must be aware of and assume all risks and liabilities associated with the preparation of the models and data, and obtain legal, commercial, and technical advice before utilizing this package. The pipeline shall not be held responsible for any direct, indirect, special, incidental, or consequential damages resulting from the user's improper preparation of the data and pretrained models.   
-
-It is also crucial to highlight that the results generated by the model are based on probabilistic models and not directly related to this pipeline. The accuracy, reliability, applicability, and legality of the results are not guaranteed by this pipeline. Therefore, users must also be aware of the risks and liabilities associated with the results and seek legal, commercial, and technical advice before relying on the model-generated outcomes. This pipeline shall not be accountable for any direct, indirect, special, incidental, or consequential damages resulting from the user's reliance on the model-generated results.
-
-## Support
-
-If you need any help, please submit a [Github](https://github.com/OptimalScale/LMFlow) issue.
-
-
-
