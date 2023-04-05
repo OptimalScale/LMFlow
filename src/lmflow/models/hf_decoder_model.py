@@ -162,7 +162,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
                     r=model_args.lora_r,
-                    target_modules=["q_proj","v_proj"],
+                    #target_modules=["q_proj","v_proj"],
                     lora_alpha=model_args.lora_alpha,
                     lora_dropout=model_args.lora_dropout
                 )
