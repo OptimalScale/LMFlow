@@ -158,6 +158,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 logger.info(f"Training new model from scratch - Total size={n_params/2**20:.2f}M params")
 
             if model_args.use_lora:
+                self.backend_model_full = model
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
