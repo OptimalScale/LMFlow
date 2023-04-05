@@ -269,8 +269,8 @@ class HFDecoderModel(DecoderModel, Tunable):
         # since this will be pickled to avoid _LazyModule error in Hasher force
         # logger loading before tokenize_function
         tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
-        if model_args.use_lora:
-            self.tokenizer.pad_token = 1
+        #if model_args.use_lora:
+        #    self.tokenizer.pad_token = 1
 
         def tokenize_function(examples):
             with CaptureLogger(tok_logger) as cl:
