@@ -20,7 +20,7 @@
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
 
 拡張性、利便性、効率性に優れた、大規模な機械学習モデルのファインチューニングに最適なツールボックスで、ユーザーフレンドリーで高速かつ信頼性があり、コミュニティ全体で利用可能な設計です。
 
@@ -320,7 +320,7 @@ cd -
 
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
 
 ## Disclaimer
 このパッケージは、大規模モデルの調整のための簡素化されたユーザーフレンドリーなパイプラインを提供することを目的としています。その機能はユーザーによって参照されることを意図しており、データと事前学習済みモデルの準備に関する責任はユーザーに完全にあります。このパッケージは、ユーザーの準備からのコンポーネントの正確性、完全性、適用性、および合法性を保証しません。ユーザーはモデルとデータの準備に関連するすべてのリスクと責任を認識し、本パッケージを利用する前に法的、商業的、および技術的なアドバイスを受ける必要があります。パイプラインは、ユーザーのデータと事前学習済みモデルの不適切な準備によって生じた直接的、間接的、特別な、付随的、または結果的な損害について責任を負いません。
