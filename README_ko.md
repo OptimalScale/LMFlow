@@ -9,10 +9,13 @@
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README.md">English</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_jp.md">日本語</a> ｜
-        <b>한국어</b> 
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_jp.md">日本語</a> |
+        <b>한국어</b> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_hindi.md">अंग्रेज़ी</a>
     <p>
 </h4>
+
+한국어 버전은 ChatGPT가 번역했습니다. 오류가 있으면 contributor가 수정할 수 있습니다. 감사합니다. 또한, 영어 버전과 내용이 다른 부분이 있으면 영어 버전을 따르십시오.
 
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)

@@ -163,7 +163,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
                     r=model_args.lora_r,
-                    #target_modules=["q_proj","v_proj"] if "llama" in model_args.model_name_or_path else None,
                     lora_alpha=model_args.lora_alpha,
                     lora_dropout=model_args.lora_dropout
                 )
@@ -308,7 +307,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         return tokenized_datasets
 
 
-    def encode(self, input: Union[str, List[str]], *args, **kwargs ) -> List[int]:
+    def encode(self, input: Union[str, List[str]], *args, **kwargs ) -> Union[List[int], List[List[int]]]:
         """
         Perform encoding process of the tokenizer.
     
@@ -328,10 +327,19 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The tokenized inputs.
         """
-        return self.tokenizer.encode(text=input, *args, **kwargs)
-    
+        if isinstance(input, list):
+            output = []
+            for single_input in input:
+                single_output = self.encode(single_input, *args, **kwargs)
+                output.append(single_output)
+            return output
+        elif isinstance(input, str):
+            return self.tokenizer.encode(text=input, *args, **kwargs)
+        else:
+            raise NotImplementedError(f'type "{type(input)}" cannot be encoded')
 
-    def decode(self, input, *args, **kwargs ) -> List[int]:
+
+    def decode(self, input, *args, **kwargs ) -> Union[str, List[str]]:
         """
         Perform decoding process of the tokenizer.
     
@@ -351,8 +359,16 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The text decoded from the token inputs.
         """
-        return self.tokenizer.decode(input, *args, **kwargs)
-    
+        if isinstance(input, list) and input and isinstance(input[0], list):
+            output = []
+            for single_input in input:
+                single_output = self.decode(single_input, *args, **kwargs)
+                output.append(single_output)
+            return output
+        else:
+            # Can be list of ints or a Tensor
+            return self.tokenizer.decode(input, *args, **kwargs)
+
 
     def inference(self, inputs, *args, **kwargs):
         """
