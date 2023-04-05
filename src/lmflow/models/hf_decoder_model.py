@@ -158,7 +158,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                 logger.info(f"Training new model from scratch - Total size={n_params/2**20:.2f}M params")
 
             if model_args.use_lora:
-                model.config.to_json_file("config.json") 
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
@@ -217,9 +216,11 @@ class HFDecoderModel(DecoderModel, Tunable):
 
             self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
             if peft_model_id is not None:
+                self.backend_model_full = self.backend_model
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
                 )
+
 
             deepspeed.init_distributed()
             self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
