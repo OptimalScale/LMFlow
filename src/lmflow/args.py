@@ -164,10 +164,10 @@ class ModelArguments:
     save_aggregated_lora: bool = field(
         default=False,
         metadata={"help": "Whether to save aggregated lora."},
+        )
     use_ram_optimized_load: bool = field(
         default=True,
         metadata={"help": "Whether use disk mapping when memory is not enough."}
-
     )
 
     def __post_init__(self):
