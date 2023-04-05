@@ -31,30 +31,6 @@ function main() {
         rm ${filename}
     fi
 
-    if [ "$1" = "gpt_neo2.7B_full_170k" -o "$1" = "gpt_ckpt" -o "$1" = "all" ]; then
-        echo "downloading gpt_neo2.7B_full_170k.tar.gz"
-        filename='gpt_neo2.7B_full_170k.tar.gz'
-        wget 144.214.54.164:5000/${filename}
-        tar zxvf ${filename}
-        rm ${filename}
-    fi
-
-    if [ "$1" = "gpt2_full_170k" -o "$1" = "gpt_ckpt" -o "$1" = "all" ]; then
-        echo "downloading gpt2_full_170k.tar.gz"
-        filename='gpt2_full_170k.tar.gz'
-        wget 144.214.54.164:5000/${filename}
-        tar zxvf ${filename}
-        rm ${filename}
-    fi
-
-    if [ "$1" = "gpt2_large_full_170k" -o "$1" = "gpt_ckpt" -o "$1" = "all" ]; then
-        echo "downloading gpt2_large_full_170k.tar.gz"
-        filename='gpt2_large_full_170k.tar.gz'
-        wget 144.214.54.164:5000/${filename}
-        tar zxvf ${filename}
-        rm ${filename}
-    fi
-
     if [ "$1" = "llama7b-lora-170k" -o "$1" = "instruction_ckpt" -o "$1" = "all" ]; then
         echo "downloading llama7b-lora-170k.tar.gz"
         filename='llama7b-lora-170k.tar.gz'

@@ -4,17 +4,25 @@
 
 # LMFlow
 
+<h4 align="center">
+    <p>
+        <b>English</b> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_jp.md">日本語</a>
+    <p>
+</h4>
+
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
-[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/02/iHolzw.jpeg)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
 Large Language Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vision).
-共建大模型社区，让每个人都能训得起大模型。查看我们的[愿景](https://github.com/OptimalScale/LMFlow#vision)。
 
 <p align="center" width="100%">
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
@@ -23,8 +31,8 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 
 ## Latest News
 * [2023-04-02] [Web service is online!](https://lmflow.com/)
-* [2023-04-01] [Release Chinese checkpoints in model zoo: Hu (湖羊), Dongshan (东山羊), and Hetian (和田羊).](https://github.com/OptimalScale/LMFlow#model-zoo)
-* [2023-04-01] [Release English checkpoints in model zoo: LLaMA7B-medical, LLaMA13B-medical, and LLaMA33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
+* [2023-04-01] [Release Chinese checkpoints in model zoo: LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
+* [2023-04-01] [Release English checkpoints in model zoo: LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
 * [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models) 
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
@@ -36,8 +44,8 @@ Large Language Model for All. See our [vision](https://github.com/OptimalScale/L
 
 We provide four kinds of demos which include
 - Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA-7B and LLaMA-33B for you to have a try.
-- Colab Chatbot(shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
-- Colab Chatbot(web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
+- Colab Chatbot (shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
+- Colab Chatbot (web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
 - Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
 
 
@@ -47,7 +55,7 @@ We provide four kinds of demos which include
 
 
 ### Online Service
-> Welcome to visit our [web service](https://lmflow.com/). We deploy Hu (湖羊), and Hetian (和田羊) online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot referto `Local Deploy`.
+> Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned, and LLaMA-33B-tuned online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot referto `Local Deploy`.
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
@@ -101,10 +109,10 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 
 | Instruct-tuned Models   |  Status | Base Model | Download | 
 |----------|:-------------:|----------|:-------------:|
-| Hu (湖羊) | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
-| Dongshan (东山羊) | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
-| Hetian (和田羊) | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
-| Altay (阿勒泰羊) | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
+| LLaMA-7B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
+| LLaMA-13B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
+| LLaMA-33B-tuned | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
+| LLaMA-65B-tuned | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
 | LLaMA7B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-/view?usp=share_link) |
 | LLaMA13B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap/view?usp=share_link) |
 | LLaMA33B-medical | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM/view?usp=share_link) |
@@ -132,6 +140,9 @@ LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder
 
 
 ## 1.Setup
+
+Our package has been full tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested. 
+
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
@@ -148,7 +159,6 @@ cd data
 bash download.sh all
 cd -
 ``` 
-If you cannot access Google Drive, you can download the data by [BaiduNetDisk](https://pan.baidu.com/s/1L7AC5Oy-3YhbCp2aNX4tnQ?pwd=dm2s).
 
 You can also use your own dataset by simply convert to the following format:
 ```json
@@ -243,8 +253,8 @@ CUDA_VISIBLE_DEVICES=0 \
     deepspeed examples/evaluate.py \
     --answer_type medmcqa \
     --model_name_or_path gpt2-large \
-    --test_file data/MedQA-USMLE/validation/valid_1273.json \
-    --deepspeed examples/ds_config.json \
+    --dataset_path data/MedQA-USMLE/validation \
+    --deepspeed examples/ds_config.json
 ```
 To load the finetuned model, specify `--model_name_or_path` with the saved
 model checkpoint directory path.
@@ -280,7 +290,8 @@ CUDA_VISIBLE_DEVICES=0 \
     --answer_type text \
     --model_name_or_path ${llama-hf-path}/llama-7b-hf \
     --lora_model_path output_models/${llama-model-diff-path} \
-    --test_file data/alpaca/test/test_252.json \
+    --dataset_path data/alpaca/test \
+    --prompt_structure "Input: {input}" \
     --deepspeed examples/ds_config.json
 ```
 You can now evaluate with the finetuned llama model.
@@ -328,17 +339,9 @@ Moreover, we aim to create an open and democratic LLM sharing platform where peo
 
 Whether you are a beginner or an expert, we believe that you can benefit from this platform. Let's work together to build a vibrant and innovative LLM community!
 
-我们很高兴地开源LMFlow代码库，其中包括了完整的大模型训练流程，能够快速、高效地训练和部署自己的语言模型。
-
-我们的代码库不仅仅是一个简单的模型； 它包括完整的训练流程、模型权重和测试工具。 您可以使用它来构建各种类型的语言模型，包括对话模型、问答模型和文本生成模型等。
-
-此外，我们旨在创建一个开放和民主的大模型共享平台，任何人都可以在这个平台上分享训练模型权重和经验。 我们欢迎任何对大模型感兴趣的人参与进来，与我们一起建设一个开放友好的社区！
-
-无论您是初学者还是专家，我们相信大家都能从这个平台中获益。让我们共同努力，建立一个充满活力和创新的大模型社区！
-
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
-[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/02/iHolzw.jpeg)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
 
 ## Disclaimer
 
