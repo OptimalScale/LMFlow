@@ -236,7 +236,7 @@ class Finetuner(BaseTuner):
             else:
                 if model_args.save_aggregated_lora:
                     model.get_backend_model().merge_and_unload()
-                    self.backend_model_full.save_pretrained(finetuner_args.output_dir)
+                    model.backend_model_full.save_pretrained(finetuner_args.output_dir)
                     #trainer.save_model() 
                 else:
                     model.get_backend_model().save_pretrained(finetuner_args.output_dir)
