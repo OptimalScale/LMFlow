@@ -8,7 +8,7 @@ if [ $# -ge 1 ]; then
   deepspeed_args="$1"
 fi
 
-exp_id=finetune_with_lora
+exp_id=finetune_with_lora_stage_2
 project_dir=$(cd "$(dirname $0)"/..; pwd)
 output_dir=${project_dir}/output_models/${exp_id}
 log_dir=${project_dir}/log/${exp_id}
@@ -19,7 +19,7 @@ mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
   examples/finetune.py \
-    --model_name_or_path facebook/galactica-1.3b \
+    --model_name_or_path ./output_models/finetune_with_lora \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --num_train_epochs 0.01 \
@@ -28,7 +28,7 @@ deepspeed ${deepspeed_args} \
     --per_device_train_batch_size 1 \
     --use_lora 1 \
     --lora_r 8 \
-    --save_aggregated_lora 0\
+    --save_aggregated_lora 1\
     --deepspeed configs/ds_config_zero2.json \
     --bf16 \
     --run_name finetune_with_lora \
