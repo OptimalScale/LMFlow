@@ -6,7 +6,7 @@
 
 <h4 align="center">
     <p>
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">English</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README.md">English</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
         <b>日本語</b>
