@@ -234,10 +234,11 @@ class Finetuner(BaseTuner):
             if not model_args.use_lora:
                 trainer.save_model()  # Saves the tokenizer too for easy upload
             else:
-                model.get_backend_model().save_pretrained(finetuner_args.output_dir)
                 if model_args.save_aggregated_lora:
                     model.get_backend_model().merge_and_unload()
                     trainer.save_model() 
+                else:
+                    model.get_backend_model().save_pretrained(finetuner_args.output_dir)
                 
 
             metrics = train_result.metrics
