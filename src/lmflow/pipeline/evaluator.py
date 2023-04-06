@@ -227,7 +227,6 @@ class Evaluator(BasePipeline):
         nlls = []
         prev_end_loc = 0
         for begin_loc in range(0, seq_len, stride):
-            print(begin_loc)
             end_loc = min(begin_loc + max_length, seq_len)
             trg_len = end_loc - prev_end_loc  # may be different from stride on last loop
             input_ids = encodings.input_ids[:, begin_loc:end_loc].to(device=self.local_rank)
@@ -243,8 +242,8 @@ class Evaluator(BasePipeline):
 
             nlls.append(neg_log_likelihood)
             prev_end_loc = end_loc
+            print(f"Evaluating PPL: {int(begin_loc/stride) + 1} / {int(seq_len/stride)} Complete, current ppl : {torch.exp(torch.stack(nlls).mean())}")
             if end_loc == seq_len:
                 break
-            print(f"begin_loc:{begin_loc}")
         ppl = torch.exp(torch.stack(nlls).mean())
-        print(f"ppl: {ppl}")
+        print(f"Final ppl: {ppl}")
