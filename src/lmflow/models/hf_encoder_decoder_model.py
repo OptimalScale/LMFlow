@@ -30,7 +30,6 @@ from peft import (
     get_peft_model,
     prepare_model_for_int8_training,
 )
-import nltk  # Here to have a nice missing dependency error message early on
 import torch
 import transformers
 from transformers.deepspeed import HfDeepSpeedConfig
@@ -40,6 +39,7 @@ from transformers.testing_utils import CaptureLogger
 from transformers import (
     CONFIG_MAPPING,
     AutoConfig,
+    AutoModel,
     AutoModelForSeq2SeqLM,
     AutoTokenizer,
     DataCollatorForSeq2Seq,
@@ -111,16 +111,6 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         self.model_args = model_args
 
         if tune_strategy == 'normal':
-            try:
-                nltk.data.find("tokenizers/punkt")
-            except (LookupError, OSError):
-                if is_offline_mode():
-                    raise LookupError(
-                        "Offline mode: run this script without TRANSFORMERS_OFFLINE first to download nltk data files"
-                    )
-                with FileLock(".lock") as lock:
-                    nltk.download("punkt", quiet=True)
-
             config_kwargs = {
                 "cache_dir": model_args.cache_dir,
                 "revision": model_args.model_revision,
@@ -252,8 +242,12 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
 
         elif tune_strategy == 'none':
             dschf = HfDeepSpeedConfig(ds_config)
-            self.backend_model = AutoModelForSeq2SeqLM.from_pretrained(model_args.model_name_or_path)
-            self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+            if model_args.model_name_or_path == 'THUDM/chatglm-6b':
+                self.backend_model = AutoModel.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
+                self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
+            else:
+                self.backend_model = AutoModelForSeq2SeqLM.from_pretrained(model_args.model_name_or_path)
+                self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
             peft_model_id = model_args.lora_model_path
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(

@@ -50,7 +50,7 @@ class Inferencer(BasePipeline):
         torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
         deepspeed.init_distributed()
 
-        self.config = AutoConfig.from_pretrained(model_args.model_name_or_path)
+        self.config = AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
         try: 
             self.model_hidden_size = self.config.hidden_size
         except:
