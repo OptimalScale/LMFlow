@@ -62,6 +62,14 @@ function main() {
         tar zxvf ${filename}
         rm ${filename}
     fi
+
+    if [ "$1" = "wikitext-2-raw-v1" -o "$1" = "all" ]; then
+        echo "downloading wikitext-2-raw-v1 dataset"
+        filename='wikitext-2-raw-v1.tar.gz'
+        wget 144.214.54.164:5000/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
 }
 
 main "$@"
