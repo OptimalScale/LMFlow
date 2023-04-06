@@ -52,7 +52,16 @@ def main():
         pipeline_args=pipeline_args,
     )
     dataset = Dataset(data_args)
-    model = AutoModel.get_model(model_args)
+    model = AutoModel.get_model(
+        model_args,
+        lang=data_args.lang,
+        forced_bos_token=data_args.forced_bos_token,
+        source_prefix = data_args.source_prefix,
+        streaming = data_args.streaming,
+        preprocessing_num_workers = data_args.preprocessing_num_workers,
+        overwrite_cache = data_args.overwrite_cache,
+        max_source_length = data_args.max_source_length
+    )
 
     # Tokenization and text grouping must be done in the main process
     with pipeline_args.main_process_first(desc="dataset map tokenization"):

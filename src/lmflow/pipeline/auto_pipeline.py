@@ -9,6 +9,7 @@ from lmflow.pipeline.inferencer import Inferencer
 
 
 PIPELINE_MAPPING = {
+    "seq2seq_finetuner": Finetuner,
     "finetuner": Finetuner,
     "evaluator": Evaluator,
     "inferencer": Inferencer,

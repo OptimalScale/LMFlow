@@ -59,7 +59,7 @@ from lmflow.models.interfaces.tunable import Tunable
 
 logger = logging.getLogger(__name__)
 
-class HFDecoderModel(EncoderDecoderModel, Tunable):
+class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
     r"""
     Initializes a HFEncoderDecoderModel instance.
 
@@ -106,6 +106,9 @@ class HFDecoderModel(EncoderDecoderModel, Tunable):
         # Distributed training: The .from_pretrained methods guarantee that
         # only one local process can concurrently download model & vocab.
 
+        data_args = kwargs
+        self.data_args = data_args
+        self.model_args = model_args
 
         if tune_strategy == 'normal':
             try:
@@ -118,18 +121,15 @@ class HFDecoderModel(EncoderDecoderModel, Tunable):
                 with FileLock(".lock") as lock:
                     nltk.download("punkt", quiet=True)
 
-            # A list of all multilingual tokenizer which require lang attribute.
-            MULTILINGUAL_TOKENIZERS = [MBartTokenizer, MBartTokenizerFast, MBart50Tokenizer, MBart50TokenizerFast]
-
             config_kwargs = {
                 "cache_dir": model_args.cache_dir,
                 "revision": model_args.model_revision,
                 "use_auth_token": True if model_args.use_auth_token else None,
             }
             if model_args.config_name:
-                config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
+                config = AutoConfig.from_pretrained(model_args.config_name, trust_remote_code=True, **config_kwargs)
             elif model_args.model_name_or_path:
-                config = AutoConfig.from_pretrained(model_args.model_name_or_path, **config_kwargs)
+                config = AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True, **config_kwargs)
             else:
                 config = CONFIG_MAPPING[model_args.model_type]()
                 logger.warning("You are instantiating a new config instance from scratch.")
@@ -145,9 +145,9 @@ class HFDecoderModel(EncoderDecoderModel, Tunable):
                 "use_auth_token": True if model_args.use_auth_token else None,
             }
             if model_args.tokenizer_name:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs)
+                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, trust_remote_code=True, **tokenizer_kwargs)
             elif model_args.model_name_or_path:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, **tokenizer_kwargs)
+                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, trust_remote_code=True, **tokenizer_kwargs)
             else:
                 raise ValueError(
                     "You are instantiating a new tokenizer from scratch. This is"
@@ -170,6 +170,7 @@ class HFDecoderModel(EncoderDecoderModel, Tunable):
                     revision=model_args.model_revision,
                     use_auth_token=True if model_args.use_auth_token else None,
                     torch_dtype=torch_dtype,
+                    trust_remote_code=True
                 )
             else:
                 model = AutoModelForSeq2SeqLM.from_config(config)
@@ -197,53 +198,53 @@ class HFDecoderModel(EncoderDecoderModel, Tunable):
 
             if model.config.decoder_start_token_id is None and isinstance(tokenizer, (MBartTokenizer, MBartTokenizerFast)):
                 if isinstance(tokenizer, MBartTokenizer):
-                    model.config.decoder_start_token_id = tokenizer.lang_code_to_id[data_args.lang]
+                    model.config.decoder_start_token_id = tokenizer.lang_code_to_id[data_args["lang"]]
                 else:
-                    model.config.decoder_start_token_id = tokenizer.convert_tokens_to_ids(data_args.lang)
+                    model.config.decoder_start_token_id = tokenizer.convert_tokens_to_ids(data_args["lang"])
 
             if model.config.decoder_start_token_id is None:
                 raise ValueError("Make sure that `config.decoder_start_token_id` is correctly defined")
 
+            max_source_length = data_args["max_source_length"]
             if (
                 hasattr(model.config, "max_position_embeddings")
-                and model.config.max_position_embeddings < data_args.max_source_length
+                and model.config.max_position_embeddings < max_source_length
             ):
                 if model_args.resize_position_embeddings is None:
                     logger.warning(
                         "Increasing the model's number of position embedding vectors from"
-                        f" {model.config.max_position_embeddings} to {data_args.max_source_length}."
+                        f" {model.config.max_position_embeddings} to {max_source_length}."
                     )
-                    model.resize_position_embeddings(data_args.max_source_length)
+                    model.resize_position_embeddings(max_source_length)
                 elif model_args.resize_position_embeddings:
-                    model.resize_position_embeddings(data_args.max_source_length)
+                    model.resize_position_embeddings(max_source_length)
                 else:
                     raise ValueError(
-                        f"`--max_source_length` is set to {data_args.max_source_length}, but the model only has"
+                        f"`--max_source_length` is set to {max_source_length}, but the model only has"
                         f" {model.config.max_position_embeddings} position encodings. Consider either reducing"
                         f" `--max_source_length` to {model.config.max_position_embeddings} or to automatically resize the"
                         " model's position encodings by passing `--resize_position_embeddings`."
                     )
-            prefix = data_args.source_prefix if data_args.source_prefix is not None else ""
+            prefix = data_args["source_prefix"] if data_args["source_prefix"] is not None else ""
 
-            # Preprocessing the datasets.
-            # We need to tokenize inputs and targets.
-            if training_args.do_train:
-                if "train" not in raw_datasets:
-                    raise ValueError("--do_train requires a train dataset")
-                column_names = raw_datasets["train"].column_names
-            elif training_args.do_eval:
-                if "validation" not in raw_datasets:
-                    raise ValueError("--do_eval requires a validation dataset")
-                column_names = raw_datasets["validation"].column_names
-            elif training_args.do_predict:
-                if "test" not in raw_datasets:
-                    raise ValueError("--do_predict requires a test dataset")
-                column_names = raw_datasets["test"].column_names
-            else:
-                logger.info("There is nothing to do. Please pass `do_train`, `do_eval` and/or `do_predict`.")
-                return
+            # # Preprocessing the datasets.
+            # # We need to tokenize inputs and targets.
+            # if training_args.do_train:
+            #     if "train" not in raw_datasets:
+            #         raise ValueError("--do_train requires a train dataset")
+            #     column_names = raw_datasets["train"].column_names
+            # elif training_args.do_eval:
+            #     if "validation" not in raw_datasets:
+            #         raise ValueError("--do_eval requires a validation dataset")
+            #     column_names = raw_datasets["validation"].column_names
+            # elif training_args.do_predict:
+            #     if "test" not in raw_datasets:
+            #         raise ValueError("--do_predict requires a test dataset")
+            #     column_names = raw_datasets["test"].column_names
+            # else:
+            #     logger.info("There is nothing to do. Please pass `do_train`, `do_eval` and/or `do_predict`.")
+            #     return
 
-            self.model_args = model_args
             self.config = config
             self.backend_model = model
             self.tokenizer = tokenizer
@@ -288,21 +289,25 @@ class HFDecoderModel(EncoderDecoderModel, Tunable):
             The tokenized dataset.
         """
         model_args = self.model_args
+        data_args = self.data_args
 
-        if isinstance(tokenizer, tuple(MULTILINGUAL_TOKENIZERS)):
+        # A list of all multilingual tokenizer which require lang attribute.
+        MULTILINGUAL_TOKENIZERS = [MBartTokenizer, MBartTokenizerFast, MBart50Tokenizer, MBart50TokenizerFast]
+
+        if isinstance(self.tokenizer, tuple(MULTILINGUAL_TOKENIZERS)):
             assert (
-                data_args.lang is not None
-            ), f"{tokenizer.__class__.__name__} is a multilingual tokenizer which requires --lang argument"
+                data_args["lang"] is not None
+            ), f"{self.tokenizer.__class__.__name__} is a multilingual tokenizer which requires --lang argument"
 
-            tokenizer.src_lang = data_args.lang
-            tokenizer.tgt_lang = data_args.lang
+            self.tokenizer.src_lang = data_args["lang"]
+            self.tokenizer.tgt_lang = data_args["lang"]
 
             # For multilingual translation models like mBART-50 and M2M100 we need to force the target language token
             # as the first generated token. We ask the user to explicitly provide this as --forced_bos_token argument.
             forced_bos_token_id = (
-                tokenizer.lang_code_to_id[data_args.forced_bos_token] if data_args.forced_bos_token is not None else None
+                self.tokenizer.lang_code_to_id[data_args["forced_bos_token"]] if data_args["forced_bos_token"] is not None else None
             )
-            model.config.forced_bos_token_id = forced_bos_token_id
+            self.model.config.forced_bos_token_id = forced_bos_token_id
         
         # Preprocessing the datasets.
         # First we tokenize all the texts.

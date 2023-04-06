@@ -4,11 +4,14 @@
 """
 
 from lmflow.models.hf_decoder_model import HFDecoderModel
-
+from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
 
 class AutoModel:
 
     @classmethod
     def get_model(self, model_args, *args, **kwargs):
         # TODO (add new models)
-        return HFDecoderModel(model_args, *args, **kwargs)
+        if model_args.is_seq2seq:
+            return HFEncoderDecoderModel(model_args, *args, **kwargs)
+        else:
+            return HFDecoderModel(model_args, *args, **kwargs)

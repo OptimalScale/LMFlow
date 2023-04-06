@@ -20,6 +20,7 @@ from transformers.utils.versions import require_version
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
     TrainingArguments,
+    Seq2SeqTrainingArguments
 )
 
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_CAUSAL_LM_MAPPING.keys())
@@ -99,6 +100,10 @@ class ModelArguments:
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
     )
+    is_seq2seq: bool = field(
+        default=False,
+        metadata={"help": "whether use seq2seq model"}
+    )
     config_overrides: Optional[str] = field(
         default=None,
         metadata={
@@ -165,6 +170,15 @@ class ModelArguments:
         default=True,
         metadata={"help": "Whether use disk mapping when memory is not enough."}
     )
+    resize_position_embeddings: Optional[bool] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Whether to automatically resize the position embeddings if `max_source_length` exceeds "
+                "the model's position embeddings."
+            )
+        },
+    )
 
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
@@ -224,6 +238,8 @@ class DatasetArguments:
     used to indicate that a parameter is optional. The metadata argument is used to provide additional information about 
     each parameter, such as a help message.
     """
+
+    lang: Optional[str] = field(default=None, metadata={"help": "Language id for summarization."})
 
     dataset_path: Optional[str] = field(
         default=None, metadata={"help": "The path of the dataset to use."}
@@ -309,6 +325,83 @@ class DatasetArguments:
         default=None,
         metadata={"help": "Evaluation File Path"},
     )
+    max_source_length: Optional[int] = field(
+        default=1024,
+        metadata={
+            "help": (
+                "The maximum total input sequence length after tokenization. Sequences longer "
+                "than this will be truncated, sequences shorter will be padded."
+            )
+        },
+    )
+    max_target_length: Optional[int] = field(
+        default=128,
+        metadata={
+            "help": (
+                "The maximum total sequence length for target text after tokenization. Sequences longer "
+                "than this will be truncated, sequences shorter will be padded."
+            )
+        },
+    )
+    val_max_target_length: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": (
+                "The maximum total sequence length for validation target text after tokenization. Sequences longer "
+                "than this will be truncated, sequences shorter will be padded. Will default to `max_target_length`."
+                "This argument is also used to override the ``max_length`` param of ``model.generate``, which is used "
+                "during ``evaluate`` and ``predict``."
+            )
+        },
+    )
+    pad_to_max_length: bool = field(
+        default=False,
+        metadata={
+            "help": (
+                "Whether to pad all samples to model maximum sentence length. "
+                "If False, will pad the samples dynamically when batching to the maximum length in the batch. More "
+                "efficient on GPU but very bad for TPU."
+            )
+        },
+    )
+    max_predict_samples: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": (
+                "For debugging purposes or quicker training, truncate the number of prediction examples to this "
+                "value if set."
+            )
+        },
+    )
+    num_beams: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Number of beams to use for evaluation. This argument will be passed to ``model.generate``, "
+                "which is used during ``evaluate`` and ``predict``."
+            )
+        },
+    )
+    ignore_pad_token_for_loss: bool = field(
+        default=True,
+        metadata={
+            "help": "Whether to ignore the tokens corresponding to padded labels in the loss computation or not."
+        },
+    )
+    source_prefix: Optional[str] = field(
+        default="", metadata={"help": "A prefix to add before every source text (useful for T5 models)."}
+    )
+
+    forced_bos_token: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "The token to force as the first generated token after the decoder_start_token_id."
+                "Useful for multilingual models like mBART where the first generated token"
+                "needs to be the target language token (Usually it is the target language token)"
+            )
+        },
+    )
 
     def __post_init__(self):
         if self.streaming:
@@ -330,10 +423,14 @@ class FinetunerArguments(TrainingArguments):
     """
     Adapt transformers.TrainingArguments
     """
-    is_seq2seq: bool = field(
-        default=False,
-        metadata={"help": "whether use seq2seq model"}
-    )
+    pass
+
+@dataclass
+class Seq2SeqFinetunerArguments(Seq2SeqTrainingArguments):
+    """
+    Adapt transformers.TrainingArguments
+    """
+    pass
 
 
 @dataclass
@@ -500,6 +597,7 @@ class InferencerArguments:
 
 
 PIPELINE_ARGUMENT_MAPPING = {
+    "seq2seq_finetuner": Seq2SeqFinetunerArguments,
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
