@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-<img src="assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
+<img src="../assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 </p>
 
 # LMFlow
@@ -7,11 +7,11 @@
 <h4 align="center">
     <p>
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README.md">English</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_zh-hans.md">简体中文</a> |
         <b>Español</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_jp.md">日本語</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_ko.md">한국어</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_hindi.md">हिंदी</a>
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_jp.md">日本語</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_ko.md">한국어</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_hindi.md">हिंदी</a>
     <p>
 </h4>
 
@@ -31,7 +31,7 @@ Modelo de Lenguaje Grande para Todos. Vea nuestra [visión](https://github.com/O
 
 
 <p align="center" width="100%">
-<img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
+<img src="../assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 
@@ -66,7 +66,7 @@ Ofrecemos cuatro tipos de demostraciones que incluyen:
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
-<img src="assets/colab-shell-chatbot-demo.png">
+<img src="../assets/colab-shell-chatbot-demo.png">
 </p>
 
 Proporcionamos una demostración simple de la línea de comandos del chatbot con T4/P100/V100 GPU de Google Colab. Es importante tener en cuenta que el modelo gpt-neo-2.7b proporcionado es un modelo bastante débil, que solo admite inglés y a veces puede generar respuestas insatisfactorias. Para mejorar su rendimiento, los usuarios pueden utilizar sus propios conjuntos de datos para ajustar y obtener un modelo mejor con LMFlow. También se pueden probar otros modelos solo decodificadores disponibles en 🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads).

@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-<img src="assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
+<img src="../assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 </p>
 
 # LMFlow
@@ -28,7 +28,7 @@
 
 
 <p align="center" width="100%">
-<img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
+<img src="../assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 
@@ -62,7 +62,7 @@
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
-<img src="assets/colab-shell-chatbot-demo.png">
+<img src="../assets/colab-shell-chatbot-demo.png">
 </p>
 
 

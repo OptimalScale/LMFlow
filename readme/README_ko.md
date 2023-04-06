@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-<img src="assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
+<img src="../assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 </p>
 
 # LMFlow
@@ -29,7 +29,7 @@ LMFlow는 큰 머신 러닝 모델의 finetune을 위한 확장성있고, 편리
 모두를 위한 Large Language Model. See our [vision](https://github.com/OptimalScale/LMFlow#vision).
 
 <p align="center" width="100%">
-<img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
+<img src="../assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 
@@ -63,7 +63,7 @@ LMFlow는 큰 머신 러닝 모델의 finetune을 위한 확장성있고, 편리
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
-<img src="assets/colab-shell-chatbot-demo.png">
+<img src="../assets/colab-shell-chatbot-demo.png">
 </p>
 
 우리는 구글 코랩의 T4/P100/V100 GPU를 이용한 간단한 쉘 데모 챗봇을 제공합니다. 제공된 gpt-neo-2.7b 모델은 영어만 지원하며 때때로 만족스럽지 않은 응답을 생성할 수 있는 다른 모델들에 비해 약한 편이라는 점에 유의하십시오. 사용자는 LMFlow을 통해 자신의 데이터셋에 모델을 finetune하고 더 나은 성능을 얻을 수 있습니다. 또한, 🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)에서 제공하는 다른 decoder-only 모델들 또한 다음과 같이 시도해 볼 수도 있습니다:
