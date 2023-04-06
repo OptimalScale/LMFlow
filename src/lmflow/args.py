@@ -161,6 +161,10 @@ class ModelArguments:
         default=0.1,
         metadata={"help": "The dropout rate in lora.linear."},
     )
+    save_aggregated_lora: bool = field(
+        default=False,
+        metadata={"help": "Whether to save aggregated lora."},
+        )
     use_ram_optimized_load: bool = field(
         default=True,
         metadata={"help": "Whether use disk mapping when memory is not enough."}

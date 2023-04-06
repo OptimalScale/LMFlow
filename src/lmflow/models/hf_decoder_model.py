@@ -156,8 +156,9 @@ class HFDecoderModel(DecoderModel, Tunable):
                 model = AutoModelForCausalLM.from_config(config)
                 n_params = sum(dict((p.data_ptr(), p.numel()) for p in model.parameters()).values())
                 logger.info(f"Training new model from scratch - Total size={n_params/2**20:.2f}M params")
-
+            self.backend_model_full = model
             if model_args.use_lora:
+                
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
@@ -214,10 +215,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                 )
 
             self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+            self.backend_model_full = self.backend_model
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
                 )
+
 
             deepspeed.init_distributed()
             self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
@@ -265,8 +268,8 @@ class HFDecoderModel(DecoderModel, Tunable):
         # since this will be pickled to avoid _LazyModule error in Hasher force
         # logger loading before tokenize_function
         tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
-        if model_args.use_lora:
-            self.tokenizer.pad_token = 1
+
+
 
         def tokenize_function(examples):
             with CaptureLogger(tok_logger) as cl:
@@ -398,6 +401,40 @@ class HFDecoderModel(DecoderModel, Tunable):
                 **kwargs
             )
         return outputs
+
+
+    def merge_lora_weights(self):
+        if self.model_args.use_lora:
+            self.get_backend_model().merge_and_unload()
+        else:
+            logger.warning("LoRA training is NOT enabled. Merging LoRA weights is not applicable.")
+
+
+    def save(self, dir, save_full_model=False, *args, **kwargs):
+        """
+        Perform generation process of the model.
+    
+        Parameters
+        ------------
+        dir :
+            The directory to save model and tokenizer
+            
+        save_full_model : Optional.
+            Whether to save full model.
+        
+        kwargs : Optional.
+            Keyword arguments.    
+        
+        Returns
+        ------------
+        outputs :
+            The generated sequence output 
+        """
+        self.get_tokenizer().save_pretrained(dir)
+        if save_full_model and self.model_args.use_lora:
+            self.backend_model_full.save_pretrained(dir)
+        else:
+            self.get_backend_model().save_pretrained(dir)
 
 
     def get_max_length(self):

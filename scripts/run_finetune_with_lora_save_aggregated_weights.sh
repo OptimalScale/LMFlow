@@ -26,7 +26,7 @@ deepspeed ${deepspeed_args} \
     --per_device_train_batch_size 1 \
     --use_lora 1 \
     --lora_r 8 \
-    --save_aggregated_lora 0\
+    --save_aggregated_lora 1\
     --deepspeed configs/ds_config_zero2.json \
     --bf16 \
     --run_name finetune_with_lora \

@@ -199,7 +199,7 @@ class Finetuner(BaseTuner):
         model_args = self.model_args
         data_args = self.data_args
         finetuner_args = self.finetuner_args
-
+        
         train_dataset = lm_dataset.get_backend_dataset()
 
         if finetuner_args.do_train:
@@ -234,7 +234,11 @@ class Finetuner(BaseTuner):
             if not model_args.use_lora:
                 trainer.save_model()  # Saves the tokenizer too for easy upload
             else:
-                model.get_backend_model().save_pretrained(finetuner_args.output_dir)
+                if model_args.save_aggregated_lora:
+                    model.merge_lora_weights()
+                model.save(finetuner_args.output_dir,model_args.save_aggregated_lora)
+                    
+                
 
             metrics = train_result.metrics
 
