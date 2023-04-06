@@ -210,3 +210,41 @@ class Evaluator(BasePipeline):
             current_accuracy = np.mean(acc_list)
             print("Final accuracy = ", current_accuracy)
             output_writer.close()
+
+    def _evaluate_ppl(self, model, dataset: Dataset):
+        data_dict = dataset.to_dict()
+        texts = [ instance["text"] for instance in data_dict["instances"] ]
+        encodings = model.get_tokenizer()("\n\n".join(texts), return_tensors="pt")
+        # Define some constant
+        try:
+            max_length = model.get_backend_model().config.n_positions
+        except:
+            max_length = 1024
+        print(f"The maximum sequence length : {max_length}")
+        stride = 512
+        seq_len = encodings.input_ids.size(1)
+
+        nlls = []
+        prev_end_loc = 0
+        for begin_loc in range(0, seq_len, stride):
+            print(begin_loc)
+            end_loc = min(begin_loc + max_length, seq_len)
+            trg_len = end_loc - prev_end_loc  # may be different from stride on last loop
+            input_ids = encodings.input_ids[:, begin_loc:end_loc].to(device=self.local_rank)
+            target_ids = input_ids.clone()
+            target_ids[:, :-trg_len] = -100
+
+            with torch.no_grad():
+                outputs = model.get_backend_model()(input_ids, labels=target_ids)
+                # loss is calculated using CrossEntropyLoss which averages over valid labels
+                # N.B. the model only calculates loss over trg_len - 1 labels, because it internally shifts the labels
+                # to the left by 1.
+                neg_log_likelihood = outputs.loss
+
+            nlls.append(neg_log_likelihood)
+            prev_end_loc = end_loc
+            if end_loc == seq_len:
+                break
+            print(f"begin_loc:{begin_loc}")
+        ppl = torch.exp(torch.stack(nlls).mean())
+        print(f"ppl: {ppl}")
