@@ -100,9 +100,9 @@ class ModelArguments:
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
     )
-    is_seq2seq: bool = field(
-        default=False,
-        metadata={"help": "whether use seq2seq model"}
+    arch_type: bool = field(
+        default="decoder_only",
+        metadata={"help": "The architecture type of the model. Currently supported decoder_only or encoder_decoder"}
     )
     config_overrides: Optional[str] = field(
         default=None,
