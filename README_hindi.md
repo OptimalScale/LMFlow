@@ -11,7 +11,7 @@
         <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_jp.md">日本語</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_ko.md">한국어</a> |
-        <b>अंग्रेज़ी</b>
+        <b>हिंदी</b>
     <p>
 </h4>
 

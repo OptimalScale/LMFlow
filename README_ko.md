@@ -11,7 +11,7 @@
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
         <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_jp.md">日本語</a> |
         <b>한국어</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_hindi.md">अंग्रेज़ी</a>
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_hindi.md">हिंदी</a>
     <p>
 </h4>
 
