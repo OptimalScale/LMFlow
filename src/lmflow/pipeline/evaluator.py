@@ -125,7 +125,7 @@ class Evaluator(BasePipeline):
             
 
         """
-        if(metric == "accuracy"):
+        if metric == "accuracy":
             dataloader, data_size = self.create_dataloader(dataset)
 
             if not dist.is_initialized() or dist.get_rank() == 0:
@@ -211,7 +211,7 @@ class Evaluator(BasePipeline):
                 current_accuracy = np.mean(acc_list)
                 print("Final accuracy = ", current_accuracy)
                 output_writer.close()
-        elif(metric == "ppl"):
+        elif metric == "ppl":
             ppl =  self._evaluate_ppl(model, dataset)
             print(f"Evaluating final ppl: {ppl}")
         else:
