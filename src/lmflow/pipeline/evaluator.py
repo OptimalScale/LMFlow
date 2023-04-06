@@ -225,9 +225,10 @@ class Evaluator(BasePipeline):
         encodings = model.get_tokenizer()("\n\n".join(texts), return_tensors="pt")
         # Define some constant
         try:
-            max_length = model.get_backend_model().config.n_positions
+            max_length = min(model.get_backend_model().config.n_positions, model.get_max_length())
         except:
-            max_length = 1024
+            max_length = min(1024, model.get_max_length())
+        
         print(f"The maximum sequence length : {max_length}")
         seq_len = encodings.input_ids.size(1)
 
