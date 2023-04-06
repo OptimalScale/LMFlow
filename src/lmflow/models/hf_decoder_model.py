@@ -18,7 +18,6 @@ models and can be used for various NLP tasks such as language modeling, text cla
 and question answering.
 """
 
-import logging
 from typing import List, Union
 
 import deepspeed
@@ -48,9 +47,6 @@ from transformers import (
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.decoder_model import DecoderModel
 from lmflow.models.interfaces.tunable import Tunable
-
-
-logger = logging.getLogger(__name__)
 
 
 class HFDecoderModel(DecoderModel, Tunable):
@@ -184,37 +180,14 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         elif tune_strategy == 'none':
             dschf = HfDeepSpeedConfig(ds_config)
-            peft_model_id = model_args.lora_model_path
-
-            if model_args.use_ram_optimized_load and peft_model_id is None:
-                try:
-                    # RAM-optimized load
-                    self.backend_model = AutoModelForCausalLM.from_pretrained(
-                        model_args.model_name_or_path,
-                        device_map="auto",
-                        offload_folder="offload",
-                        offload_state_dict=True,
-                    )
-                except:
-                    logger.warning(
-                        "Failed to use RAM optimized load. Automatically"
-                        " use original load instead."
-                    )
-                    # Normal load
-                    self.backend_model = AutoModelForCausalLM.from_pretrained(
-                        model_args.model_name_or_path,
-                    )
-            else:
-                if peft_model_id is not None:
-                    logger.warning(
-                        "LoRA does not support RAM optimized load currently."
-                        " Automatically use original load instead."
-                    )
-                self.backend_model = AutoModelForCausalLM.from_pretrained(
-                    model_args.model_name_or_path,
-                )
-
+            self.backend_model = AutoModelForCausalLM.from_pretrained(
+                model_args.model_name_or_path,
+                device_map="auto",
+                offload_folder="offload",
+                offload_state_dict=True,
+            )
             self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+            peft_model_id = model_args.lora_model_path
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
@@ -325,7 +298,11 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The tokenized inputs.
         """
-        return self.tokenizer.encode(text=input, *args, **kwargs)
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id=self.tokenizer.eos_token_id
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        self.tokenizer.padding_side = "left"
+        return self.tokenizer.batch_encode_plus(batch_text_or_text_pairs=input, *args, **kwargs)
     
 
     def decode(self, input, *args, **kwargs ) -> List[int]:
@@ -348,7 +325,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The text decoded from the token inputs.
         """
-        return self.tokenizer.decode(input, *args, **kwargs)
+        return self.tokenizer.batch_decode(input, *args, **kwargs)
     
 
     def inference(self, inputs, *args, **kwargs):
