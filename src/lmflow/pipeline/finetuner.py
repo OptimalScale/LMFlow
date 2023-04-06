@@ -213,7 +213,7 @@ class Finetuner(BaseTuner):
         # Initialize our Trainer
         training_args = finetuner_args
 
-        if model_args.is_seq2seq:
+        if model_args.arch_type == "encoder_decoder":
             # Data collator
             tokenizer = model.get_tokenizer()
             label_pad_token_id = -100 if data_args.ignore_pad_token_for_loss else tokenizer.pad_token_id
@@ -244,7 +244,7 @@ class Finetuner(BaseTuner):
                 compute_metrics=None,
             )
 
-        else:
+        elif model_args.arch_type == "decoder_only":
             trainer = Trainer(
                 model=model.get_backend_model(),
                 args=training_args,

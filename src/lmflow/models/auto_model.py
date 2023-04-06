@@ -11,7 +11,7 @@ class AutoModel:
     @classmethod
     def get_model(self, model_args, *args, **kwargs):
         # TODO (add new models)
-        if model_args.is_seq2seq:
+        if model_args.arch_type == "encoder_decoder":
             return HFEncoderDecoderModel(model_args, *args, **kwargs)
-        else:
+        elif model_args.arch_type == "decoder_only":
             return HFDecoderModel(model_args, *args, **kwargs)
