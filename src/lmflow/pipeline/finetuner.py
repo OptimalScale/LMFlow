@@ -199,7 +199,7 @@ class Finetuner(BaseTuner):
         model_args = self.model_args
         data_args = self.data_args
         finetuner_args = self.finetuner_args
-        model.get_tokenizer().save_pretrained(finetuner_args.output_dir)
+        
         train_dataset = lm_dataset.get_backend_dataset()
 
         if finetuner_args.do_train:
