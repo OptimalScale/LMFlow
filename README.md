@@ -7,11 +7,11 @@
 <h4 align="center">
     <p>
         <b>English</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_zh-hans.md">简体中文</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_es.md">Español</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_jp.md">日本語</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_ko.md">한국어</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README_hindi.md">अंग्रेज़ी</a>
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_zh-hans.md">简体中文</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_jp.md">日本語</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_ko.md">한국어</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_hindi.md">अंग्रेज़ी</a>
     <p>
 </h4>
 
