@@ -1,7 +1,5 @@
 #!/bin/bash
 # Please run this script under ${project_id} in project directory of
-#   https://github.com/shizhediao/llm-ft
-#     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
 
 deepspeed_args="--master_port=11000"      # Default argument
 if [ $# -ge 1 ]; then
