@@ -301,8 +301,8 @@ class HFDecoderModel(DecoderModel, Tunable):
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id=self.tokenizer.eos_token_id
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
-        self.tokenizer.padding_side = "left"
-        return self.tokenizer.batch_encode_plus(batch_text_or_text_pairs=input, *args, **kwargs)
+        self.tokenizer.padding_side = "left"#necessary for lora,gpt2 and other decoder model
+        return self.tokenizer.batch_encode_plus(batch_text_or_text_pairs=input, *args, **kwargs)#batch encode,will automatically do left padding
     
 
     def decode(self, input, *args, **kwargs ) -> List[int]:
@@ -325,7 +325,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The text decoded from the token inputs.
         """
-        return self.tokenizer.batch_decode(input, *args, **kwargs)
+        return self.tokenizer.batch_decode(input, *args, **kwargs)#batch_decode
     
 
     def inference(self, inputs, *args, **kwargs):
