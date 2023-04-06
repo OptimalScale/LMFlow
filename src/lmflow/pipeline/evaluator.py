@@ -69,6 +69,7 @@ class Evaluator(BasePipeline):
         # batch size has to be divisible by world_size, but can be bigger than world_size
         train_batch_size = 1 * self.world_size
         self.evaluator_args.minibatch_size = train_batch_size
+        self.block_size = evaluator_args.evaluate_block_size
         # dataloader, data_size = create_dataloader(args)    # load dataset
 
 
@@ -228,14 +229,13 @@ class Evaluator(BasePipeline):
         except:
             max_length = 1024
         print(f"The maximum sequence length : {max_length}")
-        stride = 512
         seq_len = encodings.input_ids.size(1)
 
         nlls = []
         prev_end_loc = 0
-        for begin_loc in range(0, seq_len, stride):
+        for begin_loc in range(0, seq_len, self.block_size):
             end_loc = min(begin_loc + max_length, seq_len)
-            trg_len = end_loc - prev_end_loc  # may be different from stride on last loop
+            trg_len = end_loc - prev_end_loc  # may be different from block_size on last loop
             input_ids = encodings.input_ids[:, begin_loc:end_loc].to(device=self.local_rank)
             target_ids = input_ids.clone()
             target_ids[:, :-trg_len] = -100
@@ -249,7 +249,7 @@ class Evaluator(BasePipeline):
 
             nlls.append(neg_log_likelihood)
             prev_end_loc = end_loc
-            print(f"Evaluating PPL: {int(begin_loc/stride) + 1} / {int(seq_len/stride)} Complete, current ppl : {torch.exp(torch.stack(nlls).mean())}")
+            print(f"Evaluating PPL: {int(begin_loc/self.block_size) + 1} / {int(seq_len/self.block_size)} Complete, current ppl : {torch.exp(torch.stack(nlls).mean())}")
             if end_loc == seq_len:
                 break
         ppl = torch.exp(torch.stack(nlls).mean())
