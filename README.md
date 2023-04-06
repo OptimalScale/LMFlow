@@ -301,6 +301,12 @@ You can now evaluate with the finetuned llama model.
 ### 4.2 DeepSpeed Config
 You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
 
+
+### 4.3 LLaMA Inference on CPU
+
+Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
+
+
 ## 5. Model Release
 
 ### 5.1 Medical Model Checkpoints
