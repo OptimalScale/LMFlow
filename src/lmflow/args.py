@@ -447,7 +447,15 @@ class EvaluatorArguments:
             )
         },
     )
-
+    evaluate_block_size: Optional[int] = field(
+        default=512,
+        metadata={
+            "help": (
+                "the model will have at least block_size tokens for context when calculating the conditional likelihood of any one token"
+                " (provided there are block_size preceding tokens available to condition on)"
+            )
+        },
+    )
 
 @dataclass
 class InferencerArguments:
