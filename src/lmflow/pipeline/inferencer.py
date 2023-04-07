@@ -115,12 +115,13 @@ class Inferencer(BasePipeline):
         }
 
         for batch_index, batch in enumerate(dataloader):
-            current_batch = batch[0]
+            current_batch = batch[0]        # batch size is 1
 
             input = prompt_structure.format(input=current_batch['input'])
-            
-            inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
-            mask = inputs['attention_mask'].to(device=self.local_rank)
+
+            output = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+            inputs = output["input_ids"]
+            mask = output["attention_mask"]
             outputs = model.inference(
                 inputs,
                 max_new_tokens=max_new_tokens,
@@ -130,8 +131,8 @@ class Inferencer(BasePipeline):
             text_out = model.decode(outputs, skip_special_tokens=True)[0]
 
             # only return the generation, trucating the input
-            prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
-            text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
+            prompt_length = len(model.decode(inputs, skip_special_tokens=True,)[0])
+            text_out = text_out[prompt_length:]
             output_dict["instances"].append({ "text": text_out })
 
         output_dataset = Dataset(DatasetArguments(dataset_path = None))

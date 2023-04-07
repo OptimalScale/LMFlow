@@ -41,6 +41,6 @@ evaluator = AutoPipeline.get_pipeline(
     pipeline_args=pipeline_args,
 )
 # Demo for evaluating accuracy(default)
-# evaluator.evaluate(model=model, dataset=dataset, metric='acc')
+evaluator.evaluate(model=model, dataset=dataset, metric='accuracy')
 # Demo for evaluating ppl
-evaluator.evaluate(model=model, dataset=dataset, metric='ppl')
+#evaluator.evaluate(model=model, dataset=dataset, metric='ppl')
