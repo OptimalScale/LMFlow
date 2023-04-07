@@ -257,6 +257,11 @@ class Finetuner(BaseTuner):
                 preprocess_logits_for_metrics=None,
             )
 
+        else:
+            raise NotImplementedError(
+                f"Model type \"{model_args.arch_type}\" is not implemented."
+            )
+
         # Training
         if training_args.do_train:
             checkpoint = None

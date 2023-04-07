@@ -21,7 +21,6 @@ import logging
 from typing import List, Union
 
 import deepspeed
-from filelock import FileLock
 from peft import (
     LoraConfig,
     PeftModel,
@@ -42,15 +41,10 @@ from transformers import (
     AutoModel,
     AutoModelForSeq2SeqLM,
     AutoTokenizer,
-    DataCollatorForSeq2Seq,
-    HfArgumentParser,
     MBart50Tokenizer,
     MBart50TokenizerFast,
     MBartTokenizer,
     MBartTokenizerFast,
-    Seq2SeqTrainer,
-    Seq2SeqTrainingArguments,
-    set_seed,
 )
 from transformers.utils import check_min_version, is_offline_mode, send_example_telemetry
 from lmflow.datasets.dataset import Dataset
@@ -172,7 +166,6 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                     task_type=TaskType.SEQ_2_SEQ_LM,
                     inference_mode=False,
                     r=model_args.lora_r,
-                    target_modules=["q_proj","v_proj"],
                     lora_alpha=model_args.lora_alpha,
                     lora_dropout=model_args.lora_dropout
                 )
@@ -215,25 +208,6 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                         f" `--max_source_length` to {model.config.max_position_embeddings} or to automatically resize the"
                         " model's position encodings by passing `--resize_position_embeddings`."
                     )
-            prefix = data_args["source_prefix"] if data_args["source_prefix"] is not None else ""
-
-            # # Preprocessing the datasets.
-            # # We need to tokenize inputs and targets.
-            # if training_args.do_train:
-            #     if "train" not in raw_datasets:
-            #         raise ValueError("--do_train requires a train dataset")
-            #     column_names = raw_datasets["train"].column_names
-            # elif training_args.do_eval:
-            #     if "validation" not in raw_datasets:
-            #         raise ValueError("--do_eval requires a validation dataset")
-            #     column_names = raw_datasets["validation"].column_names
-            # elif training_args.do_predict:
-            #     if "test" not in raw_datasets:
-            #         raise ValueError("--do_predict requires a test dataset")
-            #     column_names = raw_datasets["test"].column_names
-            # else:
-            #     logger.info("There is nothing to do. Please pass `do_train`, `do_eval` and/or `do_predict`.")
-            #     return
 
             self.config = config
             self.backend_model = model

@@ -15,3 +15,5 @@ class AutoModel:
             return HFEncoderDecoderModel(model_args, *args, **kwargs)
         elif model_args.arch_type == "decoder_only":
             return HFDecoderModel(model_args, *args, **kwargs)
+        else:
+            raise NotImplementedError(f"Model type \"{model_args.arch_type}\" is not implemented.")
