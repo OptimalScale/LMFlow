@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function main() {
+    public_server="http://52.87.157.205:8001"
     if [ $# -lt 1 -o "$1" = "-h" -o "$1" = "--help" ]; then
         echo "Usage: bash $(basename $0) dataset_name"
         echo "Example: bash $(basename $0) MedMCQA"
@@ -10,7 +11,7 @@ function main() {
     if [ "$1" = "MedMCQA" -o "$1" = "all" ]; then
         echo "downloading MedMCQA"
         filename='MedMCQA.tar.gz'
-        wget 144.214.54.164:5000/${filename}
+        wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
@@ -18,7 +19,7 @@ function main() {
     if [ "$1" = "MedQA-USMLE" -o "$1" = "all" ]; then
         echo "downloading MedQA-USMLE"
         filename='MedQA-USMLE.tar.gz'
-        wget 144.214.54.164:5000/${filename}
+        wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
@@ -26,7 +27,7 @@ function main() {
     if [ "$1" = "ni" ]; then
         echo "downloading natural-instructions"
         filename='natural-instructions.tar.gz'
-        wget 144.214.54.164:5000/${filename}
+        wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
@@ -34,7 +35,7 @@ function main() {
     if [ "$1" = "PubMedQA" -o "$1" = "all" ]; then
         echo "downloading PubMedQA"
         filename='PubMedQA.tar.gz'
-        wget 144.214.54.164:5000/${filename}
+        wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
@@ -42,7 +43,7 @@ function main() {
     if [ "$1" = "example_dataset" -o "$1" = "all" ]; then
         echo "downloading example_dataset"
         filename='example_dataset.tar.gz'
-        wget 144.214.54.164:5000/${filename}
+        wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
@@ -50,7 +51,7 @@ function main() {
     if [ "$1" = "alpaca" -o "$1" = "all" ]; then
         echo "downloading alpaca dataset"
         filename='alpaca.tar.gz'
-        wget 144.214.54.164:5000/${filename}
+        wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
@@ -58,7 +59,7 @@ function main() {
     if [ "$1" = "red_teaming" -o "$1" = "all" ]; then
         echo "downloading red_teaming dataset"
         filename='red_teaming.tar.gz'
-        wget 144.214.54.164:5000/${filename}
+        wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
@@ -66,7 +67,7 @@ function main() {
     if [ "$1" = "wikitext-2-raw-v1" -o "$1" = "all" ]; then
         echo "downloading wikitext-2-raw-v1 dataset"
         filename='wikitext-2-raw-v1.tar.gz'
-        wget 144.214.54.164:5000/${filename}
+        wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
     fi
