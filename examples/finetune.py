@@ -13,7 +13,7 @@ Typical usage example:
   foo = ClassFoo()
   bar = foo.FunctionBar()
 """
-
+import os
 import sys
 
 from transformers import HfArgumentParser
@@ -52,6 +52,7 @@ def main():
         pipeline_args=pipeline_args,
     )
     dataset = Dataset(data_args)
+    print(f"dataset = {dataset}")
     model = AutoModel.get_model(
         model_args,
         lang=data_args.lang,

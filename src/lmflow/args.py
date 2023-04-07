@@ -13,10 +13,11 @@ extracted from the MODEL_CONFIG_CLASSES.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
 
 from transformers.utils.versions import require_version
-
+from transformers.generation.configuration_utils import GenerationConfig
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
     TrainingArguments    
@@ -463,6 +464,13 @@ class FinetunerArguments(TrainingArguments):
             )
         },
     )
+    generation_config: Optional[Union[str, Path, GenerationConfig]] = field(
+        default=None,
+        metadata={
+            "help": "Model id, file path or url pointing to a GenerationConfig json file, to use during prediction."
+        },
+    )
+
 
 
 @dataclass
