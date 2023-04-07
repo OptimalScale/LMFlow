@@ -334,16 +334,12 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The tokenized inputs.
         """
-        if isinstance(input, list):
-            output = []
-            for single_input in input:
-                single_output = self.encode(single_input, *args, **kwargs)
-                output.append(single_output)
-            return output
-        elif isinstance(input, str):
-            return self.tokenizer.encode(text=input, *args, **kwargs)
-        else:
-            raise NotImplementedError(f'type "{type(input)}" cannot be encoded')
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id=self.tokenizer.eos_token_id
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        self.tokenizer.padding_side = "left"#necessary for lora,gpt2 and other decoder model
+        return self.tokenizer.batch_encode_plus(batch_text_or_text_pairs=input, *args, **kwargs)#batch encode,will automatically do left padding
+    
 
 
     def decode(self, input, *args, **kwargs ) -> Union[str, List[str]]:
@@ -366,16 +362,8 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The text decoded from the token inputs.
         """
-        if isinstance(input, list) and input and isinstance(input[0], list):
-            output = []
-            for single_input in input:
-                single_output = self.decode(single_input, *args, **kwargs)
-                output.append(single_output)
-            return output
-        else:
-            # Can be list of ints or a Tensor
-            return self.tokenizer.decode(input, *args, **kwargs)
-
+        return self.tokenizer.batch_decode(input, *args, **kwargs)#batch_decode
+    
 
     def inference(self, inputs, *args, **kwargs):
         """
