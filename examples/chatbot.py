@@ -9,6 +9,7 @@ import warnings
 
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
+from typing import Optional
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
@@ -22,7 +23,30 @@ warnings.filterwarnings("ignore")
 
 @dataclass
 class ChatbotArguments:
-    pass
+    prompt_structure: Optional[str] = field(
+        default="{input_text}",
+        metadata={
+            "help": "prompt structure given user's input text"
+        },
+    )
+    end_string: Optional[str] = field(
+        default="\n\n",
+        metadata={
+            "help": "end string mark of the chatbot's output"
+        },
+    )
+    max_new_tokens: Optional[int] = field(
+        default=200,
+        metadata={
+            "help": "maximum number of generated tokens"
+        },
+    )
+    temperature: Optional[float] = field(
+        default=0.7,
+        metadata={
+            "help": "higher this value, more random the model output"
+        },
+    )
 
 
 def main():
@@ -77,7 +101,9 @@ def main():
     #     " unconditionally."
     # )
     context = ""
-    end_string = "\n\n"
+
+    end_string = chatbot_args.end_string
+    prompt_structure = chatbot_args.prompt_structure
 
     while True:
         input_text = input("User >>> ")
@@ -85,7 +111,7 @@ def main():
             print("exit...")
             break
 
-        context += input_text
+        context += prompt_structure.format(input_text=input_text)
 
         input_dataset = dataset.from_dict({
             "type": "text_only",
@@ -95,8 +121,8 @@ def main():
         output_dataset = inferencer.inference(
             model=model,
             dataset=input_dataset,
-            max_new_tokens=200,
-            temperature=0.7,
+            max_new_tokens=chatbot_args.max_new_tokens,
+            temperature=chatbot_args.temperature,
         )
 
         response = output_dataset.to_dict()["instances"][0]["text"]
@@ -107,9 +133,9 @@ def main():
             response += end_string
             index = response.index(end_string)
 
-        response = response[:index + 1]
-        print("Bot: " + response, end="")
-        context += response
+        response = response[:index]
+        print("Bot: " + response, end="\n")
+        context += response + "\n"
         context = context[-model.get_max_length():]     # Memory of the bot
 
 
