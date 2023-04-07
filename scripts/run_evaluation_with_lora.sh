@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# --model_name_or_path specifies the original huggingface model
-# --lora_model_path specifies the model difference introduced by finetuning,
-#   i.e. the one saved by ./scripts/run_finetune_with_lora.sh
 CUDA_VISIBLE_DEVICES=0 \
     deepspeed examples/evaluate.py \
     --answer_type usmle \
@@ -12,4 +9,3 @@ CUDA_VISIBLE_DEVICES=0 \
     --prompt_structure "Input: {input}" \
     --batch_size 30 \
     --deepspeed examples/ds_config.json
-#!/bin/bash

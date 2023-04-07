@@ -390,7 +390,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             outputs = self.ds_engine.module.generate(
                 input_ids=inputs,
                 synced_gpus=True,
-                pad_token_id=self.tokenizer.eos_token_id,
+                pad_token_id=self.tokenizer.pad_token_id,
                 *args,
                 **kwargs
             )

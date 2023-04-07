@@ -115,7 +115,7 @@ class Inferencer(BasePipeline):
         }
 
         for batch_index, batch in enumerate(dataloader):
-            current_batch = batch 
+            current_batch = batch[0]
 
             input = prompt_structure.format(input=current_batch['input'])
             
@@ -127,7 +127,7 @@ class Inferencer(BasePipeline):
                 attenion_mask=mask,
                 temperature=temperature
             )
-            text_out = model.decode(outputs, skip_special_tokens=True)
+            text_out = model.decode(outputs, skip_special_tokens=True)[0]
 
             # only return the generation, trucating the input
             prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
