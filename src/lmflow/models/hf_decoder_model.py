@@ -156,13 +156,13 @@ class HFDecoderModel(DecoderModel, Tunable):
                 model = AutoModelForCausalLM.from_config(config)
                 n_params = sum(dict((p.data_ptr(), p.numel()) for p in model.parameters()).values())
                 logger.info(f"Training new model from scratch - Total size={n_params/2**20:.2f}M params")
-
+            self.backend_model_full = model
             if model_args.use_lora:
+                
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
                     r=model_args.lora_r,
-                    target_modules=["q_proj","v_proj"],
                     lora_alpha=model_args.lora_alpha,
                     lora_dropout=model_args.lora_dropout
                 )
@@ -185,6 +185,13 @@ class HFDecoderModel(DecoderModel, Tunable):
         elif tune_strategy == 'none':
             dschf = HfDeepSpeedConfig(ds_config)
             peft_model_id = model_args.lora_model_path
+            # NOTE: Currently offload is not supported by llama
+            if "llama" in model_args.model_name_or_path and model_args.use_ram_optimized_load:
+                logger.warning(
+                    "llama does not support RAM optimized load. Automatically"
+                    " use original load instead."
+                )
+                model_args.use_ram_optimized_load = False
 
             if model_args.use_ram_optimized_load and peft_model_id is None:
                 try:
@@ -215,10 +222,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                 )
 
             self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+            self.backend_model_full = self.backend_model
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
                 )
+
 
             deepspeed.init_distributed()
             self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
@@ -266,8 +275,8 @@ class HFDecoderModel(DecoderModel, Tunable):
         # since this will be pickled to avoid _LazyModule error in Hasher force
         # logger loading before tokenize_function
         tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
-        if model_args.use_lora:
-            self.tokenizer.pad_token = 1
+
+
 
         def tokenize_function(examples):
             with CaptureLogger(tok_logger) as cl:
@@ -305,7 +314,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         return tokenized_datasets
 
 
-    def encode(self, input: Union[str, List[str]], *args, **kwargs ) -> List[int]:
+    def encode(self, input: Union[str, List[str]], *args, **kwargs ) -> Union[List[int], List[List[int]]]:
         """
         Perform encoding process of the tokenizer.
     
@@ -325,10 +334,19 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The tokenized inputs.
         """
-        return self.tokenizer.encode(text=input, *args, **kwargs)
-    
+        if isinstance(input, list):
+            output = []
+            for single_input in input:
+                single_output = self.encode(single_input, *args, **kwargs)
+                output.append(single_output)
+            return output
+        elif isinstance(input, str):
+            return self.tokenizer.encode(text=input, *args, **kwargs)
+        else:
+            raise NotImplementedError(f'type "{type(input)}" cannot be encoded')
 
-    def decode(self, input, *args, **kwargs ) -> List[int]:
+
+    def decode(self, input, *args, **kwargs ) -> Union[str, List[str]]:
         """
         Perform decoding process of the tokenizer.
     
@@ -348,8 +366,16 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The text decoded from the token inputs.
         """
-        return self.tokenizer.decode(input, *args, **kwargs)
-    
+        if isinstance(input, list) and input and isinstance(input[0], list):
+            output = []
+            for single_input in input:
+                single_output = self.decode(single_input, *args, **kwargs)
+                output.append(single_output)
+            return output
+        else:
+            # Can be list of ints or a Tensor
+            return self.tokenizer.decode(input, *args, **kwargs)
+
 
     def inference(self, inputs, *args, **kwargs):
         """
@@ -382,6 +408,40 @@ class HFDecoderModel(DecoderModel, Tunable):
                 **kwargs
             )
         return outputs
+
+
+    def merge_lora_weights(self):
+        if self.model_args.use_lora:
+            self.get_backend_model().merge_and_unload()
+        else:
+            logger.warning("LoRA training is NOT enabled. Merging LoRA weights is not applicable.")
+
+
+    def save(self, dir, save_full_model=False, *args, **kwargs):
+        """
+        Perform generation process of the model.
+    
+        Parameters
+        ------------
+        dir :
+            The directory to save model and tokenizer
+            
+        save_full_model : Optional.
+            Whether to save full model.
+        
+        kwargs : Optional.
+            Keyword arguments.    
+        
+        Returns
+        ------------
+        outputs :
+            The generated sequence output 
+        """
+        self.get_tokenizer().save_pretrained(dir)
+        if save_full_model and self.model_args.use_lora:
+            self.backend_model_full.save_pretrained(dir)
+        else:
+            self.get_backend_model().save_pretrained(dir)
 
 
     def get_max_length(self):

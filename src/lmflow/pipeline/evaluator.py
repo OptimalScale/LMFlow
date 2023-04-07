@@ -69,6 +69,7 @@ class Evaluator(BasePipeline):
         # batch size has to be divisible by world_size, but can be bigger than world_size
         train_batch_size = 1 * self.world_size
         self.evaluator_args.minibatch_size = train_batch_size
+        self.block_size = evaluator_args.evaluate_block_size
         # dataloader, data_size = create_dataloader(args)    # load dataset
 
 
@@ -112,7 +113,7 @@ class Evaluator(BasePipeline):
         return False
 
 
-    def evaluate(self, model, dataset: Dataset):
+    def evaluate(self, model, dataset: Dataset, metric = "accuracy"):
         """
         Perform Evaluation for a model
 
@@ -125,88 +126,132 @@ class Evaluator(BasePipeline):
             
 
         """
-        dataloader, data_size = self.create_dataloader(dataset)
+        if metric == "accuracy":
+            dataloader, data_size = self.create_dataloader(dataset)
 
-        if not dist.is_initialized() or dist.get_rank() == 0:
-            if not os.path.exists(self.evaluator_args.output_dir):
-                os.makedirs(self.evaluator_args.output_dir)
-            output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
+            if not dist.is_initialized() or dist.get_rank() == 0:
+                if not os.path.exists(self.evaluator_args.output_dir):
+                    os.makedirs(self.evaluator_args.output_dir)
+                output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
-        acc_list = []
-        total = 0
-        # ds_engine = deepspeed.initialize(model=model.get_model(), config_params=self.ds_config)[0]
-        # ds_engine.module.eval()
-        for batch_index, batch in enumerate(dataloader):
-            if batch_index * self.world_size >= self.data_args.max_eval_samples: 
-                break
-            if self.local_rank >= len(batch):
-                current_batch = batch[0]
-            else:
-                # the batch in current process
-                current_batch = batch[self.local_rank] 
-            
-            prompt_structure = self.evaluator_args.prompt_structure
-            input = prompt_structure.format(input=current_batch['input'])
-            output = current_batch['output']
-            input_idx = current_batch['input_idx']
+            acc_list = []
+            total = 0
+            # ds_engine = deepspeed.initialize(model=model.get_model(), config_params=self.ds_config)[0]
+            # ds_engine.module.eval()
+            for batch_index, batch in enumerate(dataloader):
+                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
+                    break
+                if self.local_rank >= len(batch):
+                    current_batch = batch[0]
+                else:
+                    # the batch in current process
+                    current_batch = batch[self.local_rank] 
+                
+                prompt_structure = self.evaluator_args.prompt_structure
+                input = prompt_structure.format(input=current_batch['input'])
+                output = current_batch['output']
+                input_idx = current_batch['input_idx']
 
-            inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
-            
+                inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+                
 
-            # with torch.no_grad():
-                # outputs = ds_engine.module.generate(inputs, synced_gpus=True, pad_token_id=model.get_tokenizer().eos_token_id, min_length=5, max_length=100,temperature=0.0, do_sample=False)
-            outputs = model.inference(inputs, max_new_tokens=100, temperature=0.0)
-            text_out = model.decode(outputs[0], skip_special_tokens=True)
+                # with torch.no_grad():
+                    # outputs = ds_engine.module.generate(inputs, synced_gpus=True, pad_token_id=model.get_tokenizer().eos_token_id, min_length=5, max_length=100,temperature=0.0, do_sample=False)
+                outputs = model.inference(inputs, max_new_tokens=100, temperature=0.0)
+                text_out = model.decode(outputs[0], skip_special_tokens=True)
 
-            # # only return the generation, trucating the input
-            prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
-            text_out = text_out[prompt_length:]
-            answer_type = self.evaluator_args.answer_type
-            pred_answer = answer_extraction(
-                text_out,
-                answer_type=answer_type,
-            )
-            print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
-            print(f"predicted answer: {pred_answer} \n")
-            print(f"groundtruth answer: {output} \n")
+                # # only return the generation, trucating the input
+                prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
+                text_out = text_out[prompt_length:]
+                answer_type = self.evaluator_args.answer_type
+                pred_answer = answer_extraction(
+                    text_out,
+                    answer_type=answer_type,
+                )
+                print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
+                print(f"predicted answer: {pred_answer} \n")
+                print(f"groundtruth answer: {output} \n")
 
-            if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
-                correct_ = 0
-                total_ = 0
-            else:
-                correct_ = 0
-                total_ = 1
-                if self._match(pred_answer, output, answer_type):
-                    correct_ = 1
+                if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
+                    correct_ = 0
+                    total_ = 0
+                else:
+                    correct_ = 0
+                    total_ = 1
+                    if self._match(pred_answer, output, answer_type):
+                        correct_ = 1
 
-            # collect accuracy from all gpus
-            all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
-            dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
-            correct_, total_ = all_process.tolist()
-            avg = correct_ / total_
-            acc_list.append(avg)
-            total += total_
+                # collect accuracy from all gpus
+                all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
+                dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
+                correct_, total_ = all_process.tolist()
+                avg = correct_ / total_
+                acc_list.append(avg)
+                total += total_
 
-            # collect predictions from all gpus
-            output_dict = {"question": input,
-                        "prediction": text_out,
-                        "pred_answer": pred_answer,
-                        "answer": output}
-            all_process_list = [{}] * self.world_size
+                # collect predictions from all gpus
+                output_dict = {"question": input,
+                            "prediction": text_out,
+                            "pred_answer": pred_answer,
+                            "answer": output}
+                all_process_list = [{}] * self.world_size
 
-            dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
+                dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
+                if not dist.is_initialized() or dist.get_rank() == 0:
+                    current_accuracy = np.mean(acc_list)
+                    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
+                    
+                    if(self.evaluator_args.use_wandb == True):
+                        wandb.log({"Accuracy": current_accuracy})
+
+                    for index, output in enumerate(all_process_list):
+                        output_json = json.dumps(output)
+                        output_writer.write(output_json + '\n')
+
             if not dist.is_initialized() or dist.get_rank() == 0:
                 current_accuracy = np.mean(acc_list)
-                print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
-                
-                if(self.evaluator_args.use_wandb == True):
-                    wandb.log({"Accuracy": current_accuracy})
+                print("Final accuracy = ", current_accuracy)
+                output_writer.close()
+        elif metric == "ppl":
+            ppl =  self._evaluate_ppl(model, dataset)
+            print(f"Evaluating final ppl: {ppl}")
+        else:
+            raise NotImplementedError(f"{metric} is not implemented or not match with our defined metrics")
 
-                for index, output in enumerate(all_process_list):
-                    output_json = json.dumps(output)
-                    output_writer.write(output_json + '\n')
 
-        if not dist.is_initialized() or dist.get_rank() == 0:
-            current_accuracy = np.mean(acc_list)
-            print("Final accuracy = ", current_accuracy)
-            output_writer.close()
+    def _evaluate_ppl(self, model, dataset: Dataset):
+        data_dict = dataset.to_dict()
+        texts = [ instance["text"] for instance in data_dict["instances"] ]
+        encodings = model.get_tokenizer()("\n\n".join(texts), return_tensors="pt")
+        # Define some constant
+        try:
+            max_length = min(model.get_backend_model().config.n_positions, model.get_max_length())
+        except:
+            max_length = min(1024, model.get_max_length())
+        
+        print(f"The maximum sequence length : {max_length}")
+        seq_len = encodings.input_ids.size(1)
+
+        nlls = []
+        prev_end_loc = 0
+        for begin_loc in range(0, seq_len, self.block_size):
+            end_loc = min(begin_loc + max_length, seq_len)
+            trg_len = end_loc - prev_end_loc  # may be different from block_size on last loop
+            input_ids = encodings.input_ids[:, begin_loc:end_loc].to(device=self.local_rank)
+            target_ids = input_ids.clone()
+            target_ids[:, :-trg_len] = -100
+
+            with torch.no_grad():
+                outputs = model.get_backend_model()(input_ids, labels=target_ids)
+                # loss is calculated using CrossEntropyLoss which averages over valid labels
+                # N.B. the model only calculates loss over trg_len - 1 labels, because it internally shifts the labels
+                # to the left by 1.
+                neg_log_likelihood = outputs.loss
+
+            nlls.append(neg_log_likelihood)
+            prev_end_loc = end_loc
+            print(f"Evaluating PPL: {int(begin_loc/self.block_size) + 1} / {int(seq_len/self.block_size)} Complete, current ppl : {torch.exp(torch.stack(nlls).mean())}")
+            if end_loc == seq_len:
+                break
+        ppl = torch.exp(torch.stack(nlls).mean())
+        return ppl

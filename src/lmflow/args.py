@@ -161,6 +161,10 @@ class ModelArguments:
         default=0.1,
         metadata={"help": "The dropout rate in lora.linear."},
     )
+    save_aggregated_lora: bool = field(
+        default=False,
+        metadata={"help": "Whether to save aggregated lora."},
+        )
     use_ram_optimized_load: bool = field(
         default=True,
         metadata={"help": "Whether use disk mapping when memory is not enough."}
@@ -443,7 +447,15 @@ class EvaluatorArguments:
             )
         },
     )
-
+    evaluate_block_size: Optional[int] = field(
+        default=512,
+        metadata={
+            "help": (
+                "the model will have at least block_size tokens for context when calculating the conditional likelihood of any one token"
+                " (provided there are block_size preceding tokens available to condition on)"
+            )
+        },
+    )
 
 @dataclass
 class InferencerArguments:
