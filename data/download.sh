@@ -71,6 +71,14 @@ function main() {
         tar zxvf ${filename}
         rm ${filename}
     fi
+
+    if [ "$1" = "imdb" -o "$1" = "all" ]; then
+        echo "downloading imdb dataset"
+        filename='imdb.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
 }
 
 main "$@"
