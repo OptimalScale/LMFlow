@@ -149,9 +149,9 @@ class Evaluator(BasePipeline):
                 input = [prompt_structure.format(input=i['input']) for i in batch]
                 output = [i['output'] for i in batch]   
                 input_idx = [i['input_idx'] for i in batch]
-                batch = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
-                inputs = batch['input_ids']
-                mask = batch['attention_mask']
+                batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
+                inputs = batch_input['input_ids']
+                mask = batch_input['attention_mask']
                 #change right padding to left padding
                 outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
                 text_out = model.decode(outputs, skip_special_tokens=True)

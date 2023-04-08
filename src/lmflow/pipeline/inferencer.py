@@ -119,9 +119,9 @@ class Inferencer(BasePipeline):
 
             input = prompt_structure.format(input=current_batch['input'])
 
-            output = model.encode(input, return_tensors="pt").to(device=self.local_rank)
-            inputs = output["input_ids"]
-            mask = output["attention_mask"]
+            batch_input = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+            inputs = batch_input["input_ids"]
+            mask = batch_input["attention_mask"]
             outputs = model.inference(
                 inputs,
                 max_new_tokens=max_new_tokens,
