@@ -531,6 +531,30 @@ class RaftAlignerArguments(TrainingArguments):
             ),
         },
     )
+    num_iteration: Optional[int] = field(
+        default=20,
+        metadata={
+            "help": "number of iterations of the raft aligner."
+        },
+    )
+    raft_batch_size: Optional[int] = field(
+        default=320,
+        metadata={
+            "help": (
+                "only select {raft_batch_size} samples each time to"
+                " generate rewards and be ranked for STF training."
+            )
+        },
+    )
+    top_reward_percentage: Optional[int] = field(
+        default=0.2,
+        metadata={
+            "help": (
+                "only top {top_reward_percentage} samples in the raft batch,"
+                " (in terms of rewards), will be used for SFT the model."
+            ),
+        },
+    )
 
 
 PIPELINE_ARGUMENT_MAPPING = {

@@ -244,7 +244,6 @@ class RaftAligner(BaseAligner):
     ):
         """
         :param batch_input: input prompts
-        :param K: select the best from K responses
         """
         # we will get the batch dataset via Dataset.from_dict
         start_time = time.time()
@@ -374,12 +373,10 @@ class RaftAligner(BaseAligner):
         set_seed(42 + training_args.local_rank)
         print('my_seed is', 42 + training_args.local_rank)
 
-        ITERATION = 20
-        M = 320
+        ITERATION = aligner_args.num_iteration
+        M = aligner_args.raft_batch_size
 
-        K = 5
-        alpha = 1 / K
-        num_epoch = 4
+        alpha = aligner_args.top_reward_percentage
         data_size = len(dataset['input'])
         reward_seq = []
         lr = training_args.learning_rate
