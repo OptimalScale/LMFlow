@@ -101,7 +101,10 @@ class HFDecoderModelTest(unittest.TestCase):
             ds_config = json.load(f)
         dschf = HfDeepSpeedConfig(ds_config)
         model_name = 'gpt2'
-        model_args = ModelArguments(model_name_or_path=model_name)
+        model_args = ModelArguments(
+            model_name_or_path=model_name,
+            use_ram_optimized_load=False
+        )
         model = HFDecoderModel(model_args, tune_strategy='none', ds_config=ds_config)
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
