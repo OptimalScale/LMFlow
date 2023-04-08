@@ -125,7 +125,7 @@ class Inferencer(BasePipeline):
             outputs = model.inference(
                 inputs,
                 max_new_tokens=max_new_tokens,
-                attenion_mask=mask,
+                attention_mask=mask,
                 temperature=temperature
             )
             text_out = model.decode(outputs, skip_special_tokens=True)[0]
