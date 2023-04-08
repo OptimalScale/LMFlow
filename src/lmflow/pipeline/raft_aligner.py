@@ -7,6 +7,7 @@ The Aligner class simplifies the process of running alignment.
 import logging
 import numpy as np
 import os
+import sys
 import time
 from itertools import chain
 
@@ -29,7 +30,6 @@ from lmflow.args import DatasetArguments
 from lmflow.datasets.dataset import Dataset as LMFlowDataset
 from lmflow.pipeline.base_aligner import BaseAligner
 from lmflow.pipeline.utils.raft_trainer import RaftTrainer
-
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +60,14 @@ class RaftAligner(BaseAligner):
         self.model_args = model_args
         self.data_args = data_args
         self.aligner_args = aligner_args
+
+        logging.basicConfig(
+            format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+            datefmt="%m/%d/%Y %H:%M:%S",
+            handlers=[logging.StreamHandler(sys.stdout)],
+        )
+
+        logger.setLevel(logging.INFO)
 
 
     def _initialize_trainer(self, model, tokenizer, training_args):
@@ -297,7 +305,7 @@ class RaftAligner(BaseAligner):
             sample["output"] = [responses[j]]
             data.append(sample)
         output_data = [data[j] for j in idx]
-        print("I collected data of ", len(output_data))
+        logger.info(f"collected data of {len(output_data)}")
 
         world_size = int(os.getenv("WORLD_SIZE", "1"))
         all_process_list =[{}] * world_size
@@ -312,7 +320,7 @@ class RaftAligner(BaseAligner):
         reward_to_send = [np.mean(reward_eva), np.mean(reward_train)]
         all_process_rewards = [{}] * world_size
         dist.all_gather_object(all_process_rewards, reward_to_send)
-        print(all_process_rewards)
+        logger.info(all_process_rewards)
 
         if training_args.local_rank == 0:
             with open(training_args.output_dir + '/reward_re.txt', mode='a') as filename:
@@ -369,7 +377,6 @@ class RaftAligner(BaseAligner):
         data_args = self.data_args
 
         set_seed(42 + training_args.local_rank)
-        print('my_seed is', 42 + training_args.local_rank)
 
         ITERATION = aligner_args.num_iteration
         M = aligner_args.raft_batch_size
@@ -385,7 +392,6 @@ class RaftAligner(BaseAligner):
         ##############
         for iteration in range(ITERATION):
             set_seed(88 + training_args.local_rank + 4 * (iteration+1))
-            print('my_seed is', 88 + training_args.local_rank + 4 * (iteration+1))
 
             batch_input = dataset.select(np.random.randint(low=0, high=data_size, size=M))
 
@@ -411,11 +417,11 @@ class RaftAligner(BaseAligner):
                 training_args,
             )
 
-            print("iter ", iteration)
+            logger.info(f"iter {iteration}")
             start_time = time.time()
             train_result = raft_trainer.train(resume_from_checkpoint=False)
             end_time = time.time()
-            print("It takes ", end_time - start_time, " to train one stage")
+            logger.info("It takes %.2f s to train one stage", end_time - start_time)
 
         self._get_batch_dataset_top(
             raft_trainer.tmp_model,

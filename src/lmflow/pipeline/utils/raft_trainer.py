@@ -1142,7 +1142,6 @@ class RaftTrainer:
         ############
         num_training_steps *= 3
         ############
-        print("self.args.lr_scheduler_type")
         if self.lr_scheduler is None:
             self.lr_scheduler = get_scheduler(
                 self.args.lr_scheduler_type,

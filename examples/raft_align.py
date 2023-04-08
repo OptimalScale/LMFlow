@@ -3,6 +3,7 @@
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """Alignment tuning example, such as RLHF."""
 
+import logging
 import sys
 from dataclasses import dataclass, field
 from typing import Optional
