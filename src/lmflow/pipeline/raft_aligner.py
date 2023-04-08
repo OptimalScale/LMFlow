@@ -345,7 +345,7 @@ class RaftAligner(BaseAligner):
         sentiment_pipe = pipeline(
             "sentiment-analysis",
             model="lvwerra/distilbert-imdb",
-            device="cpu",
+            device=f"cuda:{self.aligner_args.local_rank}",
         )
 
         wrapped_model = model
@@ -428,6 +428,13 @@ class RaftAligner(BaseAligner):
             batch_input, alpha,
             iteration,
             training_args.local_rank,
+            output_min_length=aligner_args.output_min_length,
+            output_max_length=aligner_args.output_max_length,
+            generation_kwargs=generation_kwargs,
+            sent_kwargs=sent_kwargs,
+            tokenizer=tokenizer,
+            training_args=training_args,
+            sentiment_pipe=sentiment_pipe,
         )
 
         return wrapped_model 
