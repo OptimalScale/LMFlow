@@ -69,6 +69,15 @@ class RaftAligner(BaseAligner):
 
         logger.setLevel(logging.INFO)
 
+        output_reward_path = aligner_args.output_reward_path
+        if output_reward_path is not None:
+            os.makedirs(os.path.dirname(output_reward_path), exist_ok=True)
+            # Deletes a maybe-exist file
+            try:
+                os.remove(output_reward_path)
+            except OSError:
+                pass
+
 
     def _initialize_trainer(self, model, tokenizer, training_args):
         """
@@ -250,6 +259,7 @@ class RaftAligner(BaseAligner):
         tokenizer=None,
         training_args=None,
         reward_model=None,
+        output_reward_path=None,
     ):
         """
         :param batch_input: input prompts
@@ -322,10 +332,10 @@ class RaftAligner(BaseAligner):
         dist.all_gather_object(all_process_rewards, reward_to_send)
         logger.info(all_process_rewards)
 
-        if training_args.local_rank == 0:
-            with open(training_args.output_dir + '/reward_re.txt', mode='a') as filename:
-                filename.write('mean reward: ' + str(np.mean([all_process_rewards[i][0] for i in range(world_size)])) + 'mean reward in training set: ' + str([all_process_rewards[i][1] for i in range(world_size)]))
-                filename.write("\n")
+        if training_args.local_rank == 0 and output_reward_path is not None:
+            with open(output_reward_path, mode='a') as fout:
+                fout.write('mean reward: ' + str(np.mean([all_process_rewards[i][0] for i in range(world_size)])) + 'mean reward in training set: ' + str([all_process_rewards[i][1] for i in range(world_size)]))
+                fout.write("\n")
 
         prompt_structure = "{definition}{input}{output}"
         output_dataset = {
@@ -378,7 +388,7 @@ class RaftAligner(BaseAligner):
 
         set_seed(42 + training_args.local_rank)
 
-        ITERATION = aligner_args.num_iteration
+        ITERATION = aligner_args.num_raft_iteration
         M = aligner_args.raft_batch_size
 
         alpha = aligner_args.top_reward_percentage
@@ -407,6 +417,7 @@ class RaftAligner(BaseAligner):
                 tokenizer=tokenizer,
                 training_args=training_args,
                 reward_model=reward_model,
+                output_reward_path=aligner_args.output_reward_path,
             )
             raft_trainer.train_dataset = self._load_dataset(
                 selected_dataset,
@@ -434,6 +445,10 @@ class RaftAligner(BaseAligner):
             tokenizer=tokenizer,
             training_args=training_args,
             reward_model=reward_model,
+            output_reward_path=aligner_args.output_reward_path,
         )
+
+        if aligner_args.output_dir is not None:
+            wrapped_model.save(aligner_args.output_dir)
 
         return wrapped_model 

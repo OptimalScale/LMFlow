@@ -523,6 +523,12 @@ class RaftAlignerArguments(TrainingArguments):
     """
     Define a class RaftAlignerArguments to configure raft aligner.
     """
+    output_reward_path: Optional[str] = field(
+        default="tmp/raft_aligner/",
+        metadata={
+            "help": "The path of output rewards."
+        }
+    )
     output_min_length: Optional[int] = field(
         default=16,
         metadata={
@@ -541,7 +547,7 @@ class RaftAlignerArguments(TrainingArguments):
             ),
         },
     )
-    num_iteration: Optional[int] = field(
+    num_raft_iteration: Optional[int] = field(
         default=20,
         metadata={
             "help": "number of iterations of the raft aligner."
