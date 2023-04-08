@@ -3,7 +3,6 @@
 The class has two methods: create_dataloader() that loads the data from the test file, creates a data loader, and returns it with the size of the data, and evaluate(model) that generates output text given input text. It uses the create_dataloader() method to load the data, iterates over the data in mini-batches, and encodes the input text with the encode() method of the HFDecoderModel class. Then, it generates output text using the evaluate() method of the HFDecoderModel class, decodes the generated output text using the decode() method of the HFDecoderModel class, and writes the output to a file in the output directory. The method also logs some information to the console and Weights and Biases if the use_wandb argument is True.
 """
 import os
-# import deepspeed
 import torch
 import wandb
 import deepspeed
@@ -152,12 +151,11 @@ class Evaluator(BasePipeline):
                 batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
                 inputs = batch_input['input_ids']
                 mask = batch_input['attention_mask']
-                #change right padding to left padding
                 outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
                 text_out = model.decode(outputs, skip_special_tokens=True)
                 # # only return the generation, trucating the input
-                decode_input = model.decode(inputs, skip_special_tokens=True,)
-                prompt_length = [len(i) for i in decode_input]
+                decoded_input = model.decode(inputs, skip_special_tokens=True,)
+                prompt_length = [len(i) for i in decoded_input]
                 text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
                 answer_type = self.evaluator_args.answer_type
                 pred_answer = []

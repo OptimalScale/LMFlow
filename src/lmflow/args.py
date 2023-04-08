@@ -448,7 +448,7 @@ class EvaluatorArguments:
         },
     )
     batch_size: Optional[int] = field(
-        default=10,
+        default=1,
         metadata={
             "help": (
                 'Batch size for inference. If you are using a GPU, you can'

@@ -236,6 +236,9 @@ class HFDecoderModel(DecoderModel, Tunable):
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')
 
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        self.tokenizer.padding_side = "left"#necessary for lora,gpt2 and other decoder model
 
     def tokenize(self, dataset, *args, **kwargs):
         """
@@ -334,9 +337,6 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The tokenized inputs.
         """
-        if self.tokenizer.pad_token_id is None:
-            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
-        self.tokenizer.padding_side = "left"#necessary for lora,gpt2 and other decoder model
         return self.tokenizer(text=input, *args, **kwargs)#batch encode,will automatically do left padding
     
 
