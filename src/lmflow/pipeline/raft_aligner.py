@@ -25,6 +25,8 @@ from transformers import (
 )
 from transformers.testing_utils import CaptureLogger
 
+from lmflow.args import DatasetArguments
+from lmflow.datasets.dataset import Dataset as LMFlowDataset
 from lmflow.pipeline.base_aligner import BaseAligner
 from lmflow.pipeline.utils.raft_trainer import RaftTrainer
 
@@ -237,10 +239,9 @@ class RaftAligner(BaseAligner):
         output_min_length=16,
         output_max_length=48,
         generation_kwargs={},
-        sent_kwargs={},
         tokenizer=None,
         training_args=None,
-        sentiment_pipe=None,
+        reward_model=None,
     ):
         """
         :param batch_input: input prompts
@@ -273,8 +274,17 @@ class RaftAligner(BaseAligner):
                     generated_text.replace(input_texts[i], "") for i, generated_text in enumerate(generated_texts)
                 ]
                 texts_for_rewards = [q + r for q, r in zip(input_texts, generated_texts)]
-                pipe_outputs = sentiment_pipe(texts_for_rewards, **sent_kwargs)
-                rewards = [output[1]["score"] for output in pipe_outputs]
+
+                texts_for_reward_dataset = LMFlowDataset.create_from_dict({
+                    "type": "text_only",
+                    "instances": [
+                        { "text": text } for text in texts_for_rewards
+                    ],
+                })
+
+                reward_dataset = reward_model.get_regression(texts_for_reward_dataset)
+                rewards = [ sample["value"] for sample in reward_dataset.to_dict()["instances"] ]
+
                 reward_eva.extend(rewards)
                 responses.extend(generated_texts)
                 input_texts = []
@@ -320,7 +330,7 @@ class RaftAligner(BaseAligner):
         return DatasetDict({ "train": Dataset.from_dict(output_dataset) })
 
 
-    def align(self, model, dataset, reward_model=None):
+    def align(self, model, dataset, reward_model):
         """
         Perform alignment for a model
 
@@ -341,12 +351,6 @@ class RaftAligner(BaseAligner):
         dataset = self._load_input_dataset(dataset, tokenizer)
         set_caching_enabled(False)
 
-        sentiment_pipe = pipeline(
-            "sentiment-analysis",
-            model="lvwerra/distilbert-imdb",
-            device=f"cuda:{self.aligner_args.local_rank}",
-        )
-
         wrapped_model = model
         model = model.get_backend_model()
 
@@ -357,12 +361,6 @@ class RaftAligner(BaseAligner):
             "do_sample": True,
             "pad_token_id": tokenizer.eos_token_id,
             "temperature":0.7
-        }
-
-        sent_kwargs = {
-            "return_all_scores": True,
-            "function_to_apply": "none",
-            "batch_size": 10
         }
 
         aligner_args = self.aligner_args
@@ -400,10 +398,9 @@ class RaftAligner(BaseAligner):
                 output_min_length=aligner_args.output_min_length,
                 output_max_length=aligner_args.output_max_length,
                 generation_kwargs=generation_kwargs,
-                sent_kwargs=sent_kwargs,
                 tokenizer=tokenizer,
                 training_args=training_args,
-                sentiment_pipe=sentiment_pipe,
+                reward_model=reward_model,
             )
             raft_trainer.train_dataset = self._load_dataset(
                 selected_dataset,
@@ -428,10 +425,9 @@ class RaftAligner(BaseAligner):
             output_min_length=aligner_args.output_min_length,
             output_max_length=aligner_args.output_max_length,
             generation_kwargs=generation_kwargs,
-            sent_kwargs=sent_kwargs,
             tokenizer=tokenizer,
             training_args=training_args,
-            sentiment_pipe=sentiment_pipe,
+            reward_model=reward_model,
         )
 
         return wrapped_model 

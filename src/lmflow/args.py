@@ -108,6 +108,16 @@ class ModelArguments:
             )
         },
     )
+    arch_type: Optional[str] = field(
+        default="decoder_only",
+        metadata={
+            "help": (
+                "Model architecture type, e.g. \"decoder_only\","
+                " \"encoder_decoder\""
+            ),
+            "choices": ["decoder_only", "encoder_decoder", "text_regression"],
+        },
+    )
     config_name: Optional[str] = field(
         default=None, metadata={"help": "Pretrained config name or path if not the same as model_name"}
     )
