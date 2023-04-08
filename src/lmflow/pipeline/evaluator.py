@@ -156,7 +156,8 @@ class Evaluator(BasePipeline):
                 outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
                 text_out = model.decode(outputs, skip_special_tokens=True)
                 # # only return the generation, trucating the input
-                prompt_length = [len(i) for i in input]
+                decode_input = model.decode(inputs, skip_special_tokens=True,)
+                prompt_length = [len(i) for i in decode_input]
                 text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
                 answer_type = self.evaluator_args.answer_type
                 pred_answer = []
@@ -210,12 +211,6 @@ class Evaluator(BasePipeline):
             if not dist.is_initialized() or dist.get_rank() == 0:
                 current_accuracy = np.mean(acc_list)
                 print("Final accuracy = ", current_accuracy)
-                if(self.evaluator_args.use_wandb == True):
-                    wandb.log({"Final accuracy":current_accuracy})
-                with open(f"{self.evaluator_args.output_dir}/accuracy.txt", "w") as f:
-                    f.write(self.evaluator_args.prompt_structure+str(current_accuracy))
-                    f.write('\n')
-                f.close()
                 output_writer.close()
         elif metric == "ppl":
             ppl =  self._evaluate_ppl(model, dataset)
