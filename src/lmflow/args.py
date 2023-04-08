@@ -508,10 +508,36 @@ class InferencerArguments:
     )
 
 
+@dataclass
+class RaftAlignerArguments(TrainingArguments):
+    """
+    Define a class RaftAlignerArguments to configure raft aligner.
+    """
+    output_min_length: Optional[int] = field(
+        default=16,
+        metadata={
+            "help": (
+                "minimum length of the output token sequence generated from"
+                " model given an input."
+            ),
+        },
+    )
+    output_max_length: Optional[int] = field(
+        default=48,
+        metadata={
+            "help": (
+                "maximum length of the output token sequence generated from"
+                " model given an output."
+            ),
+        },
+    )
+
+
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
+    "raft_aligner": RaftAlignerArguments,
 }
 
 
