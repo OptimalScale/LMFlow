@@ -4,6 +4,7 @@
 """
 
 from lmflow.pipeline.finetuner import Finetuner
+from lmflow.pipeline.finetuner_no_trainer import Finetuner_no_trainer
 from lmflow.pipeline.evaluator import Evaluator
 from lmflow.pipeline.inferencer import Inferencer
 
@@ -11,6 +12,7 @@ from lmflow.pipeline.inferencer import Inferencer
 PIPELINE_MAPPING = {
     "finetuner": Finetuner,
     "evaluator": Evaluator,
+    "finetuner_no_trainer": Finetuner_no_trainer,
     "inferencer": Inferencer,
 }
 

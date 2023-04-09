@@ -58,7 +58,7 @@ class Dataset:
         if backend == "huggingface":
             data_files = [
                 x.absolute().as_posix()
-                 for x in Path(self.dataset_path).glob("*.json")
+                for x in Path(self.dataset_path).glob("*.json")
             ]
 
             # Iterate through all the files and ensure they have the same data type
