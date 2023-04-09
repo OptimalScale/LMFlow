@@ -77,18 +77,18 @@ class HFDecoderModelTest(unittest.TestCase):
         model_name = 'gpt2'
         model_args = ModelArguments(model_name_or_path=model_name)
         model = HFDecoderModel(model_args)
-        self.assertEqual(model.encode(test_encode_input), test_encode_output)
+        self.assertEqual(model.encode(test_encode_input)["input_ids"], test_encode_output)
 
         batch_encode_input = [test_encode_input] * 2
         batch_encode_output = [test_encode_output] * 2
-        self.assertEqual(model.encode(batch_encode_input), batch_encode_output)
+        self.assertEqual(model.encode(batch_encode_input)["input_ids"], batch_encode_output)
 
 
     def test_decode(self):
         model_name = 'gpt2'
         model_args = ModelArguments(model_name_or_path=model_name)
         model = HFDecoderModel(model_args)
-        self.assertEqual(model.decode(test_decode_input), test_decode_output)
+        self.assertEqual(model.decode([test_decode_input])[0], test_decode_output)
 
         batch_decode_input = [test_decode_input] * 2
         batch_decode_output = [test_decode_output] * 2
@@ -106,10 +106,12 @@ class HFDecoderModelTest(unittest.TestCase):
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
         torch.cuda.set_device(self.local_rank) 
-        inputs = model.encode(test_encode_input, return_tensors="pt").to(device=self.local_rank)
-        outputs = model.inference(inputs,min_length=5, max_length=100,temperature=0.0, do_sample=False)
-        text_out = model.decode(outputs[0], skip_special_tokens=True)
-        prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
+        encoded_inputs = model.encode(test_encode_input, return_tensors="pt").to(device=self.local_rank)
+        inputs  = encoded_inputs["input_ids"]
+        mask = encoded_inputs["attention_mask"]
+        outputs = model.inference(inputs,min_length=5, max_length=100,temperature=0.0,attention_mask=mask,do_sample=False)
+        text_out = model.decode(outputs, skip_special_tokens=True)[0]
+        prompt_length = len(model.decode(inputs, skip_special_tokens=True,)[0])
         text_out = text_out[prompt_length:].strip("\n")
 
         self.assertEqual(text_out, test_inference_output)

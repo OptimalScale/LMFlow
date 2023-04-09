@@ -139,15 +139,16 @@ class Evaluator(BasePipeline):
             for batch_index, batch in enumerate(dataloader):
                 if batch_index * self.world_size >= self.data_args.max_eval_samples: 
                     break
-                if self.local_rank >= len(batch):
-                    current_batch = batch[0]
+                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
+                    break
+                if self.local_rank*self.evaluator_args.batch_size >= len(batch):
+                    current_batch = batch[:self.evaluator_args.batch_size]
                 else:
-                    # the batch in current process
-                    current_batch = batch[self.local_rank] 
+                    current_batch = batch[self.local_rank*self.evaluator_args.batch_size:(self.local_rank+1)*self.evaluator_args.batch_size]
                 prompt_structure = self.evaluator_args.prompt_structure
-                input = [prompt_structure.format(input=i['input']) for i in batch]
-                output = [i['output'] for i in batch]   
-                input_idx = [i['input_idx'] for i in batch]
+                input = [prompt_structure.format(input=i['input']) for i in current_batch]
+                output = [i['output'] for i in current_batch]   
+                input_idx = [i['input_idx'] for i in current_batch]
                 batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
                 inputs = batch_input['input_ids']
                 mask = batch_input['attention_mask']
