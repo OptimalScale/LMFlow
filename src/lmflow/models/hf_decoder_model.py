@@ -286,6 +286,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     output = self.tokenizer(
                         examples[text_column_name],
                         truncation=True,
+                        return_token_type_ids=False if 'galactica' in self.model_args.model_name_or_path else True,
                     )
             # clm input could be much much longer than block_size
             if "Token indices sequence length is longer than the" in cl.out:
