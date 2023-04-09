@@ -52,7 +52,7 @@ def main():
         pipeline_args=pipeline_args,
     )
     dataset = Dataset(data_args)
-    print(f"dataset = {dataset}")
+
     model = AutoModel.get_model(
         model_args,
         lang=data_args.lang,
@@ -61,16 +61,22 @@ def main():
         streaming = data_args.streaming,
         preprocessing_num_workers = data_args.preprocessing_num_workers,
         overwrite_cache = data_args.overwrite_cache,
-        max_source_length = data_args.max_source_length
+        max_source_length = data_args.max_source_length,
+        max_target_length = data_args.max_target_length,
+        pad_to_max_length = data_args.pad_to_max_length
     )
 
     # Tokenization and text grouping must be done in the main process
     with pipeline_args.main_process_first(desc="dataset map tokenization"):
         tokenized_dataset = model.tokenize(dataset)
-        lm_dataset = finetuner.group_text(
-            tokenized_dataset,
-            model_max_length=model.get_max_length(),
-        )
+        if model_args.arch_type == "encoder_decoder": 
+            # encoder-decoder model does not need group text
+            lm_dataset = tokenized_dataset
+        else:
+            lm_dataset = finetuner.group_text(
+                tokenized_dataset,
+                model_max_length=model.get_max_length(),
+            )
 
     # Finetuning
     tuned_model = finetuner.tune(model=model, lm_dataset=lm_dataset)

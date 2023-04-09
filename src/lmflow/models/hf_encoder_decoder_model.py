@@ -258,6 +258,9 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         """
         model_args = self.model_args
         data_args = self.data_args
+        text_column = "input"
+        summary_column = "output"
+        prefix = data_args["source_prefix"] if data_args["source_prefix"] is not None else ""
 
         # A list of all multilingual tokenizer which require lang attribute.
         MULTILINGUAL_TOKENIZERS = [MBartTokenizer, MBartTokenizerFast, MBart50Tokenizer, MBart50TokenizerFast]
@@ -277,6 +280,10 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             )
             self.model.config.forced_bos_token_id = forced_bos_token_id
         
+        # Temporarily set max_target_length for training.
+        max_target_length = data_args["max_target_length"]
+        padding = "max_length" if data_args["pad_to_max_length"] else False
+
         # Preprocessing the datasets.
         # First we tokenize all the texts.
         if dataset.get_backend() != "huggingface":
@@ -285,50 +292,54 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 "not supported yet"
             )
 
-        raw_datasets = dataset
-        hf_raw_datasets = dataset.get_backend_dataset()
-        column_names = list(hf_raw_datasets.features)
-        text_column_name = "text" if "text" in column_names else column_names[0]
-
+        # TODO: DO WE NEED THIS?
         # since this will be pickled to avoid _LazyModule error in Hasher force
         # logger loading before tokenize_function
         tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
         if model_args.use_lora:
             self.tokenizer.pad_token = 1
 
-        def tokenize_function(examples):
-            with CaptureLogger(tok_logger) as cl:
-                if not model_args.use_lora:
-                    output = self.tokenizer(examples[text_column_name])
-                else:
-                    output = self.tokenizer(
-                        examples[text_column_name],
-                        truncation=True,
-                    )
-            # clm input could be much much longer than block_size
-            if "Token indices sequence length is longer than the" in cl.out:
-                tok_logger.warning(
-                    "^^^^^^^^^^^^^^^^ Please ignore the warning above - this long input will be chunked into smaller bits"
-                    " before being passed to the model."
-                )
-            return output
+        raw_datasets = dataset
+        hf_raw_datasets = dataset.get_backend_dataset()
+        column_names = list(hf_raw_datasets.features)
+        text_column_name = "text" if "text" in column_names else column_names[0]
 
+        def preprocess_function(examples):
+            # remove pairs where at least one record is None
+
+            inputs, targets = [], []
+            for i in range(len(examples[text_column])):
+                if examples[text_column][i] and examples[summary_column][i]:
+                    inputs.append(examples[text_column][i])
+                    targets.append(examples[summary_column][i])
+
+            inputs = [prefix + inp for inp in inputs]
+            model_inputs = self.tokenizer(inputs, max_length=data_args.max_source_length, padding=padding, truncation=True)
+
+            # Tokenize targets with the `text_target` keyword argument
+            labels = self.tokenizer(text_target=targets, max_length=max_target_length, padding=padding, truncation=True)
+
+            # If we are padding here, replace all tokenizer.pad_token_id in the labels by -100 when we want to ignore
+            # padding in the loss.
+            if padding == "max_length" and data_args.ignore_pad_token_for_loss:
+                labels["input_ids"] = [
+                    [(l if l != self.tokenizer.pad_token_id else -100) for l in label] for label in labels["input_ids"]
+                ]
+
+            model_inputs["labels"] = labels["input_ids"]
+            return model_inputs
+    
         data_args = raw_datasets.get_data_args()
-        if not data_args.streaming:
-            tokenized_datasets = raw_datasets.map(
-                tokenize_function,
-                batched=True,
-                num_proc=data_args.preprocessing_num_workers,
-                remove_columns=column_names,
-                load_from_cache_file=not data_args.overwrite_cache,
-                desc="Running tokenizer on dataset",
-            )
-        else:
-            tokenized_datasets = raw_datasets.map(
-                tokenize_function,
-                batched=True,
-                remove_columns=column_names,
-            )
+
+        tokenized_datasets = raw_datasets.map(
+            preprocess_function,
+            batched=True,
+            num_proc=data_args.preprocessing_num_workers,
+            remove_columns=column_names,
+            load_from_cache_file=not data_args.overwrite_cache,
+            desc="Running tokenizer on train dataset",
+        )
+
         return tokenized_datasets
 
 

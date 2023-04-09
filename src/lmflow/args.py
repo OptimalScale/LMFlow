@@ -637,7 +637,6 @@ class InferencerArguments:
 
 
 PIPELINE_ARGUMENT_MAPPING = {
-    "seq2seq_finetuner": FinetunerArguments,
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
