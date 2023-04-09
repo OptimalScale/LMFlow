@@ -15,6 +15,7 @@ Typical usage example:
 """
 
 import sys
+import os
 
 from transformers import HfArgumentParser
 
@@ -32,6 +33,7 @@ from lmflow.pipeline.auto_pipeline import AutoPipeline
 def main():
 	# Parses arguments
     pipeline_name = "finetuner"
+    # pipeline_name = "finetuner_no_trainer"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
     parser = HfArgumentParser((ModelArguments, DatasetArguments, PipelineArguments))
