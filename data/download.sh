@@ -79,6 +79,14 @@ function main() {
         tar zxvf ${filename}
         rm ${filename}
     fi
+
+    if [ "$1" = "wiki_cn" -o "$1" = "all" ]; then
+        echo "downloading wiki_cn dataset"
+        filename='wiki_cn.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
 }
 
 main "$@"
