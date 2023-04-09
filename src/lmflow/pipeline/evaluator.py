@@ -221,6 +221,8 @@ class Evaluator(BasePipeline):
 
     def _evaluate_ppl(self, model, dataset: Dataset):
         data_dict = dataset.to_dict()
+        if data_dict['type'] == 'text2text':
+            raise NotImplementedError("ppl evaluation is currently not supported for text2text dataset, please use text_only dataset.")
         texts = [ instance["text"] for instance in data_dict["instances"] ]
         encodings = model.get_tokenizer()("\n\n".join(texts), return_tensors="pt")
         # Define some constant

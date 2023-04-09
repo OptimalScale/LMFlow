@@ -467,7 +467,7 @@ class EvaluatorArguments:
         },
     )
     metric: Optional[str] = field(
-        default="ppl",
+        default="accuracy",
         metadata={
             "help": "the metric the model will be evaluated on",
             "choices": ["ppl", "accuracy"],
