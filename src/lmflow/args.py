@@ -108,6 +108,16 @@ class ModelArguments:
             )
         },
     )
+    arch_type: Optional[str] = field(
+        default="decoder_only",
+        metadata={
+            "help": (
+                "Model architecture type, e.g. \"decoder_only\","
+                " \"encoder_decoder\""
+            ),
+            "choices": ["decoder_only", "encoder_decoder", "text_regression"],
+        },
+    )
     config_name: Optional[str] = field(
         default=None, metadata={"help": "Pretrained config name or path if not the same as model_name"}
     )
@@ -456,6 +466,14 @@ class EvaluatorArguments:
             )
         },
     )
+    metric: Optional[str] = field(
+        default="ppl",
+        metadata={
+            "help": "the metric the model will be evaluated on",
+            "choices": ["ppl", "accuracy"],
+        },
+    )
+
 
 @dataclass
 class InferencerArguments:
@@ -508,10 +526,66 @@ class InferencerArguments:
     )
 
 
+@dataclass
+class RaftAlignerArguments(TrainingArguments):
+    """
+    Define a class RaftAlignerArguments to configure raft aligner.
+    """
+    output_reward_path: Optional[str] = field(
+        default="tmp/raft_aligner/",
+        metadata={
+            "help": "The path of output rewards."
+        }
+    )
+    output_min_length: Optional[int] = field(
+        default=16,
+        metadata={
+            "help": (
+                "minimum length of the output token sequence generated from"
+                " model given an input."
+            ),
+        },
+    )
+    output_max_length: Optional[int] = field(
+        default=48,
+        metadata={
+            "help": (
+                "maximum length of the output token sequence generated from"
+                " model given an output."
+            ),
+        },
+    )
+    num_raft_iteration: Optional[int] = field(
+        default=20,
+        metadata={
+            "help": "number of iterations of the raft aligner."
+        },
+    )
+    raft_batch_size: Optional[int] = field(
+        default=320,
+        metadata={
+            "help": (
+                "only select {raft_batch_size} samples each time to"
+                " generate rewards and be ranked for STF training."
+            )
+        },
+    )
+    top_reward_percentage: Optional[int] = field(
+        default=0.2,
+        metadata={
+            "help": (
+                "only top {top_reward_percentage} samples in the raft batch,"
+                " (in terms of rewards), will be used for SFT the model."
+            ),
+        },
+    )
+
+
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
+    "raft_aligner": RaftAlignerArguments,
 }
 
 

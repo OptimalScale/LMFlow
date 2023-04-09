@@ -173,6 +173,19 @@ class Dataset:
             )
 
 
+    @classmethod
+    def create_from_dict(cls, dict_obj, *args, **kwargs):
+        r"""
+        Returns
+        --------
+
+        Returns a Dataset object given a dict.
+        """
+        empty_data_args = DatasetArguments(dataset_path=None)
+        dataset = Dataset(empty_data_args)
+        return dataset.from_dict(dict_obj)
+
+
     def to_dict(self):
         r"""
         Returns

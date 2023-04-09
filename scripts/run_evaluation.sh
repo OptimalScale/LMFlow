@@ -5,4 +5,5 @@ CUDA_VISIBLE_DEVICES=0 \
     --answer_type medmcqa \
     --model_name_or_path gpt2-large \
     --dataset_path data/MedQA-USMLE/validation \
-    --deepspeed examples/ds_config.json
+    --deepspeed examples/ds_config.json \
+    --metric accuracy
