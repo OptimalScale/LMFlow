@@ -136,6 +136,10 @@ LLaMA 33B (LoRA)의 성능은 단일 8 \* A100 서버로 PubMedQA와 MedMCQA의 
 
 
 ## 1.Setup
+
+소프트웨어 패키지는 Linux 운영 체제(Ubuntu 20.04)에서 완전히 테스트되었습니다. 다른 운영 체제 플랫폼(MacOS, Windows)은 아직 완전히 테스트되지 않았습니다.
+예상치 못한 오류가 발생할 수 있습니다.Linux 시스템에서 먼저 시도하거나 Google Colab을 사용하여 경험할 수 있습니다.
+
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow

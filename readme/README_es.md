@@ -135,6 +135,10 @@ Hemos hecho públicos los checkpoints entrenados para que todos puedan utilizarl
 Ofrecemos soporte para todos los modelos [decodificadores](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) en 🤗 huggingface. Hemos probado completamente LLaMA, GPT2, GPT-Neo, Galactica. Pronto también ofreceremos soporte para modelos codificadores.
 
 ## 1.Setup
+
+Nuestro paquete ya está completamente probado en el sistema operativo Linux (ubuntu 20.04). otras plataformas del sistema operativo (macos, windows) aún no han sido completamente probadas.
+Puede encontrar algunos errores inesperados. Puede intentarlo primero en una máquina Linux o experimentarlo con Google colab.
+
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
