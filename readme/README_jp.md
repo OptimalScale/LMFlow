@@ -135,6 +135,10 @@ Instruction tuningの結果を含む、より詳細なパフォーマンスに�
 
 
 ## 1.Setup
+
+私たちのパッケージはLinuxオペレーティングシステム（Ubuntu 20.04）で全面的にテストされています。その他のオペレーティングシステムプラットフォーム（MacOS、Windows）はまだ全面的にテストされていません。
+予期せぬエラーが発生する可能性があります。Linuxマシンで試したり、Google Colabを使って体験したりすることができます。
+
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow

@@ -143,7 +143,8 @@ LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder
 
 ## 1.Setup
 
-Our package has been full tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested. 
+Our package has been full tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested.
+You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
 
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
