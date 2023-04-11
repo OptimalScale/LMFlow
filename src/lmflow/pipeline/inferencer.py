@@ -119,16 +119,19 @@ class Inferencer(BasePipeline):
 
             input = prompt_structure.format(input=current_batch['input'])
 
-            inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+            batch_input = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+            inputs = batch_input["input_ids"]
+            mask = batch_input["attention_mask"]
             outputs = model.inference(
                 inputs,
                 max_new_tokens=max_new_tokens,
+                attention_mask=mask,
                 temperature=temperature
             )
-            text_out = model.decode(outputs[0], skip_special_tokens=True)
+            text_out = model.decode(outputs, skip_special_tokens=True)[0]
 
             # only return the generation, trucating the input
-            prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
+            prompt_length = len(model.decode(inputs, skip_special_tokens=True,)[0])
             text_out = text_out[prompt_length:]
             output_dict["instances"].append({ "text": text_out })
 
