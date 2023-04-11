@@ -493,6 +493,13 @@ class InferencerArguments:
         mixed precision mode, whether to use bf16 or fp16
 
     """
+    device: str = field(
+        default="gpu",
+        metadata={
+            "help": "device of chatbot",
+            "choices": ["gpu", "cpu"],
+        },
+    )
     local_rank: int = field(
         default=-1,
         metadata={"help": "For distributed training: local_rank"
