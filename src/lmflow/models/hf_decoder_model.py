@@ -81,6 +81,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         model_args,
         tune_strategy='normal',
         ds_config=None,
+        device="gpu",
         *args,
         **kwargs
     ):
@@ -100,6 +101,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         # Distributed training: The .from_pretrained methods guarantee that
         # only one local process can concurrently download model & vocab.
 
+        self.device = device
 
         if tune_strategy == 'normal':
             config_kwargs = {
@@ -228,10 +230,10 @@ class HFDecoderModel(DecoderModel, Tunable):
                     self.backend_model, peft_model_id
                 )
 
-
-            deepspeed.init_distributed()
-            self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
-            self.ds_engine.module.eval()
+            if device == "gpu":
+                deepspeed.init_distributed()
+                self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
+                self.ds_engine.module.eval()
 
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')
@@ -400,13 +402,26 @@ class HFDecoderModel(DecoderModel, Tunable):
 
 
         with torch.no_grad():
-            outputs = self.ds_engine.module.generate(
-                input_ids=inputs,
-                synced_gpus=True,
-                pad_token_id=self.tokenizer.eos_token_id,
-                *args,
-                **kwargs
-            )
+            if self.device == "gpu":
+                outputs = self.ds_engine.module.generate(
+                    input_ids=inputs,
+                    synced_gpus=True,
+                    pad_token_id=self.tokenizer.eos_token_id,
+                    *args,
+                    **kwargs
+                )
+            elif self.device == "cpu":
+                outputs = self.backend_model.generate(
+                    input_ids=inputs,
+                    synced_gpus=True,
+                    pad_token_id=self.tokenizer.eos_token_id,
+                    *args,
+                    **kwargs
+                )
+            else:
+                raise NotImplementedError(
+                    f"device \"{self.device}\" is not supported"
+                )
         return outputs
 
 

@@ -47,8 +47,15 @@ class Inferencer(BasePipeline):
 
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
-        torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
-        deepspeed.init_distributed()
+        if inferencer_args.device == "gpu":
+            torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
+            deepspeed.init_distributed()
+        else:
+            os.environ["MASTER_ADDR"] = "localhost"
+            os.environ["MASTER_PORT"] = "15000"
+            dist.init_process_group(
+                "gloo", rank=self.local_rank, world_size=self.world_size
+            )
 
         self.config = AutoConfig.from_pretrained(model_args.model_name_or_path)
         try: 
@@ -119,7 +126,15 @@ class Inferencer(BasePipeline):
 
             input = prompt_structure.format(input=current_batch['input'])
 
-            inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+            if self.inferencer_args.device == "gpu":
+                inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+            elif self.inferencer_args.device == "cpu":
+                inputs = model.encode(input, return_tensors="pt").to(device='cpu')
+            else:
+                raise NotImplementedError(
+                    f"device \"{device}\" is not supported"
+                )
+
             outputs = model.inference(
                 inputs,
                 max_new_tokens=max_new_tokens,

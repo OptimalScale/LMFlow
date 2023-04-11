@@ -69,6 +69,7 @@ def main():
         model_args,
         tune_strategy='none',
         ds_config=ds_config,
+        device=pipeline_args.device,
     )
 
     # We don't need input data, we will read interactively from stdin
