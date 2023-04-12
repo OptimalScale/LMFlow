@@ -32,7 +32,7 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 
 
 ## Latest News
-* [2023-04-10] <span style="color:red">We propose a new alignment algorithm: Reward rAnked FineTuning (RAFT), which is more efficient than conventional (PPO-based) RLHF. The movie review completion demo are available now.</span>
+* [2023-04-10] **We propose a new alignment algorithm: Reward rAnked FineTuning (RAFT), which is more efficient than conventional (PPO-based) RLHF. The movie review completion demo are available now.**
 * [2023-04-02] [Web service](https://lmflow.com/) is online!
 * [2023-04-01] Release Chinese checkpoints in model zoo: [LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
 * [2023-04-01] Release English checkpoints in model zoo: [LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
