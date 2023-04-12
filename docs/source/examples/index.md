@@ -14,6 +14,11 @@ DATASETS
 
 Refer to [examples](https://github.com/OptimalScale/LMFlow/blob/main/examples).
 
+```{toctree}
+:maxdepth: 3
+
+raft
+```
 
 ## Inference
 
