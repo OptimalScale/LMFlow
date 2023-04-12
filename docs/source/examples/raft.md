@@ -24,7 +24,8 @@ The movie review chatbot was trained via `./scripts/run_raft_align.sh`, with the
 from lmflow.datasets.dataset import Dataset
 
 def reward_of(text: str) -> float
-   # TODO: Defines this part with your own reward function
+   # ===== Defines this part with your own reward function =====
+   # ===== End =====
    return reward
 
 def reward_function(text_dataset: Dataset):
@@ -44,4 +45,3 @@ def reward_function(text_dataset: Dataset):
 reward_model.register_inference_function(reward_function)
 ...
 ```
-TODO
