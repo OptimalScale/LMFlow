@@ -36,5 +36,6 @@ deepspeed ${deepspeed_args} \
     --save_steps 35 \
     --dataloader_num_workers 1 \
     --preprocessing_num_workers 12 \
+    --inference_batch_size_per_device 1 \
     | tee ${log_dir}/raft_align.log \
     2> ${log_dir}/raft_align.err
