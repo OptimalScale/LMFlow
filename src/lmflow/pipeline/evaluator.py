@@ -3,6 +3,7 @@
 The class has two methods: create_dataloader() that loads the data from the test file, creates a data loader, and returns it with the size of the data, and evaluate(model) that generates output text given input text. It uses the create_dataloader() method to load the data, iterates over the data in mini-batches, and encodes the input text with the encode() method of the HFDecoderModel class. Then, it generates output text using the evaluate() method of the HFDecoderModel class, decodes the generated output text using the decode() method of the HFDecoderModel class, and writes the output to a file in the output directory. The method also logs some information to the console and Weights and Biases if the use_wandb argument is True.
 """
 import os
+# import deepspeed
 import torch
 import wandb
 import deepspeed
@@ -66,7 +67,7 @@ class Evaluator(BasePipeline):
 
         print(f"model_hidden_size = {self.model_hidden_size}")
         # batch size has to be divisible by world_size, but can be bigger than world_size
-        train_batch_size = self.evaluator_args.batch_size * self.world_size
+        train_batch_size = 1 * self.world_size
         self.evaluator_args.minibatch_size = train_batch_size
         self.block_size = evaluator_args.evaluate_block_size
         # dataloader, data_size = create_dataloader(args)    # load dataset
@@ -90,8 +91,7 @@ class Evaluator(BasePipeline):
             self.evaluator_args.minibatch_size,
             self.evaluator_args.random_shuffle
         )
-        print(f"Successfully create dataloader with size {len(dataloader)},batch_size {self.evaluator_args.minibatch_size}.")
-        
+        print(f"Successfully create dataloader with size {len(dataloader)}.")
         return dataloader, dataset_size
 
 
@@ -136,35 +136,38 @@ class Evaluator(BasePipeline):
 
             acc_list = []
             total = 0
+            # ds_engine = deepspeed.initialize(model=model.get_model(), config_params=self.ds_config)[0]
+            # ds_engine.module.eval()
             for batch_index, batch in enumerate(dataloader):
                 if batch_index * self.world_size >= self.data_args.max_eval_samples: 
                     break
-                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
-                    break
-                if self.local_rank*self.evaluator_args.batch_size >= len(batch):
-                    current_batch = batch[:self.evaluator_args.batch_size]
+                if self.local_rank >= len(batch):
+                    current_batch = batch[0]
                 else:
-                    current_batch = batch[self.local_rank*self.evaluator_args.batch_size:(self.local_rank+1)*self.evaluator_args.batch_size]
+                    # the batch in current process
+                    current_batch = batch[self.local_rank] 
+                
                 prompt_structure = self.evaluator_args.prompt_structure
-                input = [prompt_structure.format(input=i['input']) for i in current_batch]
-                output = [i['output'] for i in current_batch]   
-                input_idx = [i['input_idx'] for i in current_batch]
-                batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
-                inputs = batch_input['input_ids']
-                mask = batch_input['attention_mask']
-                outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
-                text_out = model.decode(outputs, skip_special_tokens=True)
+                input = prompt_structure.format(input=current_batch['input'])
+                output = current_batch['output']
+                input_idx = current_batch['input_idx']
+
+                inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+                
+
+                # with torch.no_grad():
+                    # outputs = ds_engine.module.generate(inputs, synced_gpus=True, pad_token_id=model.get_tokenizer().eos_token_id, min_length=5, max_length=100,temperature=0.0, do_sample=False)
+                outputs = model.inference(inputs, max_new_tokens=100, temperature=0.0)
+                text_out = model.decode(outputs[0], skip_special_tokens=True)
+
                 # # only return the generation, trucating the input
-                decoded_input = model.decode(inputs, skip_special_tokens=True,)
-                prompt_length = [len(i) for i in decoded_input]
-                text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
+                prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
+                text_out = text_out[prompt_length:]
                 answer_type = self.evaluator_args.answer_type
-                pred_answer = []
-                for i in text_out:
-                    pred_answer.append(answer_extraction(
-                        i,
-                        answer_type=answer_type,
-                    ))
+                pred_answer = answer_extraction(
+                    text_out,
+                    answer_type=answer_type,
+                )
                 print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
                 print(f"predicted answer: {pred_answer} \n")
                 print(f"groundtruth answer: {output} \n")
@@ -174,11 +177,9 @@ class Evaluator(BasePipeline):
                     total_ = 0
                 else:
                     correct_ = 0
-                    total_ = 0
-                    for i in range(len(pred_answer)):
-                        total_ += 1
-                        if self._match(pred_answer[i], output[i], answer_type):
-                            correct_ += 1
+                    total_ = 1
+                    if self._match(pred_answer, output, answer_type):
+                        correct_ = 1
 
                 # collect accuracy from all gpus
                 all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)

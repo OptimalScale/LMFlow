@@ -238,9 +238,6 @@ class HFDecoderModel(DecoderModel, Tunable):
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')
 
-        if self.tokenizer.pad_token_id is None:
-            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
-        self.tokenizer.padding_side = "left"#necessary for lora,gpt2 and other decoder model
 
     def tokenize(self, dataset, *args, **kwargs):
         """
@@ -337,11 +334,14 @@ class HFDecoderModel(DecoderModel, Tunable):
         Returns
         ------------
         outputs :
-            if string input,return the tokenized inputs.
-            if batch input,return {input_ids,attention_mask,token_type_ids}
+            The tokenized inputs.
         """
         if isinstance(input, list):
-            return self.tokenizer(text=input, *args, **kwargs)#batch encode,will automatically do left padding
+            output = []
+            for single_input in input:
+                single_output = self.encode(single_input, *args, **kwargs)
+                output.append(single_output)
+            return output
         elif isinstance(input, str):
             return self.tokenizer.encode(text=input, *args, **kwargs)
         else:
@@ -354,7 +354,7 @@ class HFDecoderModel(DecoderModel, Tunable):
     
         Parameters
         ------------
-        inputs : tensor / list.
+        inputs : list.
             The token sequence.
             
         args : Optional.
@@ -368,10 +368,12 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The text decoded from the token inputs.
         """
-        if isinstance(input, List):
-            input=torch.tensor(input)
-        if input.dim()==2:
-            return self.tokenizer.batch_decode(input, *args, **kwargs)#batch_decode
+        if isinstance(input, list) and input and isinstance(input[0], list):
+            output = []
+            for single_input in input:
+                single_output = self.decode(single_input, *args, **kwargs)
+                output.append(single_output)
+            return output
         else:
             # Can be list of ints or a Tensor
             return self.tokenizer.decode(input, *args, **kwargs)
@@ -404,7 +406,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 outputs = self.ds_engine.module.generate(
                     input_ids=inputs,
                     synced_gpus=True,
-                    pad_token_id=self.tokenizer.pad_token_id,
+                    pad_token_id=self.tokenizer.eos_token_id,
                     *args,
                     **kwargs
                 )
@@ -412,7 +414,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 outputs = self.backend_model.generate(
                     input_ids=inputs,
                     synced_gpus=True,
-                    pad_token_id=self.tokenizer.pad_token_id,
+                    pad_token_id=self.tokenizer.eos_token_id,
                     *args,
                     **kwargs
                 )
