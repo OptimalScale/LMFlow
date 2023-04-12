@@ -255,6 +255,7 @@ class RaftAligner(BaseAligner):
         local_rank=0,
         output_min_length=16,
         output_max_length=48,
+        infer_batch_size=8,
         generation_kwargs={},
         tokenizer=None,
         training_args=None,
@@ -276,7 +277,6 @@ class RaftAligner(BaseAligner):
         out_put_dataset_eval = {}
         data_eval = []
         input_texts = []
-        infer_batch_size = 8
         responses = []
         for i, query_tensor in enumerate(query_tensors):
             query = querys[i]
@@ -413,6 +413,7 @@ class RaftAligner(BaseAligner):
                 training_args.local_rank,
                 output_min_length=aligner_args.output_min_length,
                 output_max_length=aligner_args.output_max_length,
+                infer_batch_size=aligner_args.inference_batch_size_per_device,
                 generation_kwargs=generation_kwargs,
                 tokenizer=tokenizer,
                 training_args=training_args,
@@ -441,6 +442,7 @@ class RaftAligner(BaseAligner):
             training_args.local_rank,
             output_min_length=aligner_args.output_min_length,
             output_max_length=aligner_args.output_max_length,
+            infer_batch_size=aligner_args.inference_batch_size_per_device,
             generation_kwargs=generation_kwargs,
             tokenizer=tokenizer,
             training_args=training_args,
