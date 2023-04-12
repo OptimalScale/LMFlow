@@ -81,7 +81,7 @@ class HFDecoderModelTest(unittest.TestCase):
 
         batch_encode_input = [test_encode_input] * 2
         batch_encode_output = [test_encode_output] * 2
-        self.assertEqual(model.encode(batch_encode_input), batch_encode_output)
+        self.assertEqual(model.encode(batch_encode_input)['input_ids'], batch_encode_output)
 
 
     def test_decode(self):
