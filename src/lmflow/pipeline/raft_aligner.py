@@ -362,8 +362,8 @@ class RaftAligner(BaseAligner):
         reward_model: RegressionModel object.
         """
         tokenizer = model.get_tokenizer()
-        tokenizer.pad_token_id = tokenizer.eos_token_id
         tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.pad_token_id = tokenizer.eos_token_id
         tokenizer.padding_side = "left"
 
         dataset = self._load_input_dataset(dataset, tokenizer)
