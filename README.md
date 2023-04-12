@@ -7,8 +7,11 @@
 <h4 align="center">
     <p>
         <b>English</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_zh-hans.md">简体中文</a> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_zh-hans.md">简体中文</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_jp.md">日本語</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_ko.md">한국어</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_hindi.md">हिंदी</a>
     <p>
 </h4>
 
@@ -17,7 +20,7 @@
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
@@ -141,7 +144,8 @@ LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder
 
 ## 1.Setup
 
-Our package has been full tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested. 
+Our package has been full tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested.
+You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
 
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
@@ -299,6 +303,12 @@ You can now evaluate with the finetuned llama model.
 ### 4.2 DeepSpeed Config
 You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
 
+
+### 4.3 LLaMA Inference on CPU
+
+Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
+
+
 ## 5. Model Release
 
 ### 5.1 Medical Model Checkpoints
@@ -341,7 +351,7 @@ Whether you are a beginner or an expert, we believe that you can benefit from th
 
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
 
 ## Disclaimer
 

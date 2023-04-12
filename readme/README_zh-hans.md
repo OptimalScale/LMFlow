@@ -1,14 +1,17 @@
 <p align="center" width="100%">
-<img src="assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
+<img src="../assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 </p>
 
 # LMFlow
 
 <h4 align="center">
     <p>
-        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README.md">English</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/README.md">English</a> |
         <b>简体中文</b> |
-        <a href="https://github.com/OptimalScale/LMFlow/blob/shizhe-multilingual/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_es.md">Español</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_jp.md">日本語</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_ko.md">한국어</a> |
+        <a href="https://github.com/OptimalScale/LMFlow/blob/main/readme/README_hindi.md">हिंदी</a>
     <p>
 </h4>
 
@@ -16,7 +19,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
-[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
+[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 
 一个可扩展、方便和高效的工具箱，用于微调大型机器学习模型。我们的目标是开发一套用户友好、快速可靠，并对整个社区开放的全流程微调代码库。
@@ -25,7 +28,7 @@
 
 
 <p align="center" width="100%">
-<img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
+<img src="../assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 
@@ -59,7 +62,7 @@
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
-<img src="assets/colab-shell-chatbot-demo.png">
+<img src="../assets/colab-shell-chatbot-demo.png">
 </p>
 
 
@@ -131,6 +134,10 @@ LLaMA 33B（LoRA）的性能仅经过约16小时的微调，即可在PubMedQA和
 
 
 ## 1.Setup
+
+我们的软件包已经在Linux操作系统（Ubuntu 20.04）上进行了全面测试。其他操作系统平台（MacOS、Windows）尚未进行全面测试。
+您可能会遇到一些意料之外的错误。建议您先在Linux机器上尝试，或者使用Google Colab进行体验。
+
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
@@ -292,7 +299,7 @@ cd -
 无论您是初学者还是专家，我们相信大家都能从这个平台中获益。让我们共同努力，建立一个充满活力和创新的大模型社区！
 
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/srGxyazbNs)
-[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
+[![WeChat badge](https://img.shields.io/badge/微信-加入-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 
 ## Disclaimer

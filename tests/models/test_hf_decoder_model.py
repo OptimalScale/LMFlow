@@ -79,11 +79,21 @@ class HFDecoderModelTest(unittest.TestCase):
         model = HFDecoderModel(model_args)
         self.assertEqual(model.encode(test_encode_input), test_encode_output)
 
+        batch_encode_input = [test_encode_input] * 2
+        batch_encode_output = [test_encode_output] * 2
+        self.assertEqual(model.encode(batch_encode_input), batch_encode_output)
+
+
     def test_decode(self):
         model_name = 'gpt2'
         model_args = ModelArguments(model_name_or_path=model_name)
         model = HFDecoderModel(model_args)
         self.assertEqual(model.decode(test_decode_input), test_decode_output)
+
+        batch_decode_input = [test_decode_input] * 2
+        batch_decode_output = [test_decode_output] * 2
+        self.assertEqual(model.decode(batch_decode_input), batch_decode_output)
+
 
     def test_inference(self):
         ds_config_path = "examples/ds_config.json"
@@ -91,7 +101,10 @@ class HFDecoderModelTest(unittest.TestCase):
             ds_config = json.load(f)
         dschf = HfDeepSpeedConfig(ds_config)
         model_name = 'gpt2'
-        model_args = ModelArguments(model_name_or_path=model_name)
+        model_args = ModelArguments(
+            model_name_or_path=model_name,
+            use_ram_optimized_load=False
+        )
         model = HFDecoderModel(model_args, tune_strategy='none', ds_config=ds_config)
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))

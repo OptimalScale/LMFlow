@@ -40,4 +40,4 @@ evaluator = AutoPipeline.get_pipeline(
     data_args=data_args,
     pipeline_args=pipeline_args,
 )
-evaluator.evaluate(model=model, dataset=dataset)
+evaluator.evaluate(model=model, dataset=dataset, metric=pipeline_args.metric)
