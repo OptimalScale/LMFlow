@@ -587,7 +587,7 @@ class RaftAlignerArguments(TrainingArguments):
         },
     )
     inference_batch_size_per_device: Optional[int] = field(
-        default=8,
+        default=1,
         metadata={
             "help": (
                 "every device will infer {inference_batch_size_per_device}"
