@@ -35,23 +35,23 @@ class TextRegressionModel(RegressionModel):
         Initializes a TextRegressionModel instance.
         :param model_args: dictionary with model arguments such as model name, path, revision, etc.
         """
-        self.regression_func = None
+        self.inference_func = None
 
 
-    def register_regression_function(self, regression_func):
+    def register_inference_function(self, inference_func):
         """
         Registers a regression function.
         """
-        self.regression_func = regression_func
+        self.inference_func = inference_func
 
 
-    def get_regression(self, dataset: Dataset):
+    def inference(self, inputs: Dataset):
         """
         Gets regression results of a given dataset.
 
-        :dataset: Dataset object, only accept type "text_only".
+        :inputs: Dataset object, only accept type "text_only".
         """
-        if self.regression_func is not None:
-            return self.regression_func(dataset)
+        if self.inference_func is not None:
+            return self.inference_func(inputs)
         else:
             pass

@@ -33,7 +33,7 @@ def reward_function(text_dataset: Dataset):
    text_list = [ sample["text"] for sample in data_dict["instances"] ]
    reward_list = [ reward_of(text) for text in text_list ]
 
-   return Dataset.from_dict({
+   return Dataset.create_from_dict({
        "type": "float_only",
        "instances": [
            { "value": reward } for reward in reward_list
