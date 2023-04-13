@@ -129,6 +129,7 @@ def main():
             "instances": [ { "text": context } ]
         })
 
+        print("Bot: ", end="")
         print_index = 0
         response = ""
 
