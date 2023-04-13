@@ -22,6 +22,10 @@ logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
 
 
+def rstrip_partial_utf8(string):
+    return string.replace("\ufffd", "")
+
+
 def print_to_console(string, encoding='utf-8', end="\n"):
     sys.stdout.buffer.write((string + end).encode(encoding))
 
@@ -128,7 +132,7 @@ def main():
         print_index = 0
         response = ""
 
-        token_per_step = 2
+        token_per_step = 4
         for _ in range(0, chatbot_args.max_new_tokens // token_per_step):
             output_dataset = inferencer.inference(
                 model=model,
@@ -138,6 +142,7 @@ def main():
             )
 
             new_append_text = output_dataset.to_dict()["instances"][0]["text"]
+            new_append_text = rstrip_partial_utf8(new_append_text)
             response += new_append_text
 
             input_dict = input_dataset.to_dict()
