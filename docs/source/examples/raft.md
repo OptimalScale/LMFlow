@@ -14,7 +14,7 @@ Our experiments demonstrate that the RAFT algorithm performs well on both large 
 
 We provide a movie review chatbot aligned by our RAFT algorithm, where we encourage the chatbot to provide more positive responses for movie topics. Users can interact with the bot and share experiences about one's favorite movies!
 
-TBA
+<img src="../_static/raft-demo-examples.png" alt="RAFT Demo Examples" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 
 ## Customized Alignments
 
