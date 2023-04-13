@@ -130,7 +130,7 @@ def main():
 
     reward_model_args = ModelArguments(arch_type="text_regression")
     reward_model = AutoModel.get_model(reward_model_args)
-    reward_model.register_regression_function(reward_function)
+    reward_model.register_inference_function(reward_function)
 
     # Aligns model with rewards
     aligned_model = aligner.align(

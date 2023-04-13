@@ -300,7 +300,7 @@ class RaftAligner(BaseAligner):
                     ],
                 })
 
-                reward_dataset = reward_model.get_regression(texts_for_reward_dataset)
+                reward_dataset = reward_model.inference(texts_for_reward_dataset)
                 rewards = [ sample["value"] for sample in reward_dataset.to_dict()["instances"] ]
 
                 reward_eva.extend(rewards)
