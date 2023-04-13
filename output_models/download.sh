@@ -71,6 +71,14 @@ function main() {
         tar zxvf ${filename}
         rm ${filename}
     fi
+
+    if [ "$1" = "llama7b-lora-movie-reviewer" -o "$1" = "raft_ckpt" -o "$1" = "all" ]; then
+        echo "downloading llama7b-lora-movie-reviewer"
+        filename='llama7b-lora-movie-reviewer.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
 }
 
 main "$@"
