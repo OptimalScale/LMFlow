@@ -14,11 +14,18 @@ Our experiments demonstrate that the RAFT algorithm performs well on both large 
 
 We provide a movie review chatbot aligned by our RAFT algorithm, where we encourage the chatbot to provide more positive responses for movie topics. Users can interact with the bot and share experiences about one's favorite movies!
 
-TBA
+<img src="../_static/raft-demo-examples.png" alt="RAFT Demo Examples" style="width: 75%; min-width: 300px; display: block; margin: auto;">
 
 ## Customized Alignments
 
-The movie review chatbot was trained via `./scripts/run_raft_align.sh`, with the base model set to [llama-7b](https://github.com/OptimalScale/LMFlow/tree/main#41-llama-checkpoint). To train a customized model with this script, one need to register the reward function in [examples/raft_align.py](https://github.com/OptimalScale/LMFlow/blob/main/examples/raft_align.py):
+The movie review chatbot was trained via `./scripts/run_raft_align.sh`, with the base model set to [llama-7b](https://github.com/OptimalScale/LMFlow/tree/main#41-llama-checkpoint). The lora checkpoint for our demo can be obtained via
+```sh
+cd output_models
+./download.sh llama7b-lora-movie-reviewer
+cd -
+```
+
+To train a customized model with this script, one need to register the reward function in [examples/raft_align.py](https://github.com/OptimalScale/LMFlow/blob/main/examples/raft_align.py):
 
 ```python
 from lmflow.datasets.dataset import Dataset
