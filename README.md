@@ -46,7 +46,7 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 ### Currently our checkpoint download service is at capacity. We have allocated one more server to support that. If you encounter error "_too many HTTP requests_", please wait for several minutes and try again. Thanks for your understanding.:pray:
 
 We provide four kinds of demos which include
-- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA-7B and LLaMA-33B for you to have a try.
+- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA you to have a try. We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process.  
 - Colab Chatbot (shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
 - Colab Chatbot (web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
 - Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
@@ -58,7 +58,7 @@ We provide four kinds of demos which include
 
 
 ### Online Service
-> Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned, and LLaMA-33B-tuned online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot referto `Local Deploy`.
+> Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned model online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot referto `Local Deploy`.
 
 ### Colab chatbot (shell)
 <p align="center" width="100%">
@@ -130,7 +130,7 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 | Instruction Tuning |  :white_check_mark: Supported |
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
-| Alignment Tuning |  :wrench: Developing |
+| Alignment Tuning |  :white_check_mark: Supported |
 
 
 
@@ -139,7 +139,6 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 
 Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 huggingface. 
 LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
-
 
 
 ## 1.Setup
