@@ -18,6 +18,7 @@ mkdir -p ${output_dir} ${log_dir}
 deepspeed ${deepspeed_args} \
   examples/finetune.py \
     --output_dir ${output_dir} --overwrite_output_dir \
+    --per_device_train_batch_size 1 \
     --use_lora 1 \
     --save_aggregated_lora 1\
     --deepspeed configs/ds_config_zero2.json \
@@ -29,6 +30,5 @@ deepspeed ${deepspeed_args} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
-    ${finetune_args} \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
