@@ -46,7 +46,7 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 ### Currently our checkpoint download service is at capacity. We have allocated one more server to support that. If you encounter error "_too many HTTP requests_", please wait for several minutes and try again. Thanks for your understanding.:pray:
 
 We provide four kinds of demos which include
-- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA you to have a try. We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process.  
+- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA you to have a try. 
 - Colab Chatbot (shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
 - Colab Chatbot (web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
 - Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
@@ -242,7 +242,9 @@ python examples/finetune.py -h
 ```
 to view all possible finetuning arguments. The finetuned model checkpoint will
 be saved in the argument specified by `--output_dir`, which is
-`output_models/finetune` in the above example.
+`output_models/finetune` in the above example. 
+We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process and serve the model in our web service. 
+
 ### 3.2 Run Evaluation
 
 One can directly run evaluation with an existing huggingface model, e.g. to run
