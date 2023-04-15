@@ -86,7 +86,7 @@ class RaftAligner(BaseAligner):
         trainer = RaftTrainer(
             model=model,
             args=training_args,
-            train_dataset=Dataset.from_dict({}),
+            train_dataset=Dataset.from_dict({"text": [ " " ] }),
             eval_dataset=Dataset.from_dict({}),
             tokenizer=tokenizer,
             data_collator=default_data_collator,
