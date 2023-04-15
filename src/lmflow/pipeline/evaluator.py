@@ -126,7 +126,7 @@ class Evaluator(BasePipeline):
             
 
         """
-        if metric == "accuracy":
+        if metric in ["acc", "accuracy"]:
             dataloader, data_size = self.create_dataloader(dataset)
 
             if not dist.is_initialized() or dist.get_rank() == 0:
@@ -212,9 +212,12 @@ class Evaluator(BasePipeline):
                 current_accuracy = np.mean(acc_list)
                 print("Final accuracy = ", current_accuracy)
                 output_writer.close()
-        elif metric == "ppl":
+        elif metric in ["ppl", "perplexity"]:
             ppl =  self._evaluate_ppl(model, dataset)
             print(f"Evaluating final ppl: {ppl}")
+        elif metric in ["nll", "neg_log_likelihood"]:
+            neg_log_likelihood = self._evaluate_neg_log_likelihood(model, dataset)
+            print(f"Evaluating final negative log likelihood: {neg_log_likelihood}")
         else:
             raise NotImplementedError(f"{metric} is not implemented or not match with our defined metrics")
 
@@ -230,7 +233,7 @@ class Evaluator(BasePipeline):
             max_length = min(model.get_backend_model().config.n_positions, model.get_max_length())
         except:
             max_length = min(1024, model.get_max_length())
-        
+
         print(f"The maximum sequence length : {max_length}")
         seq_len = encodings.input_ids.size(1)
 
@@ -257,3 +260,74 @@ class Evaluator(BasePipeline):
                 break
         ppl = torch.exp(torch.stack(nlls).mean())
         return ppl
+
+
+    def _evaluate_neg_log_likelihood(self, model, dataset: Dataset):
+        """
+        Evaluates negative log likelihood of the model over a dataset.
+
+        NLL = -1/N sum_{i=1}^N sum_{j=1}^|w_i| ln(p(w_{i,j}|context_window)),
+
+        where N is the number of data samples, w_{i,j} is the j-th token in
+        i-th sample. Here "context_window" = p(w_{i,start}, w_{i,start+1}, ...,
+        p_{i,j-1} with start = max(0, j - window_length + 1). "window_length"
+        is normally the maximum length accepted by the model.
+
+        Returns:
+            A float which represents the negative log likelihood.
+        """
+        data_dict = dataset.to_dict()
+        if data_dict['type'] == 'text2text':
+            raise NotImplementedError(
+                "negative log likelihood evaluation is currently not supported"
+                " for text2text dataset, please use text_only dataset."
+            )
+        texts = [ instance["text"] for instance in data_dict["instances"] ]
+        encoding_list = [ model.get_tokenizer()(text, return_tensors="pt")
+                          for text in texts ]
+
+        # Gets context window length
+        try:
+            max_length = min(model.get_backend_model().config.n_positions,
+                             model.get_max_length())
+        except:
+            max_length = min(1024, model.get_max_length())
+
+        nlls = []
+        num_samples = len(texts)
+        for sample_idx, encodings in enumerate(encoding_list):
+            seq_len = encodings.input_ids.size(1)
+
+            prev_end_loc = 0
+            for begin_loc in range(0, seq_len, self.block_size):
+                end_loc = min(begin_loc + max_length, seq_len)
+
+                # may be different from block_size on last loop
+                trg_len = end_loc - prev_end_loc
+                input_ids = encodings.input_ids[:, begin_loc:end_loc]
+                input_ids = input_ids.to(device=self.local_rank)
+
+                target_ids = input_ids.clone()
+                target_ids[:, :-trg_len] = -100
+
+                with torch.no_grad():
+                    outputs = model.get_backend_model()(input_ids,
+                                                        labels=target_ids)
+                    # loss is calculated using CrossEntropyLoss which averages
+                    # over valid labels N.B. the model only calculates loss
+                    # over trg_len - 1 labels, because it internally shifts the
+                    # labels to the left by 1.
+                    neg_log_likelihood = outputs.loss
+
+                nlls.append(neg_log_likelihood)
+                prev_end_loc = end_loc
+                print(
+                    f"Evaluating negative log likelihood:"
+                    f" {sample_idx + 1} / {num_samples} Complete, current nll:"
+                    f" {torch.stack(nlls).sum() / (sample_idx + 1)}"
+                )
+                if end_loc == seq_len:
+                    break
+
+        mean_nll = torch.stack(nlls).sum() / num_samples
+        return mean_nll
