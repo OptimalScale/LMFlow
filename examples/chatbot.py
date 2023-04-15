@@ -26,10 +26,6 @@ def rstrip_partial_utf8(string):
     return string.replace("\ufffd", "")
 
 
-def print_to_console(string, encoding='utf-8', end="\n"):
-    sys.stdout.buffer.write((string + end).encode(encoding))
-
-
 @dataclass
 class ChatbotArguments:
     prompt_structure: Optional[str] = field(
@@ -104,7 +100,7 @@ def main():
         f"#############################################################################\n"
         "\n"
     )
-    print_to_console(guide_message)
+    print(guide_message)
 
     # context = (
     #     "You are a helpful assistant who follows the given instructions"
@@ -118,7 +114,7 @@ def main():
     while True:
         input_text = input("User >>> ")
         if not input_text:
-            print_to_console("exit...")
+            print("exit...")
             break
 
         context += prompt_structure.format(input_text=input_text)
@@ -169,13 +165,13 @@ def main():
                         break
 
                 new_print_index += 1
-                print_to_console(char, end="")
+                print(char, end="", flush=True)
 
             print_index = new_print_index
 
             if flag_break:
                 break
-        print_to_console("\n", end="")
+        print("\n", end="")
 
         context += response + "\n"
 
