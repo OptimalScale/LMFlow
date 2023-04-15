@@ -57,7 +57,7 @@ class Inferencer(BasePipeline):
                 "gloo", rank=self.local_rank, world_size=self.world_size
             )
 
-        self.config = AutoConfig.from_pretrained(model_args.model_name_or_path)
+        self.config = AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
         try: 
             self.model_hidden_size = self.config.hidden_size
         except:
@@ -132,7 +132,7 @@ class Inferencer(BasePipeline):
                 inputs = model.encode(input, return_tensors="pt").to(device='cpu')
             else:
                 raise NotImplementedError(
-                    f"device \"{device}\" is not supported"
+                    f"device \"{self.inferencer_args.device}\" is not supported"
                 )
 
             outputs = model.inference(

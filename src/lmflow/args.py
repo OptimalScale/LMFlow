@@ -13,7 +13,8 @@ extracted from the MODEL_CONFIG_CLASSES.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
 
 from transformers.utils.versions import require_version
 
@@ -99,6 +100,10 @@ class ModelArguments:
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
     )
+    arch_type: Optional[str] = field(
+        default="decoder_only",
+        metadata={"help": "The architecture type of the model. Currently supported decoder_only or encoder_decoder"}
+    )
     config_overrides: Optional[str] = field(
         default=None,
         metadata={
@@ -179,7 +184,15 @@ class ModelArguments:
         default=True,
         metadata={"help": "Whether use disk mapping when memory is not enough."}
     )
-
+    resize_position_embeddings: Optional[bool] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Whether to automatically resize the position embeddings if `max_source_length` exceeds "
+                "the model's position embeddings."
+            )
+        },
+    )
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
             raise ValueError(
