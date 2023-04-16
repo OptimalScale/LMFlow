@@ -113,9 +113,11 @@ def main():
 
     while True:
         input_text = input("User >>> ")
-        if not input_text:
+        if input_text == "exit":
             print("exit...")
             break
+        if not input_text:
+            input_text = " "
 
         context += prompt_structure.format(input_text=input_text)
         context = context[-model.get_max_length():]     # Memory of the bot
