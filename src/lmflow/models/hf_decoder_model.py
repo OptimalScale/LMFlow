@@ -29,7 +29,6 @@ from peft import (
     TaskType,
     get_peft_config,
     get_peft_model,
-    prepare_model_for_int8_training,
 )
 
 import torch
