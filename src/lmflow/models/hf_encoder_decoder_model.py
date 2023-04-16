@@ -19,6 +19,7 @@ and question answering.
 """
 import logging
 from typing import List, Union
+import re
 
 import deepspeed
 from peft import (
@@ -32,7 +33,8 @@ from peft import (
 import torch
 import transformers
 from transformers.deepspeed import HfDeepSpeedConfig
-
+from transformers.generation.logits_process import LogitsProcessor
+from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList, GenerationConfig, ModelOutput
 from transformers.testing_utils import CaptureLogger
 
 from transformers import (
@@ -53,6 +55,13 @@ from lmflow.models.interfaces.tunable import Tunable
 
 logger = logging.getLogger(__name__)
 
+class InvalidScoreLogitsProcessor(LogitsProcessor):
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
+        if torch.isnan(scores).any() or torch.isinf(scores).any():
+            scores.zero_()
+            scores[..., 5] = 5e4
+        return scores
+    
 class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
     r"""
     Initializes a HFEncoderDecoderModel instance.
@@ -282,7 +291,6 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         """
         return self.tokenizer.decode(input, *args, **kwargs)
     
-
     def inference(self, inputs, *args, **kwargs):
         """
         Perform generation process of the model.
@@ -306,13 +314,70 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
 
 
         with torch.no_grad():
-            outputs = self.ds_engine.module.generate(
-                input_ids=inputs,
-                synced_gpus=True,
-                pad_token_id=self.tokenizer.eos_token_id,
-                *args,
-                **kwargs
-            )
+            if self.model_args.model_name_or_path == 'THUDM/chatglm-6b':
+                raw_input = kwargs.pop('raw_input', None)
+                history = []
+                logits_processor = None
+
+                if history is None:
+                    history = []
+                if logits_processor is None:
+                    logits_processor = LogitsProcessorList()
+                logits_processor.append(InvalidScoreLogitsProcessor())
+                # gen_kwargs = {"max_length": max_length, "do_sample": do_sample, "top_p": top_p,
+                #             "temperature": temperature, "logits_processor": logits_processor, **kwargs}
+                if not history:
+                    prompt = raw_input
+                else:
+                    prompt = ""
+                    for i, (old_query, response) in enumerate(history):
+                        prompt += "[Round {}]\n问：{}\n答：{}\n".format(i, old_query, response)
+                    prompt += "[Round {}]\n问：{}\n答：".format(len(history), raw_input)
+                inputs = self.tokenizer([prompt], return_tensors="pt")
+                inputs = inputs.to("cuda")
+                for outputs in self.backend_model.stream_generate(**inputs, **kwargs):
+                    # outputs = outputs.tolist()[0][len(inputs["input_ids"][0]):]
+                    print(f"outputs = {outputs}")
+                    # response = self.tokenizer.decode(outputs)
+                    # response = self.process_response(response)
+                    # new_history = history + [(raw_input, response)]
+                    # yield response, new_history
+
+                # for response, history in self.backend_model.stream_chat(self.tokenizer, raw_input, history=history):
+                #     outputs = response
+                    # Prints characters in the buffer
+                    # new_print_index = print_index
+                    # for char in response[print_index:]:
+                    #     if end_string is not None and char == end_string[0]:
+                    #         if new_print_index + len(end_string) >= len(response):
+                    #             break
+
+                    #     new_print_index += 1
+                    #     print(char, end="", flush=True)
+
+                    # print_index = new_print_index
+
+                
+                # logits_processor = None
+                # if history is None:
+                #     history = []
+                # if logits_processor is None:
+                #     logits_processor = LogitsProcessorList()
+
+                # logits_processor.append(InvalidScoreLogitsProcessor())                
+                # kwargs.update({"logits_processor": logits_processor})
+                # inputs = self.tokenizer([raw_input], return_tensors="pt")
+                # inputs = inputs.to("cuda")
+                # outputs = self.ds_engine.module.generate(**inputs, **kwargs)
+
+            else:
+                outputs = self.ds_engine.module.generate(
+                    input_ids=inputs,
+                    synced_gpus=True,
+                    pad_token_id=self.tokenizer.eos_token_id,
+                    *args,
+                    **kwargs
+                )
         return outputs
 
 

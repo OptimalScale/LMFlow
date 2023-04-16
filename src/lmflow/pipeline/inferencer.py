@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import datetime
 import json
+import re
 
 from transformers import AutoConfig
 import torch.distributed as dist
@@ -83,13 +84,14 @@ class Inferencer(BasePipeline):
         )
         return dataloader, dataset_size
 
-
     def inference(
         self,
         model,
         dataset: Dataset,
         max_new_tokens: int=100,
         temperature: float=0.0,
+        do_sample: bool=False,
+        top_p: float=0.7,
         prompt_structure: str='{input}',
     ):
         """
@@ -124,12 +126,19 @@ class Inferencer(BasePipeline):
         for batch_index, batch in enumerate(dataloader):
             current_batch = batch[0]        # batch size is 1
 
-            input = prompt_structure.format(input=current_batch['input'])
+            raw_input = prompt_structure.format(input=current_batch['input'])
+            print(f"raw_input = {raw_input}")
 
+            # if self.model_args.model_name_or_path == 'THUDM/chatglm-6b':
+                # history = []
+                # for response, history in model.get_backend_model().stream_chat(model.get_tokenizer(), raw_input, history=history):
+                #     text_out = response
+
+            # else:
             if self.inferencer_args.device == "gpu":
-                inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+                inputs = model.encode(raw_input, return_tensors="pt").to(device=self.local_rank)
             elif self.inferencer_args.device == "cpu":
-                inputs = model.encode(input, return_tensors="pt").to(device='cpu')
+                inputs = model.encode(raw_input, return_tensors="pt").to(device='cpu')
             else:
                 raise NotImplementedError(
                     f"device \"{self.inferencer_args.device}\" is not supported"
@@ -140,8 +149,15 @@ class Inferencer(BasePipeline):
                 max_new_tokens=max_new_tokens,
                 temperature=temperature,
                 repetition_penalty=1.0,
+                do_sample=do_sample,
+                top_p=top_p,
+                raw_input=raw_input,
             )
             text_out = model.decode(outputs[0], skip_special_tokens=True)
+            print(f"text_out = {text_out}")
+            flag_break = False
+            if model.get_tokenizer().eos_token_id in outputs[0]:
+                flag_break = True
 
             # only return the generation, trucating the input
             prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
@@ -151,4 +167,5 @@ class Inferencer(BasePipeline):
         output_dataset = Dataset(DatasetArguments(dataset_path = None))
         output_dataset = output_dataset.from_dict(output_dict)
 
-        return output_dataset
+        print(f"output_dataset = {output_dataset}")
+        return output_dataset, flag_break

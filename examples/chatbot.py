@@ -5,7 +5,6 @@
 """
 import logging
 import json
-import sys
 import warnings
 
 from dataclasses import dataclass, field
@@ -20,7 +19,6 @@ from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
 
 logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
-
 
 def rstrip_partial_utf8(string):
     return string.replace("\ufffd", "")
@@ -50,6 +48,18 @@ class ChatbotArguments:
         default=0.7,
         metadata={
             "help": "higher this value, more random the model output"
+        },
+    )
+    do_sample: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "whether to sample or not"
+        },
+    )
+    top_p: Optional[float] = field(
+        default=0.7,
+        metadata={
+            "help": "top p sampling"
         },
     )
 
@@ -128,14 +138,31 @@ def main():
         print("Bot: ", end="")
         print_index = 0
         response = ""
+        history = []
 
         token_per_step = 4
+        # if model_args.model_name_or_path == 'THUDM/chatglm-6b':
+            # for response, history in model.get_backend_model().stream_chat(model.get_tokenizer(), context, history=history):
+            #     # Prints characters in the buffer
+            #     new_print_index = print_index
+            #     for char in response[print_index:]:
+            #         if end_string is not None and char == end_string[0]:
+            #             if new_print_index + len(end_string) >= len(response):
+            #                 break
+
+            #         new_print_index += 1
+            #         print(char, end="", flush=True)
+
+            #     print_index = new_print_index
+        # else:
         for _ in range(0, chatbot_args.max_new_tokens // token_per_step):
             output_dataset = inferencer.inference(
                 model=model,
                 dataset=input_dataset,
                 max_new_tokens=token_per_step,
                 temperature=chatbot_args.temperature,
+                do_sample=chatbot_args.do_sample,
+                top_p=chatbot_args.top_p,
             )
 
             new_append_text = output_dataset.to_dict()["instances"][0]["text"]
@@ -146,7 +173,6 @@ def main():
             input_dict["instances"][0]["text"] += new_append_text
 
             input_dataset = input_dataset.from_dict(input_dict)
-
             flag_break = False
             try:
                 index = response.index(end_string)

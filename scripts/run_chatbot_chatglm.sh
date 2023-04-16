@@ -14,4 +14,8 @@ CUDA_VISIBLE_DEVICES=0 \
       --arch_type encoder_decoder \
       --deepspeed configs/ds_config_chatbot.json \
       --model_name_or_path ${model} \
+      --do_sample True \
+      --temperature 0.95 \
+      --top_p 0.7 \
+      --prompt_structure "[Round 0]\n问：{input_text}\n答：" \
       ${lora_args}
