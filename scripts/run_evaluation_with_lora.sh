@@ -11,4 +11,5 @@ CUDA_VISIBLE_DEVICES=0 \
     --dataset_path data/alpaca/test \
     --prompt_structure "Input: {input}" \
     --deepspeed examples/ds_config.json \
+    --inference_batch_size_per_device 1 \
     --metric accuracy
