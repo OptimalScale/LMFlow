@@ -24,7 +24,6 @@
     },
 
     "steps_per_print": 2000,
-    "train_batch_size": 4,
     "train_micro_batch_size_per_gpu": 1,
     "wall_clock_breakdown": false
 }
