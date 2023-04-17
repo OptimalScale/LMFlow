@@ -135,7 +135,7 @@ class Inferencer(BasePipeline):
                 inputs = model.encode(input, return_tensors="pt").to(device='cpu')
             else:
                 raise NotImplementedError(
-                    f"device \"{inferencer_args.device}\" is not supported"
+                    f"device \"{self.inferencer_args.device}\" is not supported"
                 )
 
             outputs = model.inference(

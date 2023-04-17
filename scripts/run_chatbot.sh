@@ -10,7 +10,7 @@ if [ $# -ge 2 ]; then
 fi
 
 CUDA_VISIBLE_DEVICES=0 \
-  deepspeed --master_port=10000 examples/chatbot.py \
+  deepspeed examples/chatbot.py \
       --deepspeed configs/ds_config_chatbot.json \
       --model_name_or_path ${model} \
       ${lora_args}
