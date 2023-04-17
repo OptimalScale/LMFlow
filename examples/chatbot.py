@@ -156,7 +156,7 @@ def main():
             #     print_index = new_print_index
         # else:
         for _ in range(0, chatbot_args.max_new_tokens // token_per_step):
-            output_dataset = inferencer.inference(
+            output_dataset, flag_break = inferencer.inference(
                 model=model,
                 dataset=input_dataset,
                 max_new_tokens=token_per_step,

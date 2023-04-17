@@ -168,4 +168,5 @@ class Inferencer(BasePipeline):
         output_dataset = output_dataset.from_dict(output_dict)
 
         print(f"output_dataset = {output_dataset}")
+        print(f"type = {type(output_dataset)}")
         return output_dataset, flag_break

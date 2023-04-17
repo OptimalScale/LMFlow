@@ -326,14 +326,15 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 logits_processor.append(InvalidScoreLogitsProcessor())
                 # gen_kwargs = {"max_length": max_length, "do_sample": do_sample, "top_p": top_p,
                 #             "temperature": temperature, "logits_processor": logits_processor, **kwargs}
-                if not history:
-                    prompt = raw_input
-                else:
-                    prompt = ""
-                    for i, (old_query, response) in enumerate(history):
-                        prompt += "[Round {}]\n问：{}\n答：{}\n".format(i, old_query, response)
-                    prompt += "[Round {}]\n问：{}\n答：".format(len(history), raw_input)
-                inputs = self.tokenizer([prompt], return_tensors="pt")
+                # if not history:
+                #     prompt = raw_input
+                # else:
+                #     prompt = ""
+                #     for i, (old_query, response) in enumerate(history):
+                #         prompt += "[Round {}]\n问：{}\n答：{}\n".format(i, old_query, response)
+                #     prompt += "[Round {}]\n问：{}\n答：".format(len(history), raw_input)
+                print(f"raw_input = {raw_input}")
+                inputs = self.tokenizer([raw_input], return_tensors="pt")
                 inputs = inputs.to("cuda")
                 for outputs in self.backend_model.stream_generate(**inputs, **kwargs):
                     # outputs = outputs.tolist()[0][len(inputs["input_ids"][0]):]

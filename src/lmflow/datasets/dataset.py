@@ -169,7 +169,7 @@ class Dataset:
             return self
         else:
             raise NotImplementedError(
-                f'Currently .from_dict is not supported for backend "{backend}"'
+                f'Currently .from_dict is not supported for backend "{self.backend}"'
             )
 
 
