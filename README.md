@@ -43,7 +43,6 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 
 ## Demos
 
-### Currently our checkpoint download service is at capacity. We have allocated one more server to support that. If you encounter error "_too many HTTP requests_", please wait for several minutes and try again. Thanks for your understanding.:pray:
 
 We provide four kinds of demos which include
 - Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA-7B and LLaMA-33B for you to have a try.
@@ -55,6 +54,7 @@ We provide four kinds of demos which include
 [![Code License](https://img.shields.io/badge/Online%20Service-Web-green.svg)](https://lmflow.com)
 [![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
 [![colab badge](https://img.shields.io/badge/Colab-(web)%20%20chatbot:%20gpt--neo-blue?logo=google-colab&amp)](https://colab.research.google.com/drive/1LLtiiQO-ZIIFsTKxYzGWYX9BDRc-v8dq?usp=sharing)
+[![colab badge](https://img.shields.io/badge/raft-raft--diffusion-blueviolet)](https://colab.research.google.com/drive/1bQmlSiKnqFjrkijFUJ5ylbYW-zUwObqL#scrollTo=9U2P_PUN-5xX)
 
 
 ### Online Service
@@ -106,6 +106,7 @@ python app.py
 
 The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
 For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
+
 
 ## Model Zoo
 We open-sourced the trained checkpoints to everyone for further training and inference.
