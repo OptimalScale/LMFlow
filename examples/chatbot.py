@@ -5,6 +5,7 @@
 """
 import logging
 import json
+import sys
 import warnings
 
 from dataclasses import dataclass, field
@@ -19,6 +20,10 @@ from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
 
 logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
+
+
+def rstrip_partial_utf8(string):
+    return string.replace("\ufffd", "")
 
 
 @dataclass
@@ -95,7 +100,7 @@ def main():
         f"#############################################################################\n"
         "\n"
     )
-    print(guide_message, end="")
+    print(guide_message)
 
     # context = (
     #     "You are a helpful assistant who follows the given instructions"
@@ -108,36 +113,69 @@ def main():
 
     while True:
         input_text = input("User >>> ")
-        if not input_text:
+        if input_text == "exit":
             print("exit...")
             break
+        if not input_text:
+            input_text = " "
 
         context += prompt_structure.format(input_text=input_text)
+        context = context[-model.get_max_length():]     # Memory of the bot
 
         input_dataset = dataset.from_dict({
             "type": "text_only",
             "instances": [ { "text": context } ]
         })
 
-        output_dataset = inferencer.inference(
-            model=model,
-            dataset=input_dataset,
-            max_new_tokens=chatbot_args.max_new_tokens,
-            temperature=chatbot_args.temperature,
-        )
+        print("Bot: ", end="")
+        print_index = 0
+        response = ""
 
-        response = output_dataset.to_dict()["instances"][0]["text"]
+        token_per_step = 4
+        for _ in range(0, chatbot_args.max_new_tokens // token_per_step):
+            output_dataset = inferencer.inference(
+                model=model,
+                dataset=input_dataset,
+                max_new_tokens=token_per_step,
+                temperature=chatbot_args.temperature,
+            )
 
-        try:
-            index = response.index(end_string)
-        except ValueError:
-            response += end_string
-            index = response.index(end_string)
+            new_append_text = output_dataset.to_dict()["instances"][0]["text"]
+            new_append_text = rstrip_partial_utf8(new_append_text)
+            response += new_append_text
 
-        response = response[:index]
-        print("Bot: " + response, end="\n")
+            input_dict = input_dataset.to_dict()
+            input_dict["instances"][0]["text"] += new_append_text
+
+            input_dataset = input_dataset.from_dict(input_dict)
+
+            flag_break = False
+            try:
+                index = response.index(end_string)
+                flag_break = True
+            except ValueError:
+                response += end_string
+                index = response.index(end_string)
+
+            response = response[:index]
+
+            # Prints characters in the buffer
+            new_print_index = print_index
+            for char in response[print_index:]:
+                if end_string is not None and char == end_string[0]:
+                    if new_print_index + len(end_string) >= len(response):
+                        break
+
+                new_print_index += 1
+                print(char, end="", flush=True)
+
+            print_index = new_print_index
+
+            if flag_break:
+                break
+        print("\n", end="")
+
         context += response + "\n"
-        context = context[-model.get_max_length():]     # Memory of the bot
 
 
 if __name__ == "__main__":
