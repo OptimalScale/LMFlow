@@ -159,8 +159,7 @@ class Inferencer(BasePipeline):
     def stream_inference(self, context, model, max_new_tokens, token_per_step, temperature, end_string, input_dataset):
         response = ""
         history = []
-        if "ChatGLMModel" in model.config.architectures:
-            # context = input_dataset["instances"][0]["input"]
+        if "ChatGLMModel" in self.config.architectures:
             for response, history in model.get_backend_model().stream_chat(model.get_tokenizer(), context, history=history):
                 response = rstrip_partial_utf8(response)
                 yield response, False
