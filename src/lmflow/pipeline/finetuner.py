@@ -183,7 +183,7 @@ class Finetuner(BaseTuner):
         return lm_datasets
 
 
-    def tune(self, model, lm_dataset):
+    def tune(self, model, dataset):
         """
         Perform tuning for a model
 
@@ -192,14 +192,22 @@ class Finetuner(BaseTuner):
         model : TunableModel object.
             TunableModel to perform tuning.
         
-        lm_dataset:
+        dataset:
             dataset to train model.
 
         """   
         model_args = self.model_args
         data_args = self.data_args
         finetuner_args = self.finetuner_args
-        
+
+        # Tokenization and text grouping must be done in the main process
+        with finetuner_args.main_process_first(desc="dataset map tokenization"):
+            tokenized_dataset = model.tokenize(dataset)
+            lm_dataset = self.group_text(
+                tokenized_dataset,
+                model_max_length=model.get_max_length(),
+            )
+
         train_dataset = lm_dataset.get_backend_dataset()
 
         if finetuner_args.do_train:
@@ -237,8 +245,6 @@ class Finetuner(BaseTuner):
                 if model_args.save_aggregated_lora:
                     model.merge_lora_weights()
                 model.save(finetuner_args.output_dir,model_args.save_aggregated_lora)
-                    
-                
 
             metrics = train_result.metrics
 

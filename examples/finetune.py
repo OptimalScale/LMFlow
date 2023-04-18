@@ -42,8 +42,6 @@ def main():
     else:
         model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
 
-    # TODO: deepspeed config initialization
-
     # Initialization
     finetuner = AutoPipeline.get_pipeline(
         pipeline_name=pipeline_name,
@@ -54,16 +52,8 @@ def main():
     dataset = Dataset(data_args)
     model = AutoModel.get_model(model_args)
 
-    # Tokenization and text grouping must be done in the main process
-    with pipeline_args.main_process_first(desc="dataset map tokenization"):
-        tokenized_dataset = model.tokenize(dataset)
-        lm_dataset = finetuner.group_text(
-            tokenized_dataset,
-            model_max_length=model.get_max_length(),
-        )
-
     # Finetuning
-    tuned_model = finetuner.tune(model=model, lm_dataset=lm_dataset)
+    tuned_model = finetuner.tune(model=model, dataset=dataset)
 
 
 if __name__ == '__main__':
