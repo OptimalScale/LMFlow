@@ -149,7 +149,6 @@ class Finetuner(BaseTuner):
                 k: [t[i : i + block_size] for i in range(0, total_length, block_size)]
                 for k, t in concatenated_examples.items()
             }
-            result["labels"] = result["input_ids"].copy()
             return result
 
         # Note that with `batched=True`, this map processes 1,000 texts
