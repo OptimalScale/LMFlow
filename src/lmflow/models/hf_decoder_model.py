@@ -47,6 +47,10 @@ from transformers import (
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.decoder_model import DecoderModel
 from lmflow.models.interfaces.tunable import Tunable
+from lmflow.utils.constants import (
+    TEXT_ONLY_DATASET_DESCRIPTION,
+    TEXT2TEXT_DATASET_DESCRIPTION,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -244,9 +248,8 @@ class HFDecoderModel(DecoderModel, Tunable):
     
         Parameters
         ------------
-        dataset : 
-            Text dataset.
-            
+        dataset : lmflow.datasets.Dataset.
+
         args : Optional.
             Positional arguments.
         
@@ -258,8 +261,6 @@ class HFDecoderModel(DecoderModel, Tunable):
         tokenized_datasets :
             The tokenized dataset.
         """
-        model_args = self.model_args
-
         # Preprocessing the datasets.
         # First we tokenize all the texts.
         if dataset.get_backend() != "huggingface":
@@ -268,33 +269,81 @@ class HFDecoderModel(DecoderModel, Tunable):
                 "not supported yet"
             )
 
+        dataset_type = dataset.get_type()
+
+        # Requires three types of information for tokenizing different datasets
+        #   1) Which fields require tokenization, e.g.
+        #        "text2float": "text", but not "float"
+        #        "text2text": both "input" and "output"
+        #   2) How will there tokenized sequence concatenated together, e.g.
+        #        "text_only": "text" -> "text"
+        #        "text2text": "input", "output" -> "input" + "output"
+        #   3) Which fields require loss in final computation, e.g.
+        #        "text_only": "text"
+        #        "text2text": "output" only
+        tokenized_column_order = None       # Handles 1) and 2)
+        label_columns = None                # Handles 3)
+        if dataset_type == "text_only":
+            tokenized_column_order = ["text"]
+            label_columns = ["text"]
+        elif dataset_type == "text2text":
+            tokenized_column_order = ["input", "output"]
+            label_columns = ["output"]
+        else:
+            raise NotImplementedError(
+                f"dataset type \"{dataset_type}\" is not supported, currently"
+                " only support following data types:\n"
+                f"    1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
+                f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
+            )
+
+        model_args = self.model_args
         raw_datasets = dataset
         hf_raw_datasets = dataset.get_backend_dataset()
         column_names = list(hf_raw_datasets.features)
-        text_column_name = "text" if "text" in column_names else column_names[0]
 
         # since this will be pickled to avoid _LazyModule error in Hasher force
         # logger loading before tokenize_function
         tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
 
-
-
         def tokenize_function(examples):
+            num_example = len(examples[column_names[0]])
+            token_dict = {
+                "input_ids": [[] for _ in range(num_example)],
+                "attention_mask": [[] for _ in range(num_example)],
+                "labels": [[] for _ in range(num_example)],
+            }
             with CaptureLogger(tok_logger) as cl:
-                if not model_args.use_lora:
-                    output = self.tokenizer(examples[text_column_name])
-                else:
-                    output = self.tokenizer(
-                        examples[text_column_name],
-                        truncation=True,
+                for column_name in tokenized_column_order:
+                    encoding = self.tokenizer(
+                        examples[column_name],
+                        truncation=True if model_args.use_lora else None,
                     )
+
+                    if column_name in label_columns:
+                        labels = encoding["input_ids"].copy()
+                    else:
+                        labels = [
+                            [-100] * len(encoding["input_ids"][i])
+                             for i in range(num_example)
+                        ]
+
+                    for i in range(num_example):
+                        token_dict["input_ids"][i].extend(
+                            encoding["input_ids"][i]
+                        )
+                        token_dict["attention_mask"][i].extend(
+                            encoding["attention_mask"][i]
+                        )
+                        token_dict["labels"][i].extend(labels[i])
+
             # clm input could be much much longer than block_size
             if "Token indices sequence length is longer than the" in cl.out:
                 tok_logger.warning(
                     "^^^^^^^^^^^^^^^^ Please ignore the warning above - this long input will be chunked into smaller bits"
                     " before being passed to the model."
                 )
-            return output
+            return token_dict
 
         data_args = raw_datasets.get_data_args()
         if not data_args.streaming:
