@@ -293,8 +293,8 @@ class HFDecoderModel(DecoderModel, Tunable):
             raise NotImplementedError(
                 f"dataset type \"{dataset_type}\" is not supported, currently"
                 " only support following data types:\n"
-                f"     1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
-                f"     2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
+                f"    1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
+                f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
             )
 
         model_args = self.model_args

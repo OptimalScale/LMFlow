@@ -4,12 +4,9 @@
 Commonly used constants.
 """
 
-import textwrap
-
-
 TEXT_ONLY_DATASET_DESCRIPTION = (
 """
-    "text_only": a dataset with only raw text instances, with following format:
+"text_only": a dataset with only raw text instances, with following format:
 
     {
         "type": "text_only",
@@ -19,7 +16,12 @@ TEXT_ONLY_DATASET_DESCRIPTION = (
             ...
         ]
     }
+"""
+).lstrip("\n")
 
+
+TEXT_ONLY_DATASET_DETAILS = (
+"""
     For example,
 
     ```python
@@ -62,7 +64,7 @@ TEXT_ONLY_DATASET_DESCRIPTION = (
 
 TEXT2TEXT_DATASET_DESCRIPTION = (
 """
-    "text2text": a dataset with input & output instances, with following format:
+"text2text": a dataset with input & output instances, with following format:
 
     {
         "type": "text2text",
@@ -72,7 +74,12 @@ TEXT2TEXT_DATASET_DESCRIPTION = (
             ...
         ]
     }
+"""
+).lstrip("\n")
 
+
+TEXT2TEXT_DATASET_DETAILS = (
+"""
     For example,
 
     ```python
@@ -123,3 +130,12 @@ TEXT2TEXT_DATASET_DESCRIPTION = (
     ```
 """
 ).lstrip("\n")
+
+
+TEXT_ONLY_DATASET_LONG_DESCRITION = (
+    TEXT_ONLY_DATASET_DESCRIPTION + TEXT_ONLY_DATASET_DETAILS
+)
+
+TEXT2TEXT_DATASET_LONG_DESCRITION = (
+    TEXT2TEXT_DATASET_DESCRIPTION + TEXT2TEXT_DATASET_DETAILS
+)
