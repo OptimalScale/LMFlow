@@ -10,6 +10,12 @@ We provide several examples to show how to use our package in your problem.
 DATASETS
 ```
 
+```{toctree}
+:maxdepth: 3
+
+checkpoints
+```
+
 ## Finetuning
 
 Refer to [examples](https://github.com/OptimalScale/LMFlow/blob/main/examples).
