@@ -58,7 +58,7 @@ We provide four kinds of demos which include
 
 
 ### Online Service
-> Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned model online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot referto `Local Deploy`.
+Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned model online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot following `Local Deploy`.
 
 ### Colab chatbot (shell)
 <p align="center" width="100%">
@@ -91,12 +91,9 @@ python app.py
 
 ### Colab RAFT-diffusion
 
-We also provide a simple demo to demonstrate the effectiveness of RAFT algorithm on diffusion models.
-
+We also provide a simple demo to display the effectiveness of RAFT algorithm on diffusion models.
 You can refer to either [Colab link](https://colab.research.google.com/drive/1bQmlSiKnqFjrkijFUJ5ylbYW-zUwObqL#scrollTo=9U2P_PUN-5xX) or `experimental/RAFT-diffusion/SD256-RAFT.ipynb`.
-
 The support of multi-modal training of LMFlow is under development.
-
 
 ## Medical Performance
 
@@ -145,7 +142,6 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 
 
 ## Supported Models
-
 
 Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 huggingface. 
 LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
@@ -293,9 +289,9 @@ cd -
 
 You can also directly download our model via google drive link : [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
 
-### 5.3 Begin Reproduce
+### 5.3 Reproduce the result
 
-After downloading the model checkpoints. You can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
+After downloading the model checkpoints, you can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
 
 Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
 
