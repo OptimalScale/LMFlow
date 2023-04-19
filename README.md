@@ -166,37 +166,11 @@ pip install -e .
 ```
 
 ## 2.Prepare Dataset
-You can easily download the example training dataset and test dataset by running 
-```bash
-cd data
-bash download.sh all
-cd -
-``` 
 
-You can also use your own dataset by simply convert to the following format:
-```json
-{
-  "type": "text2text",
-  "instances": [
-    {
-      "input": "Question: The Transformer architecture [START_REF]",
-      "output": "N/A"
-    },
-    ...
-  ]
-}
-```
-```json
-{
-  "type": "text_only",
-  "instances": [
-    {
-      "text": "Defintion: In this task, we ask you to write an answer to a question that involves events that may be stationary (not changing over time) or transient (changing over time). For example, the sentence \"he was born in the U.S.\" contains a stationary event since it will last forever; however, \"he is hungry\" contains a transient event since it will remain true for a short period of time. Note that a lot of the questions could have more than one correct answer. We only need a single most-likely answer. Please try to keep your \"answer\" as simple as possible. Concise and simple \"answer\" is preferred over those complex and verbose ones. \n Input: Question: Sentence: It's hail crackled across the comm, and Tara spun to retake her seat at the helm. \nQuestion: Will the hail storm ever end? \n Output: NA \n\n"
-    },
-    ...
-  ]
-}
-```
+Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
+
+
+
 ## 3. Run Scripts
 ### 3.1 Run Finetuning
 
@@ -286,30 +260,7 @@ more API-related examples, one may refer to the methods in the unittest
 ## 4. Additional Notes
 ### 4.1 LLaMA Checkpoint
 
-1. First, you need to get the access of LLaMA model from [facebookresearch/llama](https://github.com/facebookresearch/llama). Download the official checkpoints and save them into `${llama-path}`.
-
-2. Second, convert the official checkpoints `${llama-path}` to HuggingFace supported checkpoints `${llama-hf-path}` by running
-
-    `python ./scripts/convert_llama_weights_to_hf.py --input_dir ${llama-path} --model_size 7B --output_dir ${llama-hf-path}/llama-7b-hf`
-
-3. Then you are good to go by setting the checkpoint path to `${llama-hf-path}/llama-7b-hf`. Enjoy it!
-
-4. (optional) Now you have the original llama-7b-hf pretrained model. With
-```sh
-cd output_models && ./download.sh all && cd -
-```
-You can obtain the model difference finetuned by ours. By a way similar to `./scripts/run_evaluation_with_lora.sh`,
-```sh
-CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/evaluate.py \
-    --answer_type text \
-    --model_name_or_path ${llama-hf-path}/llama-7b-hf \
-    --lora_model_path output_models/${llama-model-diff-path} \
-    --dataset_path data/alpaca/test \
-    --prompt_structure "Input: {input}" \
-    --deepspeed examples/ds_config.json
-```
-You can now evaluate with the finetuned llama model.
+Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/checkpoints.html).
 
 ### 4.2 DeepSpeed Config
 You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
