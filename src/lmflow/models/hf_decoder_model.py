@@ -307,13 +307,13 @@ class HFDecoderModel(DecoderModel, Tunable):
         tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
 
         def tokenize_function(examples):
+            num_example = len(examples[column_names[0]])
+            token_dict = {
+                "input_ids": [[] for _ in range(num_example)],
+                "attention_mask": [[] for _ in range(num_example)],
+                "labels": [[] for _ in range(num_example)],
+            }
             with CaptureLogger(tok_logger) as cl:
-                token_dict = {
-                    "input_ids": [],
-                    "attention_mask": [],
-                    "labels": [],
-                }
-
                 for column_name in tokenized_column_order:
                     encoding = self.tokenizer(
                         examples[column_name],
@@ -323,13 +323,19 @@ class HFDecoderModel(DecoderModel, Tunable):
                     if column_name in label_columns:
                         labels = encoding["input_ids"].copy()
                     else:
-                        labels = [-100] * len(encoding["input_ids"])
+                        labels = [
+                            [-100] * len(encoding["input_ids"][i])
+                             for i in range(num_example)
+                        ]
 
-                    token_dict["input_ids"].extend(encoding["input_ids"])
-                    token_dict["attention_mask"].extend(
-                        encoding["attention_mask"]
-                    )
-                    token_dict["labels"].extend(labels)
+                    for i in range(num_example):
+                        token_dict["input_ids"][i].extend(
+                            encoding["input_ids"][i]
+                        )
+                        token_dict["attention_mask"][i].extend(
+                            encoding["attention_mask"][i]
+                        )
+                        token_dict["labels"][i].extend(labels[i])
 
             # clm input could be much much longer than block_size
             if "Token indices sequence length is longer than the" in cl.out:
