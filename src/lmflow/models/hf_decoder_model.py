@@ -105,6 +105,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         # only one local process can concurrently download model & vocab.
 
         self.device = device
+        self.model_args = model_args
 
         if tune_strategy == 'normal':
             config_kwargs = {
@@ -181,7 +182,6 @@ class HFDecoderModel(DecoderModel, Tunable):
             if len(tokenizer) > embedding_size:
                 model.resize_token_embeddings(len(tokenizer))
 
-            self.model_args = model_args
             self.config = config
             self.backend_model = model
             self.tokenizer = tokenizer

@@ -277,21 +277,28 @@ class Evaluator(BasePipeline):
             A float which represents the negative log likelihood.
         """
         data_dict = dataset.to_dict()
-        if data_dict['type'] == 'text2text':
+
+        # Handles prompt structure
+        if dataset.get_type() == "text2text":
             prompt = self.evaluator_args.prompt_structure
-            texts = [
-                prompt.format(input=instance["input"]) + instance["output"]
-                 for instance in data_dict["instances"]
+            data_dict["instances"] = [
+                {
+                    "input": prompt.format(input=instance["input"]),
+                    "output": instance["output"]
+                }
+                for instance in data_dict["instances"]
             ]
-        elif data_dict['type'] == 'text_only':
-            texts = [ instance["text"] for instance in data_dict["instances"] ]
-        else:
-            raise NotImplementedError(
-                "negative log likelihood evaluation is currently not supported"
-                f" for {data_dict['type']} dataset."
-            )
-        encoding_list = [ model.get_tokenizer()(text, return_tensors="pt")
-                          for text in texts ]
+
+        dataset = dataset.from_dict(data_dict)
+        tokenized_dataset = model.tokenize(dataset).get_backend_dataset()
+        encoding_list = [
+            {
+                "input_ids": torch.tensor([input_ids]),
+                "labels": torch.tensor([labels]),
+            }
+            for input_ids, labels in zip(tokenized_dataset["input_ids"],
+                                         tokenized_dataset["labels"])
+        ]
 
         # Gets context window length
         try:
@@ -301,9 +308,9 @@ class Evaluator(BasePipeline):
             max_length = min(1024, model.get_max_length())
 
         nlls = []
-        num_samples = len(texts)
+        num_samples = len(encoding_list)
         for sample_idx, encodings in enumerate(encoding_list):
-            seq_len = encodings.input_ids.size(1)
+            seq_len = encodings["input_ids"].size(1)
 
             prev_end_loc = 0
             for begin_loc in range(0, seq_len, self.block_size):
@@ -311,20 +318,27 @@ class Evaluator(BasePipeline):
 
                 # may be different from block_size on last loop
                 trg_len = end_loc - prev_end_loc
-                input_ids = encodings.input_ids[:, begin_loc:end_loc]
+                input_ids = encodings["input_ids"][:, begin_loc:end_loc]
                 input_ids = input_ids.to(device=self.local_rank)
 
-                target_ids = input_ids.clone()
+                labels = encodings["labels"][:, begin_loc:end_loc]
+                target_ids = labels.clone()
                 target_ids[:, :-trg_len] = -100
+                target_ids = target_ids.to(device=self.local_rank)
 
-                with torch.no_grad():
-                    outputs = model.get_backend_model()(input_ids,
-                                                        labels=target_ids)
-                    # loss is calculated using CrossEntropyLoss which averages
-                    # over valid labels N.B. the model only calculates loss
-                    # over trg_len - 1 labels, because it internally shifts the
-                    # labels to the left by 1.
-                    neg_log_likelihood = outputs.loss
+                if not torch.all(target_ids == -100):
+                    with torch.no_grad():
+                        outputs = model.get_backend_model()(input_ids,
+                                                            labels=target_ids)
+                        # loss is calculated using CrossEntropyLoss which
+                        # averages over valid labels N.B. the model only
+                        # calculates loss over trg_len - 1 labels, because it
+                        # internally shifts the labels to the left by 1.
+                        neg_log_likelihood = outputs.loss
+                else:
+                    neg_log_likelihood = torch.zeros([]).to(
+                        device=self.local_rank
+                    )
 
                 nlls.append(neg_log_likelihood)
                 prev_end_loc = end_loc
