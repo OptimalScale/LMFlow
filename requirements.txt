@@ -9,3 +9,5 @@ sentencepiece
 transformers @ git+https://github.com/huggingface/transformers@c612628045822f909020f7eb6784c79700813eda
 flask
 flask_cors
+icetk
+cpm_kernels==1.0.11

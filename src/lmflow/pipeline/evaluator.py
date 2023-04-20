@@ -277,11 +277,18 @@ class Evaluator(BasePipeline):
         """
         data_dict = dataset.to_dict()
         if data_dict['type'] == 'text2text':
+            prompt = self.evaluator_args.prompt_structure
+            texts = [
+                prompt.format(input=instance["input"]) + instance["output"]
+                 for instance in data_dict["instances"]
+            ]
+        elif data_dict['type'] == 'text_only':
+            texts = [ instance["text"] for instance in data_dict["instances"] ]
+        else:
             raise NotImplementedError(
                 "negative log likelihood evaluation is currently not supported"
-                " for text2text dataset, please use text_only dataset."
+                f" for {data_dict['type']} dataset."
             )
-        texts = [ instance["text"] for instance in data_dict["instances"] ]
         encoding_list = [ model.get_tokenizer()(text, return_tensors="pt")
                           for text in texts ]
 

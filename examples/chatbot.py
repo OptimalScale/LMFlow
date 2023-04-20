@@ -22,10 +22,6 @@ logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
 
 
-def rstrip_partial_utf8(string):
-    return string.replace("\ufffd", "")
-
-
 @dataclass
 class ChatbotArguments:
     prompt_structure: Optional[str] = field(
@@ -113,9 +109,11 @@ def main():
 
     while True:
         input_text = input("User >>> ")
-        if not input_text:
+        if input_text == "exit":
             print("exit...")
             break
+        if not input_text:
+            input_text = " "
 
         context += prompt_structure.format(input_text=input_text)
         context = context[-model.get_max_length():]     # Memory of the bot
@@ -127,36 +125,13 @@ def main():
 
         print("Bot: ", end="")
         print_index = 0
-        response = ""
 
         token_per_step = 4
-        for _ in range(0, chatbot_args.max_new_tokens // token_per_step):
-            output_dataset = inferencer.inference(
-                model=model,
-                dataset=input_dataset,
-                max_new_tokens=token_per_step,
-                temperature=chatbot_args.temperature,
-            )
 
-            new_append_text = output_dataset.to_dict()["instances"][0]["text"]
-            new_append_text = rstrip_partial_utf8(new_append_text)
-            response += new_append_text
-
-            input_dict = input_dataset.to_dict()
-            input_dict["instances"][0]["text"] += new_append_text
-
-            input_dataset = input_dataset.from_dict(input_dict)
-
-            flag_break = False
-            try:
-                index = response.index(end_string)
-                flag_break = True
-            except ValueError:
-                response += end_string
-                index = response.index(end_string)
-
-            response = response[:index]
-
+        for response, flag_break in inferencer.stream_inference(context=context, model=model, max_new_tokens=chatbot_args.max_new_tokens, 
+                                    token_per_step=token_per_step, temperature=chatbot_args.temperature,
+                                    end_string=end_string, input_dataset=input_dataset):
+            
             # Prints characters in the buffer
             new_print_index = print_index
             for char in response[print_index:]:

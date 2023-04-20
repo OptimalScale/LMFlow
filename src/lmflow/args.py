@@ -99,6 +99,10 @@ class ModelArguments:
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
     )
+    arch_type: Optional[str] = field(
+        default="decoder_only",
+        metadata={"help": "The architecture type of the model. Currently supported decoder_only or encoder_decoder"}
+    )
     config_overrides: Optional[str] = field(
         default=None,
         metadata={
