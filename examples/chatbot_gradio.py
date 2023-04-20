@@ -93,7 +93,7 @@ title = """
 """
 css = """
 #user {                                                                         
-    float: left;
+    float: right;
     position:relative;
     right:5px;
     width:auto;
@@ -108,7 +108,7 @@ css = """
 }
                                              
 #chatbot {                                                                      
-    float: right;
+    float: left;
     position:relative;
     right:5px;
     width:auto;
