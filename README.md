@@ -132,17 +132,49 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 | Cockatoo-7B | ![training](https://geps.dev/progress/90) | StableLM 7B | Google Drive |
 
 
-<table><tr>
+<table>
+<tr>
+  <td align="center"></td>
   <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
   <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
   <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
   <td align="center"><a href="https://github.com/mac-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
 </tr>
 <tr>
+  <td width="160" align="center">Model<br />Base Model</td>
   <td width="160" align="center">Robin-7B<br />LLaMA-7B</td>
   <td width="160" align="center">Robin-13B<br />LLaMA-7B</td>
   <td width="160" align="center">Robin-33B<br />LLaMA-7B</td>
   <td width="160" align="center">Robin-65B<br />LLaMA-7B</td>
+</tr>
+<tr>
+  <td align="center"></td>
+  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/mac-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
+</tr>
+<tr>
+  <td width="160" align="center">Model<br />Base Model</td>
+  <td width="160" align="center">Robin-7B-medical<br />LLaMA-7B</td>
+  <td width="160" align="center">Robin-13B-medical<br />LLaMA-7B</td>
+  <td width="160" align="center">Robin-33B-medical<br />LLaMA-7B</td>
+  <td width="160" align="center">Robin-65B-medical<br />LLaMA-7B</td>
+</tr>
+<tr>
+  <td align="center"></td>
+  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
+  <td align="center"></a></td>
+</tr>
+<tr>
+  <td width="160" align="center">Model<br />Base Model</td>
+  <td width="160" align="center">Parakeets-2.7B<br />GPT-NEO-2.7B</td>
+  <td width="160" align="center">Cockatoo-3B<br />StableLM-3B</td>
+  <td width="160" align="center">Cockatoo-7B<br />StableLM-7B</td>
+  <td width="160" align="center"><br /></td>
+</tr>
 </table>
 
 
