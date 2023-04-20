@@ -135,10 +135,10 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 <table>
 <tr>
   <td align="center"></td>
-  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
-  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
-  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
-  <td align="center"><a href="https://github.com/mac-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/robin7b.jpg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/robin13b.png" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/robin33b.png" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/mac-js" target="_blank"><img src="./assets/robin65b.png" width="300" /></a></td>
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
@@ -149,10 +149,10 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 </tr>
 <tr>
   <td align="center"></td>
-  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
-  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
-  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
-  <td align="center"><a href="https://github.com/mac-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/robin7b_.png" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/robin13b_.jpg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/robin33b_.png" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/mac-js" target="_blank"><img src="./assets/robin65b_.png" width="300" /></a></td>
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
@@ -163,9 +163,9 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 </tr>
 <tr>
   <td align="center"></td>
-  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
-  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
-  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/Parakeets.png" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/Cockatoo3b.png" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/Cockatoo7b.png" width="300" /></a></td>
   <td align="center"></a></td>
 </tr>
 <tr>
