@@ -142,10 +142,10 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center">Robin-7B<br />LLaMA-7B</td>
-  <td width="160" align="center">Robin-13B<br />LLaMA-7B</td>
-  <td width="160" align="center">Robin-33B<br />LLaMA-7B</td>
-  <td width="160" align="center">Robin-65B<br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="">Robin-7B</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="">Robin-13B</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="">Robin-33B</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="">Robin-65B</a><br />LLaMA-7B</td>
 </tr>
 <tr>
   <td align="center"></td>
@@ -156,10 +156,10 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center">Robin-7B-medical<br />LLaMA-7B</td>
-  <td width="160" align="center">Robin-13B-medical<br />LLaMA-7B</td>
-  <td width="160" align="center">Robin-33B-medical<br />LLaMA-7B</td>
-  <td width="160" align="center">Robin-65B-medical<br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="">Robin-7B-medical</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="">Robin-13B-medical</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="">Robin-33B-medical</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="">Robin-65B-medical</a><br />LLaMA-7B</td>
 </tr>
 <tr>
   <td align="center"></td>
@@ -170,9 +170,9 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center">Parakeets-2.7B<br />GPT-NEO-2.7B</td>
-  <td width="160" align="center">Cockatoo-3B<br />StableLM-3B</td>
-  <td width="160" align="center">Cockatoo-7B<br />StableLM-7B</td>
+  <td width="160" align="center"><a href="">Parakeets-2.7B</a><br />GPT-NEO-2.7B</td>
+  <td width="160" align="center"><a href="">Cockatoo-3B</a><br />StableLM-3B</td>
+  <td width="160" align="center"><a href="">Cockatoo-7B</a><br />StableLM-7B</td>
   <td width="160" align="center"><br /></td>
 </tr>
 </table>
