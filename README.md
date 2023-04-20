@@ -117,16 +117,33 @@ For more performance, including instruction tuning results, please refer to our 
 ## Model Zoo
 We open-sourced the trained checkpoints to everyone for further training and inference.
 
-| Instruct-tuned Models   |  Status | Base Model | Download | 
+| Instruction-tuned Models   |  Status | Base Model | Download | 
 |----------|:-------------:|----------|:-------------:|
-| LLaMA-7B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
-| LLaMA-13B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
-| LLaMA-33B-tuned | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
-| LLaMA-65B-tuned | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
-| LLaMA7B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-/view?usp=share_link) |
-| LLaMA13B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap/view?usp=share_link) |
-| LLaMA33B-medical | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM/view?usp=share_link) |
-| LLaMA65B-medical | ![training](https://geps.dev/progress/90) | LLaMA-65B | Google Drive |
+| Robin-7B | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
+| Robin-13B | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
+| Robin-33B | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
+| Robin-65B | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
+| Robin-7B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-/view?usp=share_link) |
+| Robin-13B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap/view?usp=share_link) |
+| Robin-33B-medical | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM/view?usp=share_link) |
+| Robin-65B-medical | ![training](https://geps.dev/progress/90) | LLaMA-65B | Google Drive |
+| Parakeets-2.7B | ![training](https://geps.dev/progress/90) | GPT-NEO 2.7B | Google Drive |
+| Cockatoo-3B | ![training](https://geps.dev/progress/90) | StableLM 3B | Google Drive |
+| Cockatoo-7B | ![training](https://geps.dev/progress/90) | StableLM 7B | Google Drive |
+
+
+<table><tr>
+  <td align="center"><a href="https://github.com/awesome-cool" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/bug-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/pixel-js" target="_blank"><img src="./assets/llama-7b.jpeg" width="300" /></a></td>
+  <td align="center"><a href="https://github.com/mac-js" target="_blank"><img src="./assets/llama-13b.jpeg" width="300" /></a></td>
+</tr>
+<tr>
+  <td width="160" align="center">Robin-7B<br />LLaMA-7B</td>
+  <td width="160" align="center">Robin-13B<br />LLaMA-7B</td>
+  <td width="160" align="center">Robin-33B<br />LLaMA-7B</td>
+  <td width="160" align="center">Robin-65B<br />LLaMA-7B</td>
+</table>
 
 
 ## Supported Pipelines
@@ -138,8 +155,6 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
 | Alignment Tuning |  :white_check_mark: Supported |
-
-
 
 ## Supported Models
 
