@@ -28,6 +28,10 @@ title = """
 <script src="/path/to/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 
+
+<img src="https://optimalscale.github.io/LMFlow/_static/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
+
+
 <p>LMFlow is in extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.</p>
 
 <p>We have thoroughly tested this toolkit and are pleased to make it available under <a class="reference external" href="https://github.com/OptimalScale/LMFlow">Github</a>.</p>
@@ -204,15 +208,12 @@ def main():
             else:
                 text_boxes.append(gr.Markdown(visible=False, label="A:", elem_id="chatbot"))
 
-        with gr.Column(elem_id = "col_container"):
-            with gr.Row():
-                with gr.Column(scale=19):
-                    txt = gr.Textbox(
-                        show_label=False,
-                        placeholder="Enter text and press send",
-                    )
-                with gr.Column(scale=1):
-                    button = gr.Button("Send")
+        txt = gr.Textbox(
+            show_label=False,
+            placeholder="Enter text and press send.",
+        )
+        button = gr.Button("Send")
+
         button.click(predict, [txt, state], [state] + text_boxes)
         demo.queue().launch(share=True)
 
