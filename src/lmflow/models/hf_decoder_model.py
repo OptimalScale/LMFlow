@@ -164,7 +164,8 @@ class HFDecoderModel(DecoderModel, Tunable):
             self.backend_model_full = model
             if model_args.use_lora:
                 if model_args.lora_target_modules:
-                    lora_target_modules = eval(model_args.lora_target_modules)
+                    lora_target_modules = model_args.lora_target_modules
+                    print(model_args.lora_target_modules)
                 else:
                     lora_target_modules = None
                 peft_config = LoraConfig(
