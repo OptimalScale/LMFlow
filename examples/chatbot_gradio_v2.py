@@ -133,7 +133,8 @@ def main():
     #     "You are a helpful assistant who follows the given instructions"
     #     " unconditionally."
     # )
-    context = ""
+    global context 
+    context=""
 
     end_string = chatbot_args.end_string
     prompt_structure = chatbot_args.prompt_structure
@@ -159,6 +160,7 @@ def main():
             delta = response[print_index:]
             seq = response
             print_index = len(response)
+            context += response + "\n"
             yield delta, history + [(query, seq)]
             if flag_break:
                 break
