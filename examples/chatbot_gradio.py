@@ -28,9 +28,7 @@ title = """
 <script src="/path/to/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 
-
-<img src="https://optimalscale.github.io/LMFlow/_static/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
-
+<img src="https://optimalscale.github.io/LMFlow/_static/logo.png" alt="LMFlow" style="width: 30%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 
 <p>LMFlow is in extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.</p>
 
