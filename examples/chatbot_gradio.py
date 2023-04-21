@@ -86,7 +86,7 @@ def predict(input, max_length, top_p, temperature, history=None):
         yield [history] + updates
 
 title = """
-<h1 align="center">CHAT</h1>
+<h1 align="center">LMFlow-CHAT</h1>
 <link rel="stylesheet" href="/path/to/styles/default.min.css">
 <script src="/path/to/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
@@ -102,8 +102,8 @@ css = """
     line-height: 32px;
     padding: 2px 8px;
     font-size: 14px;
-    background:	#77FF00;
-    border-radius:5px; /* 圆角 */
+    background:	#113285;
+    border-radius:5px; 
     margin:10px 0px;
 }
                                              
@@ -117,8 +117,8 @@ css = """
     line-height: 32px;
     padding: 2px 8px;
     font-size: 14px;
-    background:#F8C301;
-    border-radius:5px; /* 圆角 */
+    background:#0C4842;
+    border-radius:5px; 
     margin:10px 0px;
 }
 """
