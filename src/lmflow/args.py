@@ -171,6 +171,9 @@ class ModelArguments:
         default=32,
         metadata={"help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
     )
+    lora_target_modules: Optional[str] = field(
+        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name"}
+    )
     lora_dropout: float = field(
         default=0.1,
         metadata={"help": "The dropout rate in lora.linear."},
