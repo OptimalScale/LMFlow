@@ -39,6 +39,7 @@ css = """
     line-height: 32px;
     padding: 2px 8px;
     font-size: 14px;
+    color: #000000;
     background:	#113285;
     border-radius:5px; 
     margin:10px 0px;
@@ -55,6 +56,7 @@ css = """
     padding: 2px 8px;
     font-size: 14px;
     background:#0C4842;
+    color: #000000;
     border-radius:5px; 
     margin:10px 0px;
 }
