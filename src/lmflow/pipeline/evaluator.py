@@ -326,15 +326,20 @@ class Evaluator(BasePipeline):
                 target_ids[:, :-trg_len] = -100
                 target_ids = target_ids.to(device=self.local_rank)
 
+                # Valid labels are from 0 to `vocab_size`
+                num_valid_labels = torch.count_nonzero(target_ids >= 0)
+                if target_ids[0, 0] != -100:
+                    num_valid_labels -= 1
+
                 if not torch.all(target_ids == -100):
                     with torch.no_grad():
                         outputs = model.get_backend_model()(input_ids,
                                                             labels=target_ids)
                         # loss is calculated using CrossEntropyLoss which
-                        # averages over valid labels N.B. the model only
+                        # sums over valid labels N.B. the model only
                         # calculates loss over trg_len - 1 labels, because it
                         # internally shifts the labels to the left by 1.
-                        neg_log_likelihood = outputs.loss
+                        neg_log_likelihood = outputs.loss * num_valid_labels
                 else:
                     neg_log_likelihood = torch.zeros([]).to(
                         device=self.local_rank
