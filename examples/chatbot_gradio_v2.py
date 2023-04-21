@@ -133,7 +133,7 @@ def main():
     #     "You are a helpful assistant who follows the given instructions"
     #     " unconditionally."
     # )
-    global context 
+
     context=""
 
     end_string = chatbot_args.end_string
@@ -143,7 +143,7 @@ def main():
     token_per_step = 4
 
 
-    def chat_stream( query: str, history= None, delta_tokens= 2, max_length= 256, do_sample=True, top_p=0.7, temperature=0.95, logits_processor=None, **kwargs):
+    def chat_stream( context, query: str, history= None, delta_tokens= 2, max_length= 256, do_sample=True, top_p=0.7, temperature=0.95, logits_processor=None, **kwargs):
         if history is None:
             history = []
 
@@ -160,18 +160,19 @@ def main():
             delta = response[print_index:]
             seq = response
             print_index = len(response)
-            context += response + "\n"
+            
             yield delta, history + [(query, seq)]
             if flag_break:
+                context += response + "\n"
                 break
 
 
 
 
-    def predict(input, max_length, top_p, temperature, history=None):
+    def predict(context, input, max_length, top_p, temperature, history=None):
         if history is None:
             history = []
-        for response, history in chat_stream(input, history, max_length=max_length*(len(history)+1), top_p=top_p,
+        for response, history in chat_stream(context, input, history, max_length=max_length*(len(history)+1), top_p=top_p,
                                                 temperature=temperature):
             updates = []
             for query, response in history:
@@ -204,7 +205,7 @@ def main():
                     ).style(container=True)
                 with gr.Column(scale=1):
                     button = gr.Button("Send")
-        button.click(predict, [txt, state], [state] + text_boxes)
+        button.click(predict, [context, txt, state], [state] + text_boxes)
     demo.queue().launch(share=True)
 
 
