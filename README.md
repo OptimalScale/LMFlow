@@ -117,21 +117,6 @@ For more performance, including instruction tuning results, please refer to our 
 ## Model Zoo
 We open-sourced the trained checkpoints to everyone for further training and inference.
 
-| Instruction-tuned Models   |  Status | Base Model | Download | 
-|----------|:-------------:|----------|:-------------:|
-| Robin-7B | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
-| Robin-13B | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
-| Robin-33B | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
-| Robin-65B | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
-| Robin-7B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-/view?usp=share_link) |
-| Robin-13B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap/view?usp=share_link) |
-| Robin-33B-medical | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM/view?usp=share_link) |
-| Robin-65B-medical | ![training](https://geps.dev/progress/90) | LLaMA-65B | Google Drive |
-| Parakeets-2.7B | ![training](https://geps.dev/progress/90) | GPT-NEO 2.7B | Google Drive |
-| Cockatoo-3B | ![training](https://geps.dev/progress/90) | StableLM 3B | Google Drive |
-| Cockatoo-7B | ![training](https://geps.dev/progress/90) | StableLM 7B | Google Drive |
-
-
 <table>
 <tr>
   <td align="center"></td>
@@ -142,7 +127,7 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/robin-7b.tar.gz">Robin-7B:star:</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/robin-7b.tar.gz">Robin-7B :star: </a><br />LLaMA-7B</td>
   <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-380k.tar.gz">Robin-13B</a><br />LLaMA-7B</td>
   <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-170k.tar.gz">Robin-33B</a><br />LLaMA-7B</td>
   <td width="160" align="center"><a href="">Robin-65B</a><br />LLaMA-7B</td>
@@ -170,9 +155,9 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/parakeets-2.7b.tar.gz">Parakeets-2.7B</a><br />GPT-NEO-2.7B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/parakeets-2.7b.tar.gz">Parakeets-2.7B :star: </a><br />GPT-NEO-2.7B</td>
   <td width="160" align="center"><a href="">Cockatoo-3B</a><br />StableLM-3B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/cockatoo-7b.tar.gz">Cockatoo-7B</a><br />StableLM-7B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/cockatoo-7b.tar.gz">Cockatoo-7B :star: </a><br />StableLM-7B</td>
   <td width="160" align="center"><br /></td>
 </tr>
 </table>
