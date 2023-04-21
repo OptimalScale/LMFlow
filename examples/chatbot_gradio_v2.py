@@ -169,7 +169,10 @@ def main():
 
 
 
-    def predict(context, input, history=None):
+    def predict(input, history=None): 
+        global context
+        if not context:
+            context = ""
         if history is None:
             history = []
         for response, history in chat_stream(context, input, history):
@@ -204,7 +207,7 @@ def main():
                     ).style(container=True)
                 with gr.Column(scale=1):
                     button = gr.Button("Send")
-        button.click(predict, [context, txt, state], [state] + text_boxes)
+        button.click(predict, [txt, state], [state] + text_boxes)
         demo.queue().launch(share=True)
 
 
