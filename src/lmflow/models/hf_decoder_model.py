@@ -233,7 +233,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     self.backend_model, peft_model_id
                 )
             
-            self.tokenizer.padding_side = "left"#necessary for llama,gpt2 and other decoder model
+            self.tokenizer.padding_side = "left" #necessary for llama, gpt2 and other decoder models
             
             if device == "gpu":
                 deepspeed.init_distributed()
@@ -390,7 +390,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             if string input,return the tokenized inputs.
             "Hello,world!"-> [101, 7592, 1010, 2088, 102]
             if batch input,return {input_ids,attention_mask,token_type_ids}
-            ["Hello,world!","Hello,world!"]->{''input_ids': tensor([[  101,  7592,  1010,  2088,   102],...}
+            ["Hello,world!","Hello!"]-> {'input_ids': tensor([[  101,  7592,  1010,  2088,   102],...),'attention_mask': tensor([[1, 1, 1, 1, 1],[0,0,1,1,1]])}
         """
         if isinstance(input, list):
             return self.tokenizer(text=input, *args, **kwargs)#batch encode,will automatically do left padding
@@ -420,9 +420,9 @@ class HFDecoderModel(DecoderModel, Tunable):
         outputs :
             The text decoded from the token inputs.
             if batch input,return the list of text
-            [[101, 7592, 1010, 2088, 102],[101, 7592, 1010, 2088, 102]]->["Hello,world!","Hello,world!"
+            [[101, 7592, 1010, 2088, 102],[101, 7592, 1010, 2088, 102]]-> ["Hello,world!","Hello,world!"
             if single input,return the text
-            [101, 7592, 1010, 2088, 102]->"Hello,world!"
+            [101, 7592, 1010, 2088, 102]-> "Hello,world!"
         """
         if isinstance(input, List):
             input=torch.tensor(input)
