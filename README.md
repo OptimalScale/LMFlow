@@ -128,9 +128,9 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
   <td width="160" align="center"><a href="http://lmflow.org:5000/robin-7b.tar.gz">Robin-7B :star: </a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-380k.tar.gz">Robin-13B</a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-170k.tar.gz">Robin-33B</a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="">Robin-65B</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-380k.tar.gz">Robin-13B</a><br />LLaMA-13B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-170k.tar.gz">Robin-33B</a><br />LLaMA-33B</td>
+  <td width="160" align="center"><a href="">Robin-65B</a><br />LLaMA-65B</td>
 </tr>
 <tr>
   <td align="center"></td>
@@ -142,9 +142,9 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
   <td width="160" align="center"><a href="http://lmflow.org:5000/llama7b-lora-medical.tar.gz">Robin-7B-medical</a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-medical.tar.gz">Robin-13B-medical</a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-medical.tar.gz">Robin-33B-medical</a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="">Robin-65B-medical</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-medical.tar.gz">Robin-13B-medical</a><br />LLaMA-13B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-medical.tar.gz">Robin-33B-medical</a><br />LLaMA-33B</td>
+  <td width="160" align="center"><a href="">Robin-65B-medical</a><br />LLaMA-65B</td>
 </tr>
 <tr>
   <td align="center"></td>
