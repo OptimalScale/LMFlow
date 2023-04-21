@@ -134,7 +134,6 @@ def main():
     #     " unconditionally."
     # )
 
-    context = ""
 
     end_string = chatbot_args.end_string
     prompt_structure = chatbot_args.prompt_structure
@@ -170,9 +169,12 @@ def main():
 
 
     def predict(input, history=None): 
-        global context
-        if not context:
+        try:
+            global context
             context = ""
+        except SyntaxError:
+            pass
+
         if history is None:
             history = []
         for response, history in chat_stream(context, input, history):
