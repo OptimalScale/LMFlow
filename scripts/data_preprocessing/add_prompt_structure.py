@@ -30,12 +30,14 @@ def parse_argument(sys_argv):
 
     # Training parameters
     parser.add_argument(
-        "--dataset_path", type=str, required=True,
-        help=textwrap.dedent("input dataset path")
+        "--dataset_path", type=str,
+        default=None,
+        help=textwrap.dedent("input dataset path, reads from stdin by default")
     )
     parser.add_argument(
-        "--output_path", type=str, required=True,
-        help=textwrap.dedent("output dataset path")
+        "--output_path", type=str,
+        default=None,
+        help=textwrap.dedent("output dataset path, writes to stdout by default")
     )
     parser.add_argument(
         "--prompt_structure", type=str,
@@ -48,10 +50,14 @@ def parse_argument(sys_argv):
 
     return args
 
+
 def main():
     args = parse_argument(sys.argv)
-    with open(args.dataset_path, "r") as fin:
-        data_dict = json.load(fin)
+    if args.dataset_path is not None:
+        with open(args.dataset_path, "r") as fin:
+            data_dict = json.load(fin)
+    else:
+        data_dict = json.load(sys.stdin)
 
     if data_dict["type"] != "text2text":
         raise NotImplementedError(
@@ -65,8 +71,11 @@ def main():
         }
         for instance in data_dict["instances"]
     ]
-    with open(args.output_path, "w") as fout:
-        json.dump(data_dict, fout, indent=4, ensure_ascii=False)
+    if args.output_path is not None:
+        with open(args.output_path, "w") as fout:
+            json.dump(data_dict, fout, indent=4, ensure_ascii=False)
+    else:
+        json.dump(data_dict, sys.stdout, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":
