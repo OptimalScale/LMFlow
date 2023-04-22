@@ -4,4 +4,4 @@ and manipulating datasets from different backends such as Hugging Face and JSON.
 The `Dataset` class includes methods for loading datasets from a dictionary and a Hugging
 Face dataset, mapping datasets, and retrieving the backend dataset and arguments.
 """
-from datasets import Dataset
+from lmflow.datasets.dataset import Dataset
