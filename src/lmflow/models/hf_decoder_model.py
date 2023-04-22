@@ -242,7 +242,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             raise NotImplementedError('adapter tune strategy not implemented')
 
 
-    def tokenize(self, dataset, *args, **kwargs):
+    def tokenize(self, dataset, add_special_tokens=True, *args, **kwargs):
         """
         Tokenize the full dataset.
     
@@ -259,7 +259,9 @@ class HFDecoderModel(DecoderModel, Tunable):
         Returns
         ------------
         tokenized_datasets :
-            The tokenized dataset.
+            The tokenized dataset, without any leading or trailing special
+            tokens (normally they are Begin-Of-Sentence or End-Of-Sentence
+            tokens).
         """
         # Preprocessing the datasets.
         # First we tokenize all the texts.
@@ -317,6 +319,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 for column_name in tokenized_column_order:
                     encoding = self.tokenizer(
                         examples[column_name],
+                        add_special_tokens=add_special_tokens,
                         truncation=True if model_args.use_lora else None,
                     )
 

@@ -290,7 +290,8 @@ class Evaluator(BasePipeline):
             ]
 
         dataset = dataset.from_dict(data_dict)
-        tokenized_dataset = model.tokenize(dataset).get_backend_dataset()
+        tokenized_dataset = model.tokenize(dataset, add_special_tokens=False)
+        tokenized_dataset = tokenized_dataset.get_backend_dataset()
         encoding_list = [
             {
                 "input_ids": torch.tensor([input_ids]),
