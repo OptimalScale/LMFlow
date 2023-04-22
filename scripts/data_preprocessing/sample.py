@@ -2,14 +2,15 @@
 # coding=utf-8
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """
-Add prompt structure to a text2text dataset.
+Samples a certain ratio of instances from a dataset.
 """
 from __future__ import absolute_import
 
 import argparse
 import json
-import textwrap
+import random
 import sys
+import textwrap
 
 def parse_argument(sys_argv):
     """Parses arguments from command line.
@@ -31,17 +32,20 @@ def parse_argument(sys_argv):
     parser.add_argument(
         "--dataset_path", type=str,
         default=None,
-        help=textwrap.dedent("input dataset path, reads from stdin by default")
+        help="input dataset path, reads from stdin by default"
     )
     parser.add_argument(
         "--output_path", type=str,
         default=None,
-        help=textwrap.dedent("output dataset path, writes to stdout by default")
+        help="output dataset path, writes to stdout by default"
     )
     parser.add_argument(
-        "--prompt_structure", type=str,
-        default="{input}",
-        help=textwrap.dedent("prompt structure to augment input")
+        "--ratio", type=float, required=True,
+        help="sample ratio, will be floored if number of samples is not a int"
+    )
+    parser.add_argument(
+        "--seed", type=int, default=42,
+        help="pseudorandom seed"
     )
 
     # Parses from commandline
@@ -58,18 +62,12 @@ def main():
     else:
         data_dict = json.load(sys.stdin)
 
-    if data_dict["type"] != "text2text":
-        raise NotImplementedError(
-            "only support text2text prompt augmentation"
-        )
+    random.seed(args.seed)
+    num_instances = len(data_dict["instances"])
+    num_sample = int(num_instances * args.ratio)
 
-    data_dict["instances"] = [
-        {
-            "input": args.prompt_structure.format(input=instance["input"]),
-            "output": instance["output"],
-        }
-        for instance in data_dict["instances"]
-    ]
+    data_dict["instances"] = random.sample(data_dict["instances"], num_sample)
+
     if args.output_path is not None:
         with open(args.output_path, "w") as fout:
             json.dump(data_dict, fout, indent=4, ensure_ascii=False)
