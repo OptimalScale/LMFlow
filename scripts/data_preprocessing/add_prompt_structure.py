@@ -25,8 +25,7 @@ def parse_argument(sys_argv):
         ```
     """
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawTextHelpFormatter,
-        description='Deep learning models for image classification')
+        formatter_class=argparse.RawTextHelpFormatter)
 
     # Training parameters
     parser.add_argument(
