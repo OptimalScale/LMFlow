@@ -234,9 +234,7 @@ class RaftAligner(BaseAligner):
         ds = dataset.get_backend_dataset()
 
         def tokenize(sample):
-            input_size = 16
-            review_encode = tokenizer.encode(sample["text"])
-            sample["input_ids"] = review_encode[:input_size]
+            sample["input_ids"] = tokenizer.encode(sample["text"][:30])
             sample['input'] = tokenizer.decode(sample["input_ids"])
             return sample
 
@@ -315,27 +313,34 @@ class RaftAligner(BaseAligner):
             sample["output"] = [responses[j]]
             data.append(sample)
         output_data = [data[j] for j in idx]
-        logger.info(f"collected data of {len(output_data)}")
 
         world_size = int(os.getenv("WORLD_SIZE", "1"))
         all_process_list =[{}] * world_size
-        dist.all_gather_object(all_process_list, output_data)
 
+
+        data_to_send = [[data[i], reward_eva[i]] for i in range(len(data))]
+        dist.all_gather_object(all_process_list, data_to_send)
         gathered_data = []
+        gathered_reward = []
         for i in range(world_size):
-            gathered_data.extend(all_process_list[i])
+            tmp_data = [tmp[0] for tmp in all_process_list[i]]
+            gathered_data.extend(tmp_data)
 
-        reward_train = [reward_eva[j] for j in idx]
+            tmp_reward = [tmp[1] for tmp in all_process_list[i]]
+            gathered_reward.extend(tmp_reward)
 
-        reward_to_send = [np.mean(reward_eva), np.mean(reward_train)]
-        all_process_rewards = [{}] * world_size
-        dist.all_gather_object(all_process_rewards, reward_to_send)
-        logger.info(all_process_rewards)
+        idx = np.argsort(gathered_reward)[::-1][:int(len(gathered_reward) * alpha)]
+        gathered_data = [gathered_data[j] for j in idx]
+        reward_train = [gathered_reward[j] for j in idx]
+
+        logger.info(f"collected data of {len(gathered_data)}")
+        logger.info([np.mean(gathered_reward), np.mean(reward_train)])
 
         if training_args.local_rank == 0 and output_reward_path is not None:
             with open(output_reward_path, mode='a') as fout:
-                fout.write('mean reward: ' + str(np.mean([all_process_rewards[i][0] for i in range(world_size)])) + 'mean reward in training set: ' + str([all_process_rewards[i][1] for i in range(world_size)]))
+                fout.write('mean reward: ' + str(np.mean(gathered_reward)) + 'mean reward in training set: ' + str(np.mean(reward_train)))
                 fout.write("\n")
+
 
         prompt_structure = "{definition}{input}{output}"
         output_dataset = {
