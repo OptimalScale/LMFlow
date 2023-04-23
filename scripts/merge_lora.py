@@ -35,11 +35,12 @@ def main():
     model_args, other_args = (
         parser.parse_args_into_dataclasses()
     )
+    model_args.use_lora = 1
+    assert model_args.lora_model_path
 
     model = AutoModel.get_model(
         model_args,
-        tune_strategy='none',
-        device="cpu",
+        tune_strategy='none'
     )
 
     model.merge_lora_weights()

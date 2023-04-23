@@ -5,7 +5,7 @@
 """
 import logging
 import json
-import sys
+import torch
 import warnings
 import gradio as gr
 from dataclasses import dataclass, field
@@ -116,6 +116,7 @@ def main():
         tune_strategy='none',
         ds_config=ds_config,
         device=pipeline_args.device,
+        torch_dtype=torch.float16
     )
 
     # We don't need input data, we will read interactively from stdin
