@@ -105,6 +105,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         # only one local process can concurrently download model & vocab.
 
         self.device = device
+        self.model_args = model_args
 
         if tune_strategy == 'normal':
             config_kwargs = {
@@ -163,13 +164,17 @@ class HFDecoderModel(DecoderModel, Tunable):
                 logger.info(f"Training new model from scratch - Total size={n_params/2**20:.2f}M params")
             self.backend_model_full = model
             if model_args.use_lora:
-                
+                if model_args.lora_target_modules:
+                    lora_target_modules = model_args.lora_target_modules
+                else:
+                    lora_target_modules = None
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
                     r=model_args.lora_r,
                     lora_alpha=model_args.lora_alpha,
-                    lora_dropout=model_args.lora_dropout
+                    lora_dropout=model_args.lora_dropout,
+                    target_modules=lora_target_modules,
                 )
                 model = get_peft_model(model, peft_config)
                 model.print_trainable_parameters()
@@ -181,7 +186,6 @@ class HFDecoderModel(DecoderModel, Tunable):
             if len(tokenizer) > embedding_size:
                 model.resize_token_embeddings(len(tokenizer))
 
-            self.model_args = model_args
             self.config = config
             self.backend_model = model
             self.tokenizer = tokenizer
@@ -242,7 +246,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             raise NotImplementedError('adapter tune strategy not implemented')
 
 
-    def tokenize(self, dataset, *args, **kwargs):
+    def tokenize(self, dataset, add_special_tokens=True, *args, **kwargs):
         """
         Tokenize the full dataset.
     
@@ -259,7 +263,9 @@ class HFDecoderModel(DecoderModel, Tunable):
         Returns
         ------------
         tokenized_datasets :
-            The tokenized dataset.
+            The tokenized dataset, without any leading or trailing special
+            tokens (normally they are Begin-Of-Sentence or End-Of-Sentence
+            tokens).
         """
         # Preprocessing the datasets.
         # First we tokenize all the texts.
@@ -317,6 +323,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 for column_name in tokenized_column_order:
                     encoding = self.tokenizer(
                         examples[column_name],
+                        add_special_tokens=add_special_tokens,
                         truncation=True if model_args.use_lora else None,
                     )
 

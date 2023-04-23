@@ -13,7 +13,7 @@ extracted from the MODEL_CONFIG_CLASSES.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, List
 
 from transformers.utils.versions import require_version
 
@@ -170,6 +170,10 @@ class ModelArguments:
     lora_alpha: int = field(
         default=32,
         metadata={"help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
+    )
+    lora_target_modules: List[str] = field(
+        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",
+                              }
     )
     lora_dropout: float = field(
         default=0.1,

@@ -277,21 +277,29 @@ class Evaluator(BasePipeline):
             A float which represents the negative log likelihood.
         """
         data_dict = dataset.to_dict()
-        if data_dict['type'] == 'text2text':
+
+        # Handles prompt structure
+        if dataset.get_type() == "text2text":
             prompt = self.evaluator_args.prompt_structure
-            texts = [
-                prompt.format(input=instance["input"]) + instance["output"]
-                 for instance in data_dict["instances"]
+            data_dict["instances"] = [
+                {
+                    "input": prompt.format(input=instance["input"]),
+                    "output": instance["output"]
+                }
+                for instance in data_dict["instances"]
             ]
-        elif data_dict['type'] == 'text_only':
-            texts = [ instance["text"] for instance in data_dict["instances"] ]
-        else:
-            raise NotImplementedError(
-                "negative log likelihood evaluation is currently not supported"
-                f" for {data_dict['type']} dataset."
-            )
-        encoding_list = [ model.get_tokenizer()(text, return_tensors="pt")
-                          for text in texts ]
+
+        dataset = dataset.from_dict(data_dict)
+        tokenized_dataset = model.tokenize(dataset, add_special_tokens=False)
+        tokenized_dataset = tokenized_dataset.get_backend_dataset()
+        encoding_list = [
+            {
+                "input_ids": torch.tensor([input_ids]),
+                "labels": torch.tensor([labels]),
+            }
+            for input_ids, labels in zip(tokenized_dataset["input_ids"],
+                                         tokenized_dataset["labels"])
+        ]
 
         # Gets context window length
         try:
@@ -301,9 +309,10 @@ class Evaluator(BasePipeline):
             max_length = min(1024, model.get_max_length())
 
         nlls = []
-        num_samples = len(texts)
+        full_nlls = []
+        num_samples = len(encoding_list)
         for sample_idx, encodings in enumerate(encoding_list):
-            seq_len = encodings.input_ids.size(1)
+            seq_len = encodings["input_ids"].size(1)
 
             prev_end_loc = 0
             for begin_loc in range(0, seq_len, self.block_size):
@@ -311,28 +320,66 @@ class Evaluator(BasePipeline):
 
                 # may be different from block_size on last loop
                 trg_len = end_loc - prev_end_loc
-                input_ids = encodings.input_ids[:, begin_loc:end_loc]
+                input_ids = encodings["input_ids"][:, begin_loc:end_loc]
                 input_ids = input_ids.to(device=self.local_rank)
 
-                target_ids = input_ids.clone()
-                target_ids[:, :-trg_len] = -100
+                labels = encodings["labels"][:, begin_loc:end_loc]
+                target_ids = labels.clone()
+                full_target_ids = input_ids.clone()
 
-                with torch.no_grad():
-                    outputs = model.get_backend_model()(input_ids,
-                                                        labels=target_ids)
-                    # loss is calculated using CrossEntropyLoss which averages
-                    # over valid labels N.B. the model only calculates loss
-                    # over trg_len - 1 labels, because it internally shifts the
-                    # labels to the left by 1.
-                    neg_log_likelihood = outputs.loss
+                def get_nll(label_ids, nll_list):
+                    label_ids[:, :-trg_len] = -100
+                    label_ids = label_ids.to(device=self.local_rank)
 
-                nlls.append(neg_log_likelihood)
+                    # Valid labels are from 0 to `vocab_size`
+                    num_valid_labels = torch.count_nonzero(label_ids >= 0)
+                    if label_ids[0, 0] != -100:
+                        num_valid_labels -= 1
+
+                    if not torch.all(label_ids == -100):
+                        with torch.no_grad():
+                            outputs = model.get_backend_model()(
+                                input_ids, labels=label_ids
+                            )
+                            # loss is calculated using CrossEntropyLoss which
+                            # sums over valid labels N.B. the model only
+                            # calculates loss over trg_len - 1 labels, because
+                            # it internally shifts the labels to the left by 1.
+                            neg_log_likelihood = outputs.loss * num_valid_labels
+                    else:
+                        neg_log_likelihood = torch.zeros([]).to(
+                            device=self.local_rank
+                        )
+
+                    nll_list.append(neg_log_likelihood)
+
+                get_nll(target_ids, nlls)
+                get_nll(full_target_ids, full_nlls)
+
+                current_output_nll = torch.stack(nlls).sum() / (sample_idx + 1)
+                current_full_nll = torch.stack(full_nlls).sum() / (sample_idx + 1)
+
                 prev_end_loc = end_loc
-                print(
-                    f"Evaluating negative log likelihood:"
-                    f" {sample_idx + 1} / {num_samples} Complete, current nll:"
-                    f" {torch.stack(nlls).sum() / (sample_idx + 1)}"
-                )
+                if dataset.get_type() == "text_only":
+                    print(
+                        f"Evaluating negative log likelihood:"
+                        f" {sample_idx + 1} / {num_samples} Complete,"
+                        f" current nll: {current_full_nll}"
+                    )
+                elif dataset.get_type() == "text2text":
+                    print(
+                        f"Evaluating negative log likelihood:"
+                        f" {sample_idx + 1} / {num_samples} Complete,"
+                        f" current full nll / input nll / output nll:"
+                        f" {current_full_nll} /"
+                        f" {current_full_nll - current_output_nll} /"
+                        f" {current_output_nll}"
+                    )
+                else:
+                    raise NotImplementedError(
+                        "f{dataset.get_type()} typed datasets are not supported"
+                    )
+
                 if end_loc == seq_len:
                     break
 
