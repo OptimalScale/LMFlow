@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function main() {
-    public_server="http://lmflow.org:5000"
+    public_server="https://lmflow.org:5000"
     if [ $# -lt 1 -o "$1" = "-h" -o "$1" = "--help" ]; then
         echo "Usage: bash $(basename $0) dataset_name"
         echo "Example: bash $(basename $0) MedMCQA"
