@@ -91,6 +91,17 @@ cd ./service
 python app.py
 ```
 
+We also provide a gradio-based UI for building chatbots. Running the following command will launch the demo for robin-7b:
+
+```sh
+pip install gradio
+python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
+```
+
+We also hosted it on HuggingFace [Space](https://huggingface.co/spaces/OptimalScale/Robin-7b).
+
+
+
 ### Colab RAFT-diffusion
 
 We also provide a simple demo to display the effectiveness of RAFT algorithm on diffusion models.
