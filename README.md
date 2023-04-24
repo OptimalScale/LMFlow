@@ -20,7 +20,7 @@
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/u9VJNpzhvA)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/14/ixapZa.jpeg)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/21/idFkmt.jpeg)
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
@@ -32,7 +32,9 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 
 
 ## Latest News
-* [2023-04-10] :rocket:[We propose a new alignment algorithm: Reward rAnked FineTuning (RAFT), which is more efficient than conventional (PPO-based) RLHF. The movie review demo are available now.](https://optimalscale.github.io/LMFlow/examples/raft.html):rocket: [[Paper](https://github.com/OptimalScale/LMFlow/blob/main/assets/RAFT.pdf)]
+* [2023-04-21] :rocket:Release Robin-7B (based on LLaMA-7B), and two models for commercial use: Parakeets-2.7B (based on GPT-NEO-2.7B) and Cokatoo-7B (based on StableLM-7B) [Download here](https://github.com/OptimalScale/LMFlow/tree/main#model-zoo) :rocket:
+* [2023-04-15] Inference: Support streaming output and ChatGLM.
+* [2023-04-10] [We propose a new alignment algorithm: Reward rAnked FineTuning (RAFT), which is more efficient than conventional (PPO-based) RLHF. The movie review demo are available now.](https://optimalscale.github.io/LMFlow/examples/raft.html) [[Paper](https://github.com/OptimalScale/LMFlow/blob/main/assets/RAFT.pdf)]
 * [2023-04-02] [Web service](https://lmflow.com/) is online!
 * [2023-04-01] Release Chinese checkpoints in model zoo: [LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
 * [2023-04-01] Release English checkpoints in model zoo: [LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
@@ -117,16 +119,50 @@ For more performance, including instruction tuning results, please refer to our 
 ## Model Zoo
 We open-sourced the trained checkpoints to everyone for further training and inference.
 
-| Instruct-tuned Models   |  Status | Base Model | Download | 
-|----------|:-------------:|----------|:-------------:|
-| LLaMA-7B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
-| LLaMA-13B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
-| LLaMA-33B-tuned | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/1IqgqLHwNkWQ7BffheZnqD6a-8Zul1bk6/view?usp=share_link) |
-| LLaMA-65B-tuned | ![training](https://geps.dev/progress/65) | LLaMA-65B | Google Drive |
-| LLaMA7B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1Z44tsrRvfDFvucbNGFjHC_vbPcBvg3x-/view?usp=share_link) |
-| LLaMA13B-medical | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1uoTAXTMyYQkP6N4ummx7tj-c4v1p91ap/view?usp=share_link) |
-| LLaMA33B-medical | ![completed](https://geps.dev/progress/100) |LLaMA-33B |  [Google Drive](https://drive.google.com/file/d/14N9o_1pwHmVuSikQ3orMVzZDrLYJC0iM/view?usp=share_link) |
-| LLaMA65B-medical | ![training](https://geps.dev/progress/90) | LLaMA-65B | Google Drive |
+<table>
+<tr>
+  <td align="center"></td>
+  <td align="center"><a href="http://lmflow.org:5000/robin-7b.tar.gz" target="_blank"><img src="./assets/robin7b.jpg" width="300" /></a></td>
+  <td align="center"><a href="http://lmflow.org:5000/llama13b-lora-380k.tar.gz" target="_blank"><img src="./assets/robin13b.png" width="300" /></a></td>
+  <td align="center"><a href="http://lmflow.org:5000/llama30b-lora-170k.tar.gz" target="_blank"><img src="./assets/robin33b.png" width="300" /></a></td>
+  <td align="center"><a href="" target="_blank"><img src="./assets/robin65b.png" width="300" /></a></td>
+</tr>
+<tr>
+  <td width="160" align="center">Model<br />Base Model</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/robin-7b.tar.gz">Robin-7B :star: </a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-380k.tar.gz">Robin-13B</a><br />LLaMA-13B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-170k.tar.gz">Robin-33B</a><br />LLaMA-33B</td>
+  <td width="160" align="center"><a href="">Robin-65B</a><br />LLaMA-65B</td>
+</tr>
+<tr>
+  <td align="center"></td>
+  <td align="center"><a href="http://lmflow.org:5000/llama7b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin7b_.png" width="300" /></a></td>
+  <td align="center"><a href="http://lmflow.org:5000/llama13b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin13b_.jpg" width="300" /></a></td>
+  <td align="center"><a href="http://lmflow.org:5000/llama30b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin33b_.png" width="300" /></a></td>
+  <td align="center"><a href="" target="_blank"><img src="./assets/robin65b_.png" width="300" /></a></td>
+</tr>
+<tr>
+  <td width="160" align="center">Model<br />Base Model</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama7b-lora-medical.tar.gz">Robin-7B-medical</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-medical.tar.gz">Robin-13B-medical</a><br />LLaMA-13B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-medical.tar.gz">Robin-33B-medical</a><br />LLaMA-33B</td>
+  <td width="160" align="center"><a href="">Robin-65B-medical</a><br />LLaMA-65B</td>
+</tr>
+<tr>
+  <td align="center"></td>
+  <td align="center"><a href="http://lmflow.org:5000/parakeets-2.7b.tar.gz" target="_blank"><img src="./assets/Parakeets.png" width="300" /></a></td>
+  <td align="center"><a href="" target="_blank"><img src="./assets/Cockatoo3b.png" width="300" /></a></td>
+  <td align="center"><a href="http://lmflow.org:5000/cockatoo-7b.tar.gz" target="_blank"><img src="./assets/Cockatoo7b.png" width="300" /></a></td>
+  <td align="center"></a></td>
+</tr>
+<tr>
+  <td width="160" align="center">Model<br />Base Model</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/parakeets-2.7b.tar.gz">Parakeets-2.7B :star: </a><br />GPT-NEO-2.7B</td>
+  <td width="160" align="center"><a href="">Cockatoo-3B</a><br />StableLM-3B</td>
+  <td width="160" align="center"><a href="http://lmflow.org:5000/cockatoo-7b.tar.gz">Cockatoo-7B :star: </a><br />StableLM-7B</td>
+  <td width="160" align="center"><br /></td>
+</tr>
+</table>
 
 
 ## Supported Pipelines
@@ -138,8 +174,6 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 | Parameter-Efficient Tuning |  :white_check_mark: Supported |
 | Large Model Inference |  :white_check_mark: Supported |
 | Alignment Tuning |  :white_check_mark: Supported |
-
-
 
 ## Supported Models
 
@@ -309,7 +343,7 @@ Whether you are a beginner or an expert, we believe that you can benefit from th
 
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/u9VJNpzhvA)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/14/ixapZa.jpeg)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/21/idFkmt.jpeg)
 
 
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function main() {
-    public_server="http://18.207.214.227:5000"
+    public_server="http://lmflow.org:5000"
     if [ $# -lt 1 -o "$1" = "-h" -o "$1" = "--help" ]; then
         echo "Usage: bash $(basename $0) model_name"
         echo "Example: bash $(basename $0) instruction_ckpt"
@@ -75,6 +75,30 @@ function main() {
     if [ "$1" = "llama7b-lora-movie-reviewer" -o "$1" = "raft_ckpt" -o "$1" = "all" ]; then
         echo "downloading llama7b-lora-movie-reviewer"
         filename='llama7b-lora-movie-reviewer.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "cockatoo-7b" -o "$1" = "all" ]; then
+        echo "downloading cockatoo-7b"
+        filename='cockatoo-7b.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "parakeets-2.7b" -o "$1" = "all" ]; then
+        echo "downloading parakeets-2.7b"
+        filename='parakeets-2.7b.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "robin-7b" -o "$1" = "all" ]; then
+        echo "downloading robin-7b"
+        filename='robin-7b.tar.gz'
         wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}
