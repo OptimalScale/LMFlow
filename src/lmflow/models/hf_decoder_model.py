@@ -126,7 +126,11 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         self.tokenizer = tokenizer  
 
-
+        torch_dtype = (
+            model_args.torch_dtype
+            if model_args.torch_dtype in ["auto", None]
+            else getattr(torch, model_args.torch_dtype)
+        )
         if tune_strategy == 'normal':
             config_kwargs = {
                 "cache_dir": model_args.cache_dir,
@@ -146,11 +150,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                     logger.info(f"New config: {config}")
 
             if model_args.model_name_or_path:
-                torch_dtype = (
-                    model_args.torch_dtype
-                    if model_args.torch_dtype in ["auto", None]
-                    else getattr(torch, model_args.torch_dtype)
-                )
                 model = AutoModelForCausalLM.from_pretrained(
                     model_args.model_name_or_path,
                     from_tf=bool(".ckpt" in model_args.model_name_or_path),
@@ -211,6 +210,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         device_map="auto",
                         offload_folder="offload",
                         offload_state_dict=True,
+                        torch_dtype=torch_dtype,
                     )
                 except:
                     logger.warning(
@@ -220,6 +220,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     # Normal load
                     self.backend_model = AutoModelForCausalLM.from_pretrained(
                         model_args.model_name_or_path,
+                        torch_dtype=torch_dtype,
                     )
             else:
                 if peft_model_id is not None:
@@ -229,6 +230,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     )
                 self.backend_model = AutoModelForCausalLM.from_pretrained(
                     model_args.model_name_or_path,
+                    torch_dtype=torch_dtype,
                 )
 
             self.backend_model_full = self.backend_model
