@@ -16,6 +16,7 @@ from transformers import (
     default_data_collator,
     set_seed,
 )
+from copy import deepcopy
 from transformers.utils import send_example_telemetry
 
 from lmflow.datasets.dataset import Dataset
@@ -209,6 +210,11 @@ class Finetuner(BaseTuner):
 
         train_dataset = lm_dataset.get_backend_dataset()
 
+        if finetuner_args.do_eval:
+            eval_dataset_args = deepcopy(data_args)
+            eval_dataset_args.dataset_path = eval_dataset_args.eval_dataset_path
+            eval_dataset = Dataset(eval_dataset_args)
+
         if finetuner_args.do_train:
             if data_args.max_train_samples is not None:
                 max_train_samples = min(len(train_dataset), data_args.max_train_samples)
@@ -220,7 +226,7 @@ class Finetuner(BaseTuner):
             model=model.get_backend_model(),
             args=training_args,
             train_dataset=train_dataset if training_args.do_train else None,
-            eval_dataset=None,
+            eval_dataset=eval_dataset if training_args.do_eval else None,
             tokenizer=model.get_tokenizer(),
             # Data collator will default to DataCollatorWithPadding, so we change it.
             data_collator=default_data_collator,
