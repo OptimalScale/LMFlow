@@ -87,6 +87,46 @@ function main() {
         tar zxvf ${filename}
         rm ${filename}
     fi
+    
+    if [ "$1" = "gpt4_zh_eval" -o "$1" = "all" ]; then
+        echo "downloading gpt4_zh_eval dataset"
+        filename='gpt4_instruction_zh_eval.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+    
+    if [ "$1" = "multiturn_dialog_eval" -o "$1" = "all" ]; then
+        echo "downloading multiturn_dialog_eval dataset"
+        filename='multiturn_dialog_eval.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+    
+    if [ "$1" = "wiki_zh_eval" -o "$1" = "all" ]; then
+        echo "downloading wiki_zh_eval dataset"
+        filename='wiki_zh_eval.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+    
+    if [ "$1" = "gpt4_en_eval" -o "$1" = "all" ]; then
+        echo "downloading gpt4_en_eval dataset"
+        filename='gpt4_instruction_en_eval.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+    
+    if [ "$1" = "common_sense_eval" -o "$1" = "all" ]; then
+        echo "downloading common_sense_eval dataset"
+        filename='common_sense_eval.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
 }
 
 main "$@"
