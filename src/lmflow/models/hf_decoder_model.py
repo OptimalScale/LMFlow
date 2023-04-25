@@ -297,6 +297,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         elif dataset_type == "text2text":
             tokenized_column_order = ["input", "output"]
             label_columns = ["output"]
+            add_special_tokens = False
         else:
             raise NotImplementedError(
                 f"dataset type \"{dataset_type}\" is not supported, currently"
