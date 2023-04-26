@@ -43,11 +43,7 @@ class Evaluator(BasePipeline):
         self.data_args = data_args
         self.evaluator_args = evaluator_args
         self.model_args = model_args
-        print("--------Begin Evaluator Arguments----------")
-        print(f"model_args : {self.model_args}")
-        print(f"data_args : {self.data_args}")
-        print(f"evaluator_args : {self.evaluator_args}")
-        print("--------End Evaluator Arguments----------")
+
         # logger
         if(self.evaluator_args.use_wandb == True):
             wandb.init(project="lmflow_evaluation")
