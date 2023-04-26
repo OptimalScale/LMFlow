@@ -45,6 +45,7 @@ deepspeed ${deepspeed_args} \
     --logging_steps 20 \
     --do_train \
     --do_eval \
+    --evaluation_strategy "epoch" \
     --eval_dataset_path ${eval_dataset_path} \
     --ddp_timeout 72000 \
     --save_steps 5000 \

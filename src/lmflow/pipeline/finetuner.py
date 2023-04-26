@@ -2,14 +2,13 @@
 # coding=utf-8
 """The Finetuner class simplifies the process of running finetuning process on a language model for a TunableModel instance with given dataset. 
 """
-
 import logging
 import os
 import sys
 
 import datasets
 import transformers
-
+import evaluate
 from itertools import chain
 from transformers import (
     Trainer,
@@ -213,7 +212,24 @@ class Finetuner(BaseTuner):
         if finetuner_args.do_eval:
             eval_dataset_args = deepcopy(data_args)
             eval_dataset_args.dataset_path = eval_dataset_args.eval_dataset_path
-            eval_dataset = Dataset(eval_dataset_args)
+            eval_dataset = Dataset(eval_dataset_args).get_backend_dataset()
+
+            def preprocess_logits_for_metrics(logits, labels):
+                if isinstance(logits, tuple):
+                    # Depending on the model and config, logits may contain extra tensors,
+                    # like past_key_values, but logits always come first
+                    logits = logits[0]
+                return logits.argmax(dim=-1)
+
+            metric = evaluate.load("perplexity")
+
+            def compute_metrics(eval_preds):
+                preds, labels = eval_preds
+                # preds have the same shape as the labels, after the argmax(-1) has been calculated
+                # by preprocess_logits_for_metrics but we need to shift the labels
+                labels = labels[:, 1:].reshape(-1)
+                preds = preds[:, :-1].reshape(-1)
+                return metric.compute(predictions=preds, references=labels)
 
         if finetuner_args.do_train:
             if data_args.max_train_samples is not None:
@@ -230,8 +246,9 @@ class Finetuner(BaseTuner):
             tokenizer=model.get_tokenizer(),
             # Data collator will default to DataCollatorWithPadding, so we change it.
             data_collator=default_data_collator,
-            compute_metrics=None,
-            preprocess_logits_for_metrics=None,
+            compute_metrics=compute_metrics if training_args.do_eval else None,
+            preprocess_logits_for_metrics=preprocess_logits_for_metrics
+            if training_args.do_eval else None,
         )
 
         # Training
