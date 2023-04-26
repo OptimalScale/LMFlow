@@ -18,6 +18,11 @@ from datasets import load_dataset
 from datasets import Dataset as HFDataset
 
 from lmflow.args import DatasetArguments
+from lmflow.utils.constants import (
+    DATASET_DESCRIPTION_MAP,
+    TEXT_ONLY_DATASET_DESCRIPTION,
+    TEXT2TEXT_DATASET_DESCRIPTION,
+)
 
 DATASET_TYPES = [
     "text_only",
@@ -151,21 +156,36 @@ class Dataset:
         if self.backend == "huggingface":
             if KEY_TYPE not in dict_obj:
                 raise ValueError(
-                    f'"{KEY_TYPE}" must be provided to initialize a dataset'
+                    f'"{KEY_TYPE}" must be provided to initialize a dataset,'
+                    f' e.g.\n'
+                    f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
                 )
             if KEY_INSTANCES not in dict_obj:
                 raise ValueError(
-                    f'"{KEY_INSTANCES}" must be provided to initialize a dataset'
+                    f'"{KEY_INSTANCES}" must be provided to initialize a'
+                    f' dataset, e.g.\n'
+                    f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
                 )
 
             self.type = dict_obj[KEY_TYPE]
 
-            hf_dict = {}
-            if len(dict_obj[KEY_INSTANCES]) > 0:
-                for key in dict_obj[KEY_INSTANCES][0].keys():
-                    hf_dict[key] = [ instance[key] for instance in dict_obj[KEY_INSTANCES] ]
+            try:
+                hf_dict = {}
+                if len(dict_obj[KEY_INSTANCES]) > 0:
+                    for key in dict_obj[KEY_INSTANCES][0].keys():
+                        hf_dict[key] = [
+                            instance[key] for instance in dict_obj[KEY_INSTANCES]
+                        ]
 
-            self.backend_dataset = HFDataset.from_dict(hf_dict, *args, **kwargs)
+                self.backend_dataset = HFDataset.from_dict(hf_dict, *args, **kwargs)
+            except AttributeError as ex:
+                raise ValueError(
+                    f"Error occurs: {ex}. Failed to convert dict to"
+                    f" \"{self.type}\" dataset," f" the standard format is as"
+                    f" follows:\n"
+                    f"    {DATASET_DESCRIPTION_MAP[self.type]}"
+                )
+
             return self
         else:
             raise NotImplementedError(
