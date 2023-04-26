@@ -145,3 +145,8 @@ DATASET_DESCRIPTION_MAP = {
     "text_only": TEXT_ONLY_DATASET_DESCRIPTION,
     "text2text": TEXT2TEXT_DATASET_DESCRIPTION,
 }
+
+INSTANCE_FIELDS_MAP = {
+    "text_only": ["text"],
+    "text2text": ["input", "output"],
+}
