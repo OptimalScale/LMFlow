@@ -130,23 +130,18 @@ class Evaluator(BasePipeline):
         """
         if metric in ["acc", "accuracy"]:
             acc = self._evaluate_acc(model, dataset, verbose=verbose)
-            print(f"Evaluating final acc: {acc}")
+            print(f"Evaluating final accuracy: {acc}")
+            return acc
         elif metric in ["ppl", "perplexity"]:
-            ppl =  self._evaluate_ppl(
-                model,
-                dataset,
-                verbose=verbose,
-            )
-            print(f"Evaluating final ppl: {ppl}")
+            ppl = self._evaluate_ppl(model, dataset, verbose=verbose)
+            print(f"Evaluating final perplexity: {ppl}")
+            return ppl
         elif metric in ["nll", "neg_log_likelihood"]:
-            neg_log_likelihood = self._evaluate_neg_log_likelihood(
-                model,
-                dataset,
-                verbose=verbose,
-            )
-            print(f"Evaluating final negative log likelihood: {neg_log_likelihood}")
+            nll = self._evaluate_nll(model, dataset, verbose=verbose)
+            print(f"Evaluating final negative log likelihood: {nll}")
+            return nll
         else:
-            raise NotImplementedError(f"{metric} is not implemented or not match with our defined metrics")
+            raise NotImplementedError(f"metric {metric} is not supported")
 
 
     def _evaluate_acc(self, model, dataset, verbose=True):
@@ -280,7 +275,7 @@ class Evaluator(BasePipeline):
         return ppl
 
 
-    def _evaluate_neg_log_likelihood(
+    def _evaluate_nll(
         self,
         model,
         dataset: Dataset,
