@@ -113,7 +113,13 @@ class Evaluator(BasePipeline):
         return False
 
 
-    def evaluate(self, model, dataset: Dataset, metric = "accuracy"):
+    def evaluate(
+        self,
+        model,
+        dataset: Dataset,
+        metric = "accuracy",
+        verbose=True,
+    ):
         """
         Perform Evaluation for a model
 
@@ -168,9 +174,10 @@ class Evaluator(BasePipeline):
                     text_out,
                     answer_type=answer_type,
                 )
-                print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
-                print(f"predicted answer: {pred_answer} \n")
-                print(f"groundtruth answer: {output} \n")
+                if verbose:
+                    print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
+                    print(f"predicted answer: {pred_answer} \n")
+                    print(f"groundtruth answer: {output} \n")
 
                 if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
                     correct_ = 0
@@ -213,16 +220,24 @@ class Evaluator(BasePipeline):
                 print("Final accuracy = ", current_accuracy)
                 output_writer.close()
         elif metric in ["ppl", "perplexity"]:
-            ppl =  self._evaluate_ppl(model, dataset)
+            ppl =  self._evaluate_ppl(
+                model,
+                dataset,
+                verbose=verbose,
+            )
             print(f"Evaluating final ppl: {ppl}")
         elif metric in ["nll", "neg_log_likelihood"]:
-            neg_log_likelihood = self._evaluate_neg_log_likelihood(model, dataset)
+            neg_log_likelihood = self._evaluate_neg_log_likelihood(
+                model,
+                dataset,
+                verbose=verbose,
+            )
             print(f"Evaluating final negative log likelihood: {neg_log_likelihood}")
         else:
             raise NotImplementedError(f"{metric} is not implemented or not match with our defined metrics")
 
 
-    def _evaluate_ppl(self, model, dataset: Dataset):
+    def _evaluate_ppl(self, model, dataset: Dataset, verbose=True):
         data_dict = dataset.to_dict()
         if data_dict['type'] == 'text2text':
             raise NotImplementedError("ppl evaluation is currently not supported for text2text dataset, please use text_only dataset.")
@@ -234,7 +249,8 @@ class Evaluator(BasePipeline):
         except:
             max_length = min(1024, model.get_max_length())
 
-        print(f"The maximum sequence length : {max_length}")
+        if verbose:
+            print(f"The maximum sequence length : {max_length}")
         seq_len = encodings.input_ids.size(1)
 
         nlls = []
@@ -255,14 +271,20 @@ class Evaluator(BasePipeline):
 
             nlls.append(neg_log_likelihood)
             prev_end_loc = end_loc
-            print(f"Evaluating PPL: {int(begin_loc/self.block_size) + 1} / {int(seq_len/self.block_size)} Complete, current ppl : {torch.exp(torch.stack(nlls).mean())}")
+            if verbose:
+                print(f"Evaluating PPL: {int(begin_loc/self.block_size) + 1} / {int(seq_len/self.block_size)} Complete, current ppl : {torch.exp(torch.stack(nlls).mean())}")
             if end_loc == seq_len:
                 break
         ppl = torch.exp(torch.stack(nlls).mean())
         return ppl
 
 
-    def _evaluate_neg_log_likelihood(self, model, dataset: Dataset):
+    def _evaluate_neg_log_likelihood(
+        self,
+        model,
+        dataset: Dataset,
+        verbose=True,
+    ):
         """
         Evaluates negative log likelihood of the model over a dataset.
 
@@ -360,25 +382,27 @@ class Evaluator(BasePipeline):
                 current_full_nll = torch.stack(full_nlls).sum() / (sample_idx + 1)
 
                 prev_end_loc = end_loc
-                if dataset.get_type() == "text_only":
-                    print(
-                        f"Evaluating negative log likelihood:"
-                        f" {sample_idx + 1} / {num_samples} Complete,"
-                        f" current nll: {current_full_nll}"
-                    )
-                elif dataset.get_type() == "text2text":
-                    print(
-                        f"Evaluating negative log likelihood:"
-                        f" {sample_idx + 1} / {num_samples} Complete,"
-                        f" current full nll / input nll / output nll:"
-                        f" {current_full_nll} /"
-                        f" {current_full_nll - current_output_nll} /"
-                        f" {current_output_nll}"
-                    )
-                else:
-                    raise NotImplementedError(
-                        "f{dataset.get_type()} typed datasets are not supported"
-                    )
+                if verbose:
+                    if dataset.get_type() == "text_only":
+                        print(
+                            f"Evaluating negative log likelihood:"
+                            f" {sample_idx + 1} / {num_samples} Complete,"
+                            f" current nll: {current_full_nll}"
+                        )
+                    elif dataset.get_type() == "text2text":
+                        print(
+                            f"Evaluating negative log likelihood:"
+                            f" {sample_idx + 1} / {num_samples} Complete,"
+                            f" current full nll / input nll / output nll:"
+                            f" {current_full_nll} /"
+                            f" {current_full_nll - current_output_nll} /"
+                            f" {current_output_nll}"
+                        )
+                    else:
+                        raise NotImplementedError(
+                            "f{dataset.get_type()} typed datasets are not"
+                            " supported"
+                        )
 
                 if end_loc == seq_len:
                     break
