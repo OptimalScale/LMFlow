@@ -18,6 +18,12 @@ from datasets import load_dataset
 from datasets import Dataset as HFDataset
 
 from lmflow.args import DatasetArguments
+from lmflow.utils.constants import (
+    DATASET_DESCRIPTION_MAP,
+    TEXT_ONLY_DATASET_DESCRIPTION,
+    TEXT2TEXT_DATASET_DESCRIPTION,
+    INSTANCE_FIELDS_MAP,
+)
 
 DATASET_TYPES = [
     "text_only",
@@ -96,6 +102,7 @@ class Dataset:
                 use_auth_token=None,
             )
             self.backend_dataset = raw_dataset
+            self._check_data_format()
         elif backend == "json":
             # TODO (@Jiachun)
             pass
@@ -103,10 +110,33 @@ class Dataset:
             raise NotImplementedError(f'Unsupported dataset backend "{backend}"')
 
 
-    def _check_data_type(self):
-        # TODO: check if data type and data structure matches, raise messages
-        # with hints
-        pass
+    def _check_data_format(self):
+        """Checks if data type and data structure matches
+
+        Raise messages with hints if not matched.
+        """
+        data_dict = self.to_dict()
+        if KEY_TYPE not in data_dict:
+            raise ValueError(
+                f'"{KEY_TYPE}" must be provided to initialize a dataset,'
+                f' e.g.\n'
+                f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
+            )
+        if KEY_INSTANCES not in data_dict:
+            raise ValueError(
+                f'"{KEY_INSTANCES}" must be provided to initialize a'
+                f' dataset, e.g.\n'
+                f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
+            )
+
+        data_type = data_dict[KEY_TYPE]
+        fields = self.get_backend_dataset().features
+        correct_fields = INSTANCE_FIELDS_MAP[data_type]
+        if set(fields) != set(correct_fields):
+            raise ValueError(
+                f'Data instance fields incorrect'
+                f' {list(fields)}: should be {list(correct_fields)}.'
+            )
 
 
     def from_dict(self, dict_obj: dict, *args, **kwargs):
@@ -151,21 +181,51 @@ class Dataset:
         if self.backend == "huggingface":
             if KEY_TYPE not in dict_obj:
                 raise ValueError(
-                    f'"{KEY_TYPE}" must be provided to initialize a dataset'
+                    f'"{KEY_TYPE}" must be provided to initialize a dataset,'
+                    f' e.g.\n'
+                    f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
                 )
             if KEY_INSTANCES not in dict_obj:
                 raise ValueError(
-                    f'"{KEY_INSTANCES}" must be provided to initialize a dataset'
+                    f'"{KEY_INSTANCES}" must be provided to initialize a'
+                    f' dataset, e.g.\n'
+                    f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
                 )
 
             self.type = dict_obj[KEY_TYPE]
+            if not self.type in INSTANCE_FIELDS_MAP:
+                raise ValueError(f'type "{self.type}" is not supported')
 
-            hf_dict = {}
-            if len(dict_obj[KEY_INSTANCES]) > 0:
-                for key in dict_obj[KEY_INSTANCES][0].keys():
-                    hf_dict[key] = [ instance[key] for instance in dict_obj[KEY_INSTANCES] ]
+            correct_fields = INSTANCE_FIELDS_MAP[self.type]
 
-            self.backend_dataset = HFDataset.from_dict(hf_dict, *args, **kwargs)
+            for i, instance in enumerate(dict_obj[KEY_INSTANCES]):
+                fields = instance.keys()
+                if set(fields) != set(correct_fields):
+                    raise ValueError(
+                        f'data instance fields incorrect'
+                        f' {list(fields)}: should be {list(correct_fields)}.\n'
+                        f'The bad instance triggers the error, the {i}-th instance:\n'
+                        f'    {instance}'
+                )
+
+            try:
+                hf_dict = {}
+                if len(dict_obj[KEY_INSTANCES]) > 0:
+                    for key in dict_obj[KEY_INSTANCES][0].keys():
+                        hf_dict[key] = [
+                            instance[key] for instance in dict_obj[KEY_INSTANCES]
+                        ]
+
+                self.backend_dataset = HFDataset.from_dict(hf_dict, *args, **kwargs)
+            except AttributeError as ex:
+                raise ValueError(
+                    f"Error occurs: {ex}. Failed to convert dict to"
+                    f" \"{self.type}\" dataset," f" the standard format is as"
+                    f" follows:\n"
+                    f"    {DATASET_DESCRIPTION_MAP[self.type]}"
+                )
+            self._check_data_format()
+
             return self
         else:
             raise NotImplementedError(
