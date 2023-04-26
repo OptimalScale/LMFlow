@@ -210,9 +210,18 @@ class Finetuner(BaseTuner):
         train_dataset = lm_dataset.get_backend_dataset()
 
         if finetuner_args.do_eval:
+            
             eval_dataset_args = deepcopy(data_args)
             eval_dataset_args.dataset_path = eval_dataset_args.eval_dataset_path
-            eval_dataset = Dataset(eval_dataset_args).get_backend_dataset()
+            eval_dataset = Dataset(eval_dataset_args)
+            with finetuner_args.main_process_first(desc="dataset map tokenization"):
+                tokenized_dataset = model.tokenize(eval_dataset)
+                lm_dataset = self.group_text(
+                    tokenized_dataset,
+                    model_max_length=model.get_max_length(),
+                )
+            eval_dataset = lm_dataset.get_backend_dataset()
+            
 
             def preprocess_logits_for_metrics(logits, labels):
                 if isinstance(logits, tuple):
@@ -221,21 +230,24 @@ class Finetuner(BaseTuner):
                     logits = logits[0]
                 return logits.argmax(dim=-1)
 
-            metric = evaluate.load("perplexity")
+            metric = evaluate.load("accuracy")
 
             def compute_metrics(eval_preds):
+                # import pdb; pdb.set_trace()
                 preds, labels = eval_preds
                 # preds have the same shape as the labels, after the argmax(-1) has been calculated
                 # by preprocess_logits_for_metrics but we need to shift the labels
                 labels = labels[:, 1:].reshape(-1)
                 preds = preds[:, :-1].reshape(-1)
+                # cur_loss = nn.CrossEntropyLoss() (preds, labels)
+                # cur_loss = sum(-special.xlogy(labels, preds) - special.xlogy(1-labels, 1-preds))
+                # vaild_num = np.count_nonzero(labels >= 0)
                 return metric.compute(predictions=preds, references=labels)
-
         if finetuner_args.do_train:
             if data_args.max_train_samples is not None:
                 max_train_samples = min(len(train_dataset), data_args.max_train_samples)
                 train_dataset = train_dataset.select(range(max_train_samples))
-
+        # import pdb; pdb.set_trace()
         # Initialize our Trainer
         training_args = finetuner_args
         trainer = Trainer(
@@ -247,8 +259,7 @@ class Finetuner(BaseTuner):
             # Data collator will default to DataCollatorWithPadding, so we change it.
             data_collator=default_data_collator,
             compute_metrics=compute_metrics if training_args.do_eval else None,
-            preprocess_logits_for_metrics=preprocess_logits_for_metrics
-            if training_args.do_eval else None,
+            preprocess_logits_for_metrics=preprocess_logits_for_metrics if training_args.do_eval else None,
         )
 
         # Training
