@@ -152,79 +152,79 @@ class Evaluator(BasePipeline):
                 os.makedirs(self.evaluator_args.output_dir)
             output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
-            acc_list = []
-            total = 0
-            for batch_index, batch in enumerate(dataloader):
-                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
-                    break
-                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
-                    break
-                if self.local_rank*self.evaluator_args.inference_batch_size_per_device >= len(batch):
-                    current_batch = batch[:self.evaluator_args.inference_batch_size_per_device]
-                else:
-                    current_batch = batch[self.local_rank*self.evaluator_args.inference_batch_size_per_device:(self.local_rank+1)*self.evaluator_args.inference_batch_size_per_device]
-                prompt_structure = self.evaluator_args.prompt_structure
-                input = [prompt_structure.format(input=i['input']) for i in current_batch]
-                output = [i['output'] for i in current_batch]   
-                input_idx = [i['input_idx'] for i in current_batch]
-                batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
-                inputs = batch_input['input_ids']
-                mask = batch_input['attention_mask']
-                outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
-                text_out = model.decode(outputs, skip_special_tokens=True)
-                # # only return the generation, trucating the input
-                decoded_input = model.decode(inputs, skip_special_tokens=True,)
-                prompt_length = [len(i) for i in decoded_input]
-                text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
-                answer_type = self.evaluator_args.answer_type
-                pred_answer = []
-                for i in text_out:
-                    pred_answer.append(answer_extraction(
-                        i,
-                        answer_type=answer_type,
-                    ))
-                if verbose:
-                    print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
-                    print(f"predicted answer: {pred_answer} \n")
-                    print(f"groundtruth answer: {output} \n")
+        acc_list = []
+        total = 0
+        for batch_index, batch in enumerate(dataloader):
+            if batch_index * self.world_size >= self.data_args.max_eval_samples: 
+                break
+            if batch_index * self.world_size >= self.data_args.max_eval_samples: 
+                break
+            if self.local_rank*self.evaluator_args.inference_batch_size_per_device >= len(batch):
+                current_batch = batch[:self.evaluator_args.inference_batch_size_per_device]
+            else:
+                current_batch = batch[self.local_rank*self.evaluator_args.inference_batch_size_per_device:(self.local_rank+1)*self.evaluator_args.inference_batch_size_per_device]
+            prompt_structure = self.evaluator_args.prompt_structure
+            input = [prompt_structure.format(input=i['input']) for i in current_batch]
+            output = [i['output'] for i in current_batch]   
+            input_idx = [i['input_idx'] for i in current_batch]
+            batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
+            inputs = batch_input['input_ids']
+            mask = batch_input['attention_mask']
+            outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
+            text_out = model.decode(outputs, skip_special_tokens=True)
+            # # only return the generation, trucating the input
+            decoded_input = model.decode(inputs, skip_special_tokens=True,)
+            prompt_length = [len(i) for i in decoded_input]
+            text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
+            answer_type = self.evaluator_args.answer_type
+            pred_answer = []
+            for i in text_out:
+                pred_answer.append(answer_extraction(
+                    i,
+                    answer_type=answer_type,
+                ))
+            if verbose:
+                print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
+                print(f"predicted answer: {pred_answer} \n")
+                print(f"groundtruth answer: {output} \n")
 
-                if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
-                    correct_ = 0
-                    total_ = 0
-                else:
-                    correct_ = 0
-                    total_ = 0
-                    for i in range(len(pred_answer)):
-                        total_ += 1
-                        if self._match(pred_answer[i], output[i], answer_type):
-                            correct_ += 1
+            if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
+                correct_ = 0
+                total_ = 1
+            else:
+                correct_ = 0
+                total_ = 0
+                for i in range(len(pred_answer)):
+                    total_ += 1
+                    if self._match(pred_answer[i], output[i], answer_type):
+                        correct_ += 1
 
-                # collect accuracy from all gpus
-                all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
-                dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
-                correct_, total_ = all_process.tolist()
-                avg = correct_ / total_
-                acc_list.append(avg)
-                total += total_
+            # collect accuracy from all gpus
+            all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
+            dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
+            correct_, total_ = all_process.tolist()
+            avg = correct_ / total_
+            acc_list.append(avg)
+            total += total_
 
-                # collect predictions from all gpus
-                output_dict = {"question": input,
-                            "prediction": text_out,
-                            "pred_answer": pred_answer,
-                            "answer": output}
-                all_process_list = [{}] * self.world_size
+            # collect predictions from all gpus
+            output_dict = {"question": input,
+                        "prediction": text_out,
+                        "pred_answer": pred_answer,
+                        "answer": output}
+            all_process_list = [{}] * self.world_size
 
-                dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
-            if not dist.is_initialized() or dist.get_rank() == 0:
-                current_accuracy = np.mean(acc_list)
-                print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
+            dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            current_accuracy = np.mean(acc_list)
+            print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
 
-                if(self.evaluator_args.use_wandb == True):
-                    wandb.log({"Accuracy": current_accuracy})
+            if(self.evaluator_args.use_wandb == True):
+                wandb.log({"Accuracy": current_accuracy})
 
-                for index, output in enumerate(all_process_list):
-                    output_json = json.dumps(output)
-                    output_writer.write(output_json + '\n')
+            for index, output in enumerate(all_process_list):
+                output_json = json.dumps(output)
+                output_writer.write(output_json + '\n')
 
         if not dist.is_initialized() or dist.get_rank() == 0:
             current_accuracy = np.mean(acc_list)
