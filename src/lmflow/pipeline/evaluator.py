@@ -199,22 +199,22 @@ class Evaluator(BasePipeline):
                         if self._match(pred_answer[i], output[i], answer_type):
                             correct_ += 1
 
-            # collect accuracy from all gpus
-            all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
-            dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
-            correct_, total_ = all_process.tolist()
-            avg = correct_ / total_
-            acc_list.append(avg)
-            total += total_
+                # collect accuracy from all gpus
+                all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
+                dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
+                correct_, total_ = all_process.tolist()
+                avg = correct_ / total_
+                acc_list.append(avg)
+                total += total_
 
-            # collect predictions from all gpus
-            output_dict = {"question": input,
-                        "prediction": text_out,
-                        "pred_answer": pred_answer,
-                        "answer": output}
-            all_process_list = [{}] * self.world_size
+                # collect predictions from all gpus
+                output_dict = {"question": input,
+                            "prediction": text_out,
+                            "pred_answer": pred_answer,
+                            "answer": output}
+                all_process_list = [{}] * self.world_size
 
-            dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
+                dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
             if not dist.is_initialized() or dist.get_rank() == 0:
                 current_accuracy = np.mean(acc_list)
                 print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
