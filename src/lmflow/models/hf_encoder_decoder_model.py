@@ -169,7 +169,8 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         
         if self.tokenizer.eos_token_id is None:
             self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
-        self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
     def tokenize(self, dataset, *args, **kwargs):
         """

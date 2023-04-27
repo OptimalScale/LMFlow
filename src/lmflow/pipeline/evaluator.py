@@ -191,6 +191,7 @@ class Evaluator(BasePipeline):
             if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
                 correct_ = 0
                 total_ = 1
+                total -= 1
             else:
                 correct_ = 0
                 total_ = 0
