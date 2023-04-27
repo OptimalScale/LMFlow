@@ -162,9 +162,15 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
                 self.ds_engine.module.eval()
 
+            self.tokenizer.padding_side = "left" #necessary for auto-gressive inference
+
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')
-
+        
+        if self.tokenizer.eos_token_id is None:
+            self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
     def tokenize(self, dataset, *args, **kwargs):
         """
@@ -209,11 +215,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             The tokenized inputs.
         """
         if isinstance(input, list):
-            output = []
-            for single_input in input:
-                single_output = self.encode(single_input, *args, **kwargs)
-                output.append(single_output)
-            return output
+            return self.tokenizer(text=input, *args, **kwargs)#batch encode,will automatically do left padding
         elif isinstance(input, str):
             return self.tokenizer.encode(text=input, *args, **kwargs)
         else:
@@ -240,12 +242,10 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         outputs :
             The text decoded from the token inputs.
         """
-        if isinstance(input, list) and input and isinstance(input[0], list):
-            output = []
-            for single_input in input:
-                single_output = self.decode(single_input, *args, **kwargs)
-                output.append(single_output)
-            return output
+        if isinstance(input, List):
+            input=torch.tensor(input)
+        if input.dim()==2:
+            return self.tokenizer.batch_decode(input, *args, **kwargs)#batch_decode
         else:
             # Can be list of ints or a Tensor
             return self.tokenizer.decode(input, *args, **kwargs)
@@ -278,7 +278,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 outputs = self.ds_engine.module.generate(
                     input_ids=inputs,
                     synced_gpus=True,
-                    pad_token_id=self.tokenizer.eos_token_id,
+                    pad_token_id=self.tokenizer.pad_token_id,
                     *args,
                     **kwargs
                 )
@@ -286,7 +286,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 outputs = self.backend_model.generate(
                     input_ids=inputs,
                     synced_gpus=True,
-                    pad_token_id=self.tokenizer.eos_token_id,
+                    pad_token_id=self.tokenizer.pad_token_id,
                     *args,
                     **kwargs
                 )
