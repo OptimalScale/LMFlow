@@ -6,38 +6,34 @@ if [ $# -ge 1 ]; then
   deepspeed_args="$1"
 fi
 
-exp_id=finetune_with_lora
+exp_id=multistage_finetune
 project_dir=$(cd "$(dirname $0)"/..; pwd)
 output_dir=${project_dir}/output_models/${exp_id}
 log_dir=${project_dir}/log/${exp_id}
-
-dataset_path=${project_dir}/data/alpaca/train
-eval_dataset_path=${project_dir}/data/alpaca/test
+dataset_path="${project_dir}/data/example_dataset/train"
 
 mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
-  examples/finetune.py \
+  examples/multistage_finetune.py \
+    --num_stages_per_epoch 1 \
+    --run_name ${exp_id} \
     --model_name_or_path facebook/galactica-1.3b \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 0.01 \
-    --learning_rate 1e-4 \
+    --num_train_epochs 3 \
+    --learning_rate 1e-3 \
     --block_size 512 \
-    --per_device_train_batch_size 1 \
+    --per_device_train_batch_size 2 \
     --use_lora 1 \
     --lora_r 8 \
-    --save_aggregated_lora 1\
+    --save_aggregated_lora 1 \
     --deepspeed configs/ds_config_zero2.json \
     --bf16 \
     --run_name finetune_with_lora \
     --validation_split_percentage 0 \
     --logging_steps 20 \
     --do_train \
-    --do_eval \
-    --evaluation_strategy "steps" \
-    --eval_steps 1000 \
-    --eval_dataset_path ${eval_dataset_path} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
