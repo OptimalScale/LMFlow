@@ -11,3 +11,5 @@ flask
 flask_cors
 icetk
 cpm_kernels==1.0.11
+evaluate==0.4.0
+scikit-learn==1.2.2

@@ -12,7 +12,7 @@ output_dir=${project_dir}/output_models/${exp_id}
 log_dir=${project_dir}/log/${exp_id}
 
 dataset_path=${project_dir}/data/alpaca/train
-eval_dataset_path=${project_dir}/data/eval/
+eval_dataset_path=${project_dir}/data/alpaca/test
 
 mkdir -p ${output_dir} ${log_dir}
 
@@ -35,7 +35,7 @@ deepspeed ${deepspeed_args} \
     --logging_steps 20 \
     --do_train \
     --do_eval \
-    --eval_strategy "steps" \
+    --evaluation_strategy "steps" \
     --eval_steps 1000 \
     --eval_dataset_path ${eval_dataset_path} \
     --ddp_timeout 72000 \
