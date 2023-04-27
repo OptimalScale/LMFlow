@@ -1,1 +1,0 @@
-diff <(grep "^{'loss'" regression_test/test-finetune-00001_gpt2-example/new_log/test-finetune-00001_gpt2-example/train.log) <(grep "^{'loss'" regression_test/test-finetune-00001_gpt2-example/log/test-finetune-00001_gpt2-example/train.log)
