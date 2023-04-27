@@ -47,7 +47,6 @@ model_lora.print_trainable_parameters()
 model_lora = AutoModelForSequenceClassification.from_pretrained(model_args.model_name_or_path, num_labels=1, torch_dtype=torch.bfloat16)
 ## Get tokenizer
 tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
-#model_lora.config.use_cache = not pipeline_args.gradient_checkpointing
 
 if "llama" in model_args.model_name_or_path:
     tokenizer.add_special_tokens(
