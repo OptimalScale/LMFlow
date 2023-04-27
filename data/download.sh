@@ -127,6 +127,17 @@ function main() {
         tar zxvf ${filename}
         rm ${filename}
     fi
-}
 
+    if [ "$1" = "hh_rlhf" -o "$1" = "all" ]; then
+        echo "downloading hh_rlhf dataset"
+        filename='hh_rlhf.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+}
 main "$@"
+
+
+
