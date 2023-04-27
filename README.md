@@ -35,7 +35,7 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 ## Latest News
 * [2023-04-21] :rocket:Release Robin-7B (based on LLaMA-7B), and two models for commercial use: Parakeets-2.7B (based on GPT-NEO-2.7B) and Cokatoo-7B (based on StableLM-7B) [Download here](https://github.com/OptimalScale/LMFlow/tree/main#model-zoo) :rocket:
 * [2023-04-15] Inference: Support streaming output and ChatGLM.
-* [2023-04-10] [We propose a new alignment algorithm: Reward rAnked FineTuning (RAFT), which is more efficient than conventional (PPO-based) RLHF. The movie review demo are available now.](https://optimalscale.github.io/LMFlow/examples/raft.html) [[Paper](https://github.com/OptimalScale/LMFlow/blob/main/assets/RAFT.pdf)]
+* [2023-04-10] [We propose a new alignment algorithm: Reward rAnked FineTuning (RAFT), which is more efficient than conventional (PPO-based) RLHF. The movie review demo are available now.](https://optimalscale.github.io/LMFlow/examples/raft.html) [[Paper](https://arxiv.org/abs/2304.06767)]
 * [2023-04-02] [Web service](https://lmflow.com/) is online!
 * [2023-04-01] Release Chinese checkpoints in model zoo: [LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
 * [2023-04-01] Release English checkpoints in model zoo: [LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
