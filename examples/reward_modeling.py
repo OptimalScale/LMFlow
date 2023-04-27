@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
+import os
 import sys
+sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 import numpy as np
 import torch
 import torch.nn as nn

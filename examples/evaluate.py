@@ -14,6 +14,9 @@ Typical usage example:
   bar = foo.FunctionBar()
 """
 import json
+import os
+import sys
+sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from transformers import HfArgumentParser
 
 from lmflow.datasets.dataset import Dataset
