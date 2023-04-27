@@ -132,6 +132,22 @@ TEXT2TEXT_DATASET_DETAILS = (
 ).lstrip("\n")
 
 
+FLOAT_ONLY_DATASET_DESCRIPTION = (
+"""
+"float_only": a dataset with only float instances, with following format:
+
+    {
+        "type": "float_only",
+        "instances": [
+            { "value": "FLOAT_1" },
+            { "value": "FLOAT_2" },
+            ...
+        ]
+    }
+"""
+).lstrip("\n")
+
+
 TEXT_ONLY_DATASET_LONG_DESCRITION = (
     TEXT_ONLY_DATASET_DESCRIPTION + TEXT_ONLY_DATASET_DETAILS
 )
@@ -144,9 +160,11 @@ TEXT2TEXT_DATASET_LONG_DESCRITION = (
 DATASET_DESCRIPTION_MAP = {
     "text_only": TEXT_ONLY_DATASET_DESCRIPTION,
     "text2text": TEXT2TEXT_DATASET_DESCRIPTION,
+    "float_only": FLOAT_ONLY_DATASET_DESCRIPTION,
 }
 
 INSTANCE_FIELDS_MAP = {
     "text_only": ["text"],
     "text2text": ["input", "output"],
+    "float_only": ["value"],
 }
