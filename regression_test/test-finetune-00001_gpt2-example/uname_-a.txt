@@ -1,1 +1,0 @@
-Linux hhnode-ib-196 3.10.0-1062.el7.x86_64 #1 SMP Wed Aug 7 18:08:02 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux

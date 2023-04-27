@@ -1,1 +1,0 @@
-comparison.sh
