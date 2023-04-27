@@ -52,7 +52,7 @@ You can also use lora training by the following command but also need to set the
 ]}
 ```
 
-To start from a model from a previous sft step, you may edit the run_rm.sh script and update the "dataset_path" to use the desired dataset. Additionally, you can modify the validation_split_percentage parameter to select the last percentage of samples for evaluation. The load_dataset function splits the dataset into training and evaluation sets, which can also be customized by editing the function in /examples/rm.py if you want to prepare your own dataset when running the script.
+To start from a model from a previous sft step, you may edit the run_reward_modeling.sh script and update the "dataset_path" to use the desired dataset. Additionally, you can modify the validation_split_percentage parameter to select the last percentage of samples for evaluation. The load_dataset function splits the dataset into training and evaluation sets, which can also be customized by editing the function in /examples/run_reward_modeling.py if you want to prepare your own dataset when running the script.
 
 ```python
 def build_dataset(tokenizer, config):
@@ -93,7 +93,7 @@ We use the following loss function to train the reward model following the instr
 The reward modeling script can be used by 
 
 ```sh
-./scripts/run_rm.sh
+./scripts/run_reward_modeling.sh
 ```
 
 ## Examples
