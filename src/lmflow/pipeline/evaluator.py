@@ -215,16 +215,16 @@ class Evaluator(BasePipeline):
             all_process_list = [{}] * self.world_size
 
             dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
-        if not dist.is_initialized() or dist.get_rank() == 0:
-            current_accuracy = np.mean(acc_list)
-            print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
+            if not dist.is_initialized() or dist.get_rank() == 0:
+                current_accuracy = np.mean(acc_list)
+                print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
 
-            if(self.evaluator_args.use_wandb == True):
-                wandb.log({"Accuracy": current_accuracy})
+                if(self.evaluator_args.use_wandb == True):
+                    wandb.log({"Accuracy": current_accuracy})
 
-            for index, output in enumerate(all_process_list):
-                output_json = json.dumps(output)
-                output_writer.write(output_json + '\n')
+                for index, output in enumerate(all_process_list):
+                    output_json = json.dumps(output)
+                    output_writer.write(output_json + '\n')
 
         if not dist.is_initialized() or dist.get_rank() == 0:
             current_accuracy = np.mean(acc_list)
