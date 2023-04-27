@@ -3,6 +3,7 @@
 """The Finetuner class simplifies the process of running finetuning process on a language model for a TunableModel instance with given dataset. 
 """
 
+import copy
 import logging
 import os
 import sys
@@ -183,7 +184,7 @@ class Finetuner(BaseTuner):
         return lm_datasets
 
 
-    def tune(self, model, dataset):
+    def tune(self, model, dataset, transform_dataset_in_place=True):
         """
         Perform tuning for a model
 
@@ -199,6 +200,8 @@ class Finetuner(BaseTuner):
         model_args = self.model_args
         data_args = self.data_args
         finetuner_args = self.finetuner_args
+        if not transform_dataset_in_place:
+            dataset = copy.deepcopy(dataset)
 
         # Tokenization and text grouping must be done in the main process
         with finetuner_args.main_process_first(desc="dataset map tokenization"):
