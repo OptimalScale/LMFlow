@@ -2,6 +2,7 @@
 # coding=utf-8
 """The Finetuner class simplifies the process of running finetuning process on a language model for a TunableModel instance with given dataset. 
 """
+
 import logging
 import os
 import sys
@@ -239,15 +240,13 @@ class Finetuner(BaseTuner):
                 # by preprocess_logits_for_metrics but we need to shift the labels
                 labels = labels[:, 1:].reshape(-1)
                 preds = preds[:, :-1].reshape(-1)
-                # cur_loss = nn.CrossEntropyLoss() (preds, labels)
-                # cur_loss = sum(-special.xlogy(labels, preds) - special.xlogy(1-labels, 1-preds))
-                # vaild_num = np.count_nonzero(labels >= 0)
                 return metric.compute(predictions=preds, references=labels)
+            
         if finetuner_args.do_train:
             if data_args.max_train_samples is not None:
                 max_train_samples = min(len(train_dataset), data_args.max_train_samples)
                 train_dataset = train_dataset.select(range(max_train_samples))
-        # import pdb; pdb.set_trace()
+
         # Initialize our Trainer
         training_args = finetuner_args
         trainer = Trainer(
