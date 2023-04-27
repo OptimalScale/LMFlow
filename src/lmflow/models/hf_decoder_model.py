@@ -106,6 +106,26 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         self.device = device
         self.model_args = model_args
+        tokenizer_kwargs = {
+            "cache_dir": model_args.cache_dir,
+            "use_fast": model_args.use_fast_tokenizer,
+            "revision": model_args.model_revision,
+            "use_auth_token": True if model_args.use_auth_token else None,
+        }
+        if model_args.tokenizer_name:
+            tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs)
+        elif model_args.model_name_or_path:
+            tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, **tokenizer_kwargs)
+        else:
+            raise ValueError(
+                "You are instantiating a new tokenizer from scratch. This is"
+                " not supported by this script. You can do it from another"
+                " script, save it, and load it from here, using"
+                " --tokenizer_name."
+            )
+
+        self.tokenizer = tokenizer  
+
         torch_dtype = (
             model_args.torch_dtype
             if model_args.torch_dtype in ["auto", None]
@@ -128,24 +148,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                     logger.info(f"Overriding config: {model_args.config_overrides}")
                     config.update_from_string(model_args.config_overrides)
                     logger.info(f"New config: {config}")
-
-            tokenizer_kwargs = {
-                "cache_dir": model_args.cache_dir,
-                "use_fast": model_args.use_fast_tokenizer,
-                "revision": model_args.model_revision,
-                "use_auth_token": True if model_args.use_auth_token else None,
-            }
-            if model_args.tokenizer_name:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs)
-            elif model_args.model_name_or_path:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, **tokenizer_kwargs)
-            else:
-                raise ValueError(
-                    "You are instantiating a new tokenizer from scratch. This is"
-                    " not supported by this script. You can do it from another"
-                    " script, save it, and load it from here, using"
-                    " --tokenizer_name."
-                )
 
             if model_args.model_name_or_path:
                 model = AutoModelForCausalLM.from_pretrained(
@@ -187,7 +189,6 @@ class HFDecoderModel(DecoderModel, Tunable):
 
             self.config = config
             self.backend_model = model
-            self.tokenizer = tokenizer
             self.tune_strategy = tune_strategy
 
         elif tune_strategy == 'none':
@@ -232,13 +233,14 @@ class HFDecoderModel(DecoderModel, Tunable):
                     torch_dtype=torch_dtype,
                 )
 
-            self.tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
             self.backend_model_full = self.backend_model
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
                 )
-
+            
+            self.tokenizer.padding_side = "left" #necessary for llama, gpt2 and other decoder models
+            
             if device == "gpu":
                 deepspeed.init_distributed()
                 self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
@@ -247,6 +249,10 @@ class HFDecoderModel(DecoderModel, Tunable):
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')
 
+        if self.tokenizer.eos_token_id is None:
+            self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
     def tokenize(self, dataset, add_special_tokens=True, *args, **kwargs):
         """
@@ -392,14 +398,13 @@ class HFDecoderModel(DecoderModel, Tunable):
         Returns
         ------------
         outputs :
-            The tokenized inputs.
+            if string input,return the tokenized inputs.
+            "Hello,world!"-> [101, 7592, 1010, 2088, 102]
+            if batch input,return {input_ids,attention_mask,token_type_ids}
+            ["Hello,world!","Hello!"]-> {'input_ids': tensor([[  101,  7592,  1010,  2088,   102],...),'attention_mask': tensor([[1, 1, 1, 1, 1],[0,0,1,1,1]])}
         """
         if isinstance(input, list):
-            output = []
-            for single_input in input:
-                single_output = self.encode(single_input, *args, **kwargs)
-                output.append(single_output)
-            return output
+            return self.tokenizer(text=input, *args, **kwargs)#batch encode,will automatically do left padding
         elif isinstance(input, str):
             return self.tokenizer.encode(text=input, *args, **kwargs)
         else:
@@ -412,7 +417,7 @@ class HFDecoderModel(DecoderModel, Tunable):
     
         Parameters
         ------------
-        inputs : list.
+        inputs : list or tensor.
             The token sequence.
             
         args : Optional.
@@ -425,13 +430,15 @@ class HFDecoderModel(DecoderModel, Tunable):
         ------------
         outputs :
             The text decoded from the token inputs.
+            if batch input,return the list of text
+            [[101, 7592, 1010, 2088, 102],[101, 7592, 1010, 2088, 102]]-> ["Hello,world!","Hello,world!"
+            if single input,return the text
+            [101, 7592, 1010, 2088, 102]-> "Hello,world!"
         """
-        if isinstance(input, list) and input and isinstance(input[0], list):
-            output = []
-            for single_input in input:
-                single_output = self.decode(single_input, *args, **kwargs)
-                output.append(single_output)
-            return output
+        if isinstance(input, List):
+            input=torch.tensor(input)
+        if input.dim()==2:
+            return self.tokenizer.batch_decode(input, *args, **kwargs)#batch_decode
         else:
             # Can be list of ints or a Tensor
             return self.tokenizer.decode(input, *args, **kwargs)
@@ -464,7 +471,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 outputs = self.ds_engine.module.generate(
                     input_ids=inputs,
                     synced_gpus=True,
-                    pad_token_id=self.tokenizer.eos_token_id,
+                    pad_token_id=self.tokenizer.pad_token_id,
                     *args,
                     **kwargs
                 )
@@ -472,7 +479,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 outputs = self.backend_model.generate(
                     input_ids=inputs,
                     synced_gpus=True,
-                    pad_token_id=self.tokenizer.eos_token_id,
+                    pad_token_id=self.tokenizer.pad_token_id,
                     *args,
                     **kwargs
                 )
