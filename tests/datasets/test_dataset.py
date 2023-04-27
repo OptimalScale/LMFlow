@@ -37,3 +37,29 @@ class DatasetTest(unittest.TestCase):
             json_obj = json.load(fin)
             for i in range(len(hf_dataset)):
                 self.assertEqual(json_obj['instances'][i], hf_dataset[i])
+
+
+    def test_create_from_dict(self):
+        data_dict = {
+            "type": "text2text",
+            "instances": [
+                { "input": "INPUT 1", "output": "OUTPUT 1" },
+                { "input": "INPUT 2", "output": "OUTPUT 2" },
+            ]
+        }
+        dataset = Dataset.create_from_dict(data_dict)
+        self.assertEqual(dataset.to_dict(), data_dict)
+
+
+    def test_create_from_dict_bad_type(self):
+        data_dict = {
+            "type": "non-supported",
+            "instances": [
+                { "input": "INPUT 1", "output": "OUTPUT 1" },
+                { "input": "INPUT 2", "output": "OUTPUT 2" },
+            ]
+        }
+        try:
+            dataset = Dataset.create_from_dict(data_dict)
+        except ValueError as ex:
+            self.assertEqual(str(ex), "type \"non-supported\" is not supported")

@@ -136,34 +136,6 @@ class HFDecoderModelTest(unittest.TestCase):
         )
 
 
-    def test_tokenize_unsupported(self):
-        bad_dataset = {
-            "type": "non-supported-type",
-            "instances": [
-                {
-                    "input": SAMPLE_TEXT,
-                },
-            ],
-        }
-        bad_tokenized_dataset = {
-        }
-
-        data_args = DatasetArguments(dataset_path=None)
-        dataset = Dataset(data_args, backend="huggingface")
-        dataset = dataset.from_dict(bad_dataset)
-
-        model_args = ModelArguments(model_name_or_path="gpt2")
-        model = HFDecoderModel(model_args)
-
-        try:
-            tokenized_dataset = model.tokenize(dataset)
-        except Exception as ex:
-            print(ex)
-            self.assertIsInstance(ex, NotImplementedError)
-            self.assertTrue(TEXT_ONLY_DATASET_DESCRIPTION in str(ex))
-            self.assertTrue(TEXT2TEXT_DATASET_DESCRIPTION in str(ex))
-
-
     def test_encode(self):
         model_name = 'gpt2'
         model_args = ModelArguments(model_name_or_path=model_name)
