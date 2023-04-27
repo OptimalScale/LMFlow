@@ -43,11 +43,7 @@ class Evaluator(BasePipeline):
         self.data_args = data_args
         self.evaluator_args = evaluator_args
         self.model_args = model_args
-        print("--------Begin Evaluator Arguments----------")
-        print(f"model_args : {self.model_args}")
-        print(f"data_args : {self.data_args}")
-        print(f"evaluator_args : {self.evaluator_args}")
-        print("--------End Evaluator Arguments----------")
+
         # logger
         if(self.evaluator_args.use_wandb == True):
             wandb.init(project="lmflow_evaluation")
@@ -113,7 +109,13 @@ class Evaluator(BasePipeline):
         return False
 
 
-    def evaluate(self, model, dataset: Dataset, metric = "accuracy"):
+    def evaluate(
+        self,
+        model,
+        dataset: Dataset,
+        metric = "accuracy",
+        verbose=True,
+    ):
         """
         Perform Evaluation for a model
 
@@ -127,102 +129,111 @@ class Evaluator(BasePipeline):
 
         """
         if metric in ["acc", "accuracy"]:
-            dataloader, data_size = self.create_dataloader(dataset)
+            acc = self._evaluate_acc(model, dataset, verbose=verbose)
+            print(f"Evaluating final accuracy: {acc}")
+            return acc
+        elif metric in ["ppl", "perplexity"]:
+            ppl = self._evaluate_ppl(model, dataset, verbose=verbose)
+            print(f"Evaluating final perplexity: {ppl}")
+            return ppl
+        elif metric in ["nll", "neg_log_likelihood"]:
+            nll = self._evaluate_nll(model, dataset, verbose=verbose)
+            print(f"Evaluating final negative log likelihood: {nll}")
+            return nll
+        else:
+            raise NotImplementedError(f"metric {metric} is not supported")
 
-            if not dist.is_initialized() or dist.get_rank() == 0:
-                if not os.path.exists(self.evaluator_args.output_dir):
-                    os.makedirs(self.evaluator_args.output_dir)
-                output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
-            acc_list = []
-            total = 0
-            # ds_engine = deepspeed.initialize(model=model.get_model(), config_params=self.ds_config)[0]
-            # ds_engine.module.eval()
-            for batch_index, batch in enumerate(dataloader):
-                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
-                    break
-                if self.local_rank >= len(batch):
-                    current_batch = batch[0]
-                else:
-                    # the batch in current process
-                    current_batch = batch[self.local_rank] 
-                
-                prompt_structure = self.evaluator_args.prompt_structure
-                input = prompt_structure.format(input=current_batch['input'])
-                output = current_batch['output']
-                input_idx = current_batch['input_idx']
+    def _evaluate_acc(self, model, dataset, verbose=True):
+        dataloader, data_size = self.create_dataloader(dataset)
 
-                inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
-                
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            if not os.path.exists(self.evaluator_args.output_dir):
+                os.makedirs(self.evaluator_args.output_dir)
+            output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
-                # with torch.no_grad():
-                    # outputs = ds_engine.module.generate(inputs, synced_gpus=True, pad_token_id=model.get_tokenizer().eos_token_id, min_length=5, max_length=100,temperature=0.0, do_sample=False)
-                outputs = model.inference(inputs, max_new_tokens=100, temperature=0.0)
-                text_out = model.decode(outputs[0], skip_special_tokens=True)
+        acc_list = []
+        total = 0
+        # ds_engine = deepspeed.initialize(model=model.get_model(), config_params=self.ds_config)[0]
+        # ds_engine.module.eval()
+        for batch_index, batch in enumerate(dataloader):
+            if batch_index * self.world_size >= self.data_args.max_eval_samples:
+                break
+            if self.local_rank >= len(batch):
+                current_batch = batch[0]
+            else:
+                # the batch in current process
+                current_batch = batch[self.local_rank]
 
-                # # only return the generation, trucating the input
-                prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
-                text_out = text_out[prompt_length:]
-                answer_type = self.evaluator_args.answer_type
-                pred_answer = answer_extraction(
-                    text_out,
-                    answer_type=answer_type,
-                )
+            prompt_structure = self.evaluator_args.prompt_structure
+            input = prompt_structure.format(input=current_batch['input'])
+            output = current_batch['output']
+            input_idx = current_batch['input_idx']
+
+            inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+
+            # with torch.no_grad():
+                # outputs = ds_engine.module.generate(inputs, synced_gpus=True, pad_token_id=model.get_tokenizer().eos_token_id, min_length=5, max_length=100,temperature=0.0, do_sample=False)
+            outputs = model.inference(inputs, max_new_tokens=100, temperature=0.0)
+            text_out = model.decode(outputs[0], skip_special_tokens=True)
+
+            # # only return the generation, trucating the input
+            prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
+            text_out = text_out[prompt_length:]
+            answer_type = self.evaluator_args.answer_type
+            pred_answer = answer_extraction(
+                text_out,
+                answer_type=answer_type,
+            )
+            if verbose:
                 print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
                 print(f"predicted answer: {pred_answer} \n")
                 print(f"groundtruth answer: {output} \n")
 
-                if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
-                    correct_ = 0
-                    total_ = 0
-                else:
-                    correct_ = 0
-                    total_ = 1
-                    if self._match(pred_answer, output, answer_type):
-                        correct_ = 1
+            if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
+                correct_ = 0
+                total_ = 0
+            else:
+                correct_ = 0
+                total_ = 1
+                if self._match(pred_answer, output, answer_type):
+                    correct_ = 1
 
-                # collect accuracy from all gpus
-                all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
-                dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
-                correct_, total_ = all_process.tolist()
-                avg = correct_ / total_
-                acc_list.append(avg)
-                total += total_
+            # collect accuracy from all gpus
+            all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
+            dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
+            correct_, total_ = all_process.tolist()
+            avg = correct_ / total_
+            acc_list.append(avg)
+            total += total_
 
-                # collect predictions from all gpus
-                output_dict = {"question": input,
-                            "prediction": text_out,
-                            "pred_answer": pred_answer,
-                            "answer": output}
-                all_process_list = [{}] * self.world_size
+            # collect predictions from all gpus
+            output_dict = {"question": input,
+                        "prediction": text_out,
+                        "pred_answer": pred_answer,
+                        "answer": output}
+            all_process_list = [{}] * self.world_size
 
-                dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
-                if not dist.is_initialized() or dist.get_rank() == 0:
-                    current_accuracy = np.mean(acc_list)
-                    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
-                    
-                    if(self.evaluator_args.use_wandb == True):
-                        wandb.log({"Accuracy": current_accuracy})
-
-                    for index, output in enumerate(all_process_list):
-                        output_json = json.dumps(output)
-                        output_writer.write(output_json + '\n')
-
+            dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
             if not dist.is_initialized() or dist.get_rank() == 0:
                 current_accuracy = np.mean(acc_list)
-                print("Final accuracy = ", current_accuracy)
-                output_writer.close()
-        elif metric in ["ppl", "perplexity"]:
-            ppl =  self._evaluate_ppl(model, dataset)
-            print(f"Evaluating final ppl: {ppl}")
-        elif metric in ["nll", "neg_log_likelihood"]:
-            neg_log_likelihood = self._evaluate_neg_log_likelihood(model, dataset)
-            print(f"Evaluating final negative log likelihood: {neg_log_likelihood}")
-        else:
-            raise NotImplementedError(f"{metric} is not implemented or not match with our defined metrics")
+                print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
+
+                if(self.evaluator_args.use_wandb == True):
+                    wandb.log({"Accuracy": current_accuracy})
+
+                for index, output in enumerate(all_process_list):
+                    output_json = json.dumps(output)
+                    output_writer.write(output_json + '\n')
+
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            current_accuracy = np.mean(acc_list)
+            print("Final accuracy = ", current_accuracy)
+            output_writer.close()
+        return current_accuracy
 
 
-    def _evaluate_ppl(self, model, dataset: Dataset):
+    def _evaluate_ppl(self, model, dataset: Dataset, verbose=True):
         data_dict = dataset.to_dict()
         if data_dict['type'] == 'text2text':
             raise NotImplementedError("ppl evaluation is currently not supported for text2text dataset, please use text_only dataset.")
@@ -234,7 +245,8 @@ class Evaluator(BasePipeline):
         except:
             max_length = min(1024, model.get_max_length())
 
-        print(f"The maximum sequence length : {max_length}")
+        if verbose:
+            print(f"The maximum sequence length : {max_length}")
         seq_len = encodings.input_ids.size(1)
 
         nlls = []
@@ -255,14 +267,20 @@ class Evaluator(BasePipeline):
 
             nlls.append(neg_log_likelihood)
             prev_end_loc = end_loc
-            print(f"Evaluating PPL: {int(begin_loc/self.block_size) + 1} / {int(seq_len/self.block_size)} Complete, current ppl : {torch.exp(torch.stack(nlls).mean())}")
+            if verbose:
+                print(f"Evaluating PPL: {int(begin_loc/self.block_size) + 1} / {int(seq_len/self.block_size)} Complete, current ppl : {torch.exp(torch.stack(nlls).mean())}")
             if end_loc == seq_len:
                 break
         ppl = torch.exp(torch.stack(nlls).mean())
         return ppl
 
 
-    def _evaluate_neg_log_likelihood(self, model, dataset: Dataset):
+    def _evaluate_nll(
+        self,
+        model,
+        dataset: Dataset,
+        verbose=True,
+    ):
         """
         Evaluates negative log likelihood of the model over a dataset.
 
@@ -360,25 +378,27 @@ class Evaluator(BasePipeline):
                 current_full_nll = torch.stack(full_nlls).sum() / (sample_idx + 1)
 
                 prev_end_loc = end_loc
-                if dataset.get_type() == "text_only":
-                    print(
-                        f"Evaluating negative log likelihood:"
-                        f" {sample_idx + 1} / {num_samples} Complete,"
-                        f" current nll: {current_full_nll}"
-                    )
-                elif dataset.get_type() == "text2text":
-                    print(
-                        f"Evaluating negative log likelihood:"
-                        f" {sample_idx + 1} / {num_samples} Complete,"
-                        f" current full nll / input nll / output nll:"
-                        f" {current_full_nll} /"
-                        f" {current_full_nll - current_output_nll} /"
-                        f" {current_output_nll}"
-                    )
-                else:
-                    raise NotImplementedError(
-                        "f{dataset.get_type()} typed datasets are not supported"
-                    )
+                if verbose:
+                    if dataset.get_type() == "text_only":
+                        print(
+                            f"Evaluating negative log likelihood:"
+                            f" {sample_idx + 1} / {num_samples} Complete,"
+                            f" current nll: {current_full_nll}"
+                        )
+                    elif dataset.get_type() == "text2text":
+                        print(
+                            f"Evaluating negative log likelihood:"
+                            f" {sample_idx + 1} / {num_samples} Complete,"
+                            f" current full nll / input nll / output nll:"
+                            f" {current_full_nll} /"
+                            f" {current_full_nll - current_output_nll} /"
+                            f" {current_output_nll}"
+                        )
+                    else:
+                        raise NotImplementedError(
+                            "f{dataset.get_type()} typed datasets are not"
+                            " supported"
+                        )
 
                 if end_loc == seq_len:
                     break
