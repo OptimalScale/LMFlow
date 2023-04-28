@@ -22,12 +22,14 @@ from lmflow.utils.constants import (
     DATASET_DESCRIPTION_MAP,
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
+    FLOAT_ONLY_DATASET_DESCRIPTION,
     INSTANCE_FIELDS_MAP,
 )
 
 DATASET_TYPES = [
     "text_only",
     "text2text",
+    "float_only",
 ]
 
 KEY_TYPE = "type"

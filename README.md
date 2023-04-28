@@ -35,7 +35,7 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 ## Latest News
 * [2023-04-21] :rocket:Release Robin-7B (based on LLaMA-7B), and two models for commercial use: Parakeets-2.7B (based on GPT-NEO-2.7B) and Cokatoo-7B (based on StableLM-7B) [Download here](https://github.com/OptimalScale/LMFlow/tree/main#model-zoo) :rocket:
 * [2023-04-15] Inference: Support streaming output and ChatGLM.
-* [2023-04-10] [We propose a new alignment algorithm: Reward rAnked FineTuning (RAFT), which is more efficient than conventional (PPO-based) RLHF. The movie review demo are available now.](https://optimalscale.github.io/LMFlow/examples/raft.html) [[Paper](https://github.com/OptimalScale/LMFlow/blob/main/assets/RAFT.pdf)]
+* [2023-04-10] [We propose a new alignment algorithm: Reward rAnked FineTuning (RAFT), which is more efficient than conventional (PPO-based) RLHF. The movie review demo are available now.](https://optimalscale.github.io/LMFlow/examples/raft.html) [[Paper](https://arxiv.org/abs/2304.06767)]
 * [2023-04-02] [Web service](https://lmflow.com/) is online!
 * [2023-04-01] Release Chinese checkpoints in model zoo: [LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
 * [2023-04-01] Release English checkpoints in model zoo: [LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
@@ -134,44 +134,44 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 <table>
 <tr>
   <td align="center"></td>
-  <td align="center"><a href="http://lmflow.org:5000/robin-7b.tar.gz" target="_blank"><img src="./assets/robin7b.jpg" width="300" /></a></td>
-  <td align="center"><a href="http://lmflow.org:5000/llama13b-lora-380k.tar.gz" target="_blank"><img src="./assets/robin13b.png" width="300" /></a></td>
-  <td align="center"><a href="http://lmflow.org:5000/llama30b-lora-170k.tar.gz" target="_blank"><img src="./assets/robin33b.png" width="300" /></a></td>
+  <td align="center"><a href="https://lmflow.org:10001/robin-7b.tar.gz" target="_blank"><img src="./assets/robin7b.jpg" width="300" /></a></td>
+  <td align="center"><a href="https://lmflow.org:10001/llama13b-lora-380k.tar.gz" target="_blank"><img src="./assets/robin13b.png" width="300" /></a></td>
+  <td align="center"><a href="https://lmflow.org:10001/llama30b-lora-170k.tar.gz" target="_blank"><img src="./assets/robin33b.png" width="300" /></a></td>
   <td align="center"><a href="" target="_blank"><img src="./assets/robin65b.png" width="300" /></a></td>
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/robin-7b.tar.gz">Robin-7B :star: </a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-380k.tar.gz">Robin-13B</a><br />LLaMA-13B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-170k.tar.gz">Robin-33B</a><br />LLaMA-33B</td>
+  <td width="160" align="center"><a href="https://lmflow.org:10001/robin-7b.tar.gz">Robin-7B :star: </a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="https://lmflow.org:10001/llama13b-lora-380k.tar.gz">Robin-13B</a><br />LLaMA-13B</td>
+  <td width="160" align="center"><a href="https://lmflow.org:10001/llama30b-lora-170k.tar.gz">Robin-33B</a><br />LLaMA-33B</td>
   <td width="160" align="center"><a href="">Robin-65B</a><br />LLaMA-65B</td>
 </tr>
 <tr>
   <td align="center"></td>
-  <td align="center"><a href="http://lmflow.org:5000/llama7b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin7b_.png" width="300" /></a></td>
-  <td align="center"><a href="http://lmflow.org:5000/llama13b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin13b_.jpg" width="300" /></a></td>
-  <td align="center"><a href="http://lmflow.org:5000/llama30b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin33b_.png" width="300" /></a></td>
+  <td align="center"><a href="https://lmflow.org:10001/llama7b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin7b_.png" width="300" /></a></td>
+  <td align="center"><a href="https://lmflow.org:10001/llama13b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin13b_.jpg" width="300" /></a></td>
+  <td align="center"><a href="https://lmflow.org:10001/llama30b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin33b_.png" width="300" /></a></td>
   <td align="center"><a href="" target="_blank"><img src="./assets/robin65b_.png" width="300" /></a></td>
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama7b-lora-medical.tar.gz">Robin-7B-medical</a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama13b-lora-medical.tar.gz">Robin-13B-medical</a><br />LLaMA-13B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/llama30b-lora-medical.tar.gz">Robin-33B-medical</a><br />LLaMA-33B</td>
+  <td width="160" align="center"><a href="https://lmflow.org:10001/llama7b-lora-medical.tar.gz">Robin-7B-medical</a><br />LLaMA-7B</td>
+  <td width="160" align="center"><a href="https://lmflow.org:10001/llama13b-lora-medical.tar.gz">Robin-13B-medical</a><br />LLaMA-13B</td>
+  <td width="160" align="center"><a href="https://lmflow.org:10001/llama30b-lora-medical.tar.gz">Robin-33B-medical</a><br />LLaMA-33B</td>
   <td width="160" align="center"><a href="">Robin-65B-medical</a><br />LLaMA-65B</td>
 </tr>
 <tr>
   <td align="center"></td>
-  <td align="center"><a href="http://lmflow.org:5000/parakeets-2.7b.tar.gz" target="_blank"><img src="./assets/Parakeets.png" width="300" /></a></td>
+  <td align="center"><a href="https://lmflow.org:10001/parakeets-2.7b.tar.gz" target="_blank"><img src="./assets/Parakeets.png" width="300" /></a></td>
   <td align="center"><a href="" target="_blank"><img src="./assets/Cockatoo3b.png" width="300" /></a></td>
-  <td align="center"><a href="http://lmflow.org:5000/cockatoo-7b.tar.gz" target="_blank"><img src="./assets/Cockatoo7b.png" width="300" /></a></td>
+  <td align="center"><a href="https://lmflow.org:10001/cockatoo-7b.tar.gz" target="_blank"><img src="./assets/Cockatoo7b.png" width="300" /></a></td>
   <td align="center"></a></td>
 </tr>
 <tr>
   <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/parakeets-2.7b.tar.gz">Parakeets-2.7B :star: </a><br />GPT-NEO-2.7B</td>
+  <td width="160" align="center"><a href="https://lmflow.org:10001/parakeets-2.7b.tar.gz">Parakeets-2.7B :star: </a><br />GPT-NEO-2.7B</td>
   <td width="160" align="center"><a href="">Cockatoo-3B</a><br />StableLM-3B</td>
-  <td width="160" align="center"><a href="http://lmflow.org:5000/cockatoo-7b.tar.gz">Cockatoo-7B :star: </a><br />StableLM-7B</td>
+  <td width="160" align="center"><a href="https://lmflow.org:10001/cockatoo-7b.tar.gz">Cockatoo-7B :star: </a><br />StableLM-7B</td>
   <td width="160" align="center"><br /></td>
 </tr>
 </table>

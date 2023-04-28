@@ -5,7 +5,9 @@
 """
 import logging
 import json
+import os
 import sys
+sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 import warnings
 
 from dataclasses import dataclass, field

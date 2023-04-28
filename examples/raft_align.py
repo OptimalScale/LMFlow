@@ -4,7 +4,9 @@
 """Alignment tuning example, such as RLHF."""
 
 import logging
+import os
 import sys
+sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from dataclasses import dataclass, field
 from typing import Optional
 

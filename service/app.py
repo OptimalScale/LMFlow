@@ -55,8 +55,8 @@ def predict():
             text_out = model.decode(outputs[0], skip_special_tokens=True)
             prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
             text_out = text_out[prompt_length:].strip("\n")
-        except:
-            text_out = "There is something wrong, please query again"
+        except Exception as ex:
+            text_out = ex
     else:
         text_out = "pending"
     return text_out

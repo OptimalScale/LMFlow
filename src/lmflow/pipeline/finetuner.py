@@ -3,19 +3,21 @@
 """The Finetuner class simplifies the process of running finetuning process on a language model for a TunableModel instance with given dataset. 
 """
 
+import copy
 import logging
 import os
 import sys
 
 import datasets
 import transformers
-
+import evaluate
 from itertools import chain
 from transformers import (
     Trainer,
     default_data_collator,
     set_seed,
 )
+from copy import deepcopy
 from transformers.utils import send_example_telemetry
 
 from lmflow.datasets.dataset import Dataset
@@ -182,7 +184,7 @@ class Finetuner(BaseTuner):
         return lm_datasets
 
 
-    def tune(self, model, dataset):
+    def tune(self, model, dataset, transform_dataset_in_place=True):
         """
         Perform tuning for a model
 
@@ -198,6 +200,8 @@ class Finetuner(BaseTuner):
         model_args = self.model_args
         data_args = self.data_args
         finetuner_args = self.finetuner_args
+        if not transform_dataset_in_place:
+            dataset = copy.deepcopy(dataset)
 
         # Tokenization and text grouping must be done in the main process
         with finetuner_args.main_process_first(desc="dataset map tokenization"):
@@ -209,6 +213,38 @@ class Finetuner(BaseTuner):
 
         train_dataset = lm_dataset.get_backend_dataset()
 
+        if finetuner_args.do_eval:
+            
+            eval_dataset_args = deepcopy(data_args)
+            eval_dataset_args.dataset_path = eval_dataset_args.eval_dataset_path
+            eval_dataset = Dataset(eval_dataset_args)
+            with finetuner_args.main_process_first(desc="dataset map tokenization"):
+                tokenized_dataset = model.tokenize(eval_dataset)
+                lm_dataset = self.group_text(
+                    tokenized_dataset,
+                    model_max_length=model.get_max_length(),
+                )
+            eval_dataset = lm_dataset.get_backend_dataset()
+            
+
+            def preprocess_logits_for_metrics(logits, labels):
+                if isinstance(logits, tuple):
+                    # Depending on the model and config, logits may contain extra tensors,
+                    # like past_key_values, but logits always come first
+                    logits = logits[0]
+                return logits.argmax(dim=-1)
+
+            metric = evaluate.load("accuracy")
+
+            def compute_metrics(eval_preds):
+                # import pdb; pdb.set_trace()
+                preds, labels = eval_preds
+                # preds have the same shape as the labels, after the argmax(-1) has been calculated
+                # by preprocess_logits_for_metrics but we need to shift the labels
+                labels = labels[:, 1:].reshape(-1)
+                preds = preds[:, :-1].reshape(-1)
+                return metric.compute(predictions=preds, references=labels)
+            
         if finetuner_args.do_train:
             if data_args.max_train_samples is not None:
                 max_train_samples = min(len(train_dataset), data_args.max_train_samples)
@@ -220,12 +256,12 @@ class Finetuner(BaseTuner):
             model=model.get_backend_model(),
             args=training_args,
             train_dataset=train_dataset if training_args.do_train else None,
-            eval_dataset=None,
+            eval_dataset=eval_dataset if training_args.do_eval else None,
             tokenizer=model.get_tokenizer(),
             # Data collator will default to DataCollatorWithPadding, so we change it.
             data_collator=default_data_collator,
-            compute_metrics=None,
-            preprocess_logits_for_metrics=None,
+            compute_metrics=compute_metrics if training_args.do_eval else None,
+            preprocess_logits_for_metrics=preprocess_logits_for_metrics if training_args.do_eval else None,
         )
 
         # Training

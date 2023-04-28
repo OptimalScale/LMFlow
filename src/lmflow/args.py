@@ -250,6 +250,9 @@ class DatasetArguments:
     dataset_path: Optional[str] = field(
         default=None, metadata={"help": "The path of the dataset to use."}
     )
+    eval_dataset_path: Optional[str] = field(
+        default=None, metadata={"help": "The path of the eval dataset to use."}
+    )
     dataset_name: Optional[str] = field(
         default="customized", metadata={"help": "Should be \"customized\""}
     )
@@ -481,7 +484,16 @@ class EvaluatorArguments:
             "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood"],
         },
     )
-
+    inference_batch_size_per_device: Optional[int] = field(
+        default=1,
+        metadata={
+            "help": (
+                "every device will infer {inference_batch_size_per_device}"
+                " samples in parallel. The inferred results will be concatenaed"
+                " with inputs and attach a reward."
+            ),
+        },
+    )
 
 @dataclass
 class InferencerArguments:
