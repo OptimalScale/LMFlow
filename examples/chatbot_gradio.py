@@ -148,19 +148,22 @@ def main():
 
     token_per_step = 4
 
+    context = ""
 
-    def chat_stream( context, query: str, history= None, **kwargs):
+    def chat_stream(query: str, history= None, **kwargs):
         if history is None:
             history = []
 
+        global context
         print_index = 0
         context += prompt_structure.format(input_text=query)
-        context = context[-model.get_max_length():] 
+        context_ = context[-model.get_max_length():] 
         input_dataset = dataset.from_dict({
             "type": "text_only",
-            "instances": [ { "text": context } ]
+            "instances": [ { "text": context_ } ]
         })
-        for response, flag_break in inferencer.stream_inference(context=context, model=model, max_new_tokens=chatbot_args.max_new_tokens, 
+        print(context_)
+        for response, flag_break in inferencer.stream_inference(context=context_, model=model, max_new_tokens=chatbot_args.max_new_tokens, 
                                         token_per_step=token_per_step, temperature=chatbot_args.temperature,
                                         end_string=end_string, input_dataset=input_dataset):
             delta = response[print_index:]
@@ -169,22 +172,16 @@ def main():
             
             yield delta, history + [(query, seq)]
             if flag_break:
-                context += response + "\n"
+                context_ += response + "\n"
                 break
 
 
 
 
     def predict(input, history=None): 
-        try:
-            global context
-            context = ""
-        except SyntaxError:
-            pass
-
         if history is None:
             history = []
-        for response, history in chat_stream(context, input, history):
+        for response, history in chat_stream(input, history):
             updates = []
             for query, response in history:
                 updates.append(gr.update(visible=True, value="" + query))
