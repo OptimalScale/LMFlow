@@ -174,7 +174,7 @@ def chat_stream(query: str, history= None, **kwargs):
         
         yield delta, history + [(query, seq)]
         if flag_break:
-            context += response + "\n"
+            context += response
             break
 
 
