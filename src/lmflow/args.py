@@ -313,7 +313,7 @@ class DatasetArguments:
         default=None,
         metadata={"help": "The number of processes to use for the preprocessing."},
     )
-    group_texts_batch_size: bool = field(
+    group_texts_batch_size: int = field(
         default=1000,
         metadata={
             "help": (
