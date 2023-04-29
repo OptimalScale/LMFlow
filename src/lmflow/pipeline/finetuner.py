@@ -162,7 +162,7 @@ class Finetuner(BaseTuner):
         # of the map method for more information:
         # https://huggingface.co/docs/datasets/package_reference/main_classes.html#datasets.Dataset.map
         with finetuner_args.main_process_first(desc="grouping texts together"):
-            group_batch_size = 1000
+            group_batch_size = data_args.group_texts_batch_size
             if data_args.disable_group_texts:
                 group_batch_size = 1
             if not data_args.streaming:
