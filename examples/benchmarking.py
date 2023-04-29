@@ -16,6 +16,9 @@ Typical usage example:
 import json
 import logging
 import os 
+import sys
+sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
+
 import subprocess
 
 from transformers import HfArgumentParser
@@ -131,7 +134,9 @@ LOCAL_DATSET_MAP ={
 LM_EVAL_DATASET_MAP={
     "commonsense_qa_eval":"openbookqa,arc_easy,winogrande,hellaswag,arc_challenge,piqa,boolq",
     "math_eval":"gsm8k",
+    'boolq':"boolq",
 }
+
 
 LOCAL_DATSET_GROUP_MAP={
     "commonsense_nll_eval":"common_sense_eval_arc_c,common_sense_eval_arc_e,common_sense_eval_winogrande,\
