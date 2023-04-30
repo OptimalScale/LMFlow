@@ -156,8 +156,6 @@ class Evaluator(BasePipeline):
         for batch_index, batch in enumerate(dataloader):
             if batch_index * self.world_size >= self.data_args.max_eval_samples: 
                 break
-            if batch_index * self.world_size >= self.data_args.max_eval_samples: 
-                break
             if self.local_rank*self.evaluator_args.inference_batch_size_per_device >= len(batch):
                 current_batch = batch[:self.evaluator_args.inference_batch_size_per_device]
             else:
@@ -187,7 +185,7 @@ class Evaluator(BasePipeline):
                 print(f"predicted answer: {pred_answer} \n")
                 print(f"groundtruth answer: {output} \n")
 
-            if self.local_rank >= len(batch):
+            if self.local_rank * self.evaluator_args.inference_batch_size_per_device  >= len(batch):
                 correct_ = 0
             else:
                 correct_ = 0
