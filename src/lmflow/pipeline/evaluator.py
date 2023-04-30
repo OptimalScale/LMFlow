@@ -210,7 +210,7 @@ class Evaluator(BasePipeline):
 
             dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
             if not dist.is_initialized() or dist.get_rank() == 0:
-                current_total = (batch_index+1) * self.world_size
+                current_total = (batch_index+1) * self.world_size * self.evaluator_args.inference_batch_size_per_device
                 current_accuracy = np.sum(correct_number_list) / current_total if int(current_total) < data_size else np.sum(correct_number_list) / data_size
                 print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), f"{int(current_total) if int(current_total) < data_size else data_size} / {data_size} has been finished, # correct = { np.sum(correct_number_list)}, current accuracy = {current_accuracy}")
 
