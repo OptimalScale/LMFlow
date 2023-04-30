@@ -14,6 +14,7 @@ import logging
 import random
 import sys
 import os
+import gc
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 from dataclasses import dataclass, field
@@ -158,6 +159,12 @@ def main():
                 transform_dataset_in_place=False,
             )
             model_args.model_name_or_path = finetuner_args.output_dir
+            del model
+            del tuned_model
+            tuned_model = None
+            model = None
+            gc.collect()
+
 
     tuned_model.save(output_dir)
 
