@@ -225,7 +225,7 @@ class Evaluator(BasePipeline):
             current_accuracy = np.sum(correct_number_list) / data_size
             print(f"# Correct = {np.sum(correct_number_list)}, # Total = {data_size}, Final accuracy = ", current_accuracy)
             output_writer.close()
-        return current_accuracy
+        return np.sum(correct_number_list) / data_size
 
 
     def _evaluate_ppl(self, model, dataset: Dataset, verbose=True):
