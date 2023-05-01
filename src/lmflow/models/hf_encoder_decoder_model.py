@@ -82,6 +82,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         tune_strategy='normal',
         ds_config=None,
         device="gpu",
+        use_accelerator=False,
         *args,
         **kwargs
     ):
@@ -108,6 +109,10 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 f"tune_strategy \"{tune_strategy}\" is not supported"
             )    
         elif tune_strategy == 'none':
+            if use_accelerator:
+                raise NotImplementedError(
+                    f"Currently encoder2decoder model is not supported with accelerator"
+                )
             dschf = HfDeepSpeedConfig(ds_config)
             peft_model_id = model_args.lora_model_path
             # NOTE: Currently offload is not supported by llama

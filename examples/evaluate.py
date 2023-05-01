@@ -33,8 +33,7 @@ model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
 
 with open (pipeline_args.deepspeed, "r") as f:
     ds_config = json.load(f)
-
-model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config)
+model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config, use_accelerator=pipeline_args.use_accelerator_for_evaluator)
 dataset = Dataset(data_args)
 
 evaluator = AutoPipeline.get_pipeline(

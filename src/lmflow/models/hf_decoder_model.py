@@ -85,6 +85,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         tune_strategy='normal',
         ds_config=None,
         device="gpu",
+        use_accelerator=False,
         *args,
         **kwargs
     ):
@@ -192,59 +193,75 @@ class HFDecoderModel(DecoderModel, Tunable):
             self.tune_strategy = tune_strategy
 
         elif tune_strategy == 'none':
-            dschf = HfDeepSpeedConfig(ds_config)
-            peft_model_id = model_args.lora_model_path
-            # NOTE: Currently offload is not supported by llama
-            if "llama" in model_args.model_name_or_path and model_args.use_ram_optimized_load:
-                logger.warning(
-                    "llama does not support RAM optimized load. Automatically"
-                    " use original load instead."
-                )
-                model_args.use_ram_optimized_load = False
-
-            if model_args.use_ram_optimized_load and peft_model_id is None:
-                try:
-                    # RAM-optimized load
-                    self.backend_model = AutoModelForCausalLM.from_pretrained(
+            if use_accelerator:
+                peft_model_id = model_args.lora_model_path
+                self.backend_model = AutoModelForCausalLM.from_pretrained(
                         model_args.model_name_or_path,
                         device_map="auto",
                         offload_folder="offload",
                         offload_state_dict=True,
                         torch_dtype=torch_dtype,
                     )
-                except:
+                if peft_model_id is not None:
+                    self.backend_model = PeftModel.from_pretrained(
+                        self.backend_model, 
+                        peft_model_id, 
+                    )
+                self.tokenizer.padding_side = "left"
+            else:
+                dschf = HfDeepSpeedConfig(ds_config)
+                peft_model_id = model_args.lora_model_path
+                # NOTE: Currently offload is not supported by llama
+                if "llama" in model_args.model_name_or_path and model_args.use_ram_optimized_load:
                     logger.warning(
-                        "Failed to use RAM optimized load. Automatically"
+                        "llama does not support RAM optimized load. Automatically"
                         " use original load instead."
                     )
-                    # Normal load
+                    model_args.use_ram_optimized_load = False
+
+                if model_args.use_ram_optimized_load and peft_model_id is None:
+                    try:
+                        # RAM-optimized load
+                        self.backend_model = AutoModelForCausalLM.from_pretrained(
+                            model_args.model_name_or_path,
+                            device_map="auto",
+                            offload_folder="offload",
+                            offload_state_dict=True,
+                            torch_dtype=torch_dtype,
+                        )
+                    except:
+                        logger.warning(
+                            "Failed to use RAM optimized load. Automatically"
+                            " use original load instead."
+                        )
+                        # Normal load
+                        self.backend_model = AutoModelForCausalLM.from_pretrained(
+                            model_args.model_name_or_path,
+                            torch_dtype=torch_dtype,
+                        )
+                else:
+                    if peft_model_id is not None:
+                        logger.warning(
+                            "LoRA does not support RAM optimized load currently."
+                            " Automatically use original load instead."
+                        )
                     self.backend_model = AutoModelForCausalLM.from_pretrained(
                         model_args.model_name_or_path,
                         torch_dtype=torch_dtype,
                     )
-            else:
-                if peft_model_id is not None:
-                    logger.warning(
-                        "LoRA does not support RAM optimized load currently."
-                        " Automatically use original load instead."
-                    )
-                self.backend_model = AutoModelForCausalLM.from_pretrained(
-                    model_args.model_name_or_path,
-                    torch_dtype=torch_dtype,
-                )
 
-            self.backend_model_full = self.backend_model
-            if peft_model_id is not None:
-                self.backend_model = PeftModel.from_pretrained(
-                    self.backend_model, peft_model_id
-                )
-            
-            self.tokenizer.padding_side = "left" #necessary for llama, gpt2 and other decoder models
-            
-            if device == "gpu":
-                deepspeed.init_distributed()
-                self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
-                self.ds_engine.module.eval()
+                self.backend_model_full = self.backend_model
+                if peft_model_id is not None:
+                    self.backend_model = PeftModel.from_pretrained(
+                        self.backend_model, peft_model_id
+                    )
+                
+                self.tokenizer.padding_side = "left" #necessary for llama, gpt2 and other decoder models
+                
+                if device == "gpu":
+                    deepspeed.init_distributed()
+                    self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
+                    self.ds_engine.module.eval()
 
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')
@@ -444,7 +461,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             return self.tokenizer.decode(input, *args, **kwargs)
 
 
-    def inference(self, inputs, *args, **kwargs):
+    def inference(self, inputs, use_accelerator=False, *args, **kwargs):
         """
         Perform generation process of the model.
     
@@ -467,26 +484,34 @@ class HFDecoderModel(DecoderModel, Tunable):
 
 
         with torch.no_grad():
-            if self.device == "gpu":
-                outputs = self.ds_engine.module.generate(
-                    input_ids=inputs,
-                    synced_gpus=True,
-                    pad_token_id=self.tokenizer.pad_token_id,
-                    *args,
-                    **kwargs
-                )
-            elif self.device == "cpu":
+            if use_accelerator:
                 outputs = self.backend_model.generate(
                     input_ids=inputs,
-                    synced_gpus=True,
                     pad_token_id=self.tokenizer.pad_token_id,
                     *args,
                     **kwargs
                 )
             else:
-                raise NotImplementedError(
-                    f"device \"{self.device}\" is not supported"
-                )
+                if self.device == "gpu":
+                    outputs = self.ds_engine.module.generate(
+                        input_ids=inputs,
+                        synced_gpus=True,
+                        pad_token_id=self.tokenizer.pad_token_id,
+                        *args,
+                        **kwargs
+                    )
+                elif self.device == "cpu":
+                    outputs = self.backend_model.generate(
+                        input_ids=inputs,
+                        synced_gpus=True,
+                        pad_token_id=self.tokenizer.pad_token_id,
+                        *args,
+                        **kwargs
+                    )
+                else:
+                    raise NotImplementedError(
+                        f"device \"{self.device}\" is not supported"
+                    )
         return outputs
 
 
