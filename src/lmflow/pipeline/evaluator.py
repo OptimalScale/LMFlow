@@ -152,11 +152,8 @@ class Evaluator(BasePipeline):
                 os.makedirs(self.evaluator_args.output_dir)
             output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
-        acc_list = []
-        total = 0
+        correct_number_list = []
         for batch_index, batch in enumerate(dataloader):
-            if batch_index * self.world_size >= self.data_args.max_eval_samples: 
-                break
             if batch_index * self.world_size >= self.data_args.max_eval_samples: 
                 break
             if self.local_rank*self.evaluator_args.inference_batch_size_per_device >= len(batch):
@@ -188,25 +185,19 @@ class Evaluator(BasePipeline):
                 print(f"predicted answer: {pred_answer} \n")
                 print(f"groundtruth answer: {output} \n")
 
-            if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and donot contribute to the accuracy
+            if self.local_rank * self.evaluator_args.inference_batch_size_per_device  >= len(batch):
                 correct_ = 0
-                total_ = 1
-                total -= 1
             else:
                 correct_ = 0
-                total_ = 0
                 for i in range(len(pred_answer)):
-                    total_ += 1
                     if self._match(pred_answer[i], output[i], answer_type):
                         correct_ += 1
 
             # collect accuracy from all gpus
-            all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
+            all_process = torch.tensor([correct_], dtype=torch.float32, device=self.local_rank)
             dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
-            correct_, total_ = all_process.tolist()
-            avg = correct_ / total_
-            acc_list.append(avg)
-            total += total_
+            correct_ = all_process.tolist()
+            correct_number_list.append(correct_)
 
             # collect predictions from all gpus
             output_dict = {"question": input,
@@ -217,8 +208,9 @@ class Evaluator(BasePipeline):
 
             dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
             if not dist.is_initialized() or dist.get_rank() == 0:
-                current_accuracy = np.mean(acc_list)
-                print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
+                current_total = (batch_index+1) * self.world_size * self.evaluator_args.inference_batch_size_per_device
+                current_accuracy = np.sum(correct_number_list) / current_total if int(current_total) < data_size else np.sum(correct_number_list) / data_size
+                print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), f"{int(current_total) if int(current_total) < data_size else data_size} / {data_size} has been finished, # correct = { np.sum(correct_number_list)}, current accuracy = {current_accuracy}")
 
                 if(self.evaluator_args.use_wandb == True):
                     wandb.log({"Accuracy": current_accuracy})
@@ -228,10 +220,10 @@ class Evaluator(BasePipeline):
                     output_writer.write(output_json + '\n')
 
         if not dist.is_initialized() or dist.get_rank() == 0:
-            current_accuracy = np.mean(acc_list)
-            print("Final accuracy = ", current_accuracy)
+            current_accuracy = np.sum(correct_number_list) / data_size
+            print(f"# Correct = {np.sum(correct_number_list)}, # Total = {data_size}, Final accuracy = ", current_accuracy)
             output_writer.close()
-        return current_accuracy
+        return np.sum(correct_number_list) / data_size
 
 
     def _evaluate_ppl(self, model, dataset: Dataset, verbose=True):
