@@ -11,6 +11,7 @@ import numpy as np
 import datetime
 import json
 # TODO: remove later
+from accelerate import Accelerator
 from transformers import AutoConfig
 import torch.distributed as dist
 
@@ -51,7 +52,12 @@ class Evaluator(BasePipeline):
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
         torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
-        deepspeed.init_distributed()
+
+        if evaluator_args.use_accelerator_for_evaluator:
+            self.accelerator = Accelerator()
+            self.accelerator.wait_for_everyone()
+        else:
+            deepspeed.init_distributed()
 
         self.config = AutoConfig.from_pretrained(model_args.model_name_or_path)
         try: 
@@ -146,84 +152,165 @@ class Evaluator(BasePipeline):
 
     def _evaluate_acc(self, model, dataset, verbose=True):
         dataloader, data_size = self.create_dataloader(dataset)
+        # Under Accelerator Framework
+        if self.evaluator_args.use_accelerator_for_evaluator:
+            if self.accelerator.is_local_main_process:
+                if not os.path.exists(self.evaluator_args.output_dir):
+                    os.makedirs(self.evaluator_args.output_dir)
+                output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
+            
+            correct_number_list = []
+            for batch_index, batch in enumerate(dataloader):
+                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
+                    break
+                if self.local_rank*self.evaluator_args.inference_batch_size_per_device >= len(batch):
+                    current_batch = batch[:self.evaluator_args.inference_batch_size_per_device]
+                else:
+                    current_batch = batch[self.local_rank*self.evaluator_args.inference_batch_size_per_device:(self.local_rank+1)*self.evaluator_args.inference_batch_size_per_device]
+                prompt_structure = self.evaluator_args.prompt_structure
+                input = [prompt_structure.format(input=i['input']) for i in current_batch]
+                output = [i['output'] for i in current_batch]   
 
-        if not dist.is_initialized() or dist.get_rank() == 0:
-            if not os.path.exists(self.evaluator_args.output_dir):
-                os.makedirs(self.evaluator_args.output_dir)
-            output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
+                batch_input = model.encode(input, return_tensors="pt",padding=True).to(self.accelerator.device)
+                inputs = batch_input['input_ids']
+                mask = batch_input['attention_mask']
+                with self.accelerator.autocast():
+                    outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0,use_accelerator=self.evaluator_args.use_accelerator_for_evaluator)
+                text_out = model.decode(outputs, skip_special_tokens=True)
+                decoded_input = model.decode(inputs, skip_special_tokens=True,)
+                prompt_length = [len(i) for i in decoded_input]
+                text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
+                answer_type = self.evaluator_args.answer_type
+                pred_answer = []
+                for i in text_out:
+                    pred_answer.append(answer_extraction(
+                        i,
+                        answer_type=answer_type,
+                    ))
+                if verbose:
+                    print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
+                    print(f"predicted answer: {pred_answer} \n")
+                    print(f"groundtruth answer: {output} \n")
 
-        correct_number_list = []
-        for batch_index, batch in enumerate(dataloader):
-            if batch_index * self.world_size >= self.data_args.max_eval_samples: 
-                break
-            if self.local_rank*self.evaluator_args.inference_batch_size_per_device >= len(batch):
-                current_batch = batch[:self.evaluator_args.inference_batch_size_per_device]
-            else:
-                current_batch = batch[self.local_rank*self.evaluator_args.inference_batch_size_per_device:(self.local_rank+1)*self.evaluator_args.inference_batch_size_per_device]
-            prompt_structure = self.evaluator_args.prompt_structure
-            input = [prompt_structure.format(input=i['input']) for i in current_batch]
-            output = [i['output'] for i in current_batch]   
-            input_idx = [i['input_idx'] for i in current_batch]
-            batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
-            inputs = batch_input['input_ids']
-            mask = batch_input['attention_mask']
-            outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
-            text_out = model.decode(outputs, skip_special_tokens=True)
-            # # only return the generation, trucating the input
-            decoded_input = model.decode(inputs, skip_special_tokens=True,)
-            prompt_length = [len(i) for i in decoded_input]
-            text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
-            answer_type = self.evaluator_args.answer_type
-            pred_answer = []
-            for i in text_out:
-                pred_answer.append(answer_extraction(
-                    i,
-                    answer_type=answer_type,
-                ))
-            if verbose:
-                print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
-                print(f"predicted answer: {pred_answer} \n")
-                print(f"groundtruth answer: {output} \n")
+                if self.local_rank * self.evaluator_args.inference_batch_size_per_device  >= len(batch):
+                    correct_ = 0
+                else:
+                    correct_ = 0
+                    for i in range(len(pred_answer)):
+                        if self._match(pred_answer[i], output[i], answer_type):
+                            correct_ += 1
 
-            if self.local_rank * self.evaluator_args.inference_batch_size_per_device  >= len(batch):
-                correct_ = 0
-            else:
-                correct_ = 0
-                for i in range(len(pred_answer)):
-                    if self._match(pred_answer[i], output[i], answer_type):
-                        correct_ += 1
+                # collect accuracy from all gpus
+                all_process = torch.tensor([correct_], dtype=torch.float32, device=self.local_rank)
+                all_process = self.accelerator.gather(all_process)
+                correct_ = sum(all_process.tolist())
+                correct_number_list.append(correct_)
 
-            # collect accuracy from all gpus
-            all_process = torch.tensor([correct_], dtype=torch.float32, device=self.local_rank)
-            dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
-            correct_ = all_process.tolist()
-            correct_number_list.append(correct_)
+                # collect predictions from all gpus
+                output_dict = {"question": input,
+                            "prediction": text_out,
+                            "pred_answer": pred_answer,
+                            "answer": output}
+                all_process_list = [{}] * self.world_size
 
-            # collect predictions from all gpus
-            output_dict = {"question": input,
-                        "prediction": text_out,
-                        "pred_answer": pred_answer,
-                        "answer": output}
-            all_process_list = [{}] * self.world_size
+                dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
+                if self.accelerator.is_local_main_process:
+                    current_total = (batch_index+1) * self.world_size * self.evaluator_args.inference_batch_size_per_device
+                    current_accuracy = np.sum(correct_number_list) / current_total if int(current_total) < data_size else np.sum(correct_number_list) / data_size
+                    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), f"{int(current_total) if int(current_total) < data_size else data_size} / {data_size} has been finished, # correct = { np.sum(correct_number_list)}, current accuracy = {current_accuracy}")
 
-            dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
+                    if(self.evaluator_args.use_wandb == True):
+                        wandb.log({"Accuracy": current_accuracy})
+
+                    for index, output in enumerate(all_process_list):
+                        output_json = json.dumps(output)
+                        output_writer.write(output_json + '\n')
+
+            if self.accelerator.is_local_main_process:
+                current_accuracy = np.sum(correct_number_list) / data_size
+                print(f"# Correct = {np.sum(correct_number_list)}, # Total = {data_size}, Final accuracy = ", current_accuracy)
+                output_writer.close()
+            return np.sum(correct_number_list) / data_size
+        
+        # Under Deepspeed Framework
+        else:
             if not dist.is_initialized() or dist.get_rank() == 0:
-                current_total = (batch_index+1) * self.world_size * self.evaluator_args.inference_batch_size_per_device
-                current_accuracy = np.sum(correct_number_list) / current_total if int(current_total) < data_size else np.sum(correct_number_list) / data_size
-                print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), f"{int(current_total) if int(current_total) < data_size else data_size} / {data_size} has been finished, # correct = { np.sum(correct_number_list)}, current accuracy = {current_accuracy}")
+                if not os.path.exists(self.evaluator_args.output_dir):
+                    os.makedirs(self.evaluator_args.output_dir)
+                output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
-                if(self.evaluator_args.use_wandb == True):
-                    wandb.log({"Accuracy": current_accuracy})
+            correct_number_list = []
+            for batch_index, batch in enumerate(dataloader):
+                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
+                    break
+                if self.local_rank*self.evaluator_args.inference_batch_size_per_device >= len(batch):
+                    current_batch = batch[:self.evaluator_args.inference_batch_size_per_device]
+                else:
+                    current_batch = batch[self.local_rank*self.evaluator_args.inference_batch_size_per_device:(self.local_rank+1)*self.evaluator_args.inference_batch_size_per_device]
+                prompt_structure = self.evaluator_args.prompt_structure
+                input = [prompt_structure.format(input=i['input']) for i in current_batch]
+                output = [i['output'] for i in current_batch]   
+                input_idx = [i['input_idx'] for i in current_batch]
+                batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
+                inputs = batch_input['input_ids']
+                mask = batch_input['attention_mask']
+                outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
+                text_out = model.decode(outputs, skip_special_tokens=True)
+                # # only return the generation, trucating the input
+                decoded_input = model.decode(inputs, skip_special_tokens=True,)
+                prompt_length = [len(i) for i in decoded_input]
+                text_out = [text_out[i][prompt_length[i]:] for i in range(len(text_out))]
+                answer_type = self.evaluator_args.answer_type
+                pred_answer = []
+                for i in text_out:
+                    pred_answer.append(answer_extraction(
+                        i,
+                        answer_type=answer_type,
+                    ))
+                if verbose:
+                    print(f"batch_index{batch_index} rank{self.local_rank}:\n   question={input}\n  prediction={text_out}\n")
+                    print(f"predicted answer: {pred_answer} \n")
+                    print(f"groundtruth answer: {output} \n")
 
-                for index, output in enumerate(all_process_list):
-                    output_json = json.dumps(output)
-                    output_writer.write(output_json + '\n')
+                if self.local_rank * self.evaluator_args.inference_batch_size_per_device  >= len(batch):
+                    correct_ = 0
+                else:
+                    correct_ = 0
+                    for i in range(len(pred_answer)):
+                        if self._match(pred_answer[i], output[i], answer_type):
+                            correct_ += 1
 
-        if not dist.is_initialized() or dist.get_rank() == 0:
-            current_accuracy = np.sum(correct_number_list) / data_size
-            print(f"# Correct = {np.sum(correct_number_list)}, # Total = {data_size}, Final accuracy = ", current_accuracy)
-            output_writer.close()
-        return np.sum(correct_number_list) / data_size
+                # collect accuracy from all gpus
+                all_process = torch.tensor([correct_], dtype=torch.float32, device=self.local_rank)
+                dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
+                correct_ = all_process.tolist()
+                correct_number_list.append(correct_)
+
+                # collect predictions from all gpus
+                output_dict = {"question": input,
+                            "prediction": text_out,
+                            "pred_answer": pred_answer,
+                            "answer": output}
+                all_process_list = [{}] * self.world_size
+
+                dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0)
+                if not dist.is_initialized() or dist.get_rank() == 0:
+                    current_total = (batch_index+1) * self.world_size * self.evaluator_args.inference_batch_size_per_device
+                    current_accuracy = np.sum(correct_number_list) / current_total if int(current_total) < data_size else np.sum(correct_number_list) / data_size
+                    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), f"{int(current_total) if int(current_total) < data_size else data_size} / {data_size} has been finished, # correct = { np.sum(correct_number_list)}, current accuracy = {current_accuracy}")
+
+                    if(self.evaluator_args.use_wandb == True):
+                        wandb.log({"Accuracy": current_accuracy})
+
+                    for index, output in enumerate(all_process_list):
+                        output_json = json.dumps(output)
+                        output_writer.write(output_json + '\n')
+
+            if not dist.is_initialized() or dist.get_rank() == 0:
+                current_accuracy = np.sum(correct_number_list) / data_size
+                print(f"# Correct = {np.sum(correct_number_list)}, # Total = {data_size}, Final accuracy = ", current_accuracy)
+                output_writer.close()
+            return np.sum(correct_number_list) / data_size
 
 
     def _evaluate_ppl(self, model, dataset: Dataset, verbose=True):
