@@ -163,7 +163,7 @@ def chat_stream(query: str, history= None, **kwargs):
         history = []
 
     context = hist2context(history)
-    #print_index = 0
+    print_index = 0
     #context += prompt_structure.format(input_text=query)
     context_ = context[-model.get_max_length():] 
     input_dataset = dataset.from_dict({
