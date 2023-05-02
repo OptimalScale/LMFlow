@@ -564,6 +564,12 @@ class InferencerArguments:
             "choices": ["bf16","fp16"],
         },
     )
+    do_sample: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "whether turn on true random sampling during inference."
+        },
+    )
 
 
 @dataclass
