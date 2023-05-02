@@ -47,6 +47,11 @@ class MultistageFinetuneArgs:
             "help": "base seed for generating dataset shuffle seeds each epoch"
         }
     )
+    start_epoch: int = field(
+        default=0,
+        metadata={"help": "start from a specific epoch"}
+    )
+
 
 def setup_logger():
     root = logging.getLogger()
@@ -131,6 +136,8 @@ def main():
             num_split=multistage_args.num_stages_per_epoch,
             seed=shuffle_seed,
         )
+        if epoch < multistage_args.start_epoch:
+            continue
 
         for stage, dataset in enumerate(dataset_list):
             is_main_process = (finetuner_args.local_process_index == 0)
