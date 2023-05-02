@@ -137,6 +137,7 @@ def main():
             seed=shuffle_seed,
         )
         if epoch < multistage_args.start_epoch:
+            logging.info(f"skip epoch {epoch}")
             continue
 
         for stage, dataset in enumerate(dataset_list):
