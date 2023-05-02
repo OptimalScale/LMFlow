@@ -150,15 +150,21 @@ prompt_structure = chatbot_args.prompt_structure
 
 token_per_step = 4
 
-context = ""
+def hist2context(hist):
+    context = ""
+    for query, response in hist:
+        context += prompt_structure.format(input_text=query)
+        if not (response is None):
+            context += response
+    return context
 
 def chat_stream(query: str, history= None, **kwargs):
     if history is None:
         history = []
 
-    global context
-    print_index = 0
-    context += prompt_structure.format(input_text=query)
+    context = hist2context(history)
+    #print_index = 0
+    #context += prompt_structure.format(input_text=query)
     context_ = context[-model.get_max_length():] 
     input_dataset = dataset.from_dict({
         "type": "text_only",
@@ -174,7 +180,6 @@ def chat_stream(query: str, history= None, **kwargs):
         
         yield delta, history + [(query, seq)]
         if flag_break:
-            context += response
             break
 
 
