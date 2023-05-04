@@ -178,3 +178,6 @@ tags
 
 # ruff
 .ruff_cache
+
+# lm_evaluation cache
+lm_cache/

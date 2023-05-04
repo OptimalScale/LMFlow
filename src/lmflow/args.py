@@ -187,6 +187,15 @@ class ModelArguments:
         default=True,
         metadata={"help": "Whether use disk mapping when memory is not enough."}
     )
+    use_flash_attention: bool = field(
+        default=False,
+        metadata={
+            "help": (
+                "whether use flash attention layer to reduce GPU memory with"
+                " higher time cost."
+            )
+        }
+    )
 
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):

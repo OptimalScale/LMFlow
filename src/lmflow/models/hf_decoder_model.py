@@ -51,10 +51,16 @@ from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
 )
+from lmflow.utils.flash_attention import (
+    replace_llama_attn_with_flash_attn,
+)
 
 
 logger = logging.getLogger(__name__)
 
+SUPPORT_FLASH_ATTENTION_MODELS = [
+    'LlamaModel',
+]
 
 class HFDecoderModel(DecoderModel, Tunable):
     r"""
@@ -132,6 +138,12 @@ class HFDecoderModel(DecoderModel, Tunable):
             if model_args.torch_dtype in ["auto", None]
             else getattr(torch, model_args.torch_dtype)
         )
+        
+        # Whether use flash attention
+        if model_args.use_flash_attention:
+            if  "llama" in model_args.model_name_or_path:
+                replace_llama_attn_with_flash_attn()
+
         if tune_strategy == 'normal':
             config_kwargs = {
                 "cache_dir": model_args.cache_dir,
@@ -149,6 +161,9 @@ class HFDecoderModel(DecoderModel, Tunable):
                     logger.info(f"Overriding config: {model_args.config_overrides}")
                     config.update_from_string(model_args.config_overrides)
                     logger.info(f"New config: {config}")
+            if model_args.use_flash_attention:
+                if  "llama" in model_args.model_name_or_path:
+                    config.use_cache = False
 
             if model_args.model_name_or_path:
                 model = AutoModelForCausalLM.from_pretrained(
@@ -255,7 +270,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     self.backend_model = PeftModel.from_pretrained(
                         self.backend_model, peft_model_id
                     )
-                
+  
                 self.tokenizer.padding_side = "left" #necessary for llama, gpt2 and other decoder models
                 
                 if device == "gpu":
@@ -265,6 +280,7 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')
+        
 
         if self.tokenizer.eos_token_id is None:
             self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
