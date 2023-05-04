@@ -74,7 +74,7 @@ Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which on
 unsatisfactory responses. To improve the performance, users can use their own
 dataset to finetune and obtain a better model with LMFlow. One can also try
 other available decoder-only models provided in
-🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
+🤗 [Hugging Face](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
 
 ```sh
 ./scripts/run_chatbot.sh {another-model-name}
@@ -99,7 +99,7 @@ pip install gradio
 python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
 ```
 
-We also hosted it on HuggingFace [Space](https://huggingface.co/spaces/OptimalScale/Robin-7b).
+We also hosted it on Hugging Face [Space](https://huggingface.co/spaces/OptimalScale/Robin-7b).
 
 
 
@@ -189,7 +189,7 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 
 ## Supported Models
 
-Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 huggingface. 
+Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 Hugging Face. 
 LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
 
 
@@ -273,7 +273,7 @@ We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](ht
 
 ### 3.2 Run Evaluation
 
-One can directly run evaluation with an existing huggingface model, e.g. to run
+One can directly run evaluation with an existing Hugging Face model, e.g. to run
 GPT2 large, one may execute
 ```sh
 ./scripts/run_evaluation.sh
