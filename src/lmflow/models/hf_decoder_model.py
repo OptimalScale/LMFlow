@@ -141,9 +141,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         
         # Whether use flash attention
         if model_args.use_flash_attention:
-            # TODO(@Jipeng)
             if  "llama" in model_args.model_name_or_path:
-                print("flash attention worked in init", flush=True)
                 replace_llama_attn_with_flash_attn()
 
         if tune_strategy == 'normal':
@@ -164,10 +162,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                     config.update_from_string(model_args.config_overrides)
                     logger.info(f"New config: {config}")
             if model_args.use_flash_attention:
-                # TODO(@Jipeng)
                 if  "llama" in model_args.model_name_or_path:
                     config.use_cache = False
-                    print("flash attention config on use cache is modified", flush=True)
 
             if model_args.model_name_or_path:
                 model = AutoModelForCausalLM.from_pretrained(
@@ -284,13 +280,6 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')
-                
-        # Whether use flash attention
-        if model_args.use_flash_attention:
-            # TODO(@Jipeng)
-            if any(model_archs in SUPPORT_FLASH_ATTENTION_MODELS for model_archs in self.config.architectures):
-                replace_llama_attn_with_flash_attn()
-            # if "LlamaModel" in self.config.architectures:
         
 
         if self.tokenizer.eos_token_id is None:

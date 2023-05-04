@@ -95,7 +95,6 @@ def forward(
             "b s (h d) -> b s h d",
             h=nheads,
         )
-    print("flash attention worked in forward", flush=True)
     return self.o_proj(rearrange(output, "b s h d -> b s (h d)")), None, None
 
 
@@ -113,4 +112,3 @@ def replace_llama_attn_with_flash_attn():
         _prepare_decoder_attention_mask
     )
     transformers.models.llama.modeling_llama.LlamaAttention.forward = forward
-    print("flash attention worked in replace", flush=True)
