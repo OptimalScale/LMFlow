@@ -178,3 +178,9 @@ tags
 
 # ruff
 .ruff_cache
+
+# lm_evaluation cache
+lm_cache/
+
+# bash run scripts outside
+run_*
