@@ -214,9 +214,8 @@ class Finetuner(BaseTuner):
         train_dataset = lm_dataset.get_backend_dataset()
 
         if finetuner_args.do_eval:
-            
             eval_dataset_args = deepcopy(data_args)
-            eval_dataset_args.dataset_path = eval_dataset_args.eval_dataset_path
+            eval_dataset_args.dataset_path = finetuner_args.eval_dataset_path
             eval_dataset = Dataset(eval_dataset_args)
             with finetuner_args.main_process_first(desc="dataset map tokenization"):
                 tokenized_dataset = model.tokenize(eval_dataset)
