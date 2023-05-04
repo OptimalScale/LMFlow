@@ -259,9 +259,6 @@ class DatasetArguments:
     dataset_path: Optional[str] = field(
         default=None, metadata={"help": "The path of the dataset to use."}
     )
-    eval_dataset_path: Optional[str] = field(
-        default=None, metadata={"help": "The path of the eval dataset to use."}
-    )
     dataset_name: Optional[str] = field(
         default="customized", metadata={"help": "Should be \"customized\""}
     )
@@ -374,7 +371,9 @@ class FinetunerArguments(TrainingArguments):
     """
     Adapt transformers.TrainingArguments
     """
-    pass
+    eval_dataset_path: Optional[str] = field(
+        default=None, metadata={"help": "The path of the eval dataset to use."}
+    )
 
 
 @dataclass
