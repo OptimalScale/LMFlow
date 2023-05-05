@@ -3,7 +3,7 @@ distributed_type: MULTI_GPU
 downcast_bf16: 'no'
 dynamo_config:
   dynamo_backend: INDUCTOR
-gpu_ids: 0,2
+gpu_ids: 
 machine_rank: 0
 main_training_function: main
 mixed_precision: bf16
