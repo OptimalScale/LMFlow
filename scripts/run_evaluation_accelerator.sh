@@ -1,6 +1,6 @@
 #!/bin/bash
 
-accelerate launch --config_file configs/accelerator_multiGPU_config.yaml examples/evaluate.py \
+CUDA_VISIBLE_DEVICES=0 accelerate launch --config_file configs/accelerator_singlegpu_config.yaml examples/evaluate.py \
     --answer_type usmle \
     --model_name_or_path pinkmanlove/llama-7b-hf \
     --lora_model_path output_models/llama7b-lora-medical \
