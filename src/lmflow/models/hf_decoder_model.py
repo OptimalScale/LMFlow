@@ -138,39 +138,37 @@ class HFDecoderModel(DecoderModel, Tunable):
             if model_args.torch_dtype in ["auto", None]
             else getattr(torch, model_args.torch_dtype)
         )
-        
+
+        config_kwargs = {
+            "cache_dir": model_args.cache_dir,
+            "revision": model_args.model_revision,
+            "use_auth_token": True if model_args.use_auth_token else None,
+        }
+        if model_args.config_name:
+            config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
+        elif model_args.model_name_or_path:
+            config = AutoConfig.from_pretrained(model_args.model_name_or_path, **config_kwargs)
+        else:
+            config = CONFIG_MAPPING[model_args.model_type]()
+            logger.warning("You are instantiating a new config instance from scratch.")
+            if model_args.config_overrides is not None:
+                logger.info(f"Overriding config: {model_args.config_overrides}")
+                config.update_from_string(model_args.config_overrides)
+                logger.info(f"New config: {config}")
+
         # Whether use flash attention
         if model_args.use_flash_attention:
-            replace_llama_attn_with_flash_attn()
+            if not any(model_supported in config.architectures
+                       for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
+                logger.warning(
+                    f"Model \"{config.architectures}\" does not support"
+                    " flash attention, use normal attention layer instead"
+                )
+            else:
+                replace_llama_attn_with_flash_attn()
+                config.use_cache = False
 
         if tune_strategy == 'normal':
-            config_kwargs = {
-                "cache_dir": model_args.cache_dir,
-                "revision": model_args.model_revision,
-                "use_auth_token": True if model_args.use_auth_token else None,
-            }
-            if model_args.config_name:
-                config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
-            elif model_args.model_name_or_path:
-                config = AutoConfig.from_pretrained(model_args.model_name_or_path, **config_kwargs)
-            else:
-                config = CONFIG_MAPPING[model_args.model_type]()
-                logger.warning("You are instantiating a new config instance from scratch.")
-                if model_args.config_overrides is not None:
-                    logger.info(f"Overriding config: {model_args.config_overrides}")
-                    config.update_from_string(model_args.config_overrides)
-                    logger.info(f"New config: {config}")
-
-            if model_args.use_flash_attention:
-                if not any(model_supported in config.architectures
-                           for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
-                    logger.warning(
-                        f"Model \"{config.architectures}\" does not support"
-                        " flash attention, use normal attention layer instead"
-                    )
-                else:
-                    config.use_cache = False
-
             if model_args.model_name_or_path:
                 model = AutoModelForCausalLM.from_pretrained(
                     model_args.model_name_or_path,
