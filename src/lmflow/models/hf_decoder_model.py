@@ -58,8 +58,8 @@ from lmflow.utils.flash_attention import (
 
 logger = logging.getLogger(__name__)
 
-SUPPORT_FLASH_ATTENTION_MODELS = [
-    'LlamaModel',
+MODELS_SUPPORT_FLASH_ATTENTION = [
+    "LlamaForCausalLM",
 ]
 
 class HFDecoderModel(DecoderModel, Tunable):
@@ -141,8 +141,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         
         # Whether use flash attention
         if model_args.use_flash_attention:
-            if  "llama" in model_args.model_name_or_path:
-                replace_llama_attn_with_flash_attn()
+            replace_llama_attn_with_flash_attn()
 
         if tune_strategy == 'normal':
             config_kwargs = {
@@ -161,8 +160,15 @@ class HFDecoderModel(DecoderModel, Tunable):
                     logger.info(f"Overriding config: {model_args.config_overrides}")
                     config.update_from_string(model_args.config_overrides)
                     logger.info(f"New config: {config}")
+
             if model_args.use_flash_attention:
-                if  "llama" in model_args.model_name_or_path:
+                if not any(model_supported in config.architectures
+                           for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
+                    logger.warning(
+                        f"Model \"{config.architectures}\" does not support"
+                        " flash attention, use normal attention layer instead"
+                    )
+                else:
                     config.use_cache = False
 
             if model_args.model_name_or_path:
