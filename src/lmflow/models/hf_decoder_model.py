@@ -216,6 +216,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 peft_model_id = model_args.lora_model_path
                 self.backend_model = AutoModelForCausalLM.from_pretrained(
                         model_args.model_name_or_path,
+                        config=config,
                         device_map="auto",
                         offload_folder="offload",
                         offload_state_dict=True,
@@ -243,6 +244,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         # RAM-optimized load
                         self.backend_model = AutoModelForCausalLM.from_pretrained(
                             model_args.model_name_or_path,
+                            config=config,
                             device_map="auto",
                             offload_folder="offload",
                             offload_state_dict=True,
@@ -256,6 +258,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         # Normal load
                         self.backend_model = AutoModelForCausalLM.from_pretrained(
                             model_args.model_name_or_path,
+                            config=config,
                             torch_dtype=torch_dtype,
                         )
                 else:
@@ -266,6 +269,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         )
                     self.backend_model = AutoModelForCausalLM.from_pretrained(
                         model_args.model_name_or_path,
+                        config=config,
                         torch_dtype=torch_dtype,
                     )
 
