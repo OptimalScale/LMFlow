@@ -164,6 +164,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                     f"Model \"{config.architectures}\" does not support"
                     " flash attention, use normal attention layer instead"
                 )
+            elif "A100" not in torch.cuda.get_device_name():
+                logger.warning(
+                    f"Your decice \"{torch.cuda.get_device_name()}\""
+                    " does not support flash attention, it will"
+                    " automatically use normal attention layer"
+                )
             else:
                 replace_llama_attn_with_flash_attn()
                 config.use_cache = False

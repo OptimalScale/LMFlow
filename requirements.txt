@@ -15,4 +15,3 @@ evaluate==0.4.0
 scikit-learn==1.2.2
 lm-eval @ git+https://github.com/EleutherAI/lm-evaluation-harness.git#egg=lm-eval-0.3.0
 dill<0.3.5
-flash-attn==1.0.4
