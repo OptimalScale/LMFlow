@@ -59,7 +59,5 @@ class DatasetTest(unittest.TestCase):
                 { "input": "INPUT 2", "output": "OUTPUT 2" },
             ]
         }
-        try:
+        with self.assertRaises(ValueError):
             dataset = Dataset.create_from_dict(data_dict)
-        except ValueError as ex:
-            self.assertEqual(str(ex), "type \"non-supported\" is not supported")
