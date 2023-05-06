@@ -1,7 +1,7 @@
 import os
 from setuptools import find_packages
 from setuptools import setup
-
+import subprocess
 
 folder = os.path.dirname(__file__)
 version_path = os.path.join(folder, "src", "lmflow", "version.py")
@@ -10,12 +10,15 @@ __version__ = None
 with open(version_path) as f:
   exec(f.read(), globals())
 
-
 req_path = os.path.join(folder, "requirements.txt")
 install_requires = []
 if os.path.exists(req_path):
   with open(req_path) as fp:
     install_requires = [line.strip() for line in fp]
+
+gpu_state = subprocess.check_output(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"])
+if b"A100" in gpu_state:
+  install_requires.append("flash-attn==1.0.4")
 
 readme_path = os.path.join(folder, "README.md")
 readme_contents = ""
