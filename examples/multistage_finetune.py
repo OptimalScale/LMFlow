@@ -169,8 +169,10 @@ def main():
             model_args.model_name_or_path = finetuner_args.output_dir
             del model
             del tuned_model
+            del finetuner
             tuned_model = None
             model = None
+            finetuner = None
             gc.collect()
 
 
