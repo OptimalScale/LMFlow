@@ -128,7 +128,11 @@ LOCAL_DATSET_MAP ={
     "common_sense_eval_piqa":"data/commonsense_eval/piqa/",
     "common_sense_eval_hellaswag":"data/commonsense_eval/hellaswag/",
     "common_sense_eval_siqa":"data/commonsense_eval/siqa/",
-    "common_sense_eval_boolq":"data/commonsense_eval/boolq/"
+    "common_sense_eval_boolq":"data/commonsense_eval/boolq/",
+    "lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp":"data/lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp",
+    "lmflow_chat_cn_dialog_multiturn_single_nll_text2text":"data/lmflow_chat_cn_dialog_multiturn_single_nll_text2text",
+    "lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp":"data/lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp",
+    "lmflow_chat_en_dialog_multiturn_single_nll_text2text":"data/lmflow_chat_en_dialog_multiturn_single_nll_text2text",
 }
 
 LM_EVAL_DATASET_MAP={
@@ -150,7 +154,12 @@ LOCAL_DATSET_GROUP_MAP={
     "multiturn_dialog_eval":"multiturn_dialog_eval",
     "all_nll_eval":"common_sense_eval_arc_c,common_sense_eval_arc_e,common_sense_eval_winogrande,\
     common_sense_eval_obqa,common_sense_eval_piqa,common_sense_eval_hellaswag,common_sense_eval_siqa,\
-    common_sense_eval_boolq,gpt4_en_eval,gpt4_zh_eval,wiki_zh_eval,wiki_en_eval"
+    common_sense_eval_boolq,gpt4_en_eval,gpt4_zh_eval,wiki_zh_eval,wiki_en_eval,\
+    lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_cn_dialog_multiturn_single_nll_text2text,\
+    lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_en_dialog_multiturn_single_nll_text2text",
+    "lmflow_chat_nll_eval":"lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_cn_dialog_multiturn_single_nll_text2text,\
+    lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_en_dialog_multiturn_single_nll_text2text",
+    "lmflow_chat_zh_nll_eval":"lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_cn_dialog_multiturn_single_nll_text2text",
 }
 
 LOCAL_DATSET_ANSWERTYPE_MAP={
@@ -170,35 +179,13 @@ LOCAL_DATSET_ANSWERTYPE_MAP={
     "common_sense_eval_piqa":"text_only",
     "common_sense_eval_hellaswag":"text_only",
     "common_sense_eval_siqa":"text_only",
-    "common_sense_eval_boolq":"text_only"
+    "common_sense_eval_boolq":"text_only",
+    "lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp":"text2text",
+    "lmflow_chat_cn_dialog_multiturn_single_nll_text2text":"text2text",
+    "lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp":"text2text",
+    "lmflow_chat_en_dialog_multiturn_single_nll_text2text":"text2text",
 }
 
-
-
-# @dataclass
-# class BenchmarkingArguments:
-#     dataset_name: Optional[str] = field(
-#         default=None,
-#         metadata={
-#             "help": "benchmark dataset name provided by lmflow"
-#         },
-#     )
-#     lm_evaluation_metric: Optional[str] = field(
-#         default="accuracy",
-#         metadata={
-#             "help": "the metric the model will be evaluated on",
-#             "choices": ["acc", "acc_norm", "bleu", "chrf", "em", "f1", "ppl", \
-#                 "ter", "r@1", "r@2", "mrr", "mc1", "mc2", "word_perplexity", \
-#                     "byte_perplexity", "bits_per_byte"],
-#         },
-#     )
-#     metric: Optional[str] = field(
-#         default="accuracy",
-#         metadata={
-#             "help": "the metric the model will be evaluated on",
-#             "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood"],
-#         },
-#     )
     
 def is_lmflow_local_benchmarking(dataset_name):
     # local_dataset = ["gpt4_en_eval","gpt4_zh_eval","wiki_zh_eval",\
@@ -233,8 +220,7 @@ def is_lm_evaluation_benchmarking(dataset_name):
 
 def run_lmflow_local_benchmarking(dataset_name,pipeline_name,model_args, \
     pipeline_args, model, local_metric="neg_log_likelihood"):
-    # TODO (@Jipeng), e.g. NLL
-    # Downloads dataset via "data/download.sh" TODO (@Jipeng)
+    # Downloads dataset via "data/download.sh"
     print('dataset_name.split')
     print(dataset_name.split(","))
     result_list = []
@@ -242,7 +228,7 @@ def run_lmflow_local_benchmarking(dataset_name,pipeline_name,model_args, \
     dataset_collection = dataset_name.split(",")
     reuslt_collection = []
     for dataset_name_ in dataset_collection:
-        # Gets mapping from dataset_name to dataset TODO(@Jipeng)
+        # Gets mapping from dataset_name to dataset 
         dataset_name_ = dataset_name_.strip()
         dataset_path = LOCAL_DATSET_MAP[dataset_name_]
         data_args = DatasetArguments(dataset_path=dataset_path)
@@ -259,7 +245,7 @@ def run_lmflow_local_benchmarking(dataset_name,pipeline_name,model_args, \
             pipeline_args=pipeline_args,
         )
         # model = model_args.model_name_or_path
-        # metric should be decided by both dataset_name and pipeline_args TODO (@Jipeng)
+        # metric should be decided by both dataset_name and pipeline_args 
         # 1. When --metric is not specified, or "accuracy", log warning and change to
         #    the dataset_name's default metric
         # 2. If specified, use the specified metric
@@ -274,7 +260,7 @@ def run_lmflow_local_benchmarking(dataset_name,pipeline_name,model_args, \
 
 
 def run_lm_evaluation_benchmarking(dataset_name,model_name):
-    # TODO (@Jipeng), use subprocess maybe
+    # use subprocess maybe
     # subprocess.run(["python3", "main.py", "--model", "hf-causal-experimental", 
     # "--model_args" "pretrained=EleutherAI/gpt-j-6b",
     # "--tasks", "openbookqa,arc_easy,winogrande,hellaswag,arc_challenge,piqa,boolq"
@@ -302,8 +288,6 @@ def main():
 
     with open (pipeline_args.deepspeed, "r") as f:
         ds_config = json.load(f)
-    # TODO (@Jipeng)
-    
     # Based on dataset name, you need specify the default dataset_path
     # (if local) or call corresponding lm_evaluation package (via python pack or subprocess)
     dataset_name = benchmarking_args.dataset_name
