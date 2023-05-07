@@ -51,9 +51,6 @@ from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
 )
-from lmflow.utils.flash_attention import (
-    replace_llama_attn_with_flash_attn,
-)
 
 
 logger = logging.getLogger(__name__)
@@ -171,6 +168,9 @@ class HFDecoderModel(DecoderModel, Tunable):
                     " automatically use normal attention layer"
                 )
             else:
+                from lmflow.utils.flash_attention import (
+                    replace_llama_attn_with_flash_attn,
+                )
                 replace_llama_attn_with_flash_attn()
                 config.use_cache = False
 
