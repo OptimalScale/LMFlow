@@ -16,9 +16,12 @@ if os.path.exists(req_path):
   with open(req_path) as fp:
     install_requires = [line.strip() for line in fp]
 
-gpu_state = subprocess.check_output(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"])
-if b"A100" in gpu_state:
-  install_requires.append("flash-attn==1.0.4")
+try:
+  gpu_state = subprocess.check_output(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"])
+  if b"A100" in gpu_state:
+    install_requires.append("flash-attn==1.0.4")
+except:
+  pass
 
 readme_path = os.path.join(folder, "README.md")
 readme_contents = ""
