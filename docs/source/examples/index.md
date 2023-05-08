@@ -40,7 +40,7 @@ raft
 
 Refer to [examples](https://github.com/OptimalScale/LMFlow/blob/main/examples).
 
-# Evaluation
+## Evaluation
 
 ```{toctree}
 :maxdepth: 3
