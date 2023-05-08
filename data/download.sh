@@ -152,6 +152,37 @@ function main() {
         rm ${filename}
     fi
 
+    if [ "$1" = "lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp" -o "$1" = "all" ]; then
+        echo "downloading lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp dataset"
+        filename='lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "lmflow_chat_cn_dialog_multiturn_single_nll_text2text" -o "$1" = "all" ]; then
+        echo "downloading lmflow_chat_cn_dialog_multiturn_single_nll_text2text dataset"
+        filename='lmflow_chat_cn_dialog_multiturn_single_nll_text2text.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp" -o "$1" = "all" ]; then
+        echo "downloading lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp dataset"
+        filename='lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
+    if [ "$1" = "lmflow_chat_en_dialog_multiturn_single_nll_text2text" -o "$1" = "all" ]; then
+        echo "downloading lmflow_chat_en_dialog_multiturn_single_nll_text2text dataset"
+        filename='lmflow_chat_en_dialog_multiturn_single_nll_text2text.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
 }
 main "$@"
 
