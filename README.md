@@ -337,7 +337,15 @@ You can also directly download our model via google drive link : [instruction_ck
 
 ### 5.3 Reproduce the result
 
-After downloading the model checkpoints, you can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
+After downloading the model checkpoints, you can merge the lora model into the base model via
+```
+python examples/merge_lora.py \
+    --model_name_or_path {huggingface-model-name-or-path-to-base-model} \
+    --lora_model_path {path-to-lora-model} \
+    --output_model_path {path-to-merged-model}
+```
+
+Or you can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
 
 Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
 
