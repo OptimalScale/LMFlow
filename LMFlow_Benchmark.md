@@ -82,8 +82,8 @@ The first aspect of LLM is chat performance, especially multi-round chat. Based 
 
 ||En\_multi\_round\_chat|En\_singe\_round\_chat|Average|
 | :- | :-: | :-: | :-: |
-|Bloom-7.1b|`            `188|`            `213|200\.5|
-|Bloom-7.1b-chat|`            `164|`            `181|172\.5|
+|Bloom-7.1b|188|213|200\.5|
+|Bloom-7.1b-chat|164|181|172\.5|
 |Llama-7b|163	|184	|173\.5|
 |Vicuna-7b|155	|175	|165|
 |Vicuna-13b|150	|170	|160|
