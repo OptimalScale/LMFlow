@@ -299,6 +299,22 @@ Those scripts invoke the examples `examples/*.py` built based on our APIs. For
 more API-related examples, one may refer to the methods in the unittest
 `tests`.
 
+### 3.3 Run Benchmark Evaluation
+
+One can run evaluation in group with an existing Hugging Face model/ local model, 
+e.g. to run GPT2 XL, one may execute
+```sh
+CUDA_VISIBLE_DEVICES=0 \
+  deepspeed examples/benchmarking.py \
+  --answer_type text2text \
+  --use_ram_optimized_load False \
+  --model_name_or_path gpt2-xl \
+  --dataset_name lmflow_chat_nll_eval\
+  --deepspeed examples/ds_config.json \
+  --metric nll \
+  --prompt_structure "###Human: {input}###Assistant:" 
+```
+
 ## 4. Additional Notes
 ### 4.1 LLaMA Checkpoint
 
@@ -337,15 +353,7 @@ You can also directly download our model via google drive link : [instruction_ck
 
 ### 5.3 Reproduce the result
 
-After downloading the model checkpoints, you can merge the lora model into the base model via
-```
-python examples/merge_lora.py \
-    --model_name_or_path {huggingface-model-name-or-path-to-base-model} \
-    --lora_model_path {path-to-lora-model} \
-    --output_model_path {path-to-merged-model}
-```
-
-Or you can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
+After downloading the model checkpoints, you can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
 
 Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
 
