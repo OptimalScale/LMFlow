@@ -170,16 +170,21 @@ class HFDecoderModel(DecoderModel, Tunable):
                 )
             else:
                 config.use_cache = False
-                if config.architectures == "LlamaForCausalLM":
+                if "LlamaForCausalLM" in config.architectures:
                     from lmflow.utils.flash_attention.llama_flash_attention import (
                         replace_llama_attn_with_flash_attn,
                     )
                     replace_llama_attn_with_flash_attn()
-                if config.architectures == "GPTNeoForCausalLM":
+                elif "GPTNeoForCausalLM" in config.architectures:
                     from lmflow.utils.flash_attention.gpt_neo_flash_attention import (
                         replace_gpt_neo_attn_with_flash_attn,
                     )
                     replace_gpt_neo_attn_with_flash_attn()
+                else:
+                    raise ValueError(
+                        f"Model \"{config.architectures}\" does not support"
+                        " flash attention, use normal attention layer instead"
+                    )
                     
         if tune_strategy == 'normal':
             if model_args.model_name_or_path:

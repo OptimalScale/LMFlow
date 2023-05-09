@@ -1,20 +1,14 @@
 from typing import List, Optional, Tuple
 
 import torch
-from torch import nn
 import transformers
 import math
 from einops import rearrange
-import pdb
 from flash_attn.flash_attn_interface import flash_attn_unpadded_qkvpacked_func
 from flash_attn.bert_padding import unpad_input, pad_input
-from flash_attn.flash_attention import FlashAttention
 
 def _attn(self, query, key, value, attention_mask=None, head_mask=None):
-    # Disable the transformation of the attention mask in GPT as the flash attention
-    # requires the attention mask to be the same as the head_mask
     # (batch, head, seq_length, head_features)
-    #pdb.set_trace()
     query = query * math.sqrt(self.head_dim)
     kv_seq_len = key.shape[-2]
     qkv = torch.stack(
@@ -83,10 +77,7 @@ def forward(
         assert not use_cache, "use_cache is not supported"
 
         present = None
-        #pdb.set_trace()
         attn_output, attn_weights = self._attn(query, key, value, attention_mask, head_mask)
-        #test_attn_output, test_attn_weights = self._origin_attn(query, key, value, attention_mask, head_mask)
-        #test_attn_output =test_attn_output.permute(0, 2, 1, 3).contiguous()
         new_shape = attn_output.size()[:-2] + (self.num_heads * self.head_dim,)
         attn_output = attn_output.view(new_shape)
         attn_output = self.out_proj(attn_output)
@@ -96,38 +87,6 @@ def forward(
 
         return outputs  # a, present, (attentions)
 
-def _origin_attn(self, query, key, value, attention_mask=None, head_mask=None):
-        # Keep the attention weights computation in fp32 to avoid overflow issues
-        query = query.to(torch.float32)
-        key = key.to(torch.float32)
-
-        attn_weights = torch.matmul(query, key.transpose(-1, -2))
-
-        query_length, key_length = query.size(-2), key.size(-2)
-        causal_mask = self.bias[:, :, key_length - query_length : key_length, :key_length]
-        mask_value = torch.finfo(attn_weights.dtype).min
-        # Need to be a tensor, otherwise we get error: `RuntimeError: expected scalar type float but found double`.
-        # Need to be on the same device, otherwise `RuntimeError: ..., x and y to be on the same device`
-        mask_value = torch.tensor(mask_value, dtype=attn_weights.dtype).to(attn_weights.device)
-        attn_weights = torch.where(causal_mask, attn_weights, mask_value)
-
-        if attention_mask is not None:
-            # Apply the attention mask
-            attn_weights = attn_weights + attention_mask
-
-        attn_weights = nn.functional.softmax(attn_weights, dim=-1)
-        attn_weights = attn_weights.to(value.dtype)
-        attn_weights = self.attn_dropout(attn_weights)
-
-        # Mask heads if we want to
-        if head_mask is not None:
-            attn_weights = attn_weights * head_mask
-
-        attn_output = torch.matmul(attn_weights, value)
-
-        return attn_output, attn_weights
-
 def replace_gpt_neo_attn_with_flash_attn():
     transformers.models.gpt_neo.modeling_gpt_neo.GPTNeoSelfAttention._attn = _attn
     transformers.models.gpt_neo.modeling_gpt_neo.GPTNeoSelfAttention.forward = forward
-    #transformers.models.gpt_neo.modeling_gpt_neo.GPTNeoSelfAttention._origin_attn = _origin_attn
