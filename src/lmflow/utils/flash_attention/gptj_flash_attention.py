@@ -2,13 +2,21 @@ from typing import List, Optional, Tuple
 
 import torch
 import transformers
+import math
 from einops import rearrange
 from flash_attn.flash_attn_interface import flash_attn_unpadded_qkvpacked_func
 from flash_attn.bert_padding import unpad_input, pad_input
 
-def _attn(self, query, key, value, attention_mask=None, head_mask=None):
+def _attn(
+        self,
+        query,
+        key,
+        value,
+        attention_mask=None,
+        head_mask=None,
+    ):
     # (batch, head, seq_length, head_features)
-    query = query * torch.sqrt(torch.tensor(self.head_dim))
+    query = query
     kv_seq_len = key.shape[-2]
     qkv = torch.stack(
         [query, key, value], dim=2
@@ -49,28 +57,63 @@ def _attn(self, query, key, value, attention_mask=None, head_mask=None):
     
     return output, None
 
+
 def forward(
         self,
-        hidden_states,
-        attention_mask=None,
-        layer_past=None,
-        head_mask=None,
-        use_cache=False,
-        output_attentions=False,
-    ):
-    
+        hidden_states: torch.FloatTensor,
+        layer_past: Optional[Tuple[torch.Tensor]] = None,
+        attention_mask: Optional[torch.FloatTensor] = None,
+        position_ids: Optional[torch.LongTensor] = None,
+        head_mask: Optional[torch.FloatTensor] = None,
+        use_cache: Optional[bool] = False,
+        output_attentions: Optional[bool] = False,
+    ) -> Union[
+        Tuple[torch.Tensor, Tuple[torch.Tensor]],
+        Optional[Tuple[torch.Tensor, Tuple[torch.Tensor], Tuple[torch.Tensor, ...]]],
+    ]:
     assert head_mask is None, "head_mask is not supported"
     assert not output_attentions, "output_attentions is not supported"
     assert not use_cache, "use_cache is not supported"
+    
     
     query = self.q_proj(hidden_states)
     key = self.k_proj(hidden_states)
     value = self.v_proj(hidden_states)
 
-    query = self._split_heads(query, self.num_heads, self.head_dim)
-    key = self._split_heads(key, self.num_heads, self.head_dim)
-    value = self._split_heads(value, self.num_heads, self.head_dim)
-    
+    query = self._split_heads(query, self.num_attention_heads, self.head_dim, True)
+    key = self._split_heads(key, self.num_attention_heads, self.head_dim, True)
+    value = self._split_heads(value, self.num_attention_heads, self.head_dim, False)
+
+    if is_torch_fx_proxy(position_ids):
+        # The logic to conditionally copy to GPU could not be traced, so we do this
+        # every time in the torch.fx case
+        embed_positions = get_embed_positions(self.embed_positions, position_ids)
+    else:
+        embed_positions = self._get_embed_positions(position_ids)
+
+    repeated_position_ids = position_ids.unsqueeze(-1).repeat(1, 1, embed_positions.shape[-1])
+    sincos = torch.gather(embed_positions, 1, repeated_position_ids)
+    sin, cos = torch.split(sincos, sincos.shape[-1] // 2, dim=-1)
+
+    if self.rotary_dim is not None:
+        k_rot = key[:, :, :, : self.rotary_dim]
+        k_pass = key[:, :, :, self.rotary_dim :]
+
+        q_rot = query[:, :, :, : self.rotary_dim]
+        q_pass = query[:, :, :, self.rotary_dim :]
+
+        k_rot = apply_rotary_pos_emb(k_rot, sin, cos)
+        q_rot = apply_rotary_pos_emb(q_rot, sin, cos)
+
+        key = torch.cat([k_rot, k_pass], dim=-1)
+        query = torch.cat([q_rot, q_pass], dim=-1)
+    else:
+        key = apply_rotary_pos_emb(key, sin, cos)
+        query = apply_rotary_pos_emb(query, sin, cos)
+
+    key = key.permute(0, 2, 1, 3)
+    query = query.permute(0, 2, 1, 3)
+
     if layer_past is not None:
         past_key = layer_past[0]
         past_value = layer_past[1]
@@ -78,7 +121,10 @@ def forward(
         value = torch.cat((past_value, value), dim=-2)
         
     present = None
+
+    # compute self-attention: V x Softmax(QK^T)
     attn_output, attn_weights = self._attn(query, key, value, attention_mask, head_mask)
+
     new_shape = attn_output.size()[:-2] + (self.num_heads * self.head_dim,)
     attn_output = attn_output.view(new_shape)
     attn_output = self.out_proj(attn_output)
@@ -87,7 +133,7 @@ def forward(
     outputs = (attn_output, present)
 
     return outputs  # a, present, (attentions)
-        
-def replace_gpt_neo_attn_with_flash_attn():
-    transformers.models.gpt_neo.modeling_gpt_neo.GPTNeoSelfAttention._attn = _attn
-    transformers.models.gpt_neo.modeling_gpt_neo.GPTNeoSelfAttention.forward = forward
+    
+def replace_gptj_attn_with_flash_attn():
+    transformers.models.gptj.modeling_gptj.GPTNeoSelfAttention._attn = _attn
+    transformers.models.gptj.modeling_gptj.GPTNeoSelfAttention.forward = forward
