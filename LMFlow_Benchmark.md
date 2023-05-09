@@ -158,20 +158,6 @@ Another important aspect of an LLM model is its common sense ability, where a mo
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 **Table 5: Accuracy results in commonsense QA benchmarks**
 
 
@@ -179,21 +165,10 @@ Another important aspect of an LLM model is its common sense ability, where a mo
 | :- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 |Bloom-7.1b|64\.4|62\.9|65\.0|59\.6|73\.6|35\.8|33\.4|56\.4|
 |Bloom-7.1b-chat|60\.3|56\.8|61\.3|58\.7|72\.7|37\.8|38\.7|55\.2|
-|Llama-7b|`  `67.9	|73\.2	|`  `67.3	|`  `73.0	|78\.4	|42\.4	|41\.4|62\.7|
-|Vicuna-7b|`  `63.7	|77\.4	|`  `63.1	|`  `68.8	|76\.3	|39\.6	|38\.7|61\.1|
-|Vicuna-13b|`  `66.2	|79\.9	|`  `64.7	|`  `73.0	|77\.6	|41\.6	|40\.4|63\.3|
-|Robin-Chat-7b|`  `64.7	|75\.2	|`  `69.8	|`  `72.4	|76\.6	|39\.0	|42\.9|62\.9|
-
-
-
-
-
-
-
-
-
-
-
+|Llama-7b|67.9	|73\.2	|67.3	|73.0	|78\.4	|42\.4	|41\.4|62\.7|
+|Vicuna-7b|63.7	|77\.4	|63.1	|68.8	|76\.3	|39\.6	|38\.7|61\.1|
+|Vicuna-13b|66.2	|79\.9	|64.7	|73.0	|77\.6	|41\.6	|40\.4|63\.3|
+|Robin-Chat-7b|64.7	|75\.2	|69.8	|72.4	|76\.6	|39\.0	|42\.9|62\.9|
 
 
 
@@ -202,12 +177,12 @@ Another important aspect of an LLM model is its common sense ability, where a mo
 
 ||winogrand|boolq|arc\_easy|hellaswag|piqa|obqa|arc\_c|Average|
 | :- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-|Bloom-7.1b|`    `96.0|254|89|266|147|69|106\.5|146\.7|
-|Bloom-7.1b-chat|`    `85.0|215|81\.5|237|130|62\.5|96|129\.5|
-|Llama-7b|` `79.5	|`   `167	|`  `71.5	|`   `214	|121	|58	|85|113\.7|
-|Vicuna-7b|` `97.0	|`   `219	|`   `89	|`   `258	|151	|72	|105|141\.6|
-|Vicuna-13b|95\.5	|207|`  `88.5	|`   `262	|149	|73	|105|140\.0|
-|Robin-Chat-7b|89\.0	|`   `200	|`   `81	|`   `240	|139	|65\.5	|96\.5|130\.1|
+|Bloom-7.1b|96.0|254|89|266|147|69|106\.5|146\.7|
+|Bloom-7.1b-chat|85.0|215|81\.5|237|130|62\.5|96|129\.5|
+|Llama-7b|79.5	|167	|71.5	|214	|121	|58	|85|113\.7|
+|Vicuna-7b|97.0	|219	|89	|258	|151	|72	|105|141\.6|
+|Vicuna-13b|95\.5	|207|88.5	|262	|149	|73	|105|140\.0|
+|Robin-Chat-7b|89\.0	|200	|81	|240	|139	|65\.5	|96\.5|130\.1|
 
 It is surprising to find that finetuning actually leads to commonsense degradation. A more well-known consequence of this issue is hallucination, where models tend to give plausible but factually incorrect or irrelevant answers. One explanation of this phenomenon is that LLMs “forget” the pretrained knowledge during finetuning when attempting to fit the finetune dataset.
 
@@ -239,7 +214,7 @@ The final aspect we evaluate is instruction following, where a model is expected
 
 ||gpt4\_en\_instruction|
 | :- | :-: |
-|Alpaca|`                             `222|
+|Alpaca|222|
 |Llama-7b|214	|
 |Vicuna-7b|211	|
 |Vicuna-13b|206	|
