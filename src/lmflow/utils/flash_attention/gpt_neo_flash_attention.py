@@ -8,8 +8,9 @@ from flash_attn.bert_padding import unpad_input, pad_input
 
 def _attn(self, query, key, value, attention_mask=None, head_mask=None):
     # (batch, head, seq_length, head_features)
+    query = query.to(torch.bfloat16)
+    key = key.to(torch.bfloat16)
     query = query * torch.sqrt(torch.tensor(self.head_dim))
-    kv_seq_len = key.shape[-2]
     qkv = torch.stack(
         [query, key, value], dim=2
     )# [bsz, nh, 3, t, hd]
