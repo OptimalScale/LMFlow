@@ -98,7 +98,7 @@ function main() {
 
     if [ "$1" = "robin-7b" -o "$1" = "all" ]; then
         echo "downloading robin-7b"
-        filename='robin-7b.tar.gz'
+        filename='robin-7b-v2-delta.tar.gz'
         wget ${public_server}/${filename}
         tar zxvf ${filename}
         rm ${filename}

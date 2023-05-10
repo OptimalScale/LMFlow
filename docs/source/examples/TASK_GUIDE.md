@@ -1,4 +1,4 @@
-# Task Guide
+# LMFlow Benchmark Guide
 
 We support two ways to add evaluation settings in our repo, `NLL Task Setting` and `LM-Evaluation Task Setting`. Below are the details of them: 
 
