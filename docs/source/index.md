@@ -134,6 +134,11 @@ Refer to [README](https://github.com/OptimalScale/LMFlow/blob/main/README.md).
 
 ## Content
 
+```{toctree}
+:maxdepth: 1
+
+blogs/index
+```
 
 ```{toctree}
 :maxdepth: 2
