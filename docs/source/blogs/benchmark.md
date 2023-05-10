@@ -1,9 +1,9 @@
-# LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs
+# <a name="_ccar7zxppek5"></a>LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs
 
 May 9, 2023
 
-# <a name="_ccar7zxppek5"></a>LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs
 ![](../_static/logo.png)
+
 
 ## <a name="_9oluannpzwt5"></a>**Introduction**
 
