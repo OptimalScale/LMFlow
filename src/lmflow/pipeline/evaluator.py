@@ -236,7 +236,7 @@ class Evaluator(BasePipeline):
             neg_log_likelihood = self._evaluate_neg_log_likelihood(model, dataset)
             print(f"Evaluating final negative log likelihood: {neg_log_likelihood}")
         elif metric in ["rl", "rouge-l", "ROUGE-L"]:
-            rl = self._evaluate_rouge-l(model, dataset)
+            rl = self._evaluate_rouge_l(model, dataset)
             print(f"Evaluating final ROUGE-L: {rl}")
         else:
             raise NotImplementedError(f"{metric} is not implemented or not match with our defined metrics")
