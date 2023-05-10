@@ -1,18 +1,16 @@
-# <a name="_ccar7zxppek5"></a>LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs
+# LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs
 
 May 9, 2023
 
-![](../_static/logo.png)
 
-
-## <a name="_9oluannpzwt5"></a>**Introduction**
+## Introduction
 
 Evaluation of a chat-style Large Language Model (LLM) has been a huge challenge since the breakthrough of ChatGPT. On the one hand, researchers and engineers need a reliable way to compare two models and decide which model to choose under a certain application scenario. On the other hand, they have to monitor the model performance during the training of an LLM to avoid performance issues such as forgetting.
 
 Recent work of Vicuna introduces comparison methods of human evaluation, a.k.a. Chatbot Arena. They also pioneered the evaluation method by invoking GPT-4 to compare the outputs of two models. However, those methods require expensive human labeling or GPT-4 API calls, which are neither scalable nor convenient for LLM development.
 
 In this article, we introduce LMFlow benchmark, a new benchmark which provides a cheap and easy-to-use evaluation framework that can help reflect different aspects of LLMs. We have open-sourced the dataset and the code as well, so that everyone in the LLM community can use those toolkits to evaluate, monitor or compare different LLMs.
-## <a name="_p8maeqnb507c"></a>**Metric**
+## Metric
 In our evaluation framework, Negative Log Likelihood (NLL) is used for evaluating LLM
 ![](../_static/nll.png)
 
@@ -72,7 +70,7 @@ In the following sections, we provide a comprehensive evaluation of currently av
 
 We also introduce our own finetuned model Robin-7b-Chat and compare its performance with some other popular models. One may try our online demo LMFlow-Chat at <https://lmflow.com/>.
 
-## <a name="_8xmmp9r4ani1"></a>**Chat Performance** 
+## Chat Performance
 The first aspect of LLM is chat performance, especially multi-round chat. Based on our experimental results, we have the following observations:
 
 1. *Without finetuning, foundation models do not perform well on chat.* 
@@ -154,7 +152,7 @@ where Q stands for Question, A stands for answer, we can get three single-round 
 
     Ouptut: A3
 
-## <a name="_g63utgais6vt"></a>**CommonSense Performance**
+## CommonSense Performance
 Another important aspect of an LLM model is its common sense ability, where a model should acquire a certain level of factual knowledge and utilize them properly under different scenarios. Regarding this aspect of the ability, we found:
 
 1. *Finetuning on chat dataset results in commonsense degradation.*
@@ -206,7 +204,7 @@ This improvement gives Vicuna-13b a run for its money when competing with Robin.
 
 Here, we make use of  Eleuther AI’s LM evaluation harness repository (<https://github.com/EleutherAI/lm-evaluation-harness>) to get QA accuracy results. We also evaluate all models’ NLL metrics on their datasets, with their questions as contexts and answers as output sentences.
 
-## <a name="_7aar0pg7otc5"></a>**Instruction Following**
+## Instruction Following
 The final aspect we evaluate is instruction following, where a model is expected to loyally obey the user’s instructions, given the instruction being ethically or legally appropriate. It turns out that,
 
 1. *Without finetuning, foundation models do not perform well on instruction following.*
@@ -242,12 +240,12 @@ In order to make evaluations for models’ instruction following ability, we col
 1. Incomplete input texts
 1. Specific domains involving chemistry/biology, where most LLM models do not possess the knowledge and always fail
 
-## <a name="_4gqufwbrmye3"></a>**Conclusion**
+## Conclusion
 In this article, we introduce LMFlow’s evaluation framework, which uses NLL metric to reflect LLM models’ ability. NLL provides a good metric to evaluate different aspects of a LLM model. According to our evaluation results, Robin-7b achieves on-par performance when compared with Vicuna-13b. As our Robin-7b model is finetuned with different sources of dataset instead of sharegpt only, this shows that Vicuna can be further improved or surpassed with smaller-sized models and better dataset.
 
 The checkpoint of Robin-7b is now available for engineers and researchers to download and use (<https://github.com/OptimalScale/LMFlow#model-zoo>). Its effectiveness demonstrates that a multi-aspect evaluation is indeed essential to the development of LLMs.  
 
-## <a name="_bq1w8gmbq34"></a>**Reference**
+## References
 Vicuna Chatbot Arena: <https://chat.lmsys.org/?arena> 
 
 lm-evaluation-harness: <https://github.com/EleutherAI/lm-evaluation-harness> 
