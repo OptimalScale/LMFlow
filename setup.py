@@ -16,13 +16,6 @@ if os.path.exists(req_path):
   with open(req_path) as fp:
     install_requires = [line.strip() for line in fp]
 
-try:
-  gpu_state = subprocess.check_output(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"])
-  if b"A100" in gpu_state:
-    install_requires.append("flash-attn==1.0.4")
-except:
-  pass
-
 readme_path = os.path.join(folder, "README.md")
 readme_contents = ""
 if os.path.exists(readme_path):
@@ -48,3 +41,12 @@ setup(
     ],
     requires_python=">=3.9",
 )
+
+# Must be called after all dependency installed, since flash-attn setup.py
+# relies on torch, packaging, etc.
+try:
+  gpu_state = subprocess.check_output(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"])
+  if b"A100" in gpu_state:
+    subprocess.call(["pip", "install", "flash-attn==1.0.4"])
+except:
+  pass
