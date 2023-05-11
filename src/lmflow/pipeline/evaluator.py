@@ -360,7 +360,7 @@ class Evaluator(BasePipeline):
                     output_writer.write(output_json + '\n')
 
         if not dist.is_initialized() or dist.get_rank() == 0:  # 此刻已经处理完dataset
-            current_accuracy = np.mean(rl_list)
+            current_rouge_l = np.mean(rl_list)
             print("Final ROUGE-L = ", current_rouge_l)
             output_writer.close()
 
