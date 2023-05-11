@@ -13,7 +13,7 @@ extracted from the MODEL_CONFIG_CLASSES.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional
 
 from transformers.utils.versions import require_version
 
@@ -99,10 +99,6 @@ class ModelArguments:
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
     )
-    arch_type: Optional[str] = field(
-        default="decoder_only",
-        metadata={"help": "The architecture type of the model. Currently supported decoder_only or encoder_decoder"}
-    )
     config_overrides: Optional[str] = field(
         default=None,
         metadata={
@@ -170,10 +166,6 @@ class ModelArguments:
     lora_alpha: int = field(
         default=32,
         metadata={"help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
-    )
-    lora_target_modules: List[str] = field(
-        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",
-                              }
     )
     lora_dropout: float = field(
         default=0.1,
@@ -250,9 +242,6 @@ class DatasetArguments:
     dataset_path: Optional[str] = field(
         default=None, metadata={"help": "The path of the dataset to use."}
     )
-    eval_dataset_path: Optional[str] = field(
-        default=None, metadata={"help": "The path of the eval dataset to use."}
-    )
     dataset_name: Optional[str] = field(
         default="customized", metadata={"help": "Should be \"customized\""}
     )
@@ -312,16 +301,6 @@ class DatasetArguments:
     preprocessing_num_workers: Optional[int] = field(
         default=None,
         metadata={"help": "The number of processes to use for the preprocessing."},
-    )
-    group_texts_batch_size: int = field(
-        default=1000,
-        metadata={
-            "help": (
-                "Number of samples that will be grouped together to go though"
-                " `group_texts` operation. See `--disable_group_texts` for"
-                " detailed explanation of this operation."
-            )
-        }
     )
     disable_group_texts: bool = field(
         default=False,
@@ -491,19 +470,10 @@ class EvaluatorArguments:
         default="accuracy",
         metadata={
             "help": "the metric the model will be evaluated on",
-            "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood"],
+            "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood", "rl", "rouge-l", "ROUGE-L"],
         },
     )
-    inference_batch_size_per_device: Optional[int] = field(
-        default=1,
-        metadata={
-            "help": (
-                "every device will infer {inference_batch_size_per_device}"
-                " samples in parallel. The inferred results will be concatenaed"
-                " with inputs and attach a reward."
-            ),
-        },
-    )
+
 
 @dataclass
 class InferencerArguments:
@@ -627,23 +597,6 @@ class RaftAlignerArguments(TrainingArguments):
         },
     )
 
-@dataclass
-class BenchmarkingArguments:
-    dataset_name: Optional[str] = field(
-        default=None,
-        metadata={
-            "help": "benchmark dataset name provided by lmflow"
-        },
-    )
-    lm_evaluation_metric: Optional[str] = field(
-        default="accuracy",
-        metadata={
-            "help": "the metric the model will be evaluated on",
-            "choices": ["acc", "acc_norm", "bleu", "chrf", "em", "f1", "ppl", \
-                "ter", "r@1", "r@2", "mrr", "mc1", "mc2", "word_perplexity", \
-                    "byte_perplexity", "bits_per_byte"],
-        },
-    )
 
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
