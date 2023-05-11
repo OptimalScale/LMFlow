@@ -117,6 +117,7 @@ def is_lmflow_local_benchmarking(dataset_name):
     if dataset_name in LOCAL_DATSET_GROUP_MAP.keys():
         dataset_name_collection = LOCAL_DATSET_GROUP_MAP[dataset_name]
         for dataset_name_exact in dataset_name_collection.split(','):
+            dataset_name_exact = dataset_name_exact.strip()
             if "common_sense_eval" in dataset_name_exact:
                 dataset_list = dataset_name_exact.split(",")
                 for common_exact_ in dataset_list:
