@@ -18,6 +18,7 @@ models and can be used for various NLP tasks such as language modeling, text cla
 and question answering.
 """
 
+import hashlib
 import logging
 from typing import List, Union
 
@@ -422,6 +423,11 @@ class HFDecoderModel(DecoderModel, Tunable):
 
         data_args = raw_datasets.get_data_args()
         if not data_args.streaming:
+            fingerprint = raw_datasets.get_fingerprint()
+            new_fingerprint = hashlib.md5(
+                (fingerprint + str(self.tokenizer)).encode("utf-8")
+            ).hexdigest()
+
             tokenized_datasets = raw_datasets.map(
                 tokenize_function,
                 batched=True,
@@ -429,6 +435,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 remove_columns=column_names,
                 load_from_cache_file=not data_args.overwrite_cache,
                 desc="Running tokenizer on dataset",
+                new_fingerprint=new_fingerprint,
             )
         else:
             tokenized_datasets = raw_datasets.map(

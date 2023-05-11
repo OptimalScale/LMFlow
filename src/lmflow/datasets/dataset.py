@@ -349,6 +349,16 @@ class Dataset:
         """
         return self.backend_dataset
 
+
+    def get_fingerprint(self):
+        r"""
+        Returns
+        ---------
+
+        Fingerprint of the backend_dataset which controls the cache
+        """
+        return self.backend_dataset._fingerprint
+
     
     def get_data_args(self):
         r"""
