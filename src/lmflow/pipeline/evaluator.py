@@ -363,6 +363,7 @@ class Evaluator(BasePipeline):
             current_rouge_l = np.mean(rl_list)
             print("Final ROUGE-L = ", current_rouge_l)
             output_writer.close()
+        return current_rouge_l
 
 
     def _evaluate_neg_log_likelihood(self, model, dataset: Dataset):
