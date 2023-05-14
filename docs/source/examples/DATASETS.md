@@ -1,9 +1,10 @@
 # Dataset
 
-We provide several available datasets under `data` after running
+We provide several available datasets under `data`. You may download them all by running: 
 ```sh
-cd data && ./download.sh && cd -
+cd data && ./download.sh all && cd -
 ```
+You can replace `all` with a specific dataset name to only download that dataset (e.g. `./download.sh alpaca`).
 
 Customized datasets are strongly encouraged, since this way users can apply
 their own prompt engineering techniques over various source datasets. As long
