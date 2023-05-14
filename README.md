@@ -299,6 +299,19 @@ Those scripts invoke the examples `examples/*.py` built based on our APIs. For
 more API-related examples, one may refer to the methods in the unittest
 `tests`.
 
+### 3.3 Run Benchmark Evluation
+
+One can directly run group evaluation to implement the evaluation results for
+[LLM comparision](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing),
+e.g., to run GPT2 XL, one may execute (`--model_name_or_path` is required here, 
+you may fill in huggingface model name or local model path here)
+```sh
+./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
+```
+
+To check the evaluation results, you may check `benchmark.log` in `./output_dir/gpt2-xl_lmflow_chat_nll_eval`,
+`./output_dir/gpt2-xl_all_nll_eval` and `./output_dir/gpt2-xl_commonsense_qa_eval`.
+
 ## 4. Additional Notes
 ### 4.1 LLaMA Checkpoint
 

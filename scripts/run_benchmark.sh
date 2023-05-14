@@ -8,14 +8,11 @@ if [ "$1" == "-h" -o "$1" == "--help" ]; then
   exit 1
 fi
 
-exp_id=benchmarking
 extra_args="--dataset_name gpt4_en_eval --model_name_or_path gpt2"
 if [ $# -ge 1 ]; then
   extra_args="$@"
 fi
-log_dir=output_dir/${exp_id}_nll
 
-mkdir -p ${log_dir}
 
 CUDA_VISIBLE_DEVICES=0 \
   deepspeed --master_port 11001 examples/benchmarking.py \
@@ -23,6 +20,4 @@ CUDA_VISIBLE_DEVICES=0 \
   --deepspeed examples/ds_config.json \
   --metric nll \
   --prompt_structure "###Human: {input}###Assistant:" \
-  ${extra_args} \
-  | tee ${log_dir}/benchmark.log \
-  2> ${log_dir}/benchmark.err
+  ${extra_args} 
