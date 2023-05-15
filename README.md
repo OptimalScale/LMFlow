@@ -299,7 +299,7 @@ more API-related examples, one may refer to the methods in the unittest
 
 ### 3.3 LMFlow Benchmark
 LMFlow Benchmark is an automatic evaluation framework for open-source large language models.
-We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chat, common sense, and instruction following abilities.
+We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
 
 You can directly run the LMFlow benchmark evaluation to obtain the results to participate in the
 [LLM comparision](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing).
