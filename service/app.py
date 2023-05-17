@@ -48,7 +48,7 @@ with open (ds_config_path, "r") as f:
     ds_config = json.load(f)
 
 
-model_name_or_path = "gpt2"
+model_name_or_path = "/home/share/data/robin-33b"
 # lora_path = '../output_models/instruction_ckpt/llama7b-lora/'
 model_args = ModelArguments(model_name_or_path=model_name_or_path,torch_dtype="bfloat16")
 
@@ -59,7 +59,7 @@ model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_confi
 accelerator = Accelerator()
 
 
-def stream_generate( inputs, context_len = 512, max_new_tokens=128, *args, **kwargs):
+def stream_generate( inputs, context_len = 2048, max_new_tokens=128, *args, **kwargs):
     # input_ids = inputs
     # output_ids = input_ids
 
@@ -75,7 +75,7 @@ def stream_generate( inputs, context_len = 512, max_new_tokens=128, *args, **kwa
 
     past_key_values = out = None
 
-    for i in range(0,128):
+    for i in range(0,512):
         if i == 0:
             with torch.no_grad():
                 out = model.backend_model(torch.as_tensor([input_ids], device=local_rank), use_cache=True)
