@@ -126,18 +126,55 @@
                 name: 'User',
                 content: this.user_input
                 })
-                axios.post('/predict', 
-                            {'History': this.conversation, 'Input' : this.user_input})
-                            .then(response => {
-                                console.log(response.data)
-                                this.conversation.push({
-                                type:2,
-                                name: 'Your Assistant',
-                                content: response.data,
-                                })
-                                this.isLoading = false
-                                this.user_input = ""
-                })
+                // axios.post('/predict', 
+                //             {'History': this.conversation, 'Input' : this.user_input})
+                //             .then(response => {
+                //                 console.log(response.data)
+                //                 this.conversation.push({
+                //                 type:2,
+                //                 name: 'Your Assistant',
+                //                 content: response.data,
+                //                 })
+                //                 this.isLoading = false
+                //                 this.user_input = ""
+                // })
+                fetch('/predict',
+                    {method:"POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({'History': this.conversation, 'Input' : this.user_input}),
+                    }) 
+                .then(response => { 
+
+                    this.conversation.push({
+                        type:2,
+                        name: 'Your Assistant',
+                        content: "",
+                        vote:0
+                    })
+                    const reader = response.body.getReader() 
+                    const decoder = new TextDecoder()
+
+                    const read = () => { 
+                        reader.read().then(res => {
+                            const chunk = decoder.decode(res.value || new Uint8Array(), {stream: !res.done}) 
+                            let conv_len = this.conversation.length
+                            if(chunk != ""){
+                                this.conversation[conv_len - 1]["content"] =  chunk
+                            }
+                            // console.log(this.conversation)
+                            // console.log(chunk) // do something with the chunk of data received 
+                            this.isLoading = false
+
+                            if(!res.done) read() 
+                        })
+                    }
+                    read() 
+                    this.user_input = ""
+                }) 
+                .catch(error => console.error(error)) 
+
                 
             }
         },
