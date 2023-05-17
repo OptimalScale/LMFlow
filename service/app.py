@@ -18,6 +18,29 @@ from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
 
 WINDOW_LENGTH = 512
 
+# @dataclass
+# class AppArguments:
+#     end_string: Optional[str] = field(
+#         default="##",
+#         metadata={
+#             "help": "end string mark of the chatbot's output"
+#         },
+#     )
+#     max_new_tokens: Optional[int] = field(
+#         default=200,
+#         metadata={
+#             "help": "maximum number of generated tokens"
+#         },
+#     )
+# parser = HfArgumentParser((
+#         ModelArguments,
+#         AppArguments,
+# ))
+
+# model_args, pipeline_args, chatbot_args = (
+#         parser.parse_args_into_dataclasses()
+#     )
+
 app = Flask(__name__)
 CORS(app)
 ds_config_path = "./examples/ds_config.json"
@@ -83,7 +106,7 @@ def stream_generate( inputs, context_len = 512, max_new_tokens=128, *args, **kwa
             spaces_between_special_tokens = False,
         )
         # print(f"No. {i} A{output}A, length is {len(output)}， id is {tmp_output_ids}")
-        print("A" + output+  "A")
+        # print("A" + output+  "A")
         yield output.replace("\ufffd","")
 
 

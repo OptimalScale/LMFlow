@@ -45,6 +45,7 @@
                             <a class="mt-2 mx-2 flex overflow-hidden md:w-auto items-center" href="/">
                                 <img class="h-8 w-40 logo" src="/static/assets/logo.png">
                             </a>
+                            <button class="bg-blue-200 my-3 rounded-lg px-1" v-on:click="reset" > Reset</button>
                             <div class="relative hidden lg:flex items-center ml-auto ">
                                 <nav class="text-base leading-6 font-semibold text-slate-700 items-center">
                                 </nav>
@@ -176,6 +177,15 @@
                 .catch(error => console.error(error)) 
 
                 
+            },
+            reset(){
+                this.conversation = [
+                {
+                    type: 2,
+                    name: 'Your Assistant',
+                    content: 'Welcome to chat with me !',
+                }
+            ]
             }
         },
         updated(){
