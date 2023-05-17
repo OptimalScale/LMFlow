@@ -15,31 +15,31 @@ from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
 from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
 
-
 WINDOW_LENGTH = 512
 
-# @dataclass
-# class AppArguments:
-#     end_string: Optional[str] = field(
-#         default="##",
-#         metadata={
-#             "help": "end string mark of the chatbot's output"
-#         },
-#     )
-#     max_new_tokens: Optional[int] = field(
-#         default=200,
-#         metadata={
-#             "help": "maximum number of generated tokens"
-#         },
-#     )
-# parser = HfArgumentParser((
-#         ModelArguments,
-#         AppArguments,
-# ))
+@dataclass
+class AppArguments:
+    end_string: Optional[str] = field(
+        default="##",
+        metadata={
+            "help": "end string mark of the chatbot's output"
+        },
+    )
+    max_new_tokens: Optional[int] = field(
+        default=200,
+        metadata={
+            "help": "maximum number of generated tokens"
+        },
+    )
 
-# model_args, pipeline_args, chatbot_args = (
-#         parser.parse_args_into_dataclasses()
-#     )
+parser = HfArgumentParser((
+        ModelArguments,
+        AppArguments,
+))
+
+model_args, app_args = (
+        parser.parse_args_into_dataclasses()
+    )
 
 app = Flask(__name__)
 CORS(app)
@@ -48,40 +48,29 @@ with open (ds_config_path, "r") as f:
     ds_config = json.load(f)
 
 
-model_name_or_path = "/home/share/data/robin-33b"
-# lora_path = '../output_models/instruction_ckpt/llama7b-lora/'
-model_args = ModelArguments(model_name_or_path=model_name_or_path,torch_dtype="bfloat16")
-
 local_rank = int(os.getenv("LOCAL_RANK", "0"))
 world_size = int(os.getenv("WORLD_SIZE", "1"))
 torch.cuda.set_device(local_rank)
 model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config, use_accelerator=True)
 accelerator = Accelerator()
 
+def stream_generate(inputs,context_len = 1024, max_new_tokens=128, end_string="##"):
 
-def stream_generate( inputs, context_len = 2048, max_new_tokens=128, *args, **kwargs):
-    # input_ids = inputs
-    # output_ids = input_ids
 
-    max_src_len = context_len - 256 - 8
-    # input_ids = input_ids[-max_src_len:]
-    # print(len(input_ids))
+    max_src_len = context_len - max_new_tokens - 8
     input_ids = model.tokenizer(inputs).input_ids
-
     input_echo_len = len(input_ids)
-    print(input_echo_len)
     output_ids = list(input_ids)
     input_ids = input_ids[-max_src_len:]
 
     past_key_values = out = None
-
-    for i in range(0,512):
+    STOP = False
+    for i in range(0,max_new_tokens):
         if i == 0:
             with torch.no_grad():
                 out = model.backend_model(torch.as_tensor([input_ids], device=local_rank), use_cache=True)
             logits = out.logits    
             past_key_values = out.past_key_values
-
         else:
             with torch.no_grad():
                 out = model.backend_model(
@@ -93,22 +82,24 @@ def stream_generate( inputs, context_len = 2048, max_new_tokens=128, *args, **kw
             past_key_values = out.past_key_values
 
         last_token_logits = logits[0, -1, :]
-
         token = int(torch.argmax(last_token_logits))
         output_ids.append(token)
 
         tmp_output_ids = output_ids[input_echo_len:]
-        rfind_start = 0
 
         output = model.tokenizer.decode(
             tmp_output_ids,
             skip_special_tokens=True,
             spaces_between_special_tokens = False,
         )
-        # print(f"No. {i} A{output}A, length is {len(output)}， id is {tmp_output_ids}")
-        # print("A" + output+  "A")
+        
+        if end_string in output:
+            output = output.replace("###","").replace(end_string, "")
+            STOP = True
         yield output.replace("\ufffd","")
 
+        if STOP == True:
+            break
 
 @app.route('/predict',methods = ['POST'])
 def predict():
@@ -134,8 +125,9 @@ def predict():
                 inputs = inputs[-WINDOW_LENGTH:]
                 history_input = model.decode(inputs)
 
-            return app.response_class(stream_with_context(stream_generate(history_input)))
-
+            return app.response_class(stream_with_context(stream_generate(history_input,
+                                                                          max_new_tokens=app_args.max_new_tokens,
+                                                                          end_string=app_args.end_string)))
         except Exception as ex:
             print(ex)
             text_out = ex
