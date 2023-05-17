@@ -1,19 +1,20 @@
-from flask import Flask, request, make_response, jsonify, stream_with_context
+import json
+import torch
+import os
+
+from flask import Flask, request, stream_with_context
 from flask import render_template
 from flask_cors import CORS
 from accelerate import Accelerator
+from dataclasses import dataclass, field
+from transformers import HfArgumentParser
+from typing import Optional
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
 from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
-from lmflow.models.hf_decoder_model import HFDecoderModel
-import torch.distributed as dist
-from transformers import HfArgumentParser
-import io
-import json
-import torch
-import os
+
 
 WINDOW_LENGTH = 512
 
