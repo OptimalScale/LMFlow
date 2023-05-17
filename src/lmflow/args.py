@@ -75,6 +75,8 @@ class ModelArguments:
     use_ram_optimized_load : bool
         a boolean indicating whether to use disk mapping when memory is not
         enough.
+    use_int8 : bool
+        a boolean indicating whether to load int8 quantization for inference.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -195,6 +197,10 @@ class ModelArguments:
                 " higher time cost."
             )
         }
+    )
+    use_int8: bool = field(
+        default=False,
+        metadata={"help": "whether to load int8 quantization for inference"}
     )
 
     def __post_init__(self):
