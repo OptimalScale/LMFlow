@@ -114,6 +114,10 @@ def main():
         if input_text == "exit":
             print("exit...")
             break
+        elif input_text == "reset":
+            context = ""
+            print("Chat history cleared")
+            continue
         if not input_text:
             input_text = " "
 
