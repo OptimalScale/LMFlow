@@ -240,6 +240,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         offload_folder="offload",
                         offload_state_dict=True,
                         torch_dtype=torch_dtype,
+                        load_in_8bit = model_args.use_int8
                     )
                 if peft_model_id is not None:
                     self.backend_model = PeftModel.from_pretrained(
