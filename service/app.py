@@ -57,15 +57,15 @@ accelerator = Accelerator()
 def stream_generate(inputs,context_len = 1024, max_new_tokens=128, end_string="##"):
 
 
-    max_src_len = context_len - max_new_tokens - 8
+    max_src_len = context_len - max_new_tokens - len(end_string)
     input_ids = model.tokenizer(inputs).input_ids
     input_echo_len = len(input_ids)
     output_ids = list(input_ids)
     input_ids = input_ids[-max_src_len:]
 
     past_key_values = out = None
-    STOP = False
-    for i in range(0,max_new_tokens):
+    flag_stop = False
+    for i in range(0, max_new_tokens):
         if i == 0:
             with torch.no_grad():
                 out = model.backend_model(torch.as_tensor([input_ids], device=local_rank), use_cache=True)
@@ -90,15 +90,15 @@ def stream_generate(inputs,context_len = 1024, max_new_tokens=128, end_string="#
         output = model.tokenizer.decode(
             tmp_output_ids,
             skip_special_tokens=True,
-            spaces_between_special_tokens = False,
+            spaces_between_special_tokens=False,
         )
         
         if end_string in output:
             output = output.replace("###","").replace(end_string, "")
-            STOP = True
+            flag_stop = True
         yield output.replace("\ufffd","")
 
-        if STOP == True:
+        if flag_stop == True:
             break
 
 @app.route('/predict',methods = ['POST'])
