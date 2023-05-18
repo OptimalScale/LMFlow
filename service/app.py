@@ -94,7 +94,8 @@ def stream_generate(inputs,context_len = 1024, max_new_tokens=128, end_string="#
         )
         
         if end_string in output:
-            output = output.replace("###","").replace(end_string, "")
+            index = output.index(end_string)
+            output = output[:index]
             flag_stop = True
         yield output.replace("\ufffd","")
 
