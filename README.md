@@ -89,8 +89,7 @@ unsatisfactory responses.
 ### Local Deploy
 If you have resources and want to deploy your own model locally. We provide you an easy way to run a flask server to launch a backend (to further provide services to other frontend) and an interactive web frontend (to let you communicate directly) by 
 ```sh
-cd ./service
-python app.py
+./scripts/run_app.sh
 ```
 
 We also provide a gradio-based UI for building chatbots. Running the following command will launch the demo for robin-7b:
