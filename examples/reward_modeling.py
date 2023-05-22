@@ -46,7 +46,6 @@ model = AutoModelForSequenceClassification.from_pretrained(model_args.model_name
 model_lora = get_peft_model(model, peft_config)
 model_lora.print_trainable_parameters()
 
-model_lora = AutoModelForSequenceClassification.from_pretrained(model_args.model_name_or_path, num_labels=1, torch_dtype=torch.bfloat16)
 ## Get tokenizer
 tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
 
