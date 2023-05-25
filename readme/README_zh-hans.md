@@ -153,7 +153,7 @@ pip install -e .
 cd data
 bash download.sh all
 cd -
-``` 
+```
 
 您也可以将您的数据转换成以下格式来使用自己的数据集:
 ```json
@@ -225,6 +225,8 @@ deepspeed ${deepspeed_args} \
 ```python
 python examples/finetune.py -h
 ```
+
+注意：在训练数据集容量比较小的情况下，需要减小```block_size```的值，否则会出现Epoch 迭代器中没有可用的样本的情况。
 
 ### 3.2 Run Evaluation
 
