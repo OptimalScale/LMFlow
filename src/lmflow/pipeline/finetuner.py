@@ -19,6 +19,7 @@ from transformers import (
 )
 from copy import deepcopy
 from transformers.utils import send_example_telemetry
+from transformers.trainer_utils import get_last_checkpoint
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
@@ -89,10 +90,8 @@ class Finetuner(BaseTuner):
         if os.path.isdir(finetuner_args.output_dir) and finetuner_args.do_train and not finetuner_args.overwrite_output_dir:
             last_checkpoint = get_last_checkpoint(finetuner_args.output_dir)
             if last_checkpoint is None and len(os.listdir(finetuner_args.output_dir)) > 0:
-                raise ValueError(
-                    f"Output directory ({finetuner_args.output_dir}) already"
-                    " exists and is not empty. "
-                    "Use --overwrite_output_dir to overcome."
+                logger.info(
+                    f"Multiple checkpoint detected, resuming training from the latest checkpoint: {last_checkpoint}"
                 )
             elif last_checkpoint is not None and finetuner_args.resume_from_checkpoint is None:
                 logger.info(
