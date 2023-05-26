@@ -19,6 +19,7 @@ from transformers import (
 )
 from copy import deepcopy
 from transformers.utils import send_example_telemetry
+from transformers.trainer_utils import get_last_checkpoint
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
