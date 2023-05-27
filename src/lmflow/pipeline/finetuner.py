@@ -23,6 +23,7 @@ from transformers.trainer_utils import get_last_checkpoint
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
+from lmflow.pipeline.utils.peft_trainer import PeftTrainer
 
 
 logger = logging.getLogger(__name__)
@@ -252,7 +253,13 @@ class Finetuner(BaseTuner):
 
         # Initialize our Trainer
         training_args = finetuner_args
-        trainer = Trainer(
+
+        if model_args.use_lora:
+            FinetuningTrainer = PeftTrainer
+        else:
+            FinetuningTrainer = Trainer
+            
+        trainer = FinetuningTrainer(
             model=model.get_backend_model(),
             args=training_args,
             train_dataset=train_dataset if training_args.do_train else None,
