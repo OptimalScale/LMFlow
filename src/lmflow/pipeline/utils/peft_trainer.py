@@ -39,6 +39,8 @@ class PeftTrainer(Trainer):
 class PeftSavingCallback(TrainerCallback):
     """ Correctly save PEFT model and not full model """
     def _save(self, model, folder):
+        if folder is None:
+            folder = ""
         peft_model_path = os.path.join(folder, "adapter_model")
         model.save_pretrained(peft_model_path)
 
@@ -52,3 +54,18 @@ class PeftSavingCallback(TrainerCallback):
         """ Save intermediate model adapters in case of interrupted training """
         folder = os.path.join(args.output_dir, f"{PREFIX_CHECKPOINT_DIR}-{state.global_step}")
         self._save(kwargs['model'], folder)
+    def on_save(
+        self,
+        args: TrainingArguments,
+        state: TrainerState,
+        control: TrainerControl,
+        **kwargs,
+    ):
+        checkpoint_folder = os.path.join(
+            args.output_dir, f"{PREFIX_CHECKPOINT_DIR}-{state.global_step}"
+        )       
+        self._save(kwargs['model'], checkpoint_folder)
+
+        peft_model_path = os.path.join(checkpoint_folder, "adapter_model")
+        kwargs["model"].save_pretrained(peft_model_path)
+        return control
