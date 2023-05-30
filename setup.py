@@ -23,7 +23,7 @@ if os.path.exists(readme_path):
     readme_contents = fp.read().strip()
 
 setup(
-    name="lmflow",
+    name="lmflow-finetune",
     version=__version__,
     description="LMFlow: Large Model Flow.",
     author="The LMFlow Team",
@@ -34,7 +34,6 @@ setup(
     package_data={},
     install_requires=install_requires,
     classifiers=[
-        "Intended Audience :: Science/Research/Engineering",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",

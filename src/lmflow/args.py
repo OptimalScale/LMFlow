@@ -530,7 +530,6 @@ class BenchmarkingArguments:
 
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
-    "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
 }
