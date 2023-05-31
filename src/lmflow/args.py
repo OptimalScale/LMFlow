@@ -589,6 +589,11 @@ class InferencerArguments:
         metadata={"help": "Repetition_penalty during inference."},
     )
         
+    max_new_tokens: int = field(
+        default=100,
+        metadata={"help": "Maximum length during inference."},
+    )
+        
     random_seed: Optional[int] = field(
         default=1,
         metadata={
