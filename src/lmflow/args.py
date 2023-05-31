@@ -405,6 +405,12 @@ class EvaluatorArguments:
     deepspeed : 
         Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
         loaded json file as a dict
+        
+    temperature : float
+        An argument of model.generate in huggingface to control the diversity of generation.
+        
+    repetition_penalty : float
+        An argument of model.generate in huggingface to penalize repetitions.
     """
     local_rank: int = field(
         default=-1,
@@ -521,6 +527,16 @@ class EvaluatorArguments:
     use_accelerator_for_evaluator: bool = field(
         default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"}
     )
+        
+    temperature: float = field(
+        default=1,
+        metadata={"help": "Temperature during inference."},
+    )
+    
+    repetition_penalty: float = field(
+        default=1,
+        metadata={"help": "Repetition_penalty during inference."},
+    )
     
 @dataclass
 class InferencerArguments:
@@ -600,6 +616,7 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
+        
 
 
 @dataclass
