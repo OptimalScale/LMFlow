@@ -537,6 +537,11 @@ class EvaluatorArguments:
         default=1,
         metadata={"help": "Repetition_penalty during inference."},
     )
+        
+    max_new_tokens: int = field(
+        default=100,
+        metadata={"help": "Maximum length during inference."},
+    )
     
 @dataclass
 class InferencerArguments:
