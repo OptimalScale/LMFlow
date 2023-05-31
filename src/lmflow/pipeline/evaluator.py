@@ -176,7 +176,7 @@ class Evaluator(BasePipeline):
             inputs = batch_input['input_ids']
             mask = batch_input['attention_mask']
             with self.accelerator.autocast():
-                outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0,use_accelerator=self.evaluator_args.use_accelerator_for_evaluator)
+                outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=self.evaluator_args.temperature, repetition_penalty=self.evaluator_args.repetition_penalty,use_accelerator=self.evaluator_args.use_accelerator_for_evaluator)
             text_out = model.decode(outputs, skip_special_tokens=True)
             decoded_input = model.decode(inputs, skip_special_tokens=True,)
             prompt_length = [len(i) for i in decoded_input]
@@ -258,7 +258,7 @@ class Evaluator(BasePipeline):
             batch_input = model.encode(input, return_tensors="pt",padding=True).to(device=self.local_rank)
             inputs = batch_input['input_ids']
             mask = batch_input['attention_mask']
-            outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=0.0)
+            outputs = model.inference(inputs, max_new_tokens=100,attention_mask=mask,temperature=self.evaluator_args.temperature, repetition_penalty=self.evaluator_args.repetition_penalty)
             text_out = model.decode(outputs, skip_special_tokens=True)
             # # only return the generation, trucating the input
             decoded_input = model.decode(inputs, skip_special_tokens=True,)
