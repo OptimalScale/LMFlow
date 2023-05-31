@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# coding=utf-8
+"""Trainer for Peft models
+"""
+
+from __future__ import absolute_import
 from transformers import Trainer
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 from transformers.trainer_callback import (
@@ -54,6 +60,7 @@ class PeftSavingCallback(TrainerCallback):
         """ Save intermediate model adapters in case of interrupted training """
         folder = os.path.join(args.output_dir, f"{PREFIX_CHECKPOINT_DIR}-{state.global_step}")
         self._save(kwargs['model'], folder)
+        
     def on_save(
         self,
         args: TrainingArguments,
