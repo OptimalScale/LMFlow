@@ -538,7 +538,12 @@ class InferencerArguments:
         loaded json file as a dict
     mixed_precision : str, choice from ["bf16","fp16"].
         mixed precision mode, whether to use bf16 or fp16
-
+    
+    temperature : float
+        An argument of model.generate in huggingface to control the diversity of generation.
+        
+    repetition_penalty : float
+        An argument of model.generate in huggingface to penalize repetitions.
     """
     device: str = field(
         default="gpu",
@@ -550,8 +555,19 @@ class InferencerArguments:
     local_rank: int = field(
         default=-1,
         metadata={"help": "For distributed training: local_rank"
-        }
+        },
     )
+        
+    temperature: float = field(
+        default=1,
+        metadata={"help": "Temperature during inference."},
+    )
+    
+    repetition_penalty: float = field(
+        default=1,
+        metadata={"help": "Repetition_penalty during inference."},
+    )
+        
     random_seed: Optional[int] = field(
         default=1,
         metadata={
