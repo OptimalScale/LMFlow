@@ -141,8 +141,8 @@ class Inferencer(BasePipeline):
             outputs = model.inference(
                 inputs,
                 max_new_tokens=max_new_tokens,
-                temperature=temperature,
-                repetition_penalty=1.0,
+                temperature=self.inferencer_args.temperature,
+                repetition_penalty=self.inferencer_args.repetition_penalty,
                 do_sample=self.inferencer_args.do_sample,
             )
             text_out = model.decode(outputs[0], skip_special_tokens=True)
@@ -170,7 +170,7 @@ class Inferencer(BasePipeline):
                     model=model,
                     dataset=input_dataset,
                     max_new_tokens=token_per_step,
-                    temperature=temperature,
+                    temperature=self.inferencer_args.temperature,
                 )
 
                 new_append_text = output_dataset.to_dict()["instances"][0]["text"]
