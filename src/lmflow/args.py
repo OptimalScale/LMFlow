@@ -525,7 +525,7 @@ class EvaluatorArguments:
         },
     )
     use_accelerator_for_evaluator: bool = field(
-        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"}
+        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
         
     temperature: float = field(
