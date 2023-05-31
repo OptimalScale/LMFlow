@@ -529,7 +529,7 @@ class EvaluatorArguments:
     )
         
     temperature: float = field(
-        default=1,
+        default=0,
         metadata={"help": "Temperature during inference."},
     )
     
@@ -580,7 +580,7 @@ class InferencerArguments:
     )
         
     temperature: float = field(
-        default=1,
+        default=0,
         metadata={"help": "Temperature during inference."},
     )
     
