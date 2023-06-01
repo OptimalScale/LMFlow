@@ -405,6 +405,12 @@ class EvaluatorArguments:
     deepspeed : 
         Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
         loaded json file as a dict
+        
+    temperature : float
+        An argument of model.generate in huggingface to control the diversity of generation.
+        
+    repetition_penalty : float
+        An argument of model.generate in huggingface to penalize repetitions.
     """
     local_rank: int = field(
         default=-1,
@@ -519,7 +525,22 @@ class EvaluatorArguments:
         },
     )
     use_accelerator_for_evaluator: bool = field(
-        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"}
+        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
+    )
+        
+    temperature: float = field(
+        default=0,
+        metadata={"help": "Temperature during inference."},
+    )
+    
+    repetition_penalty: float = field(
+        default=1,
+        metadata={"help": "Repetition_penalty during inference."},
+    )
+        
+    max_new_tokens: int = field(
+        default=100,
+        metadata={"help": "Maximum length during inference."},
     )
     
 @dataclass
@@ -538,7 +559,12 @@ class InferencerArguments:
         loaded json file as a dict
     mixed_precision : str, choice from ["bf16","fp16"].
         mixed precision mode, whether to use bf16 or fp16
-
+    
+    temperature : float
+        An argument of model.generate in huggingface to control the diversity of generation.
+        
+    repetition_penalty : float
+        An argument of model.generate in huggingface to penalize repetitions.
     """
     device: str = field(
         default="gpu",
@@ -550,8 +576,24 @@ class InferencerArguments:
     local_rank: int = field(
         default=-1,
         metadata={"help": "For distributed training: local_rank"
-        }
+        },
     )
+        
+    temperature: float = field(
+        default=0,
+        metadata={"help": "Temperature during inference."},
+    )
+    
+    repetition_penalty: float = field(
+        default=1,
+        metadata={"help": "Repetition_penalty during inference."},
+    )
+        
+    max_new_tokens: int = field(
+        default=100,
+        metadata={"help": "Maximum length during inference."},
+    )
+        
     random_seed: Optional[int] = field(
         default=1,
         metadata={
@@ -584,6 +626,7 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
+        
 
 
 @dataclass
