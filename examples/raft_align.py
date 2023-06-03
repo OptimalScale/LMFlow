@@ -10,7 +10,7 @@ sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from dataclasses import dataclass, field
 from typing import Optional
 
-from transformers import HfArgumentParser, pipeline
+from transformers import HfArgumentParser, pipeline, AutoTokenizer
 
 from lmflow.args import (
     ModelArguments,
@@ -35,7 +35,7 @@ class RewardArguments:
         },
     )
     reward_model_or_path: Optional[str] = field(
-        default="lvwerra/distilbert-imdb",
+        default="weqweasdas/hh_rlhf_rm",
         metadata={
             "help": (
                 "reward model name (huggingface) or its path"
@@ -49,7 +49,7 @@ class RewardArguments:
         },
     )
     reward_model_args: Optional[str] = field(
-        default="return_all_scores=True, function_to_apply=\"none\", batch_size=10",
+        default="return_all_scores=True, function_to_apply=\"none\", batch_size=1",
         metadata={
             "help": (
                 "extra arguments required by different type of reward models."
@@ -63,10 +63,19 @@ def get_reward_function(reward_args, pipeline_args):
     reward_type = args.reward_type
 
     if reward_type == "hf_pipeline":
+
+        # GPT-2 tokenizer has a pad token, but it is not eos_token by default. We need to set it to eos_token.
+        # only for this model.
+        rm_tokenizer = AutoTokenizer.from_pretrained(reward_args.reward_model_or_path)
+        rm_tokenizer.pad_token = rm_tokenizer.eos_token
+        rm_tokenizer.pad_token_id = rm_tokenizer.eos_token_id
+        rm_tokenizer.padding_side = "left"
+        
         hf_pipe = pipeline(
             reward_args.reward_task,
             model=reward_args.reward_model_or_path,
             device=f"cuda:{pipeline_args.local_rank}",
+            tokenizer=rm_tokenizer
         )
         def reward_func(dataset: Dataset):
             if dataset.type != "text_only":
@@ -76,7 +85,7 @@ def get_reward_function(reward_args, pipeline_args):
             pipe_kwargs = {
                 "return_all_scores": True,
                 "function_to_apply": "none",
-                "batch_size": 10
+                "batch_size": 1
             }
 
             data_dict = dataset.to_dict()
@@ -84,7 +93,7 @@ def get_reward_function(reward_args, pipeline_args):
                 sample["text"] for sample in data_dict["instances"]
             ]
             pipe_outputs = hf_pipe(texts_for_rewards, **pipe_kwargs)
-            rewards = [output[1]["score"] for output in pipe_outputs]
+            rewards = [output[0]["score"] for output in pipe_outputs]
 
             reward_dataset = Dataset.create_from_dict({
                 "type": "float_only",
