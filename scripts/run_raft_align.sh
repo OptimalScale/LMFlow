@@ -16,7 +16,7 @@ mkdir -p ${output_dir} ${log_dir}
 export PYTHONPATH=.
 deepspeed ${deepspeed_args} \
     examples/raft_align.py \
-    --model_name_or_path pinkmanlove/llama-7b-hf \
+    --model_name_or_path gpt2 \
     --num_raft_iteration 20 \
     --learning_rate 2e-5 \
     --lr_scheduler_type "constant" \
