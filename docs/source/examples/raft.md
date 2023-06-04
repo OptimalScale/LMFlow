@@ -319,7 +319,7 @@ It tends out that the obtained model achieves a good reward and also an acceptab
 
 
 
-There are still many rooms of improvement. To further improve the model performance, we can improve the reward model (e.g. by using the LLaMA-7B-RM) and try out more advanced generation strategies, which we leave for future work. We are still actively develop RAFT and welcome for feedback and also contribution! Also checkout our LMFlow framework to get more fun of LLMs:
+There are still many rooms of improvement. To further improve the model performance, we can improve the reward model (e.g. by using the LLaMA-7B-RM) and try out more advanced generation strategies, which we leave for future work. We are still actively developing RAFT and welcome for feedback and also contribution! Also checkout our LMFlow framework to get more fun of LLMs:
 
 [OptimalScale/LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models. Large Model for All. (github.com)](https://github.com/OptimalScale/LMFlow)
 
