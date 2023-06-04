@@ -216,7 +216,7 @@ As an example, we align the LLaMA-7B model with the RAFT in this subsection.
 
 #### 3.3.1 SFT
 
-We also first fine-tune the base model on the HH-RLHF dataset. We only use a different --model_name_or_path to use LLaMA model. We note that LLaMA with [licensed](https://docs.google.com/forms/d/e/1FAIpQLSfqNECQnMkycAp2jP4Z9TFX0cGR4uf7b_fBxjY_OjhJILlKGA/viewform) is for non-commercial use only. We refer readers to https://optimalscale.github.io/LMFlow/examples/checkpoints.html for more details to get the LLaMA-7B model. We use a tentative choice in huggingface repo: pinkmanlove/llama-7b-hf only for showcasing this example, which may be uploaded by some LLM enthusiast.
+We also first fine-tune the base model on the HH-RLHF dataset. We only use a different --model_name_or_path to use LLaMA model. We note that LLaMA with [licensed](https://docs.google.com/forms/d/e/1FAIpQLSfqNECQnMkycAp2jP4Z9TFX0cGR4uf7b_fBxjY_OjhJILlKGA/viewform) is for non-commercial use only. We refer readers to https://optimalscale.github.io/LMFlow/examples/checkpoints.html for more details to get the LLaMA-7B model. 
 
 #### 3.3.2 RAFT Alignment
 
