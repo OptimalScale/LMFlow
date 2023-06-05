@@ -37,7 +37,7 @@
 * [2023-04-02] [Web service is online!](https://lmflow.com/)
 * [2023-04-01] [Release Chinese checkpoints in model zoo: LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
 * [2023-04-01] [Release English checkpoints in model zoo: LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
-* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models) 
+* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models)
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
@@ -104,7 +104,7 @@ Instruction tuningの結果を含む、より詳細なパフォーマンスに�
 ## Model Zoo
 当社はトレーニング済みのチェックポイントをオープンソース化し、誰でも追加のトレーニングや推論に使用できるようにしました。
 
-| Instruct-tuned Models   |  Status | Base Model | Download | 
+| Instruct-tuned Models   |  Status | Base Model | Download |
 |----------|:-------------:|----------|:-------------:|
 | LLaMA-7B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
 | LLaMA-13B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
@@ -154,7 +154,7 @@ pip install -e .
 cd data
 bash download.sh all
 cd -
-``` 
+```
 
 独自のデータセットを使用する場合は、以下の形式に変換するだけで使用できます。
 
@@ -231,6 +231,8 @@ deepspeed ${deepspeed_args} \
 ```python
 python examples/finetune.py -h
 ```
+注意：トレーニングデータセットが小さい場合、``block_size``の値を小さくする必要があります。そうしないと、Epochイテレータで利用できるサンプルがなくなってしまいます。
+
 を実行できます。微調整されたモデルのチェックポイントは、`--output_dir`で指定された引数に保存されます。上記の例では、`output_models/finetune`に保存されます。
 ### 3.2 Run Evaluation
 

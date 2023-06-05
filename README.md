@@ -50,7 +50,7 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 
 
 We provide four kinds of demos which include
-- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA you to have a try. 
+- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA you to have a try.
 - Colab Chatbot (shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
 - Colab Chatbot (web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
 - Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
@@ -84,11 +84,11 @@ other available decoder-only models provided in
 ### Colab chatbot (web)
 We provide a simple web demo of chatbot with Google Colab's T4/P100/V100 GPU.
 Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
-unsatisfactory responses. 
+unsatisfactory responses.
 
 
 ### Local Deploy
-If you have resources and want to deploy your own model locally. We provide you an easy way to run a flask server to launch a backend (to further provide services to other frontend) and an interactive web frontend (to let you communicate directly) by 
+If you have resources and want to deploy your own model locally. We provide you an easy way to run a flask server to launch a backend (to further provide services to other frontend) and an interactive web frontend (to let you communicate directly) by
 ```sh
 ./scripts/run_app.sh
 ```
@@ -125,7 +125,7 @@ The support of multi-modal training of LMFlow is under development.
 |   Task-tuned LLaMA 7B (Full) |   **75.1**   |     44.5    |  49.9   | 56.5 |
 | Task-tuned LLaMA 33B (LoRA) |  74.0  |  51.3   | **50.2**|**58.5**|
 
-The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server. 
+The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server.
 For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
 
 
@@ -190,7 +190,7 @@ We open-sourced the trained checkpoints to everyone for further training and inf
 
 ## Supported Models
 
-Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 Hugging Face. 
+Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 Hugging Face.
 LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
 
 
@@ -265,10 +265,12 @@ better performance, feel free to adjust those hyperparameters. You may run
 ```python
 python examples/finetune.py -h
 ```
+Note: In the case of a small training data set, the value of ``block_size`` needs to be reduced, otherwise there will be no samples available in the Epoch iterator.
+
 to view all possible finetuning arguments. The finetuned model checkpoint will
 be saved in the argument specified by `--output_dir`, which is
-`output_models/finetune` in the above example. 
-We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process and serve the model in our web service. 
+`output_models/finetune` in the above example.
+We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process and serve the model in our web service.
 
 ### 3.2 Evaluation
 
