@@ -1,3 +1,4 @@
+# coding=utf-8
 # Copyright 2023 The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +32,7 @@ from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import ProjectConfiguration, set_seed
 from datasets import load_dataset
-from huggingface_hub import HfFolder, Repository, create_repo, whoami
+from huggingface_hub import HfFolder, Repository, create_repo, whoami, upload_folder
 from packaging import version
 from torchvision import transforms
 from tqdm.auto import tqdm
@@ -54,9 +55,9 @@ logger = get_logger(__name__, log_level="INFO")
 
 def save_model_card(repo_name, images=None, base_model=str, dataset_name=str, repo_folder=None):
     img_str = ""
-    for i, image in enumerate(images):
-        image.save(os.path.join(repo_folder, f"image_{i}.png"))
-        img_str += f"![img_{i}](./image_{i}.png)\n"
+    # for i, image in enumerate(images):
+    #     image.save(os.path.join(repo_folder, f"image_{i}.png"))
+    #     img_str += f"![img_{i}](./image_{i}.png)\n"
 
     yaml = f"""
 ---
@@ -400,21 +401,13 @@ def main():
 
     # Handle the repository creation
     if accelerator.is_main_process:
-        if args.push_to_hub:
-            if args.hub_model_id is None:
-                repo_name = get_full_repo_name(Path(args.output_dir).name, token=args.hub_token)
-            else:
-                repo_name = args.hub_model_id
-            repo_name = create_repo(repo_name, exist_ok=True)
-            repo = Repository(args.output_dir, clone_from=repo_name)
-
-            with open(os.path.join(args.output_dir, ".gitignore"), "w+") as gitignore:
-                if "step_*" not in gitignore:
-                    gitignore.write("step_*\n")
-                if "epoch_*" not in gitignore:
-                    gitignore.write("epoch_*\n")
-        elif args.output_dir is not None:
+        if args.output_dir is not None:
             os.makedirs(args.output_dir, exist_ok=True)
+
+        if args.push_to_hub:
+            repo_id = create_repo(
+                repo_id=args.hub_model_id or Path(args.output_dir).name, exist_ok=True, token=args.hub_token
+            ).repo_id
 
     # Load scheduler, tokenizer and models.
     noise_scheduler = DDPMScheduler.from_pretrained( args.pretrained_model_name_or_path, subfolder="scheduler")
@@ -819,17 +812,55 @@ def main():
         unet = unet.to(torch.float32)
         unet.save_attn_procs(args.output_dir)
 
-
         if args.push_to_hub:
             save_model_card(
-                repo_name,
-                images=images,
+                repo_id,
                 base_model=args.pretrained_model_name_or_path,
                 dataset_name=args.dataset_name,
                 repo_folder=args.output_dir,
             )
-            repo.push_to_hub(commit_message="End of training", blocking=False, auto_lfs_prune=True)
+            upload_folder(
+                repo_id=repo_id,
+                folder_path=args.output_dir,
+                commit_message="End of training",
+                ignore_patterns=["step_*", "epoch_*"],
+            )
 
+    # # Final inference
+    # Load previous pipeline
+    # pipeline = DiffusionPipeline.from_pretrained(
+    #     args.pretrained_model_name_or_path, revision=args.revision, torch_dtype=weight_dtype
+    # )
+    # pipeline = pipeline.to(accelerator.device)
+
+    # # load attention processors
+    # pipeline.unet.load_attn_procs(args.output_dir)
+
+    # run inference
+    # generator = torch.Generator(device=accelerator.device).manual_seed(args.seed)
+    # images = []
+    # for _ in range(args.num_validation_images):
+    #     images.append(pipeline(args.validation_prompt, num_inference_steps=30, generator=generator).images[0])
+
+
+    # for _ in range(1):
+    #     images.append(pipeline('a photo of cat').images[0])
+    # images[0].save('/root/autodl-tmp/deepanshu/output.png')
+
+    # if accelerator.is_main_process:
+    #     for tracker in accelerator.trackers:
+    #         if tracker.name == "tensorboard":
+    #             np_images = np.stack([np.asarray(img) for img in images])
+    #             tracker.writer.add_images("test", np_images, epoch, dataformats="NHWC")
+    #         if tracker.name == "wandb":
+    #             tracker.log(
+    #                 {
+    #                     "test": [
+    #                         wandb.Image(image, caption=f"{i}: {args.validation_prompt}")
+    #                         for i, image in enumerate(images)
+    #                     ]
+    #                 }
+    #             )
 
     accelerator.end_training()
 
