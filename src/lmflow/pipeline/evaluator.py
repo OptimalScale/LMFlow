@@ -56,7 +56,6 @@ class Evaluator(BasePipeline):
         set_random_seed(self.evaluator_args.random_seed)
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
-        print("self.world_size是：", self.world_size)
         torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
         deepspeed.init_distributed()
 
@@ -90,7 +89,7 @@ class Evaluator(BasePipeline):
 
         dataloader = batchlize(
             dataset_buf,
-            self.evaluator_args.minibatch_size,      # = self.world_size
+            self.evaluator_args.minibatch_size,
             self.evaluator_args.random_shuffle
         )
         print(f"Successfully create dataloader with size {len(dataloader)}.")
@@ -143,7 +142,7 @@ class Evaluator(BasePipeline):
             
 
         """
-        if metric in ["acc", "accuracy", "rl", "rouge-l", "ROUGE-L"]:
+        if metric in ["acc", "accuracy"]:
             dataloader, data_size = self.create_dataloader(dataset)     # data_size = number of mini-batches
 
             if not dist.is_initialized() or dist.get_rank() == 0:
@@ -151,12 +150,12 @@ class Evaluator(BasePipeline):
                     os.makedirs(self.evaluator_args.output_dir)
                 output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
-            all_list = []  # list to replace both acc_list and rl_list
+            acc_list = []
             total = 0
             # ds_engine = deepspeed.initialize(model=model.get_model(), config_params=self.ds_config)[0]
             # ds_engine.module.eval()
             for batch_index, batch in enumerate(dataloader):
-                if batch_index * self.world_size >= self.data_args.max_eval_samples:
+                if batch_index * self.world_size >= self.data_args.max_eval_samples: 
                     break
                 if self.local_rank >= len(batch):
                     current_batch = batch[0]
@@ -189,39 +188,21 @@ class Evaluator(BasePipeline):
                 print(f"predicted answer: {pred_answer} \n")
                 print(f"groundtruth answer: {output} \n")
 
-                if metric in ["acc", "accuracy"]:
-                    if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and do not contribute to the accuracy
-                        correct_ = 0
-                        total_ = 0
-                    else:
-                        correct_ = 0
-                        total_ = 1
-                        if self._match(pred_answer, output, answer_type):
-                            correct_ = 1
-                    score = correct_
-
+                if self.local_rank >= len(batch): # for last batch, the padding examples are ignored and do not contribute to the accuracy
+                    correct_ = 0
+                    total_ = 0
                 else:
-                    scorer = rouge_scorer.RougeScorer(["rougeL"],
-                                                      use_stemmer=False)  # stemmer: stem the words to their root form
+                    correct_ = 0
+                    total_ = 1
+                    if self._match(pred_answer, output, answer_type):
+                        correct_ = 1
 
-                    if self.local_rank >= len(
-                            batch):  # for last batch, the padding examples are ignored and do not contribute to the ROUGE-L
-                        rl_ = 0
-                        total_ = 0
-                    else:
-                        rl_ = max(0, self._calculate_rouge_l(pred_answer, output, scorer, answer_type))
-                        total_ = 1
-                    score = rl_
-
-                # collect rouge-l from all gpus
-                all_process = torch.tensor([rl_, total_], dtype=torch.float32, device=self.local_rank)
-                if metric in ["acc", "accuracy"]:
-                    dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
-                else:
-                    dist.all_reduce(all_process, dist.ReduceOp.MAX, async_op=False)  # sum 还是 max好？
-                sum_or_max, total_ = all_process.tolist()
-                avg = sum_or_max / total_
-                all_list.append(avg)
+                # collect accuracy from all gpus
+                all_process = torch.tensor([correct_, total_], dtype=torch.float32, device=self.local_rank)
+                dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
+                correct_, total_ = all_process.tolist()
+                avg = correct_ / total_
+                acc_list.append(avg)
                 total += total_
 
                 # collect predictions from all gpus
@@ -233,40 +214,29 @@ class Evaluator(BasePipeline):
 
                 dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None, dst=0) # 只收集process 0？？
                 if not dist.is_initialized() or dist.get_rank() == 0:
-                    if metric in ["acc", "accuracy"]:
-                        current_accuracy = np.mean(all_list)
-                        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
-
-                        if(self.evaluator_args.use_wandb == True):
-                            wandb.log({"Accuracy": current_accuracy})
-
-                    else:
-                        current_rouge_l = np.mean(all_list)
-                        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current ROUGE-L = {}".format(int(total), data_size, current_rouge_l))
-
-                        if (self.evaluator_args.use_wandb == True):
-                            wandb.log({"rougeL_fmeasure": current_rouge_l})
+                    current_accuracy = np.mean(acc_list)
+                    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "{}/ {} has been finished, current accuracy = {}".format(int(total), data_size, current_accuracy))
+                    
+                    if(self.evaluator_args.use_wandb == True):
+                        wandb.log({"Accuracy": current_accuracy})
 
                     for index, output in enumerate(all_process_list):
                         output_json = json.dumps(output)
                         output_writer.write(output_json + '\n')
 
-
             if not dist.is_initialized() or dist.get_rank() == 0: # 此刻已经处理完dataset
-                if metric in ["acc", "accuracy"]:
-                    current_accuracy = np.mean(all_list)
-                    print("Final accuracy = ", current_accuracy)
-                else:
-                    current_rouge_l = np.mean(all_list)
-                    print("Final ROUGE-L = ", current_rouge_l)
+                current_accuracy = np.mean(acc_list)
+                print("Final accuracy = ", current_accuracy)
                 output_writer.close()
-                
         elif metric in ["ppl", "perplexity"]:
             ppl =  self._evaluate_ppl(model, dataset)
             print(f"Evaluating final ppl: {ppl}")
         elif metric in ["nll", "neg_log_likelihood"]:
             neg_log_likelihood = self._evaluate_neg_log_likelihood(model, dataset)
             print(f"Evaluating final negative log likelihood: {neg_log_likelihood}")
+        elif metric in ["rl", "rouge-l", "ROUGE-L"]:
+            rl = self._evaluate_rouge_l(model, dataset)
+            print(f"Evaluating final ROUGE-L: {rl}")
         else:
             raise NotImplementedError(f"{metric} is not implemented or not match with our defined metrics")
 
@@ -363,7 +333,7 @@ class Evaluator(BasePipeline):
 
             # collect rouge-l from all gpus
             all_process = torch.tensor([rl_, total_], dtype=torch.float32, device=self.local_rank)
-            dist.all_reduce(all_process, dist.ReduceOp.MAX, async_op=False)      # sum 还是 max好？
+            dist.all_reduce(all_process, dist.ReduceOp.SUM, async_op=False)
             rl_sum, total_ = all_process.tolist()
             avg = rl_sum / total_
             rl_list.append(avg)
