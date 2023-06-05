@@ -37,7 +37,7 @@ LMFlow는 큰 머신 러닝 모델의 finetune을 위한 확장성있고, 편리
 * [2023-04-02] [Web service is online!](https://lmflow.com/)
 * [2023-04-01] [Release Chinese checkpoints in model zoo: LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
 * [2023-04-01] [Release English checkpoints in model zoo: LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
-* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models) 
+* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models)
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
 * [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
 
@@ -106,7 +106,7 @@ LLaMA 33B (LoRA)의 성능은 단일 8 \* A100 서버로 PubMedQA와 MedMCQA의 
 ## Model Zoo
 우리는 학습된 체크포인트들을 모두가 추가 학습 및 추론을 할 수 있게 오픈소스로 제공합니다.
 
-| Instruct-tuned Models   |  Status | Base Model | Download | 
+| Instruct-tuned Models   |  Status | Base Model | Download |
 |----------|:-------------:|----------|:-------------:|
 | LLaMA-7B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-7B | [Google Drive](https://drive.google.com/file/d/1x5JLae3akVkfFeDhSe3TEyUbPn_GNFyb/view?usp=share_link) |
 | LLaMA-13B-tuned | ![completed](https://geps.dev/progress/100) | LLaMA-13B |  [Google Drive](https://drive.google.com/file/d/1m_rpe6rNpN59kWvjJ3GfKeEmS-68TRYr/view?usp=share_link) |
@@ -155,7 +155,7 @@ pip install -e .
 cd data
 bash download.sh all
 cd -
-``` 
+```
 
 다음 형식으로 간단히 변환하면 자신의 데이터셋을 사용할 수도 있습니다:
 ```json
@@ -228,6 +228,8 @@ deepspeed ${deepspeed_args} \
 ```python
 python examples/finetune.py -h
 ```
+참고: 훈련 데이터 세트가 작은 경우 ``block_size`` 값을 줄여야 하며, 그렇지 않으면 에포크 이터레이터에서 사용할 수 있는 샘플이 없게 됩니다.
+
 를 실행할 수 있습니다. finetuned 모델 체크포인트는 위의 예에서 `--output_dir`, 로 지정된 인자에 저장됩니다. 이 경우에는
 `output_models/finetune` 입니다.
 ### 3.2 Run Evaluation
@@ -312,7 +314,7 @@ cd -
 
 모델 체크포인트를 다운로드 한 후에는 `--lora_model_path` 를 `output_models/instruction_ckpt/llama7b-lora`  (llama-7b for instruction의 예시)로 대체하고 `--model_name_or_path` 를 `LMFlow/scripts/run_evaluation_with_lora.sh` 내부의 변환 된 llama 모델로 대체 한 다음 이 셸 스크립트를 실행하여 결과를 재현 할 수 있습니다.
 
-그런 다음 [Doc](https://optimalscale.github.io/LMFlow/) 에서 모델 성능을 확인할 수 있습니다. 
+그런 다음 [Doc](https://optimalscale.github.io/LMFlow/) 에서 모델 성능을 확인할 수 있습니다.
 
 ## Documentation
 더 많은 API 참조 및 실험 결과는 [Documentation](https://optimalscale.github.io/LMFlow/) 를 참조하십시오.
