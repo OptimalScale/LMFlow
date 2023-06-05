@@ -164,7 +164,7 @@ Original paper: [RAFT: Reward rAnked FineTuning for Generative Foundation Model 
 
 **Main ideas of RAFT**
 
-![](../_static/raft_idea.png)
+![](../_static/raft_idea.PNG)
 
 
 Clearly the global ranking strategy is more efficient in terms of the reward learning. However, in some cases (e.g. the example presented here), the rewards are heavily influenced by the prompts, so a local ranking with the same prompt is more appropriate. We can choose the data collection strategy by changing the hyper-parameter ``data_collection'' as we introduce in next subsection.
@@ -296,13 +296,12 @@ def _discard_sample(self, text):
 
 The following figure shows the reward curve of RAFT (note that we use a smaller temperature to test the model, leading to a higher evaluation reward):
 
-![](../_static/raft_reward.png)
+![](../_static/raft_reward.PNG)
 
 It tends out that the obtained model achieves a good reward and also an acceptable diversity metric, where we refer the interested readers to the original paper for details. However, it is more like a starting point of our journey. We present some randomly sampled responses here. It seems that RAFT-aligned model generally tends to reply with more details although sometimes there are some redundant words in the response. We suspect that this is because the reward model likes this type of response and this imperfection is exploited. 
 
 
-
-There are still many rooms of improvement. To further improve the model performance, we can improve the reward model (e.g. by using the LLaMA-7B-RM) and try out more advanced generation strategies, which we leave for future work. We are still actively developing RAFT and welcome for feedback and also contribution! Also checkout our LMFlow framework to get more fun of LLMs:
+There are still many rooms of improvement. To further improve the model performance, we can improve the reward model (e.g. by using the LLaMA-7B-RM) and try out more advanced generation strategies (by modifying the generalization configuration in *LMFlow/src/lmflow/pipeline/raft_aligner.py*), which we leave for future work. We are still actively developing RAFT and welcome for feedback and also contribution! Also checkout our LMFlow framework to get more fun of LLMs:
 
 [OptimalScale/LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models. Large Model for All. (github.com)](https://github.com/OptimalScale/LMFlow)
 
