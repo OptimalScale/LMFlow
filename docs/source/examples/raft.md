@@ -164,25 +164,8 @@ Original paper: [RAFT: Reward rAnked FineTuning for Generative Foundation Model 
 
 **Main ideas of RAFT**
 
-The idea of RAFT is very simple. For each iteration, 
+![](../_static/raft_idea.png)
 
-- We randomly sample a subset of the prompt $\mathcal{D}_t$. 
-- Then, we input these prompts to the current model and get responses $y$ and form the dataset $\{x_i^t \in \mathcal{D_t}: (x^t_i, y_i^t)\}$. 
-- We use the reward function $r(\cdot)$ to compute the reward for each sample and take the subset of samples with highest reward as $\mathcal{B}_t$;
-- We then fine-tune the current model on $\mathcal{B}_t$ and the next iteration begins.
-
-
-
-**Data Collection and Reward Ranking**
-
-With batch size $b$ and ratio $1/k$ (referred to as top_reward_percentage in the hyper-parameter). We consider two types of data selection strategy. 
-
-- top: a global ranking strategy.
-  - We sample a subset of prompts of size $b \times k$ and get the batch dataset $\{(x_i,y_i)\}_{i=1}^b$;
-  - We select the $b$ samples with the highest rewards.
-- local: a local ranking strategy.
-  - We sample a subset of prompts of size $b$;
-  - For each prompt $x_i$, we generate $k$ responses $y_i^1,\cdots, y_i^k$ and take $y_i$ as the response with highest reward.
 
 Clearly the global ranking strategy is more efficient in terms of the reward learning. However, in some cases (e.g. the example presented here), the rewards are heavily influenced by the prompts, so a local ranking with the same prompt is more appropriate. We can choose the data collection strategy by changing the hyper-parameter ``data_collection'' as we introduce in next subsection.
 
@@ -313,7 +296,7 @@ def _discard_sample(self, text):
 
 The following figure shows the reward curve of RAFT (note that we use a smaller temperature to test the model, leading to a higher evaluation reward):
 
-![image-20230601235739318](C:\Users\weixi\AppData\Roaming\Typora\typora-user-images\image-20230601235739318.png)
+![](../_static/raft_reward.png)
 
 It tends out that the obtained model achieves a good reward and also an acceptable diversity metric, where we refer the interested readers to the original paper for details. However, it is more like a starting point of our journey. We present some randomly sampled responses here. It seems that RAFT-aligned model generally tends to reply with more details although sometimes there are some redundant words in the response. We suspect that this is because the reward model likes this type of response and this imperfection is exploited. 
 
