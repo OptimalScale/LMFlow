@@ -511,7 +511,7 @@ class EvaluatorArguments:
         default="accuracy",
         metadata={
             "help": "the metric the model will be evaluated on",
-            "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood"],
+            "choices": ["ppl", "perplexity", "acc", "accuracy", "rl", "rouge-l", "nll", "neg_log_likelihood"],
         },
     )
     inference_batch_size_per_device: Optional[int] = field(
