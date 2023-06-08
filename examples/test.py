@@ -26,7 +26,7 @@ from lmflow.pipeline.test_rougel import Test_rougel
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
 
 
-def get_pipeline(self,
+def get_pipeline(
                  pipeline_name,
                  model_args,
                  data_args,
