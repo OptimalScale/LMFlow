@@ -29,18 +29,13 @@ def parse_argument(sys_argv):
 
     # Training parameters
     parser.add_argument(
-        "--dataset_path", type=str,
-        default=None,
-        help=textwrap.dedent("input dataset path, reads from stdin by default")
-    )
-    parser.add_argument(
         "--output_path", type=str,
         default=None,
         help=textwrap.dedent("output dataset path, writes to stdout by default")
     )
     parser.add_argument(
         "--merge_from_path", type=str,
-        default=None,
+        nargs="+",
         help=textwrap.dedent(
             "dataset path of the extra dataset that will be merged"
             " into input dataset"
@@ -55,24 +50,23 @@ def parse_argument(sys_argv):
 
 def main():
     args = parse_argument(sys.argv)
-    if args.dataset_path is not None:
-        with open(args.dataset_path, "r") as fin:
-            data_dict = json.load(fin)
-    else:
-        data_dict = json.load(sys.stdin)
 
     if args.merge_from_path is not None:
-        with open(args.merge_from_path, "r") as fin:
-            extra_data_dict = json.load(fin)
-
-        if data_dict["type"] != extra_data_dict["type"]:
-            raise ValueError(
-                'two dataset have different types:'
-                f' input dataset: "{data_dict["type"]}";'
-                f' merge from dataset: "{extra_data_dict["type"]}"'
-            )
-
-        data_dict["instances"].extend(extra_data_dict["instances"])
+        for i in range(0, len(args.merge_from_path)):
+            with open(args.merge_from_path[i], "r") as fin:
+                extra_data_dict = json.load(fin)
+            if i == 0:
+                data_dict = extra_data_dict
+            else:
+                if data_dict["type"] != extra_data_dict["type"]:
+                    raise ValueError(
+                        'two dataset have different types:'
+                        f' input dataset: "{data_dict["type"]}";'
+                        f' merge from dataset: "{extra_data_dict["type"]}"'
+                    )
+                data_dict["instances"].extend(extra_data_dict["instances"])
+    else:
+        raise ValueError("No merge files specified")
 
     if args.output_path is not None:
         with open(args.output_path, "w") as fout:
