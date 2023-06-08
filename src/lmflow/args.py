@@ -13,7 +13,7 @@ extracted from the MODEL_CONFIG_CLASSES.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional
 
 from transformers.utils.versions import require_version
 
@@ -75,8 +75,6 @@ class ModelArguments:
     use_ram_optimized_load : bool
         a boolean indicating whether to use disk mapping when memory is not
         enough.
-    use_int8 : bool
-        a boolean indicating whether to load int8 quantization for inference.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -100,10 +98,6 @@ class ModelArguments:
     model_type: Optional[str] = field(
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
-    )
-    arch_type: Optional[str] = field(
-        default="decoder_only",
-        metadata={"help": "The architecture type of the model. Currently supported decoder_only or encoder_decoder"}
     )
     config_overrides: Optional[str] = field(
         default=None,
@@ -173,10 +167,6 @@ class ModelArguments:
         default=32,
         metadata={"help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
     )
-    lora_target_modules: List[str] = field(
-        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",
-                              }
-    )
     lora_dropout: float = field(
         default=0.1,
         metadata={"help": "The dropout rate in lora.linear."},
@@ -188,19 +178,6 @@ class ModelArguments:
     use_ram_optimized_load: bool = field(
         default=True,
         metadata={"help": "Whether use disk mapping when memory is not enough."}
-    )
-    use_flash_attention: bool = field(
-        default=False,
-        metadata={
-            "help": (
-                "whether use flash attention layer to reduce GPU memory with"
-                " higher time cost."
-            )
-        }
-    )
-    use_int8: bool = field(
-        default=False,
-        metadata={"help": "whether to load int8 quantization for inference"}
     )
 
     def __post_init__(self):
@@ -325,16 +302,6 @@ class DatasetArguments:
         default=None,
         metadata={"help": "The number of processes to use for the preprocessing."},
     )
-    group_texts_batch_size: int = field(
-        default=1000,
-        metadata={
-            "help": (
-                "Number of samples that will be grouped together to go though"
-                " `group_texts` operation. See `--disable_group_texts` for"
-                " detailed explanation of this operation."
-            )
-        }
-    )
     disable_group_texts: bool = field(
         default=False,
         metadata={
@@ -377,16 +344,14 @@ class FinetunerArguments(TrainingArguments):
     """
     Adapt transformers.TrainingArguments
     """
-    eval_dataset_path: Optional[str] = field(
-        default=None, metadata={"help": "The path of the eval dataset to use."}
-    )
+    pass
 
 
 @dataclass
 class EvaluatorArguments:
     """
     Define a class EvaluatorArguments using the dataclass decorator. The class contains several optional
-    parameters that can be used to configure a evaluator.
+    parameters that can be used to configure an evaluator.
 
     local_rank : str
         For distributed training: local_rank
@@ -405,12 +370,6 @@ class EvaluatorArguments:
     deepspeed : 
         Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
         loaded json file as a dict
-        
-    temperature : float
-        An argument of model.generate in huggingface to control the diversity of generation.
-        
-    repetition_penalty : float
-        An argument of model.generate in huggingface to penalize repetitions.
     """
     local_rank: int = field(
         default=-1,
@@ -511,38 +470,11 @@ class EvaluatorArguments:
         default="accuracy",
         metadata={
             "help": "the metric the model will be evaluated on",
-            "choices": ["ppl", "perplexity", "acc", "accuracy", "rl", "rouge-l", "nll", "neg_log_likelihood"],
+            "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood", "rl", "rouge-l", "ROUGE-L"],
         },
     )
-    inference_batch_size_per_device: Optional[int] = field(
-        default=1,
-        metadata={
-            "help": (
-                "every device will infer {inference_batch_size_per_device}"
-                " samples in parallel. The inferred results will be concatenaed"
-                " with inputs and attach a reward."
-            ),
-        },
-    )
-    use_accelerator_for_evaluator: bool = field(
-        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
-    )
-        
-    temperature: float = field(
-        default=0,
-        metadata={"help": "Temperature during inference."},
-    )
-    
-    repetition_penalty: float = field(
-        default=1,
-        metadata={"help": "Repetition_penalty during inference."},
-    )
-        
-    max_new_tokens: int = field(
-        default=100,
-        metadata={"help": "Maximum length during inference."},
-    )
-    
+
+
 @dataclass
 class InferencerArguments:
     """
@@ -559,12 +491,7 @@ class InferencerArguments:
         loaded json file as a dict
     mixed_precision : str, choice from ["bf16","fp16"].
         mixed precision mode, whether to use bf16 or fp16
-    
-    temperature : float
-        An argument of model.generate in huggingface to control the diversity of generation.
-        
-    repetition_penalty : float
-        An argument of model.generate in huggingface to penalize repetitions.
+
     """
     device: str = field(
         default="gpu",
@@ -576,24 +503,8 @@ class InferencerArguments:
     local_rank: int = field(
         default=-1,
         metadata={"help": "For distributed training: local_rank"
-        },
+        }
     )
-        
-    temperature: float = field(
-        default=0.0,
-        metadata={"help": "Temperature during inference."},
-    )
-    
-    repetition_penalty: float = field(
-        default=1,
-        metadata={"help": "Repetition_penalty during inference."},
-    )
-        
-    max_new_tokens: int = field(
-        default=100,
-        metadata={"help": "Maximum length during inference."},
-    )
-        
     random_seed: Optional[int] = field(
         default=1,
         metadata={
@@ -620,13 +531,6 @@ class InferencerArguments:
             "choices": ["bf16","fp16"],
         },
     )
-    do_sample: Optional[bool] = field(
-        default=False,
-        metadata={
-            "help": "whether turn on true random sampling during inference."
-        },
-    )
-        
 
 
 @dataclass
@@ -641,7 +545,7 @@ class RaftAlignerArguments(TrainingArguments):
         }
     )
     output_min_length: Optional[int] = field(
-        default=64,
+        default=16,
         metadata={
             "help": (
                 "minimum length of the output token sequence generated from"
@@ -650,7 +554,7 @@ class RaftAlignerArguments(TrainingArguments):
         },
     )
     output_max_length: Optional[int] = field(
-        default=128,
+        default=48,
         metadata={
             "help": (
                 "maximum length of the output token sequence generated from"
@@ -665,14 +569,15 @@ class RaftAlignerArguments(TrainingArguments):
         },
     )
     raft_batch_size: Optional[int] = field(
-        default=1024,
+        default=320,
         metadata={
             "help": (
-                "only select {raft_batch_size} samples each time for STF training."
+                "only select {raft_batch_size} samples each time to"
+                " generate rewards and be ranked for STF training."
             )
         },
     )
-    top_reward_percentage: Optional[float] = field(
+    top_reward_percentage: Optional[int] = field(
         default=0.2,
         metadata={
             "help": (
@@ -686,37 +591,137 @@ class RaftAlignerArguments(TrainingArguments):
         metadata={
             "help": (
                 "every device will infer {inference_batch_size_per_device}"
-                " samples in parallel. The inferred results will be concatenaed"
+                " samples in parallel. The inferred results will be concatenated"
                 " with inputs and attach a reward."
-            ),
-        },
-    )
-    collection_strategy: Optional[str] = field(
-        default="top",
-        metadata={
-            "help": (
-                "{collection_strategy} is either top or local"
-                " top means that we rank the samples globally regardless of the prompts"
-                " local means that we only rank the samples with the same prompt"
             ),
         },
     )
 
 @dataclass
-class BenchmarkingArguments:
-    dataset_name: Optional[str] = field(
-        default=None,
+class TesterArguments:
+    """
+    Define a class TesterArguments using the dataclass decorator. The class contains several optional
+    parameters that can be used to configure an tester for ROUGE-L.
+
+    local_rank : str
+        For distributed training: local_rank
+
+    random_shuffle : bool
+
+    use_wandb : bool
+
+    random_seed : int, default = 1
+
+    output_dir : str, default = './output_dir',
+
+    mixed_precision : str, choice from ["bf16","fp16"].
+        mixed precision mode, whether to use bf16 or fp16
+
+    deepspeed :
+        Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
+        loaded json file as a dict
+    """
+    local_rank: int = field(
+        default=-1,
+        metadata={"help": "For distributed training: local_rank"
+                  }
+    )
+
+    random_shuffle: Optional[bool] = field(
+        default=False,
+        metadata={"help": ""
+                  }
+    )
+
+    use_wandb: Optional[bool] = field(
+        default=False,
         metadata={
-            "help": "benchmark dataset name provided by lmflow"
+            "help": (
+                "When this flag is True, wandb will be enabled"
+            )
         },
     )
-    lm_evaluation_metric: Optional[str] = field(
-        default="accuracy",
+    random_seed: Optional[int] = field(
+        default=1,
+        metadata={
+            "help": (
+                "used to set random seed"
+            )
+        },
+    )
+    output_dir: Optional[str] = field(
+        default="./output_dir",
+        metadata={"help": "Output path for the inferenced results"},
+    )
+    mixed_precision: Optional[str] = field(
+        default="bf16",
+        metadata={
+            "help": (
+                "mixed precision mode, whether to use bf16 or fp16"
+            ),
+            "choices": ["bf16", "fp16"],
+        },
+    )
+    deepspeed: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already"
+                " loaded json file as a dict"
+            )
+        },
+    )
+    answer_type: Optional[str] = field(
+        default="text",
+        metadata={
+            "help": (
+                'Question type for answer extraction from the decoder output.'
+                ' Supported types: \n'
+                '   1) "multiple_choice", e.g. A, B, C, D, ...\n'
+                '   2) "binary_choice", e.g. yes, no, maybe\n'
+                '   3) "math", e.g. 1.0, -3.52\n'
+                '   4) "text", e.g. "I think that it is okay"\n'
+                '   5) Special treatment for several datasets\n'
+                '     - "gsm8k"\n'
+                '     - "svamp"\n'
+                '     - "asdiv"\n'
+                '     - "addsub"\n'
+                '     - "singleeq"\n'
+                '     - "multiarith"\n'
+                '     - "aqua"\n'
+                '     - "csqa"\n'
+                '     - "strategyqa"\n'
+                '     - "pubmedqa"\n'
+                '     - "medmcqa"\n'
+                '     - "usmle"\n'
+            )
+        },
+    )
+    prompt_structure: Optional[str] = field(
+        default="{input}",
+        metadata={
+            "help": (
+                'Prompt structure to facilitate prompt engineering during'
+                ' inference. The model will receive'
+                ' `prompt_structure.format(input=input)` as its input.'
+            )
+        },
+    )
+    evaluate_block_size: Optional[int] = field(
+        default=512,
+        metadata={
+            "help": (
+                "the model will have at least block_size tokens for context when calculating the conditional likelihood of any one token"
+                " (provided there are block_size preceding tokens available to condition on)"
+            )
+        },
+    )
+    metric: Optional[str] = field(
+        default="rougel",
         metadata={
             "help": "the metric the model will be evaluated on",
-            "choices": ["acc", "acc_norm", "bleu", "chrf", "em", "f1", "ppl", \
-                "ter", "r@1", "r@2", "mrr", "mc1", "mc2", "word_perplexity", \
-                    "byte_perplexity", "bits_per_byte"],
+            "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood", "rl", "rouge-l",
+                        "ROUGE-L"],
         },
     )
 
@@ -725,6 +730,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
+    "test_rougel": TesterArguments,
 }
 
 
