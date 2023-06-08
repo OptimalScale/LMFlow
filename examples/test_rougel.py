@@ -11,7 +11,8 @@ from multiprocessing import Pool
 from functools import partial
 # TODO: remove later
 from transformers import AutoConfig
-from lmflow.pipeline.auto_pipeline import AutoPipeline
+# from lmflow.pipeline.auto_pipeline import AutoPipeline
+import evaluate
 import torch.distributed as dist
 from transformers import HfArgumentParser
 from lmflow.datasets.dataset import Dataset
