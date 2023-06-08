@@ -174,7 +174,7 @@ class Test_rougel(BasePipeline):
                 output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
 
             pred_score_list = []  # list to record the ROUGE-L scores of all batches from LMFlow method
-
+            total = 0
             # ds_engine = deepspeed.initialize(model=model.get_model(), config_params=self.ds_config)[0]
             # ds_engine.module.eval()
             for batch_index, batch in enumerate(dataloader):
@@ -233,7 +233,7 @@ class Test_rougel(BasePipeline):
                 # avg = max_ / total_
                 avg = max_
                 pred_score_list.append(avg)
-                # total += total_
+                total += total_
 
                 # collect predictions from all gpus
                 output_dict = {"question": input,
@@ -248,7 +248,7 @@ class Test_rougel(BasePipeline):
                 if not dist.is_initialized() or dist.get_rank() == 0:
                     current_rouge_l = np.mean(pred_score_list)
                     print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                          "{}/ {} has been finished, current ROUGE-L = {}".format(int(pred_score_list), data_size,
+                          "{}/ {} has been finished, current ROUGE-L = {}".format(int(total), data_size,
                                                                                   current_rouge_l))
 
                     if (self.evaluator_args.use_wandb == True):

@@ -220,7 +220,10 @@ class Evaluator(BasePipeline):
                 else:
                     dist.all_reduce(all_process, dist.ReduceOp.MAX, async_op=False)  # sum 还是 max好？
                 sum_or_max, total_ = all_process.tolist()
-                avg = sum_or_max / total_
+                if metric in ["acc", "accuracy"]:
+                    avg = sum_or_max / total_
+                else:
+                    avg = sum_or_max
                 all_list.append(avg)
                 total += total_
 
