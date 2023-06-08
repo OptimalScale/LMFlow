@@ -77,29 +77,38 @@ class Test_rougel(BasePipeline):
 
     # First use the method in self-instruct to get the ROUGE-L scores for the dataset, then use the method in LMFlow and compare the two scores,
     # The metric is tested to be valid if all scores are the same.
-    def get_rougel_score_list(self, predicted_data: str):
+    def get_rougel_score_list(self, predicted_data_path: str):
         scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=False)
 
-        dataset = load_data(predicted_data)
-        data_dict = dataset.to_dict()
-        inputs = [instance["input"] for instance in data_dict["instances"]]
-        outputs = [instance["output"] for instance in data_dict["instances"]]
-        dataset_size = len(outputs)
+        # Open the input file
+        with open(predicted_data_path, encoding='utf-8') as f:
+            # Read in the contents of the file
+            contents = f.read()
+        # Split the contents of the file into individual JSON objects
+        objects = contents.strip().split('\n')
+        # Add square brackets to the beginning and end of the list of objects
+        json_array = '[' + ','.join(objects) + ']'
+        # Convert the JSON array to a Python object
+        json_data = json.loads(json_array)
 
-        dataset_buf = []
+        pred_answers = [instance["pred_answer"] for instance in json_data]
+        answers = [instance["answer"] for instance in json_data]
+        dataset_size = len(answers)
+
+        pred_dataset_buf = []
         for idx in range(dataset_size):
-            dataset_buf.append({
-                "input": inputs[idx],
-                "output": outputs[idx],
-                "input_idx": idx
+            pred_dataset_buf.append({
+                "input": pred_answers[idx],
+                "output": answers[idx],
+                "idx": idx
             })
 
         dataloader = batchlize(   # 相当于每minibatch_size大小切一段，dataloader = [[{}, {}, ... ], [{}, {}, ... ], ... ]
-            dataset_buf,
+            pred_dataset_buf,
             self.evaluator_args.minibatch_size,  # = self.world_size
             self.evaluator_args.random_shuffle
         )
-        print(f"Successfully create dataloader with size {len(dataloader)}.")
+        print(f"Successfully create dataloader of predictions and answers with size {len(dataloader)}.")
 
         score_list = []  # store the maximum ROUGE-L score in each batch
 
@@ -127,6 +136,8 @@ class Test_rougel(BasePipeline):
                 "output": outputs[idx],
                 "input_idx": idx
             })
+            if idx == 12:       # to be removed later
+                break
 
         dataloader = batchlize(
             dataset_buf,
@@ -171,7 +182,7 @@ class Test_rougel(BasePipeline):
             if not dist.is_initialized() or dist.get_rank() == 0:
                 if not os.path.exists(self.evaluator_args.output_dir):
                     os.makedirs(self.evaluator_args.output_dir)
-                output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")
+                output_writer = open(f"{self.evaluator_args.output_dir}/evaluation.json", "w")  # ./output_dir/evaluation.json
 
             pred_score_list = []  # list to record the ROUGE-L scores of all batches from LMFlow method
             total = 0
@@ -262,6 +273,7 @@ class Test_rougel(BasePipeline):
                 current_rouge_l = np.mean(pred_score_list)
                 print("Final ROUGE-L = ", current_rouge_l)
                 output_writer.close()
+                print("__________________________\n__________________________")
 
         else:
             raise NotImplementedError(f"{metric} is not implemented or not match with our defined metrics")
