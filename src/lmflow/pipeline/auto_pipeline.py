@@ -7,6 +7,7 @@ from lmflow.pipeline.evaluator import Evaluator
 from lmflow.pipeline.finetuner import Finetuner
 from lmflow.pipeline.inferencer import Inferencer
 from lmflow.pipeline.raft_aligner import RaftAligner
+from lmflow.examples.test_rougel import Test_rougel
 
 
 PIPELINE_MAPPING = {
