@@ -19,7 +19,8 @@ python scripts/data_preprocess/merge.py \
     ./data/example_dataset/train/train_50_sample.json  \
     --output_path ./data/example_dataset/train/train_merge.json \
 
-# For merge.py: if you want to merge a directory
+# For concat.py: if you simply want to merge multiple files or a directory, use following.
+# You can also specify multiple files after --merge_from_path
 python scripts/data_preprocess/merge.py \
     --merge_from_path ./data/example_dataset/train/*.json \
     --output_path ./data/example_dataset/train/train_merge.json \
