@@ -14,6 +14,7 @@ PIPELINE_MAPPING = {
     "finetuner": Finetuner,
     "inferencer": Inferencer,
     "raft_aligner": RaftAligner,
+    "test_rougel": Test_rougel,
 }
 
 
