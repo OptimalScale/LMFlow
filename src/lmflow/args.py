@@ -724,6 +724,16 @@ class TesterArguments:
                         "ROUGE-L"],
         },
     )
+    inference_batch_size_per_device: Optional[int] = field(
+        default=1,
+        metadata={
+            "help": (
+                "every device will infer {inference_batch_size_per_device}"
+                " samples in parallel. The inferred results will be concatenated"
+                " with inputs and attach a reward."
+            ),
+        },
+    )
 
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
