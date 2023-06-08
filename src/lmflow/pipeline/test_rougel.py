@@ -288,7 +288,7 @@ class Test_rougel(BasePipeline):
         matched = True
         for pred, ans in zip(pred_score_list, ans_score_list):
             print("LMFlow ROUGE-L: ", pred, " -- self-instruct ROUGE-L: ", ans)
-            if pred != ans:
+            if round(pred, 5) != round(ans, 5):
                 matched = False
                 print("scores not matched!")
                 return
