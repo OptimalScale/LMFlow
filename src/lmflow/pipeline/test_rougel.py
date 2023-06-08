@@ -117,7 +117,7 @@ class Test_rougel(BasePipeline):
             output_ = [data["output"] for data in batch]
             with Pool(4) as p:  # 4 processes
                 scores = []
-                for idx in range(4):
+                for idx in range(len(input_)):
                     rouge_scores = p.map(partial(scorer.score, input_[idx]), [output_[idx]])        # 1 对 1， 所以Pool没啥作用
                     rouge_scores = [score["rougeL"].fmeasure for score in rouge_scores]  # score["rougeL"].fmeasure 是对应的pair的得分
                     max_rl_score = max(rouge_scores)
