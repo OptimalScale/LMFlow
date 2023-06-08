@@ -14,8 +14,9 @@ python scripts/data_preprocess/shuffle.py \
 
 # For merge.py : you can specify multiple files to merge
 python scripts/data_preprocess/merge.py \
+    --data_path ./data/example_dataset/train/train_50.json \
     --merge_from_path ./data/example_dataset/train/train_50_sample_shuffle.json \
-    ./data/example_dataset/train/train_50_sample.json ./data/example_dataset/train/train_50.json \
+    ./data/example_dataset/train/train_50_sample.json  \
     --output_path ./data/example_dataset/train/train_merge.json \
 
 # For merge.py: if you want to merge a directory
