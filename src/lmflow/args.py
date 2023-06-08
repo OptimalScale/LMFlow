@@ -473,6 +473,16 @@ class EvaluatorArguments:
             "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood", "rl", "rouge-l", "ROUGE-L"],
         },
     )
+    inference_batch_size_per_device: Optional[int] = field(
+        default=1,
+        metadata={
+            "help": (
+                "every device will infer {inference_batch_size_per_device}"
+                " samples in parallel. The inferred results will be concatenated"
+                " with inputs and attach a reward."
+            ),
+        },
+    )
 
 
 @dataclass
