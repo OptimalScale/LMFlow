@@ -407,6 +407,11 @@ If you need any help, please submit a [Github](https://github.com/OptimalScale/L
   <img src="https://contrib.rocks/image?repo=OptimalScale/LMFlow" />
 </a>
 
+## License
+The code included in this project is licensed under the [Apache 2.0 license](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE).
+If you wish to use the codes and models included in this project for commercial purposes, please sign this [document](https://docs.google.com/forms/d/e/1FAIpQLSfJYcci6cbgpIvx_Fh1xDL6pNkzsjGDH1QIcm4cYk88K2tqkw/viewform?usp=pp_url) to obtain authorization.
+
+
 ## Citation
 If you find this repository useful, please consider giving ⭐ and citing:
 
