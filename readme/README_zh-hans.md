@@ -315,6 +315,8 @@ cd -
 ## Support
 如果您需要任何帮助，请提交[Github](https://github.com/OptimalScale/LMFlow)问题。
 
+## 协议
+本项目所含代码采用Apache 2.0协议。如果您希望将本项目所含模型用于商业用途，请填写并签署[本文件](https://docs.google.com/forms/d/e/1FAIpQLSertnFbm2_aELsPMwOu_DhAu3p7bQgv8_MWSug7D80AyzPLhg/viewform?usp=pp_url)取得授权。
 
 ## Contributors
 <a href="https://github.com/OptimalScale/LMFlow/graphs/contributors">
