@@ -24,6 +24,11 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parall
 def rstrip_partial_utf8(string):
     return string.replace("\ufffd", "")
 
+supported_dataset_type = [
+    "text_only",
+    "image_text",
+]
+
 class Inferencer(BasePipeline):
     """
     Initializes the `Inferencer` class with given arguments.
@@ -69,8 +74,24 @@ class Inferencer(BasePipeline):
 
 
     def create_dataloader(self, dataset: Dataset):
-        data_dict = dataset.to_dict()
-        inputs = [ instance["text"] for instance in data_dict["instances"] ]
+        r"""Batchlize dataset and format it to dataloader.
+
+        Args:
+            dataset (Dataset): the dataset object
+
+        Output:
+            dataloader (batchlize): the dataloader object
+            dataset_size (int): the length of the dataset
+
+        """
+        if dataset.get_type() == "text_only":
+            data_dict = dataset.to_dict()
+            inputs = [instance["text"] for instance in data_dict["instances"] ]
+        elif dataset.get_type() == "image_text":
+            backend_dataset = dataset.get_backend_dataset()
+            # can not do the do_dict information because the data contains image.
+            inputs = [backend_dataset.__getitem__(idx) \
+                        for idx in range(len(backend_dataset))]
         dataset_size = len(inputs)
         dataset_buf = []
         for idx in range(dataset_size):
@@ -110,10 +131,10 @@ class Inferencer(BasePipeline):
 
         output_dataset: Dataset object.
         """
-        if dataset.get_type() != "text_only":
+        if dataset.get_type() not in supported_dataset_type:
             raise NotImplementedError(
-                'input dataset should have type "text_only"'
-            )
+                'input dataset should have type {}'.format(
+                                        supported_dataset_type))
 
         dataloader, data_size = self.create_dataloader(dataset)
 
@@ -126,8 +147,11 @@ class Inferencer(BasePipeline):
 
         for batch_index, batch in enumerate(dataloader):
             current_batch = batch[0]        # batch size is 1
-
-            input = prompt_structure.format(input=current_batch['input'])
+            if isinstance(current_batch['input'], str):
+                input = prompt_structure.format(input=current_batch['input'])
+            else:
+                input = current_batch['input']
+                input['text'] = prompt_structure.format(input=input['text'])
 
             if self.inferencer_args.device == "gpu":
                 inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
@@ -137,7 +161,6 @@ class Inferencer(BasePipeline):
                 raise NotImplementedError(
                     f"device \"{self.inferencer_args.device}\" is not supported"
                 )
-
             outputs = model.inference(
                 inputs,
                 max_new_tokens=self.inferencer_args.max_new_tokens,
@@ -146,10 +169,10 @@ class Inferencer(BasePipeline):
                 do_sample=self.inferencer_args.do_sample,
             )
             text_out = model.decode(outputs[0], skip_special_tokens=True)
-
             # only return the generation, trucating the input
-            prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
-            text_out = text_out[prompt_length:]
+            if self.model_args.arch_type != "visionEncoder_decoder":
+                prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
+                text_out = text_out[prompt_length:]
             output_dict["instances"].append({ "text": text_out })
 
         output_dataset = Dataset(DatasetArguments(dataset_path = None))

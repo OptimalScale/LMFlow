@@ -167,4 +167,5 @@ INSTANCE_FIELDS_MAP = {
     "text_only": ["text"],
     "text2text": ["input", "output"],
     "float_only": ["value"],
+    "image_text": ["images", "text"],
 }
