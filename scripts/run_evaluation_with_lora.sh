@@ -4,7 +4,7 @@
 # --lora_model_path specifies the model difference introduced by finetuning,
 #   i.e. the one saved by ./scripts/run_finetune_with_lora.sh
 CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/evaluate.py \
+    deepspeed examples/evaluation.py \
     --answer_type text \
     --model_name_or_path facebook/galactica-1.3b \
     --lora_model_path output_models/finetune_with_lora \
