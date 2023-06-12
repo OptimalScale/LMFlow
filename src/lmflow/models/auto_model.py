@@ -17,7 +17,7 @@ class AutoModel:
         elif arch_type == "text_regression":
             return TextRegressionModel(model_args, *args, **kwargs)
         elif arch_type == "encoder_decoder" or \
-                arch_type == "visionEncoder_decoder":
+                arch_type == "vision_encoder_decoder":
             return HFEncoderDecoderModel(model_args, *args, **kwargs)
         else:
             raise NotImplementedError(

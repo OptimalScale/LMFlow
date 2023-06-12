@@ -19,6 +19,7 @@ and question answering.
 """
 
 import logging
+import copy
 from typing import List, Union
 
 import deepspeed
@@ -50,7 +51,6 @@ from transformers import (
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.encoder_decoder_model import EncoderDecoderModel
 from lmflow.models.interfaces.tunable import Tunable
-import copy
 
 logger = logging.getLogger(__name__)
 
@@ -132,7 +132,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                     model_register = AutoModel
                 else:
                     model_register = AutoModelForSeq2SeqLM
-            elif self.arch_type == "visionEncoder_decoder":
+            elif self.arch_type == "vision_encoder_decoder":
                 model_register = AutoModelForVision2Seq
             else:
                 raise NotImplementedError
@@ -168,7 +168,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 )
             if self.arch_type == "encoder_decoder":
                 tokenizer_register = AutoTokenizer
-            elif self.arch_type == "visionEncoder_decoder":
+            elif self.arch_type == "vision_encoder_decoder":
                 tokenizer_register = AutoProcessor
             else:
                 raise NotImplementedError
@@ -302,7 +302,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         # TODO need to discuss how to handle pad_token_id
         if self.arch_type == "encoder_decoder":
             kwargs.update(pad_token_id=self.tokenizer.pad_token_id)
-        elif self.arch_type == "visionEncoder_decoder":
+        elif self.arch_type == "vision_encoder_decoder":
             # TODO disucss how to modify the interface to remove this part.
             inputs = copy.deepcopy(inputs)
             input_ids = inputs.pop('input_ids')

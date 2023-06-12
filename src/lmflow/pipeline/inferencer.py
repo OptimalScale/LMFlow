@@ -90,7 +90,7 @@ class Inferencer(BasePipeline):
         elif dataset.get_type() == "image_text":
             backend_dataset = dataset.get_backend_dataset()
             # can not do the do_dict information because the data contains image.
-            inputs = [backend_dataset.__getitem__(idx) \
+            inputs = [backend_dataset.__getitem__(idx)
                         for idx in range(len(backend_dataset))]
         dataset_size = len(inputs)
         dataset_buf = []
@@ -170,7 +170,7 @@ class Inferencer(BasePipeline):
             )
             text_out = model.decode(outputs[0], skip_special_tokens=True)
             # only return the generation, trucating the input
-            if self.model_args.arch_type != "visionEncoder_decoder":
+            if self.model_args.arch_type != "vision_encoder_decoder":
                 prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
                 text_out = text_out[prompt_length:]
             output_dict["instances"].append({ "text": text_out })
