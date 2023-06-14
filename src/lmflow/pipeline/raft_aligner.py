@@ -418,6 +418,7 @@ class RaftAligner(BaseAligner):
 
             input_texts = []
             responses = []
+            record_querys = []
             all_outputs = []
 
             for i, query in enumerate(querys):
@@ -462,13 +463,14 @@ class RaftAligner(BaseAligner):
                 if rewards[idx_to_record] != -self.INF:
                     responses.append(generated_texts[idx_to_record])
                     reward_train.append(rewards[idx_to_record])
+                    record_querys.append(query)
                 input_texts = []
 
 
             data = []
-            for j in range(len(reward_eva)):
+            for j in range(len(reward_train)):
                 sample = {}
-                sample["input"] = querys[j]
+                sample["input"] = record_querys[j]
                 sample["output"] = [responses[j]]
                 data.append(sample)
 

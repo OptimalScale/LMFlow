@@ -300,6 +300,13 @@ The following figure shows the reward curve of RAFT (note that we use a smaller 
 
 It tends out that the obtained model achieves a good reward and also an acceptable diversity metric, where we refer the interested readers to the original paper for details. However, it is more like a starting point of our journey. We present some randomly sampled responses here. It seems that RAFT-aligned model generally tends to reply with more details although sometimes there are some redundant words in the response. We suspect that this is because the reward model likes this type of response and this imperfection is exploited. 
 
+#### 3.3.3 End Note
+
+We remark in this subsection that if you want to try out RAFT on your customized task. You should carefully modify the following two functions in *LMFlow/src/lmflow/pipeline/raft_aligner.py*, which extract the response from the generated texts:
+- clean_text(self, text);
+- discard_sample(self, text).
+
+Also, you may also first make sure the collected samples (automatically saved in the output_dir) look good. 
 
 There are still many rooms of improvement. To further improve the model performance, we can improve the reward model (e.g. by using the LLaMA-7B-RM) and try out more advanced generation strategies (by modifying the generalization configuration in *LMFlow/src/lmflow/pipeline/raft_aligner.py*), which we leave for future work. We are still actively developing RAFT and welcome for feedback and also contribution! Also checkout our LMFlow framework to get more fun of LLMs:
 
