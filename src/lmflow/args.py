@@ -626,6 +626,22 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
+    image_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "image path for input image"})
+    
+    input_text: Optional[str] = field(
+        default="",
+        metadata={
+            "help": "input text for reasoning"})
+    
+    task: Optional[str] = field(
+        default="image_caption",
+        metadata={
+            "help": "task for reasoning",
+        }
+    )
         
 
 
@@ -719,6 +735,8 @@ class BenchmarkingArguments:
                     "byte_perplexity", "bits_per_byte"],
         },
     )
+
+
 
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
