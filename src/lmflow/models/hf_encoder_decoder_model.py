@@ -369,7 +369,12 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         """
         Return max acceptable input length in terms of tokens.
         """
-        return self.tokenizer.model_max_length
+        if "tokenizer" not in self.tokenizer.__dict__:
+            return self.tokenizer.model_max_length
+        else:
+            # for the multi-modality processor, 
+            # the max length is stored in the inner text tokenizer
+            return self.tokenizer.tokenizer.model_max_length
 
 
     def get_tokenizer(self):
