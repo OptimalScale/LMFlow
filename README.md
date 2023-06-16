@@ -33,7 +33,7 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 
 
 ## Latest News
-* [2023-06-16] :rocket: Our finetuned Robin-33B-V2 scored an impressive 64.1 on the Huggingface LLM leaderboard in our [offline evaluation](https://medium.com/@hkust.ml/robin-v2-launches-achieves-unparalleled-performance-on-openllm-4f6886e822c1), outperforming major open-source LLMs! :rocket:
+* [2023-06-16] :rocket: Our finetuned Robin-33B-V2 scored an impressive 64.1 on the Huggingface LLM leaderboard in our offline evaluation, outperforming major open-source LLMs! All models (7B, 13B, 33B, and 65B) are released! Checkout the performance [here](https://medium.com/@hkust.ml/robin-v2-launches-achieves-unparalleled-performance-on-openllm-4f6886e822c1).  :rocket:
 * [2023-06-07] :rocket: LMFlow is now officially available on PyPI! Install it with `pip install lmflow-finetune`! :rocket:
 * [2023-05-30] Release [Robin-13B-v2](https://huggingface.co/OptimalScale/robin-13b-v2-delta) and [Robin-33B-v2](https://huggingface.co/OptimalScale/robin-33b-v2-delta)!
 * [2023-05-15] Release [LMFlow-data](http://lmflow.org:5000/lmflow_data.tar.gz), the training dataset of Robin-7B-v2. A new [test data](http://lmflow.org:5000/lmflow_chat_en_dialog_multiturn_single_nll_text2text.tar.gz) is also released.
