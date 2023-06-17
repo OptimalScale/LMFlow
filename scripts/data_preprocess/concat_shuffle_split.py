@@ -124,7 +124,7 @@ def main():
     if args.output_path is  None:
         args.output_path = sys.stdout
 
-    train_save_path=os.path.join(args.output_path,"train_10_folds")
+    train_save_path=os.path.join(args.output_path,"train_{k}_folds".format(k=args.k))
     if not os.path.exists(train_save_path):
         os.makedirs(train_save_path)
     for i in range(args.k):
