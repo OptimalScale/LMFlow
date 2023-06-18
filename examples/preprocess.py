@@ -50,12 +50,15 @@ def main():
         data_args=data_args,
         pipeline_args=pipeline_args,
     )
-    backend = "huggingface" if not data_args.is_preprocessed else "preprocessed"
-    dataset = Dataset(data_args, backend=backend)
+    dataset = Dataset(data_args)
     model = AutoModel.get_model(model_args)
 
-    # Finetuning
-    tuned_model = finetuner.tune(model=model, dataset=dataset)
+    tokenized_dataset = model.tokenize(dataset)
+    lm_dataset = finetuner.group_text(
+        tokenized_dataset,
+        model_max_length=model.get_max_length(),
+    )
+    lm_dataset.get_backend_dataset().save_to_disk("data/preprocessed")
 
 
 if __name__ == '__main__':

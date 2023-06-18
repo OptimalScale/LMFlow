@@ -338,6 +338,8 @@ class HFDecoderModel(DecoderModel, Tunable):
         """
         # Preprocessing the datasets.
         # First we tokenize all the texts.
+        if dataset.get_backend() == "preprocessed":
+            return dataset
         if dataset.get_backend() != "huggingface":
             raise NotImplementedError(
                 "tokenization of datasets with non-huggingface backend are"

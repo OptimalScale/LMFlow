@@ -14,7 +14,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 from datasets import Dataset as HFDataset
 
 from lmflow.args import DatasetArguments
@@ -108,6 +108,8 @@ class Dataset:
         elif backend == "json":
             # TODO (@Jiachun)
             pass
+        elif backend == "preprocessed":
+            self.backend_dataset = load_from_disk(self.dataset_path, split="train")
         else:
             raise NotImplementedError(f'Unsupported dataset backend "{backend}"')
 
@@ -323,10 +325,12 @@ class Dataset:
             mapped_backend_dataset = self.backend_dataset.map(*args, **kwargs)
             self.backend_dataset = mapped_backend_dataset
             return self
+        elif self.backend == "hf_dataset":
+            return self
         else:
             # If the backend is not Hugging Face, raise a NotImplementedError
             raise NotImplementedError(
-                f'Currently .map is not supported for backend "{backend}"'
+                f'Currently .map is not supported for backend "{self.backend}"'
             )
 
 

@@ -114,6 +114,8 @@ class Finetuner(BaseTuner):
         Groups texts together to form blocks of maximum length `model_max_length` and returns the processed data as
         a dictionary.
         """
+        if tokenized_datasets.get_backend() == "preprocessed":
+            return tokenized_datasets
         data_args = self.data_args
         finetuner_args = self.finetuner_args
 

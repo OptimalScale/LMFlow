@@ -356,6 +356,10 @@ class DatasetArguments:
         default=None,
         metadata={"help": "Evaluation File Path"},
     )
+    is_preprocessed: bool = field(
+        default=False,
+        metadata={"help": "Whether the dataset is already preprocessed or not"},
+    )
 
     def __post_init__(self):
         if self.streaming:
