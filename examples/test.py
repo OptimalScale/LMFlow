@@ -9,7 +9,6 @@ import json
 from rouge_score import rouge_scorer
 from multiprocessing import Pool
 from functools import partial
-# TODO: remove later
 from transformers import AutoConfig
 
 # from lmflow.pipeline.auto_pipeline import AutoPipeline
