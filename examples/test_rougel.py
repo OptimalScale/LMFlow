@@ -249,7 +249,7 @@ class Test_rougel(BasePipeline):
 
                 # collect rouge-l from all gpus
                 all_process = torch.tensor([rl_, total_], dtype=torch.float32, device=self.local_rank)
-                dist.all_reduce(all_process, dist.ReduceOp.MAX, async_op=False)  # sum 还是 max好？
+                dist.all_reduce(all_process, dist.ReduceOp.MAX, async_op=False)
                 max_, total_ = all_process.tolist()
                 print("max_: ", max_)
                 print("total_: ", total_)
@@ -266,7 +266,7 @@ class Test_rougel(BasePipeline):
                 all_process_list = [{}] * self.world_size
 
                 dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None,
-                                   dst=0)  # 只收集process 0？？
+                                   dst=0)
                 print("all_process_list: ", all_process_list)
                 if not dist.is_initialized() or dist.get_rank() == 0:
                     current_rouge_l = np.mean(pred_score_list)
@@ -281,7 +281,7 @@ class Test_rougel(BasePipeline):
                         output_json = json.dumps(output)
                         output_writer.write(output_json + '\n')
 
-            if not dist.is_initialized() or dist.get_rank() == 0:  # 此刻已经处理完dataset
+            if not dist.is_initialized() or dist.get_rank() == 0:
                 current_rouge_l = np.mean(pred_score_list)
                 print("Final ROUGE-L = ", current_rouge_l)
                 output_writer.close()
