@@ -24,7 +24,7 @@ from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
 #copied from evaluator.py
 class Test_rougel(BasePipeline):
     """
-    Initializes the `Evaluator` class with given arguments.
+    Initializes the `Test_rougel` class with given arguments.
 
     Parameters
     ------------
@@ -80,15 +80,11 @@ class Test_rougel(BasePipeline):
     def get_rougel_score_list(self, predicted_data_path: str):
         scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=False)
 
-        # Open the input file
+        
         with open(predicted_data_path, encoding='utf-8') as f:
-            # Read in the contents of the file
             contents = f.read()
-        # Split the contents of the file into individual JSON objects
         objects = contents.strip().split('\n')
-        # Add square brackets to the beginning and end of the list of objects
         json_array = '[' + ','.join(objects) + ']'
-        # Convert the JSON array to a Python object
         json_data = json.loads(json_array)
 
         pred_answers = [instance["pred_answer"] for instance in json_data]
@@ -103,7 +99,7 @@ class Test_rougel(BasePipeline):
                 "idx": idx
             })
 
-        dataloader = batchlize(   # 相当于每minibatch_size大小切一段，dataloader = [[{}, {}, ... ], [{}, {}, ... ], ... ]
+        dataloader = batchlize(   
             pred_dataset_buf,
             self.evaluator_args.minibatch_size,  # = self.world_size
             self.evaluator_args.random_shuffle
@@ -118,8 +114,8 @@ class Test_rougel(BasePipeline):
             with Pool(4) as p:  # 4 processes
                 scores = []
                 for idx in range(len(input_)):
-                    rouge_scores = p.map(partial(scorer.score, input_[idx]), [output_[idx]])        # 1 对 1， 所以Pool没啥作用
-                    rouge_scores = [score["rougeL"].fmeasure for score in rouge_scores]  # score["rougeL"].fmeasure 是对应的pair的得分
+                    rouge_scores = p.map(partial(scorer.score, input_[idx]), [output_[idx]])        
+                    rouge_scores = [score["rougeL"].fmeasure for score in rouge_scores]  
                     max_rl_score = max(rouge_scores)
                     scores.append(max_rl_score)
             score_list.append(max(scores))
@@ -240,7 +236,7 @@ class Test_rougel(BasePipeline):
 
                 # collect rouge-l from all gpus
                 all_process = torch.tensor([rl_, total_], dtype=torch.float32, device=self.local_rank)
-                dist.all_reduce(all_process, dist.ReduceOp.MAX, async_op=False)  # sum 还是 max好？
+                dist.all_reduce(all_process, dist.ReduceOp.MAX, async_op=False)  
                 max_, total_ = all_process.tolist()
                 print("max_: ", max_)
                 print("total_: ", total_)
@@ -257,7 +253,7 @@ class Test_rougel(BasePipeline):
                 all_process_list = [{}] * self.world_size
 
                 dist.gather_object(output_dict, all_process_list if dist.get_rank() == 0 else None,
-                                   dst=0)  # 只收集process 0？？
+                                   dst=0)  
                 print("all_process_list: ", all_process_list)
                 if not dist.is_initialized() or dist.get_rank() == 0:
                     current_rouge_l = np.mean(pred_score_list)
@@ -272,7 +268,7 @@ class Test_rougel(BasePipeline):
                         output_json = json.dumps(output)
                         output_writer.write(output_json + '\n')
 
-            if not dist.is_initialized() or dist.get_rank() == 0:  # 此刻已经处理完dataset
+            if not dist.is_initialized() or dist.get_rank() == 0:  
                 current_rouge_l = np.mean(pred_score_list)
                 print("Final ROUGE-L = ", current_rouge_l)
                 output_writer.close()
