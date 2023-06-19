@@ -15,7 +15,7 @@
     <p>
 </h4>
 
-日文版はChatGPTによって翻訳されました。もし間違いがあれば、contributorに修正していただけると幸いです。また、英語版と内容に差異がある場合は、英語版を優先してください。
+日本語版はChatGPTによって翻訳されました。もし間違いがあれば、contributorに修正していただけると幸いです。また、英語版と内容に差異がある場合は、英語版を優先してください。
 
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
@@ -58,7 +58,7 @@
 
 
 ### Online Service
-> [Webサービス](https://lmflow.com/)にアクセスしていただきありがとうございます。LLaMA-7B-tunedとLLaMA-33B-tunedをオンラインでプレビュー用にデプロイしています。ウェブサイトのトラフィックが高いため、サイトが応答しないことがあります。その場合は、「ローカルデプロイ」を参照してチャットボットをデプロイすることもできます。.
+> [Webサービス](https://lmflow.com/)にアクセスしていただきありがとうございます。LLaMA-7B-tunedとLLaMA-33B-tunedをオンラインでプレビュー用にデプロイしています。ウェブサイトのトラフィックが高いため、サイトが応答しないことがあります。その場合は、「ローカルデプロイ」を参照してチャットボットをデプロイすることもできます。
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
@@ -66,7 +66,7 @@
 </p>
 
 私たちは、Google ColabのT4/P100/V100 GPUを使用した、シンプルなシェルデモのチャットボットを提供しています。
-提供されるgpt-neo-2.7bモデルは、**かなり弱いモデル**であり、英語のみをサポートしており、時には不十分な応答を生成することがあります。パフォーマンスを改善するには、ユーザー自身のデータセットを使用してファインチューニングを行い、LMFlowでより良いモデルを取得することができます。また、他の利用可能なデコーダー専用モデルも試すことができます。🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)で提供されています。
+提供されるgpt-neo-2.7bモデルは、**かなり弱いモデル**であり、英語のみをサポートしており、時には不十分な応答を生成することがあります。パフォーマンスを改善するには、ユーザー自身のデータセットを使用してファインチューニングを行い、LMFlowでより良いモデルを取得することができます。また、他の利用可能なデコーダー専用モデルも試すことができます。🤗 [Hugging Face](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)で提供されています。
 
 ```sh
 ./scripts/run_chatbot.sh {another-model-name}
@@ -99,7 +99,7 @@ python app.py
 | Task-tuned LLaMA 33B (LoRA) |  74.0  |  51.3   | **50.2**|**58.5**|
 
 LLaMA 33B（LoRA）のパフォーマンスは、単一の8 \ * A100サーバーでPubMedQAおよびMedMCQAのトレーニングスプリットで**約16時間**のファインチューニングで達成されます。
-Instruction tuningの結果を含む、より詳細なパフォーマンスについては、当社の[ドキュメンテーション](https://optimalscale.github.io/LMFlow/)を参照してください。
+Instruction tuningの結果を含む、より詳細なパフォーマンスについては、当社の[ドキュメント](https://optimalscale.github.io/LMFlow/)を参照してください。
 
 ## Model Zoo
 当社はトレーニング済みのチェックポイントをオープンソース化し、誰でも追加のトレーニングや推論に使用できるようにしました。
@@ -312,7 +312,7 @@ cd -
 
 モデルのチェックポイントをダウンロードした後、`LMFlow/scripts/run_evaluation_with_lora.sh`内の`--lora_model_path`を`output_models/instruction_ckpt/llama7b-lora(instruction`用の例)に置き換え、`--model_name_or_path`を変換済みのllamaモデルに置き換えます。そして、このシェルスクリプトを実行して、結果を再現できます。
 
-その後、[Doc](https://optimalscale.github.io/LMFlow/).でモデルのパフォーマンスを確認できます。
+その後、[ドキュメント](https://optimalscale.github.io/LMFlow/)でモデルのパフォーマンスを確認できます。
 
 ## Documentation
 より詳しいAPIリファレンスや実験結果については、[ドキュメント](https://optimalscale.github.io/LMFlow/)を参照してください。
@@ -338,7 +338,7 @@ cd -
 モデルによって生成された結果は確率モデルに基づいており、このパイプラインと直接関係があるわけではありません。結果の正確性、信頼性、適用性、法的性質は、このパイプラインによって保証されるものではありません。したがって、ユーザーは結果に関連するリスクと責任を認識し、法的、商業的、技術的なアドバイスを受けてから、モデル生成の結果に依存する必要があります。このパイプラインは、ユーザーがモデル生成の結果に依存することによって生じる直接的、間接的、特別、偶発的、または結果的な損害について、一切責任を負いません。
 
 ## Support
-何かお困りのことがございましたら、[Github](https://github.com/OptimalScale/LMFlow)のissueにご投稿ください。
+何かお困りのことがございましたら、[GitHub](https://github.com/OptimalScale/LMFlow)のissueにご投稿ください。
 
 ## Contributors
 <a href="https://github.com/OptimalScale/LMFlow/graphs/contributors">
