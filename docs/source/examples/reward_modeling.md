@@ -98,10 +98,15 @@ The reward modeling script can be used by
 
 ## Examples
 
-We train reward models using the hh-rlhf dataset with three models, LLaMA-7B, GPT-NEO-2.7B, and GPT-NEO-1.3B. The model is first supervised fine-tuned with the training dataset. The reward modeling is trained using the 112K training samples and is evaluated on the 12.5 test samples. 
+We train reward models using the hh-rlhf dataset with four models, LLaMA-13B LLaMA-7B, GPT-NEO-2.7B, and GPT-NEO-1.3B. The model is first supervised fine-tuned with the training dataset. The reward modeling is trained using the 112K training samples and is evaluated on the 12.5 test samples. 
+
+The SFT step appears to be crucial, and the number of epochs during SFT can make a difference. The most successful model we obtained was initialized from LLaMA-13B, which underwent SFT on the training dataset for 2 epochs. For reward modeling, we utilize LoRA with a rank of 16. Surprisingly, increasing the LoRA rank to 32 or even 128 does not result in a significant improvement in evaluation accuracy. Moreover, we find that the choice of batch size does not have a significant impact on the training results. Additionally, we observe slight overfitting of the model during the second epoch of reward modeling.
 
 | Model | Eval Accuracy | Training record |Remarks |
 | :----:| :----: | :----: |:----: |
+| LLaMA-13B | 84.55% | See https://wandb.ai/ianz2020/huggingface/runs/bg677mxa | RM from LLaMA with 2 epochs of SFT |
+| LLaMA-13B | 81.80% | See https://wandb.ai/ianz2020/huggingface/runs/ka9v1ywd | RM from LLaMA with 1 epoch of SFT |
+| LLaMA-13B | 71.64% | See https://wandb.ai/ianz2020/huggingface/runs/lntwmcyd | RM from LLaMA without SFT |
 | LLaMA-7B | 79.52% | See  https://wandb.ai/weixiong5237/huggingface/runs/t3uwm8yp | - |
 | LLaMA-7B | 71.64% | See  https://wandb.ai/weixiong5237/huggingface/runs/p2ju3r1a | RM from LLaMA without SFT |
 | GPT-NEO-2.7B | 69.24% | See https://wandb.ai/weixiong5237/huggingface/runs/8fc1rcf8 | - |
