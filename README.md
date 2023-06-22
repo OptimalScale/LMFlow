@@ -413,7 +413,7 @@ If you wish to use the codes and models included in this project for commercial 
 </a>
 
 ## Citation
-If you find this repository useful, please consider giving ⭐ and citing:
+If you find this repository useful, please consider giving ⭐ and citing our [paper](https://arxiv.org/abs/2306.12420):
 
 ```
 @misc{lmflow,
