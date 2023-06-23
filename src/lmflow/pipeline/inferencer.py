@@ -140,7 +140,7 @@ class Inferencer(BasePipeline):
 
             outputs = model.inference(
                 inputs,
-                max_new_tokens=self.inferencer_args.max_new_tokens,
+                max_new_tokens=max_new_tokens,
                 temperature=self.inferencer_args.temperature,
                 repetition_penalty=self.inferencer_args.repetition_penalty,
                 do_sample=self.inferencer_args.do_sample,
