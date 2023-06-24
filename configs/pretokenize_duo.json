@@ -1,0 +1,6 @@
+{
+"model_name_or_path": "huggyllama/llama-7b",
+"dataset_path": "./data/translations_oscar_json",
+"block_size": 2048,
+"preprocessing_num_workers": 96,
+}

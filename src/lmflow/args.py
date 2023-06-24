@@ -271,6 +271,9 @@ class DatasetArguments:
     is_custom_dataset: Optional[bool] = field(
         default=False, metadata={"help": "whether to use custom data"}
     )
+    backend: Optional[str] = field(
+        default="huggingface", metadata={"help": "which dataset backend to use"}
+    )
     customized_cache_dir: Optional[str] = field(
         default=".cache/llm-ft/datasets",
         metadata={"help": "Where do you want to store the customized dataset caches"},

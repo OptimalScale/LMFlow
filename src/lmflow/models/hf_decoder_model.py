@@ -340,13 +340,13 @@ class HFDecoderModel(DecoderModel, Tunable):
         # First we tokenize all the texts.
         if dataset.get_backend() == "preprocessed":
             return dataset
-        if dataset.get_backend() != "huggingface":
-            raise NotImplementedError(
-                "tokenization of datasets with non-huggingface backend are"
-                "not supported yet"
-            )
+        #if dataset.get_backend() != "huggingface":
+        #    raise NotImplementedError(
+        #        "tokenization of datasets with non-huggingface backend are"
+        #        "not supported yet"
+        #    )
 
-        dataset_type = dataset.get_type()
+        dataset_type = "text_only" # dataset.get_type()
 
         # Requires three types of information for tokenizing different datasets
         #   1) Which fields require tokenization, e.g.

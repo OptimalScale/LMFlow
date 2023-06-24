@@ -18,6 +18,7 @@ import sys
 import os
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from transformers import HfArgumentParser
+from pathlib import Path
 
 from lmflow.args import (
     ModelArguments,
@@ -28,7 +29,7 @@ from lmflow.args import (
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.auto_model import AutoModel
 from lmflow.pipeline.auto_pipeline import AutoPipeline
-
+from datasets import concatenate_datasets
 
 def main():
 	# Parses arguments
@@ -36,7 +37,7 @@ def main():
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
     parser = HfArgumentParser((ModelArguments, DatasetArguments, PipelineArguments))
-    if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
+    if len(sys.argv) >= 2 and sys.argv[1].endswith(".json"):
         # If we pass only one argument to the script and it's the path to a json file,
         # let's parse it to get our arguments.
         model_args, data_args, pipeline_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
@@ -52,13 +53,17 @@ def main():
     )
     dataset = Dataset(data_args)
     model = AutoModel.get_model(model_args)
-
-    tokenized_dataset = model.tokenize(dataset)
-    lm_dataset = finetuner.group_text(
-        tokenized_dataset,
-        model_max_length=model.get_max_length(),
-    )
-    lm_dataset.get_backend_dataset().save_to_disk("data/preprocessed")
+    dataset.backend_dataset = dataset.backend_dataset.map(lambda x: {"text": x["text"] + "<|endoftext|>"}, num_proc=96)
+    datasets = list([dataset.get_backend_dataset().shard(num_shards=20, index=i) for i in range(20)])
+    for i, ds in enumerate(datasets):
+        tokenized_dataset = model.tokenize(ds)
+        datasets[i] = finetuner.group_text(
+            tokenized_dataset,
+            model_max_length=model.get_max_length(),
+        )
+        print("completed shard " + i)
+    ds = concatenate_datasets(datasets)
+    ds.push_to_hub(f"bjoernp/{Path(data_args.dataset_path).name}_processed", token=sys.argv[2])
 
 
 if __name__ == '__main__':

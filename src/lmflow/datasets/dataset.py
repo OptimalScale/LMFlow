@@ -55,7 +55,8 @@ class Dataset:
     """
     def __init__(self, data_args=None, backend: str="huggingface", *args, **kwargs):
         self.data_args = data_args
-        self.backend = backend
+        self.backend = "hf_hub"
+        backend = self.backend
         self.backend_dataset = None
         self.type = None        # Original type of the dataset
         self.dataset_path = data_args.dataset_path
@@ -110,6 +111,8 @@ class Dataset:
             pass
         elif backend == "preprocessed":
             self.backend_dataset = load_from_disk(self.dataset_path, split="train")
+        elif backend == "hf_hub":
+            self.backend_dataset = load_dataset(self.dataset_path, split="train", cache_dir="/opt/dlami/nvme/hf_cache/")
         else:
             raise NotImplementedError(f'Unsupported dataset backend "{backend}"')
 
@@ -320,7 +323,7 @@ class Dataset:
         """
         # If the dataset uses Hugging Face as the backend, 
         # call the `map()` function of the Hugging Face backend dataset
-        if self.backend == "huggingface":
+        if self.backend == "huggingface" or self.backend =="hf_hub":
             # Set the mapped dataset as the backend dataset of the current dataset
             mapped_backend_dataset = self.backend_dataset.map(*args, **kwargs)
             self.backend_dataset = mapped_backend_dataset

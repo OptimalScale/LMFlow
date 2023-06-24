@@ -1,0 +1,8 @@
+{
+"model_name_or_path": "huggyllama/llama-7b",
+"dataset_path": "bjoernp/oscar_de_json",
+"backend": "hf_hub",
+"block_size": 2048,
+"preprocessing_num_workers": 16,
+"output_dir": "none"
+}
