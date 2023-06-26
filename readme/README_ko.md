@@ -363,7 +363,7 @@ cd -
 ```bibtex
 @misc{lmflow,
   author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
-  title = {LMFlow: An Extensible Toolkit for finetune and Inference of Large Foundation Models},
+  title = {LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models},
   year = {2023},
   publisher = {GitHub},
   journal = {GitHub repository},
