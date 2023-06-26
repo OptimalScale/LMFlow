@@ -23,7 +23,7 @@
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
 [![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/04/ibvpAk.jpeg)
 
-LMFlow는 Large Machine Learning Model의 finetune을 위해 확장가능하고, 편리하며, 효율적인 툴입니다.  유저 친화적이고, 빠르며, 신뢰할 수 있도록 모두를 위해 설계되었습니다.
+LMFlow는 Large Machine Learning Model의 파인튜닝을 위해 확장가능한 편리하고 효율적인 툴입니다. 빠르고, 유저 친화적이고, 모두가 신뢰할 수 있도록 설계되었습니다.
 
 LMflow의 비전을 [vision](https://github.com/OptimalScale/LMFlow#vision) 확인해주세요.
 
@@ -43,11 +43,11 @@ LMflow의 비전을 [vision](https://github.com/OptimalScale/LMFlow#vision) 확�
 
 ## Demos
 
-### 현재 체크포인트 다운로드 서비스의 capacity를 초과했고, 서비스 capacity를 늘리기 위해 하나의 서버를 더 할당했습니다. 
-"_too many HTTP requests_", 라는 에러가 발생한다면 몇 분 정도 기다렸다가 다시 시도해주기 바랍니다.
+### 현재 체크포인트 다운로드 서비스 capacity를 초과해서 서비스 capacity를 늘리기 위해 하나의 서버를 추가로 할당했습니다. 
+"_too many HTTP requests_"라는 에러가 발생한다면 몇 분 정도 기다렸다가 다시 시도해주기 바랍니다.
 
 LMflow는 다음과 같은 네 개의 데모를 제공합니다.
-- 온라인 서비스: 직접 코드 실행 없이 저희 모델을 시도해보고 싶으신 분들을 위해서 instruction-tuned LLaMA-7B와 LLaMA-33B 배포하였습니다.
+- 온라인 서비스: 코드실행 없이 저희의 모델을 실행해보시고 싶으신 분들을 위해서 instruction-tuned LLaMA-7B와 LLaMA-33B 배포하였습니다.
 - 코랩 챗봇 (shell): 쉘 기반의 상호작용 챗봇으로 코랩에서 챗봇을 쉽게 배포해보실 수 있습니다.
 - 코랩 챗봇 (web): 웹 기반의 상호작용 챗봇으로 코랩에서 자신만의 챗봇을 쉽게 배포해보실 수 있습니다.
 - 로컬 배포: 로컬에서 모델/챗봇을 배포할 수 있는 방법 또한 제공하기 때문에 충분한 리소스가 있으시다면 위의 세 가지 방법보다 훨씬 큰 모델을 배포해보실 수 있습니다.
@@ -59,14 +59,14 @@ LMflow는 다음과 같은 네 개의 데모를 제공합니다.
 
 
 ### Online Service
-> LMflow의 [웹 서비스를](https://lmflow.com/) 방문해주시면 감사하겠습니다. LMflow는 LLaMA-7B-tuned와 LLaMA-33B-tuned를 미리보기로 배포해 놓았습니다. 가끔 웹사이트 트래픽이 많은 경우에 웹사이트가 응답하지 못할 수도 있습니다. 웹 서비스의 `Local Deploy`를 참조하여 배포해보실 수도 있습니다.
+> LMflow의 [웹 서비스를](https://lmflow.com/) 방문해주시면 감사하겠습니다. LMflow의 웹사이트에 LLaMA-7B-tuned와 LLaMA-33B-tuned를 미리 배포해 놓았습니다.  웹사이트 트래픽이 많을 경우, 웹사이트가 적절하게 응답하지 않을 수 있지만, 웹 서비스의 `Local Deploy`를 참조하여 직접 배포해보실 수도 있습니다.
 
 ### Colab chatbot(shell)
 <p align="center" width="100%">
 <img src="../assets/colab-shell-chatbot-demo.png">
 </p>
 
-LMflow는 구글 코랩의 T4/P100/V100 GPU를 이용한 간단한 쉘 챗봇 데모를 제공합니다. 데모로 제공되는 `gpt-neo-2.7b` 모델은 영어로만 사용하실 수 있고, 다른 LLM 모델에 비해 성능이 좋지 않은 데모용 모델임을 참고해주세요. 사용자는 LMFlow을 통해 자신의 데이터셋에 모델을 파인튜닝하고 더 나은 성능을 얻을 수 있습니다. 또한, 🤗 [huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)에서 제공하는 다른 decoder-only 모델들 또한 다음과 같이 파인튜닝 해보실 수 있습니다.:
+LMflow는 구글 코랩의 T4/P100/V100 GPU를 이용한 간단한 쉘 챗봇 데모를 제공합니다. 데모로 제공되는 `gpt-neo-2.7b` 모델은 영어로만 사용하실 수 있고, 다른 LLM 모델에 비해 성능이 뛰어나지 않은 데모용 모델임으로 참고만 해주시면 감사하겠습니다. 유저는 LMFlow을 통해 자신의 데이터셋에 모델을 파인튜닝하고 더 나은 성능을 얻을 수 있습니다. 또한, 🤗[huggingface](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)에서 제공하는 다른 decoder-only 모델들 또한 다음과 같이 파인튜닝 해보실 수 있습니다.
 
 ```sh
 ./scripts/run_chatbot.sh {another-model-name}
@@ -76,7 +76,7 @@ LMflow는 구글 코랩의 T4/P100/V100 GPU를 이용한 간단한 쉘 챗봇 �
 
 
 ### Colab chatbot(web)
-LMflow는 구글 코랩의 T4/P100/V100 GPU를 이용한 간단한 웹 데모 챗봇을 제공합니다. 데모로 제공되는 `gpt-neo-2.7b` 모델은 영어로만 사용하실 수 있고, 다른 LLM 모델에 비해 성능이 좋지 않은 데모용 모델임을 참고해주세요.
+LMflow는 구글 코랩의 T4/P100/V100 GPU를 이용한 간단한 웹 데모 챗봇을 제공합니다. 데모로 제공되는 `gpt-neo-2.7b` 모델은 영어로만 사용하실 수 있고, 다른 LLM 모델에 비해 성능이 뛰어나지 않은 데모용 모델임으로 참고만 해주시면 감사하겠습니다.
 
 ### Local Deploy
 충분한 로컬 리소스가 있고, 모델을 로컬에서 배포하고 싶어하는 유저를 위해, LMflow는 백엔드(다른 프론트엔드에 서비스를 제공하기 위해)와 interactive 웹 프론트엔드(직접 대화할 수 있게 해주는)의 launch를 위한 플라스크 서버를 쉽게 실행할 수 있는 방법을 제공합니다. 
@@ -131,7 +131,7 @@ LMflow는 학습된 체크포인트들을 통해 추가 학습 및 추론하실 
 
 ## Supported Models
 
-🤗 huggingface의 모든 [디코더 모델](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)에 LMflow를 원활하게 적용해보실 수 있습니다. LLaMA, GPT2, GPT-Neo, Galactica 등은 완벽하게 테스트 완료하였습니다. LMflow는 곧 인코더 모델도 지원할 예정입니다.
+🤗 huggingface의 모든 [디코더 모델](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)에 LMflow를 원활하게 적용해보실 수 있습니다. LLaMA, GPT2, GPT-Neo, Galactica 등은 완벽하게 테스트 완료되었습니다. 추후 LMflow는 인코더 모델도 지원할 예정입니다.
 
 
 ## 1.Setup
@@ -155,7 +155,7 @@ bash download.sh all
 cd -
 ```
 
-다음 형식으로 간단히 변환하면 자신의 데이터셋을 모델학습에 사용할 수 있습니다.:
+다음 형식으로 간단히 변환하면 자신의 데이터셋을 모델학습에 사용할 수 있습니다.
 ```json
 {
   "type": "text2text",
@@ -231,7 +231,7 @@ deepspeed ${deepspeed_args} \
 python examples/finetune.py -h
 ```
 
-참고: 훈련 데이터 세트가 작은 경우 ``block_size`` 의 값을 낮춰야합니다. 그렇지 않으면 Epoch Iteration에서 샘플을 사용할 수 없게됩니다.
+참고로 훈련 데이터 세트가 작은 경우 ``block_size`` 의 값을 낮춰야만 합니다. 그렇지 않으면 Epoch Iteration에서 샘플을 사용할 수 없게됩니다.
 
 파인튜닝 된 모델 체크포인트는 위의 예시에서 `--output_dir`로 지정된 인자에 저장됩니다. 
 이 경우에는`output_models/finetune` 입니다.
@@ -330,9 +330,9 @@ cd -
 
 우리의 코드 repository는 단순한 모델이 아니며 완전한 학습 워크 플로, 모델 최적화 및 테스트 도구를 포함합니다. 대화 모델, 질문/답변 모델 및 기타 텍스트 생성 모델을 비롯한 다양한 유형의 언어 모델을 구축하는 데 사용할 수 있습니다.
 
-또한 LMflow는 LLM 공유 플랫폼을 만들어 사람들이 체크포인트와 경험을 공유하여 커뮤니티의 기술을 함께 개선할 수 있는 개방적이고 민주적인 LLM 공유 플랫폼을 만들고자합니다. LLM에 관심있는 누구나 참여하여 친근하고 개방적인 커뮤니티를 만들어 가는 것을 환영합니다!
+또한 LMflow는 LLM 공유 플랫폼을 만들어 사람들이 체크포인트와 경험을 공유하여 커뮤니티의 기술을 함께 개선할 수 있는 개방적이고 민주적인 LLM 공유 플랫폼을 만들고자합니다. LLM에 관심있는 누구나 참여하여 친근하고 개방적인 커뮤니티를 만들어 가고자 합니다.
 
-초보자든 전문가든 상관없이 이 플랫폼에서 혜택을 받을 수 있을 것이라고 믿습니다. 함께 활기차고 혁신적인 LLM 커뮤니티를 만들어 봅시다!
+초보자든 전문가든 상관없이 이 플랫폼에서 많은 혜택을 받을 수 있을 것이라고 믿습니다. 함께 활기차고 혁신적인 LLM 커뮤니티를 만들어 봅시다!
 
 [![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/u9VJNpzhvA)
 [![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1s6egx12s-THlwHuCjF6~JGKmx7JoJPA)
@@ -340,9 +340,11 @@ cd -
 
 ## Disclaimer
 
-이 패키지는 대형 모델 튜닝을 위한 간소화 된 사용자 친화적인 파이프 라인을 제공하는 것을 목표로합니다. 그 기능은 참조 용도로 제공되며 사용자가 사용하도록 의도되었습니다. 그러나 데이터 및 사전 학습 된 모델의 준비 책임은 사용자에게 달려 있음을 명심해야합니다. 이 패키지는 사용자 준비 구성 요소의 정확성, 완전성, 적용 가능성 또는 법적 적합성을 보증하지 않습니다. 사용자는 모델 및 데이터의 준비와 관련된 모든 위험과 책임을 인식하고 가정하고 이 패키지를 활용하기 전에 법적, 상업적 및 기술적 자문을 받아야합니다. 파이프 라인은 사용자의 잘못된 데이터 및 사전 학습 된 모델의 준비로 인한 어떠한 직접적인, 간접적인, 특수, 부수적 또는 결과적 손해에 대해서도 책임을 지지 않습니다.
+이 패키지는 대형 모델 튜닝을 위한 간소화 된 사용자 친화적인 파이프 라인을 제공하는 것을 목표로합니다. 따라서 어떠한 법적인 책임도 지지 않습니다.
+그 기능은 참조 용도로 제공되며 사용자가 사용하도록 의도되었습니다. 그러나 데이터 및 사전 학습된 모델과 관련된 책임은 사용자에게 달려있습니다. 이 패키지는 사용자 준비 구성 요소의 정확성, 완전성, 적용 가능성 또는 법적 적합성을 보증하지 않습니다. 사용자는 모델 및 데이터의 준비와 관련된 모든 위험과 책임을 인식하고 가정하고 이 패키지를 활용하기 전에 법적, 상업적 및 기술적 자문을 받아야만 합니다. 파이프 라인은 사용자의 잘못된 데이터 및 사전 학습 된 모델의 준비로 인한 어떠한 직접적인, 간접적인, 특수, 부수적 또는 결과적 손해에 대해서도 책임을 지지 않습니다.
 
-영어와 중국어 버전 모두를 포함하는 점검 포인트는 연구 목적으로만 제공됩니다. 이러한 체크 포인트에 포함 된 교육 데이터에는 ChatGPT 언어 모델에서 생성 된 결과가 포함됩니다. 이러한 체크 포인트의 배포 또는 사용을 보증하거나 장려하지 않습니다. 이러한 체크 포인트의 사용자는 올바르고 적절하게 사용되었는지 확인하는 것은 전적으로 사용자의 책임입니다.
+영어와 중국어 버전 모두를 포함하는 점검 포인트는 연구 목적으로만 제공됩니다. 
+이러한 체크 포인트에 포함 된 교육 데이터에는 ChatGPT 언어 모델에서 생성 된 결과가 포함됩니다. 이러한 체크 포인트의 배포 또는 사용을 보증하거나 장려하지 않습니다. 이러한 체크 포인트의 사용자는 올바르고 적절하게 사용되었는지 확인하는 것은 전적으로 사용자의 책임입니다.
 
 또한 모델에서 생성 된 결과는 확률 모델에 기반하며 직접적으로 이 파이프 라인과 관련이 없음을 강조하는 것이 중요합니다. 결과의 정확성, 신뢰성, 적용 가능성 및 법적 적합성은 이 파이프 라인에서 보증되지 않습니다. 따라서 사용자는 결과와 관련된 위험과 책임도 인식해야하며 모델에서 생성 된 결과에 의존하기 전에 법적, 상업적 및 기술적 자문을 받아야합니다. 파이프 라인은 사용자가 모델에서 생성 한 결과에 의존하여 발생하는 어떠한 직접적인, 간접적인, 특수, 부수적 또는 결과적 손해에 대해서도 책임지지 않습니다.
 
@@ -361,7 +363,7 @@ cd -
 ```bibtex
 @misc{lmflow,
   author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
-  title = {LMFlow: An Extensible Toolkit for 파인튜닝 and Inference of Large Foundation Models},
+  title = {LMFlow: An Extensible Toolkit for finetune and Inference of Large Foundation Models},
   year = {2023},
   publisher = {GitHub},
   journal = {GitHub repository},
