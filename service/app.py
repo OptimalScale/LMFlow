@@ -66,20 +66,21 @@ def stream_generate(inputs,context_len = 1024, max_new_tokens=128, end_string="#
     past_key_values = out = None
     flag_stop = False
     for i in range(0, max_new_tokens):
-        if i == 0:
-            with torch.no_grad():
-                out = model.backend_model(torch.as_tensor([input_ids], device=local_rank), use_cache=True)
-            logits = out.logits    
-            past_key_values = out.past_key_values
-        else:
-            with torch.no_grad():
-                out = model.backend_model(
-                    input_ids=torch.as_tensor([[token]], device=local_rank),
-                    use_cache=True,
-                    past_key_values=past_key_values,
-                )         
-            logits = out.logits
-            past_key_values = out.past_key_values
+        with accelerator.autocast():
+            if i == 0:
+                with torch.no_grad():
+                    out = model.backend_model(torch.as_tensor([input_ids], device=local_rank), use_cache=True)
+                logits = out.logits    
+                past_key_values = out.past_key_values
+            else:
+                with torch.no_grad():
+                    out = model.backend_model(
+                        input_ids=torch.as_tensor([[token]], device=local_rank),
+                        use_cache=True,
+                        past_key_values=past_key_values,
+                    )         
+                logits = out.logits
+                past_key_values = out.past_key_values
 
         last_token_logits = logits[0, -1, :]
         token = int(torch.argmax(last_token_logits))
