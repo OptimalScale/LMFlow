@@ -84,18 +84,6 @@ class ChatbotArguments:
             "help": "end string mark of the chatbot's output"
         },
     )
-    max_new_tokens: Optional[int] = field(
-        default=200,
-        metadata={
-            "help": "maximum number of generated tokens"
-        },
-    )
-    temperature: Optional[float] = field(
-        default=0.7,
-        metadata={
-            "help": "higher this value, more random the model output"
-        },
-    )
 
 
 pipeline_name = "inferencer"
@@ -109,6 +97,7 @@ parser = HfArgumentParser((
 model_args, pipeline_args, chatbot_args = (
     parser.parse_args_into_dataclasses()
 )
+inferencer_args = pipeline_args
 
 with open (pipeline_args.deepspeed, "r") as f:
     ds_config = json.load(f)
@@ -171,8 +160,8 @@ def chat_stream(query: str, history= None, **kwargs):
         "instances": [ { "text": context_ } ]
     })
     print(context_)
-    for response, flag_break in inferencer.stream_inference(context=context_, model=model, max_new_tokens=chatbot_args.max_new_tokens, 
-                                    token_per_step=token_per_step, temperature=chatbot_args.temperature,
+    for response, flag_break in inferencer.stream_inference(context=context_, model=model, max_new_tokens=inferencer_args.max_new_tokens, 
+                                    token_per_step=token_per_step, temperature=inferencer_args.temperature,
                                     end_string=end_string, input_dataset=input_dataset):
         delta = response[print_index:]
         seq = response
