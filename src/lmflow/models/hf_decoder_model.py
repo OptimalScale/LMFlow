@@ -252,7 +252,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 dschf = HfDeepSpeedConfig(ds_config)
                 peft_model_id = model_args.lora_model_path
                 # NOTE: Currently offload is not supported by llama
-                if "llama" in model_args.model_name_or_path and model_args.use_ram_optimized_load:
+                if config.model_type == "llama" and model_args.use_ram_optimized_load:
                     logger.warning(
                         "llama does not support RAM optimized load. Automatically"
                         " use original load instead."
