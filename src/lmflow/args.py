@@ -121,7 +121,7 @@ class ModelArguments:
                 "Model architecture type, e.g. \"decoder_only\","
                 " \"encoder_decoder\""
             ),
-            "choices": ["decoder_only", "encoder_decoder", "text_regression"],
+            "choices": ["decoder_only", "encoder_decoder", "text_regression", "vision_encoder_decoder"],
         },
     )
     config_name: Optional[str] = field(
@@ -626,8 +626,6 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
-        
-
 
 @dataclass
 class RaftAlignerArguments(TrainingArguments):
@@ -719,6 +717,8 @@ class BenchmarkingArguments:
                     "byte_perplexity", "bits_per_byte"],
         },
     )
+
+
 
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,

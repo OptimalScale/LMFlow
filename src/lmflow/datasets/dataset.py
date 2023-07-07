@@ -30,6 +30,7 @@ DATASET_TYPES = [
     "text_only",
     "text2text",
     "float_only",
+    "image_text",
 ]
 
 KEY_TYPE = "type"
@@ -84,7 +85,6 @@ class Dataset:
                             f'   ]\n'
                             '}'
                         )
-
                     if self.type is None:
                         self.type = json_data[KEY_TYPE]
                     elif self.type != json_data[KEY_TYPE]:
