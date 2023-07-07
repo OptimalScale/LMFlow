@@ -59,13 +59,14 @@ logger = logging.getLogger(__name__)
 MODELS_SUPPORT_FLASH_ATTENTION = [
     "LlamaForCausalLM",
     "GPTNeoForCausalLM",
+    "GPT2ForCausalLM",
     "BloomForCausalLM"
 ]
 
-GPU_SUPPORT_FLASH_ATTENTION = [
-    "A100",
-    "A40"
-]
+GPU_SUPPORT_FLASH_ATTENTION = {
+    "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
+    "A40": ["GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
+}
 
 class HFDecoderModel(DecoderModel, Tunable):
     r"""
@@ -162,6 +163,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                 logger.info(f"New config: {config}")
 
         # Whether use flash attention
+        
+        supported_gpu_device = None
+        for gpu in GPU_SUPPORT_FLASH_ATTENTION:
+            if gpu in torch.cuda.get_device_name():
+                supported_gpu_device = gpu
+                
         if model_args.use_flash_attention:
             if not any(model_supported in config.architectures
                        for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
@@ -169,37 +176,40 @@ class HFDecoderModel(DecoderModel, Tunable):
                     f"Model \"{config.architectures}\" does not support"
                     " flash attention, use normal attention layer instead"
                 )
-            elif not any(gpu in torch.cuda.get_device_name() for gpu in GPU_SUPPORT_FLASH_ATTENTION):
+            elif supported_gpu_device is None:
                 logger.warning(
                     f"Your decice \"{torch.cuda.get_device_name()}\""
                     " does not support flash attention, it will"
                     " automatically use normal attention layer"
                 )
             else:
+                
+                supported_models = GPU_SUPPORT_FLASH_ATTENTION[supported_gpu_device]
+                
                 config.use_cache = False
-                if "LlamaForCausalLM" in config.architectures:
+                if "LlamaForCausalLM" in config.architectures and "LlamaForCausalLM" in supported_models:
                     from lmflow.utils.flash_attention.llama_flash_attention import (
                         replace_llama_attn_with_flash_attn,
                     )
                     replace_llama_attn_with_flash_attn()
-                elif "GPTNeoForCausalLM" in config.architectures:
+                elif "GPTNeoForCausalLM" in config.architectures and "GPTNeoForCausalLM" in supported_models:
                     from lmflow.utils.flash_attention.gpt_neo_flash_attention import (
                         replace_gpt_neo_attn_with_flash_attn,
                     )
                     replace_gpt_neo_attn_with_flash_attn()
-                elif "GPT2ForCausalLM" in config.architectures:
+                elif "GPT2ForCausalLM" in config.architectures and "GPT2ForCausalLM" in supported_models:
                     from lmflow.utils.flash_attention.gpt2_flash_attention import (
                         replace_gpt2_attn_with_flash_attn,
                     )
                     replace_gpt2_attn_with_flash_attn()
-                elif "BloomForCausalLM" in config.architectures:
+                elif "BloomForCausalLM" in config.architectures and "BloomForCausalLM" in supported_models:
                     from lmflow.utils.flash_attention.bloom_flash_attention import (
                         replace_bloom_attn_with_flash_attn
                     )
                     replace_bloom_attn_with_flash_attn()
                 else:
                     raise ValueError(
-                        f"Model \"{config.architectures}\" does not support"
+                        f"Model \"{config.architectures}\" with GPU {supported_gpu_device} does not support"
                         " flash attention, use normal attention layer instead"
                     )
                     
