@@ -184,17 +184,15 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 # model = CustomAutoVision2SeqModel.from_pretrained(
                 #     model_args.model_name_or_path,
                 # )
-                vision_config = Blip2VisionConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                qformer_config = Blip2QFormerConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                text_config = LlamaConfig.from_pretrained("/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/")
+                vision_config = Blip2VisionConfig.from_pretrained(model_args.model_name_or_path)
+                qformer_config = Blip2QFormerConfig.from_pretrained(model_args.model_name_or_path)
+                text_config = LlamaConfig.from_pretrained(model_args.llm_model_name_or_path)
                 config = Blip2Config.from_vision_qformer_text_configs(vision_config, qformer_config, text_config)
                 model = CustomAutoVision2SeqModel(config)
-                model.vision_model_from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                model.qformer_from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                model.language_model_from_pretrained("/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/")
-                state_dict = torch.load(
-                    "/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/minigpt4/prerained_minigpt4_7b_converted.pth",
-                    map_location="cpu")
+                model.vision_model_from_pretrained(model_args.model_name_or_path)
+                model.qformer_from_pretrained(model_args.model_name_or_path)
+                model.language_model_from_pretrained(model_args.llm_model_name_or_path)
+                state_dict = torch.load(model_args.checkpoint_path, map_location="cpu")
                 model.load_state_dict(state_dict, strict=False)
                 self.backend_model = model
 

@@ -214,6 +214,18 @@ class ModelArguments:
         default=False,
         metadata={"help": "flag for the model from huggingface or not"}
     )
+    checkpoint_path: str = field(
+        default=None,
+        metadata={"help": "path for model checkpoint"}
+    )
+    llm_model_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "llm model in multi-modality model"
+            )
+        },
+    )
 
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
