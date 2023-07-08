@@ -2,6 +2,7 @@
 # coding=utf-8
 """The Inferencer class simplifies the process of model inferencing."""
 
+import copy
 import os
 import torch
 import wandb
@@ -21,7 +22,6 @@ from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.utils.data_utils import (set_random_seed, batchlize,
                                      answer_extraction, process_image_flag)
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
-
 def rstrip_partial_utf8(string):
     return string.replace("\ufffd", "")
 
@@ -156,16 +156,27 @@ class Inferencer(BasePipeline):
                 input['text'] = prompt_structure.format(input=input['text'])
             
             if remove_image_flag:
-                input['text'], image_token_indexes = process_image_flag(input["text"])
-
-            if self.inferencer_args.device == "gpu":
+                input['text'] = input['text'].split("<ImageHere>")
+                new_input = copy.deepcopy(input)
+                new_input['text'] = new_input['text'][-1]
+                input['text'] = input['text'][0]
                 inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
-            elif self.inferencer_args.device == "cpu":
-                inputs = model.encode(input, return_tensors="pt").to(device='cpu')
+                new_inputs = model.encode(new_input, return_tensors="pt").to(device=self.local_rank)
+                image_token_indexes = [inputs["input_ids"].shape[1]]
+                inputs["input_ids"] = torch.cat([inputs["input_ids"],
+                                                 new_inputs["input_ids"]], dim=1) 
+                inputs["attention_mask"] = torch.cat([inputs["attention_mask"],
+                                                      new_inputs["attention_mask"]], dim=1)
+                # input['text'], image_token_indexes = process_image_flag(input["text"])
             else:
-                raise NotImplementedError(
-                    f"device \"{self.inferencer_args.device}\" is not supported"
-                )
+                if self.inferencer_args.device == "gpu":
+                    inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+                elif self.inferencer_args.device == "cpu":
+                    inputs = model.encode(input, return_tensors="pt").to(device='cpu')
+                else:
+                    raise NotImplementedError(
+                        f"device \"{self.inferencer_args.device}\" is not supported"
+                    )
             if remove_image_flag:
                 inputs["image_token_indexes"] = image_token_indexes
 

@@ -3,6 +3,7 @@
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A simple shell to inference the input data.
 """
+from cmath import e
 from dataclasses import dataclass, field
 import logging
 import json
@@ -55,6 +56,12 @@ class ChatbotArguments:
             "help": "task for reasoning",
         }
     )
+    prompt_format: Optional[str] = field(
+        default="None",
+        metadata={
+            "help": "prompt format"
+        }
+    )
 
 
 def main():
@@ -78,7 +85,7 @@ def main():
         tune_strategy='none',
         ds_config=ds_config,
         device=pipeline_args.device,
-        custom_model=True,
+        custom_model=model_args.custom_model,
     )
 
     data_args = DatasetArguments(dataset_path=None)
@@ -113,10 +120,11 @@ def main():
     sep = "###"
 
     end_string = chatbot_args.end_string
-    context = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
-
-    # prompt_structure = chatbot_args.prompt_structure
-    prompt_structure = "{}###Assistant:"
+    if chatbot_args.prompt_format == "mini_gpt":
+        context = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
+    else:
+        context = ""
+    prompt_structure = chatbot_args.prompt_structure
 
     # Load image and input text for reasoning
     if chatbot_args.image_path is not None:
@@ -127,7 +135,9 @@ def main():
     input_text = chatbot_args.input_text
     if chatbot_args.task == "image_caption" and len(input_text) == 0:
         input_text = "a photography of"
-    context += sep + "Human: " + "<Img><ImageHere></Img>"
+    if chatbot_args.prompt_format == "mini_gpt":
+        context += sep + "Human: " + "<Img><ImageHere></Img>"
+    
 
     if chatbot_args.task == "image_caption":
         # single round reasoning
@@ -160,10 +170,11 @@ def main():
                 "instances": [{"images": raw_image,
                             "text":  context,}]
             })
-
-            output_dataset = inferencer.inference(model,
-                                                  input_dataset,
-                                                  remove_image_flag=True)
+            remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
+            output_dataset = inferencer.inference(
+                model,
+                input_dataset,
+                remove_image_flag=remove_image_flag)
             response = output_dataset.backend_dataset['text']
             print(response[0])
             print("\n", end="")

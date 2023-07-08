@@ -17,8 +17,8 @@ from .base_model import BaseModel
 class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
     def __init__(self, config: Blip2Config):
         Blip2ForConditionalGeneration.__init__(self, config)
-    
-    
+
+
     def vision_model_from_pretrained(self, pretrained_path):
         self.vision_model = self.vision_model.from_pretrained(
                                 pretrained_path,
@@ -32,11 +32,12 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
 
     def language_model_from_pretrained(self, pretrained_path):
+        # TODO remove the low resource related loading in the future
         self.language_model = self.language_model.from_pretrained(
                                 pretrained_path,
                                 config=self.config.text_config,
-                                load_in_8bit=self.load_8bit,
-                                torch_dtype=torch.float16)
+                                torch_dtype=torch.float16,
+                                device_map="auto")
 
 
     @torch.no_grad()
@@ -97,7 +98,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         # concatenate query embeddings with prompt embeddings
         inputs_embeds = self.get_input_embeddings()(input_ids)
         inputs_embeds = inputs_embeds.to(language_model_inputs.device)
-        
+
         # concatenate the text embeddings with image embeddings
         inputs_embeds_with_images = []
         attention_mask_with_images = []
@@ -114,7 +115,6 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         inputs_embeds = torch.cat(inputs_embeds_with_images, dim=1)
         attention_mask_with_images.append(attention_mask[:, image_token_indexes[-1]:])
         attention_mask = torch.cat(attention_mask_with_images, dim=1)
-        
         outputs = self.language_model.generate(
             inputs_embeds=inputs_embeds,
             attention_mask=attention_mask,

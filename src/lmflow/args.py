@@ -202,6 +202,10 @@ class ModelArguments:
         default=False,
         metadata={"help": "whether to load int8 quantization for inference"}
     )
+    custom_model: bool = field(
+        default=False,
+        metadata={"help": "flag for the model from huggingface or not"}
+    )
 
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):

@@ -177,28 +177,26 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                     self.backend_model = model_register.from_pretrained(
                         model_args.model_name_or_path,
                     )
-            else:
-                self.backend_model = model_register.from_pretrained(
-                    model_args.model_name_or_path)
             # else:
-                # # model = CustomAutoVision2SeqModel.from_pretrained(
-                # #     model_args.model_name_or_path,
-                # # )
-                # vision_config = Blip2VisionConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                # qformer_config = Blip2QFormerConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                # text_config = LlamaConfig.from_pretrained("/home/qlianab/checkpoints/pretrained_weights/vicuna-7b/")
-                # config = Blip2Config.from_vision_qformer_text_configs(vision_config, qformer_config, text_config)
-                # model = CustomAutoVision2SeqModel(config)
-                # model.vision_model_from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                # model.qformer_from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                # model.language_model_from_pretrained("/home/qlianab/checkpoints/pretrained_weights/vicuna-7b/")
-                # state_dict = torch.load(
-                #     "/home/qlianab/checkpoints/pretrained_weights/minigpt4/prerained_minigpt4_7b_converted.pth",
-                #     map_location="cpu")
-                # model.load_state_dict(state_dict, strict=False)
-                # import pdb; pdb.set_trace()
-                # model.save_pretrained("~/checkpoints/pretrained_weights/minigpt4/pretrained_minigpt4_vicuna-7b_lmflow/")
-                # self.backend_model = model
+            #     self.backend_model = model_register.from_pretrained(
+            #         model_args.model_name_or_path)
+            else:
+                # model = CustomAutoVision2SeqModel.from_pretrained(
+                #     model_args.model_name_or_path,
+                # )
+                vision_config = Blip2VisionConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
+                qformer_config = Blip2QFormerConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
+                text_config = LlamaConfig.from_pretrained("/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/")
+                config = Blip2Config.from_vision_qformer_text_configs(vision_config, qformer_config, text_config)
+                model = CustomAutoVision2SeqModel(config)
+                model.vision_model_from_pretrained("Salesforce/blip2-flan-t5-xxl")
+                model.qformer_from_pretrained("Salesforce/blip2-flan-t5-xxl")
+                model.language_model_from_pretrained("/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/")
+                state_dict = torch.load(
+                    "/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/minigpt4/prerained_minigpt4_7b_converted.pth",
+                    map_location="cpu")
+                model.load_state_dict(state_dict, strict=False)
+                self.backend_model = model
 
             if self.arch_type == "encoder_decoder":
                 tokenizer_register = AutoTokenizer
@@ -213,7 +211,6 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
                 )
-            import pdb; pdb.set_trace()
             if device == "gpu":
                 deepspeed.init_distributed()
                 self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
