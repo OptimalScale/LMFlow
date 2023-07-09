@@ -3,6 +3,7 @@
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A simple shell to inference the input data.
 """
+from cmath import e
 from dataclasses import dataclass, field
 import logging
 import json
@@ -34,7 +35,7 @@ class ChatbotArguments:
         },
     )
     end_string: Optional[str] = field(
-        default="\n\n",
+        default="\n",
         metadata={
             "help": "end string mark of the chatbot's output"
         },
@@ -55,6 +56,12 @@ class ChatbotArguments:
             "help": "task for reasoning",
         }
     )
+    prompt_format: Optional[str] = field(
+        default="None",
+        metadata={
+            "help": "prompt format"
+        }
+    )
 
 
 def main():
@@ -73,12 +80,12 @@ def main():
     inferencer_args = pipeline_args
     with open (pipeline_args.deepspeed, "r") as f:
         ds_config = json.load(f)
-
     model = AutoModel.get_model(
         model_args,
         tune_strategy='none',
         ds_config=ds_config,
         device=pipeline_args.device,
+        custom_model=model_args.custom_model,
     )
 
     data_args = DatasetArguments(dataset_path=None)
@@ -109,22 +116,28 @@ def main():
     #     "You are a helpful assistant who follows the given instructions"
     #     " unconditionally."
     # )
-    context = ""
+
+    sep = "###"
 
     end_string = chatbot_args.end_string
+    if chatbot_args.prompt_format == "mini_gpt":
+        context = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
+    else:
+        context = ""
     prompt_structure = chatbot_args.prompt_structure
-
 
     # Load image and input text for reasoning
     if chatbot_args.image_path is not None:
         raw_image = Image.open(chatbot_args.image_path)
     else:
-        img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg' 
+        img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg'
         raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
     input_text = chatbot_args.input_text
     if chatbot_args.task == "image_caption" and len(input_text) == 0:
         input_text = "a photography of"
-
+    if chatbot_args.prompt_format == "mini_gpt":
+        context += sep + "Human: " + "<Img><ImageHere></Img>"
+    
 
     if chatbot_args.task == "image_caption":
         # single round reasoning
@@ -157,7 +170,11 @@ def main():
                 "instances": [{"images": raw_image,
                             "text":  context,}]
             })
-            output_dataset = inferencer.inference(model, input_dataset)
+            remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
+            output_dataset = inferencer.inference(
+                model,
+                input_dataset,
+                remove_image_flag=remove_image_flag)
             response = output_dataset.backend_dataset['text']
             print(response[0])
             print("\n", end="")

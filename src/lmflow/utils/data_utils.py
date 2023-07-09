@@ -210,3 +210,15 @@ def answer_extraction(response, answer_type=None):   #use this funtion to extrac
     else:
         answer = ""
     return answer
+
+
+def process_image_flag(text, image_flag="<ImageHere>"):
+    texts = text.split(image_flag)
+    if len(texts) > 1:
+        image_token_indexes = [len(text) for text in texts[:-1]]
+    else:
+        image_token_indexes = []
+    # cumsun
+    image_token_indexes = list(np.cumsum(image_token_indexes))
+    texts = "".join(texts)
+    return texts, image_token_indexes

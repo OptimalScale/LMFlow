@@ -83,10 +83,32 @@ class ChatbotArguments:
         },
     )
     end_string: Optional[str] = field(
-        default="\n\n",
+        default="\n",
         metadata={
             "help": "end string mark of the chatbot's output"
         },
+    )
+    image_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": "image path for input image"}
+    )
+    input_text: Optional[str] = field(
+        default="",
+        metadata={
+            "help": "input text for reasoning"}
+    )
+    task: Optional[str] = field(
+        default="image_caption",
+        metadata={
+            "help": "task for reasoning",
+        }
+    )
+    prompt_format: Optional[str] = field(
+        default="None",
+        metadata={
+            "help": "prompt format"
+        }
     )
 
 pipeline_name = "inferencer"
@@ -109,6 +131,7 @@ model = AutoModel.get_model(
     tune_strategy='none',
     ds_config=ds_config,
     device=pipeline_args.device,
+    custom_model=model_args.custom_model,
 )
 
 data_args = DatasetArguments(dataset_path=None)
@@ -151,7 +174,10 @@ def upload_image(gr_image, text_input, chat_state):
     if gr_image is None:
         return None, None, gr.update(interactive=True), chat_state, None
     image_list = []
-    chat_state = ''
+    if chatbot_args.prompt_format == "mini_gpt":
+        chat_state = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
+    else:
+        chat_state = ''
     image = read_img(gr_image)
     image_list.append(image)
     return gr.update(interactive=False), \
@@ -172,6 +198,7 @@ def read_img(image):
 def gradio_ask(user_message, chatbot, chat_state):
     if len(user_message) == 0:
         return gr.update(interactive=True, placeholder='Input should not be empty!'), chatbot, chat_state
+    user_message = prompt_structure.format(input_text=user_message)
     chat_state = chat_state + user_message
 
     chatbot = chatbot + [[user_message, None]]
@@ -184,7 +211,10 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams, temperature):
         "instances": [{"images": image_list[-1],
                         "text": chat_state}]
     })
-    output_dataset = inferencer.inference(model, input_dataset)
+    remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
+
+    output_dataset = inferencer.inference(model, input_dataset, 
+                        remove_image_flag=remove_image_flag)
     response = output_dataset.backend_dataset['text']
     chatbot[-1][-1] = response[0]
     chat_state += response[0]

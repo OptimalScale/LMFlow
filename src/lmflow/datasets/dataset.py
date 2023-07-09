@@ -10,6 +10,7 @@ Face dataset, mapping datasets, and retrieving the backend dataset and arguments
 
 
 # Importing necessary libraries and modules
+from cmath import e
 import json
 from pathlib import Path
 from typing import Optional
@@ -276,7 +277,6 @@ class Dataset:
         if self.backend == "huggingface":
             dict_obj = {}
             dict_obj[KEY_TYPE] = self.get_type()
-
             hf_dict = self.backend_dataset.to_dict()
             dict_obj[KEY_INSTANCES] = []
 
