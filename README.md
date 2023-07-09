@@ -117,7 +117,7 @@ The support of multi-modal training of LMFlow is under development.
 
 |                |  PubMedQA (ID) | MedQA-USMLE (OOD) | MedMCQA (ID) |  Average |
 |:---------:|:--------:|:-----------:|:-------:|:----:|
-| Human (pass)   |  60.0   |     50.0    |         |      |
+| Human (pass)   |     |     60.0    |    50.0     |      |
 | Human (expert) |    78.0   |     87.0    |  90.0   | 85.0 |
 |   |      |              |    |  |
 |  InstructGPT 175B   |   73.2   |     46.0    |  44.0   | 54.4 |
