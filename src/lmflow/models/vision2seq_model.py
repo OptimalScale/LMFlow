@@ -25,11 +25,11 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                                 config=self.config.vision_config)
 
     def qformer_from_pretrained(self, pretrained_path):
-        print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
+        # print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
         self.qformer = self.qformer.from_pretrained(
                                 pretrained_path,
                                 config=self.config.qformer_config)
-        print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
+        # print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
 
     def language_model_from_pretrained(self, pretrained_path):
         # TODO remove the low resource related loading in the future

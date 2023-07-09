@@ -184,18 +184,29 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 # model = CustomAutoVision2SeqModel.from_pretrained(
                 #     model_args.model_name_or_path,
                 # )
-                vision_config = Blip2VisionConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                qformer_config = Blip2QFormerConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                text_config = LlamaConfig.from_pretrained("/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/")
-                config = Blip2Config.from_vision_qformer_text_configs(vision_config, qformer_config, text_config)
+                vision_config = Blip2VisionConfig.from_pretrained(model_args.model_name_or_path)
+                qformer_config = Blip2QFormerConfig.from_pretrained(model_args.model_name_or_path)
+                if model_args.vis_llm_decoder_model is not None:
+                    text_config = LlamaConfig.from_pretrained(model_args.vis_llm_decoder_model)
+                else:
+                    raise ValueError("--vis_llm_decoder_model is required for minigpt4")
+                config = Blip2Config.from_vision_qformer_text_configs(
+                    vision_config,
+                    qformer_config,
+                    text_config
+                )
                 model = CustomAutoVision2SeqModel(config)
-                model.vision_model_from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                model.qformer_from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                model.language_model_from_pretrained("/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/")
-                state_dict = torch.load(
-                    "/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/minigpt4/prerained_minigpt4_7b_converted.pth",
-                    map_location="cpu")
-                model.load_state_dict(state_dict, strict=False)
+                model.vision_model_from_pretrained(model_args.model_name_or_path)
+                model.qformer_from_pretrained(model_args.model_name_or_path)
+                model.language_model_from_pretrained(model_args.vis_llm_decoder_model)
+                if model_args.vis_model_checkpoint_path is not None:
+                    state_dict = torch.load(
+                        model_args.vis_model_checkpoint_path,
+                        map_location="cpu"
+                    )
+                    model.load_state_dict(state_dict, strict=False)
+                # else:
+                #     raise ValueError("--vis_model_checkpoint_path is required for minigpt4")
                 self.backend_model = model
 
             if self.arch_type == "encoder_decoder":
