@@ -225,6 +225,13 @@ class ModelArguments:
                 "llm model in multi-modality model"
             )
         },
+    vis_llm_decoder_model: str = field(
+        default=None,
+        metadata={"help": "TEMPORARY: visual models like minigpt4's decoder llm model"}
+    )
+    vis_model_checkpoint_path: str = field(
+        default=None,
+        metadata={"help": "TEMPORARY: visual models' checkpoint for minigpt4"}
     )
 
     def __post_init__(self):
