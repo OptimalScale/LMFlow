@@ -9,7 +9,8 @@ from typing import List, Optional, Union
 
 from transformers import (
     Blip2ForConditionalGeneration,
-    Blip2Config
+    Blip2Config,
+    AutoModelForCausalLM
 )
 
 from .base_model import BaseModel
@@ -23,22 +24,26 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         self.vision_model = self.vision_model.from_pretrained(
                                 pretrained_path,
                                 config=self.config.vision_config)
-
     def qformer_from_pretrained(self, pretrained_path):
-        print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
         self.qformer = self.qformer.from_pretrained(
                                 pretrained_path,
                                 config=self.config.qformer_config)
         print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
 
-    def language_model_from_pretrained(self, pretrained_path):
+    def language_model_from_pretrained(self, pretrained_path, low_resource=False):
         # TODO remove the low resource related loading in the future
-        self.language_model = self.language_model.from_pretrained(
+        if low_resource:
+            kwargs = dict(
+                torch_dtype=torch.float16,
+                load_in_8bit=True,
+                device_map="auto"
+            )
+        else:
+            kwargs = {}
+        self.language_model = AutoModelForCausalLM.from_pretrained(
                                 pretrained_path,
                                 config=self.config.text_config,
-                                torch_dtype=torch.float16,
-                                device_map="auto")
-
+                                **kwargs)
 
     @torch.no_grad()
     def generate(
@@ -47,6 +52,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         input_ids: Optional[torch.LongTensor] = None,
         attention_mask: Optional[torch.LongTensor] = None,
         image_token_indexes: Optional[List] = [0],
+        one_sample_multiple_images: Optional[bool] = False,
         **generate_kwargs,
     ) -> torch.LongTensor:
         """
@@ -59,6 +65,10 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                 The sequence used as a prompt for the generation.
             attention_mask (`torch.LongTensor` of shape (batch_size, sequence_length), *optional*):
                 Mask to avoid performing attention on padding token indices
+            image_token_indexes (bool, *optional*):
+                The index for inserting the image tokens.
+            one_sample_multiple_images: (bool, *optional*):
+                The flag for inference that the input batch size is 1 and contain multiple images.
 
         Returns:
             captions (list): A list of strings of length batch_size * num_captions.
@@ -66,8 +76,10 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         if hasattr(self, "hf_device_map"):
             # preprocess for `accelerate`
             self._preprocess_accelerate()
-
-        batch_size = pixel_values.shape[0]
+        if not one_sample_multiple_images:
+            batch_size = pixel_values.shape[0]
+        else:
+            batch_size = 1
         image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
         image_attention_mask = torch.ones(image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device)
 
@@ -98,27 +110,27 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         # concatenate query embeddings with prompt embeddings
         inputs_embeds = self.get_input_embeddings()(input_ids)
         inputs_embeds = inputs_embeds.to(language_model_inputs.device)
-
         # concatenate the text embeddings with image embeddings
         inputs_embeds_with_images = []
         attention_mask_with_images = []
         # currently we only support with one image
         assert len(image_token_indexes) == 1
-        for image_token_index in image_token_indexes:
+        for idx, image_token_index in enumerate(image_token_indexes):
             inputs_embeds_with_images.append(inputs_embeds[:, :image_token_index])
-            inputs_embeds_with_images.append(language_model_inputs)
+            inputs_embeds_with_images.append(language_model_inputs[idx][None])
             attention_mask_with_images.append(
                 attention_mask[:, :image_token_index])
-            attention_mask_with_images.append(language_attention_mask)
+            attention_mask_with_images.append(language_attention_mask[idx][None])
 
         inputs_embeds_with_images.append(inputs_embeds[:, image_token_indexes[-1]:])
         inputs_embeds = torch.cat(inputs_embeds_with_images, dim=1)
         attention_mask_with_images.append(attention_mask[:, image_token_indexes[-1]:])
         attention_mask = torch.cat(attention_mask_with_images, dim=1)
+        inputs_embeds = inputs_embeds.to(self.language_model.lm_head.weight.dtype)
+        attention_mask = attention_mask.to(self.language_model.lm_head.weight.dtype)
         outputs = self.language_model.generate(
             inputs_embeds=inputs_embeds,
             attention_mask=attention_mask,
             **generate_kwargs,
         )
-
         return outputs
