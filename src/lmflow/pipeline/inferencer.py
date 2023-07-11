@@ -154,14 +154,18 @@ class Inferencer(BasePipeline):
             else:
                 input = current_batch['input']
                 input['text'] = prompt_structure.format(input=input['text'])
-            
             if remove_image_flag:
+                # remove the image flag <ImageHere> in tokenization;
                 input['text'] = input['text'].split("<ImageHere>")
                 new_input = copy.deepcopy(input)
                 new_input['text'] = new_input['text'][-1]
                 input['text'] = input['text'][0]
-                inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
-                new_inputs = model.encode(new_input, return_tensors="pt").to(device=self.local_rank)
+                inputs = model.encode(input,
+                                      return_tensors="pt",
+                                      add_special_tokens=True).to(device=self.local_rank)
+                new_inputs = model.encode(new_input,
+                                          return_tensors="pt",
+                                          add_special_tokens=False).to(device=self.local_rank)
                 image_token_indexes = [inputs["input_ids"].shape[1]]
                 inputs["input_ids"] = torch.cat([inputs["input_ids"],
                                                  new_inputs["input_ids"]], dim=1) 

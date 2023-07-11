@@ -174,12 +174,15 @@ def upload_image(gr_image, text_input, chat_state):
     if gr_image is None:
         return None, None, gr.update(interactive=True), chat_state, None
     image_list = []
-    if chatbot_args.prompt_format == "mini_gpt":
-        chat_state = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
-    else:
-        chat_state = ''
+    if chat_state is None:
+        if chatbot_args.prompt_format == "mini_gpt":
+            chat_state = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
+        else:
+            chat_state = ''
     image = read_img(gr_image)
     image_list.append(image)
+    if chatbot_args.prompt_format == "mini_gpt":
+        chat_state = "Human: " + "<Img><ImageHere></Img>"
     return gr.update(interactive=False), \
            gr.update(interactive=True, placeholder='Type and press Enter'), \
            gr.update(value="Start Chatting", interactive=False), \
@@ -198,9 +201,7 @@ def read_img(image):
 def gradio_ask(user_message, chatbot, chat_state):
     if len(user_message) == 0:
         return gr.update(interactive=True, placeholder='Input should not be empty!'), chatbot, chat_state
-    user_message = prompt_structure.format(input_text=user_message)
-    chat_state = chat_state + user_message
-
+    chat_state = chat_state + prompt_structure.format(input_text=user_message)
     chatbot = chatbot + [[user_message, None]]
     return '', chatbot, chat_state
 
