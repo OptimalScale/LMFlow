@@ -46,6 +46,7 @@ from transformers import (
     AutoModelForVision2Seq,
     AutoModel,
     AutoProcessor,
+    LlamaTokenizer
 )
 
 from transformers import (Blip2VisionConfig,
@@ -181,19 +182,16 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             #     self.backend_model = model_register.from_pretrained(
             #         model_args.model_name_or_path)
             else:
-                # model = CustomAutoVision2SeqModel.from_pretrained(
-                #     model_args.model_name_or_path,
-                # )
-                vision_config = Blip2VisionConfig.from_pretrained(model_args.model_name_or_path)
-                qformer_config = Blip2QFormerConfig.from_pretrained(model_args.model_name_or_path)
-                text_config = LlamaConfig.from_pretrained(model_args.llm_model_name_or_path)
-                config = Blip2Config.from_vision_qformer_text_configs(vision_config, qformer_config, text_config)
-                model = CustomAutoVision2SeqModel(config)
-                model.vision_model_from_pretrained(model_args.model_name_or_path)
-                model.qformer_from_pretrained(model_args.model_name_or_path)
-                model.language_model_from_pretrained(model_args.llm_model_name_or_path)
+                model = CustomAutoVision2SeqModel.from_pretrained(model_args.model_name_or_path)
+                if model_args.llm_model_name_or_path is not None:
+                    text_config = LlamaConfig.from_pretrained(model_args.llm_model_name_or_path)
+                    model.config.text_config = text_config
+                model.language_model_from_pretrained(model_args.llm_model_name_or_path,
+                                                     low_resource=model_args.low_resource)
                 state_dict = torch.load(model_args.checkpoint_path, map_location="cpu")
                 model.load_state_dict(state_dict, strict=False)
+                # model = CustomAutoVision2SeqModel.from_pretrained(
+                    # "/home/qlianab/checkpoints/pretrained_weights/minigpt4-lmflow-vicuna-7b-low_resource/"）
                 self.backend_model = model
 
             if self.arch_type == "encoder_decoder":
@@ -202,8 +200,9 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 tokenizer_register = AutoProcessor
             else:
                 raise NotImplementedError
-
             self.tokenizer = tokenizer_register.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
+            if model_args.llm_model_name_or_path is not None:
+                self.tokenizer.tokenizer = LlamaTokenizer.from_pretrained(model_args.llm_model_name_or_path)
             self.backend_model_full = self.backend_model
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
@@ -267,6 +266,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         outputs :
             The tokenized inputs.
         """
+        import pdb; pdb.set_trace()
         if isinstance(input, dict):
             # TODO refactor the input type to make it elegant.
             kwargs.update(input)
@@ -329,6 +329,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             The generated sequence output
         """
         # TODO need to discuss how to handle pad_token_id
+        import pdb; pdb.set_trace()
         if self.arch_type == "encoder_decoder":
             kwargs.update(pad_token_id=self.tokenizer.pad_token_id)
         elif self.arch_type == "vision_encoder_decoder":
