@@ -7,6 +7,7 @@ from cmath import e
 from dataclasses import dataclass, field
 import logging
 import json
+import numpy as np
 import requests
 from PIL import Image
 import os
@@ -51,15 +52,30 @@ class ChatbotArguments:
             "help": "input text for reasoning"}
     )
     task: Optional[str] = field(
-        default="image_caption",
+        default="vqa",
         metadata={
-            "help": "task for reasoning",
+            "help": (
+                "task for reasoning"
+                "If do the caption task, the input text is describe "
+                "the image and the conversation is only one round"
+                "If other, the conversation is multi-round"
+            )
         }
     )
     prompt_format: Optional[str] = field(
         default="None",
         metadata={
-            "help": "prompt format"
+            "help": (
+                "prompt format"
+                "the default format is ''"
+                "Anthoer format is they way in mini-gpt4."
+            )
+        }
+    )
+    stream_inference: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "whether to do the stream inference"
         }
     )
 
@@ -124,6 +140,10 @@ def main():
 
     # Chats
     model_name = model_args.model_name_or_path
+    if model_args.llm_model_name_or_path is not None:
+        model_name = model_name + " with {}".format(
+            model_args.llm_model_name_or_path
+        )
     if model_args.lora_model_path is not None:
         model_name += f" + {model_args.lora_model_path}"
 
@@ -131,7 +151,7 @@ def main():
         "\n"
         f"#############################################################################\n"
         f"##   A {model_name} chatbot is now chatting with you!\n"
-        f"##   The command for loading a new image: ###Load image:"
+        f"##   The command for loading a new image: ###Load image:\n"
         f"#############################################################################\n"
         "\n"
     )
@@ -158,7 +178,8 @@ def main():
     else:
         img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg'
         raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
-    image_list.append(raw_image)
+    base_size = raw_image.size
+    image_list.append(np.array(raw_image))
     input_text = chatbot_args.input_text
     if chatbot_args.task == "image_caption" and len(input_text) == 0:
         input_text = "a photography of"
@@ -173,12 +194,13 @@ def main():
         # single round reasoning
         input_dataset = dataset.from_dict({
             "type": "image_text",
-            "instances": [{"images": image_list,
+            "instances": [{"images": np.stack(image_list),
                         "text":  input_text,}]
         })
         output = inferencer.inference(model, input_dataset)
         print(output.backend_dataset['text'])
     else:
+        # text, 1st image token, answer, text, 2nd image token, 
         while True:
             input_text = input("User >>> ")
             if input_text == "exit":
@@ -188,12 +210,19 @@ def main():
                 image_path = input_text[14:]
                 try:
                     raw_image = Image.open(image_path)
-                    image_list.append(raw_image)
+                    # current dataset doesn't support batch of image with different shape
+                    # so we resize the image and convert then into a numpy array
+                    # In the future, we need to design a new dataset format that support 
+                    # batch of image with different shape
+                    raw_image = raw_image.resize(base_size)
+                    image_list.append(np.array(raw_image))
                     context += sep + "Human: " + "<Img><ImageHere></Img> "
                     text_after_loading_image = True
+                    print("Finish loading image with path {}".format(image_path))
                     continue
                 except FileNotFoundError:
-                    print("Loading image failed")
+                    print("Load image failed with path {}".format(image_path))
+                    continue
             elif input_text == "reset":
                 context = ""
                 print("Chat history cleared")
@@ -207,56 +236,59 @@ def main():
             
             if not input_text:
                 input_text = " "
-                context += prompt_structure.format(input_text=input_text)
+            context += prompt_structure.format(input_text=input_text)
 
             # TODO handle when model doesn't have the get_max_length
             context = context[-model.get_max_length():]     # Memory of the bot
             input_dataset = dataset.from_dict({
                 "type": "image_text",
-                "instances": [{"images": image_list,
+                "instances": [{"images": np.stack(image_list),
                             "text":  context,}]
             })
             remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
-            # output_dataset = inferencer.inference(
-            #     model,
-            #     input_dataset,
-            #     remove_image_flag=remove_image_flag)
-            # response = output_dataset.backend_dataset['text']
-            # print(response[0])
-            # print("\n", end="")
-            # context += response[0]
+            if not chatbot_args.stream_inference:
+                # directly inference the results
+                output_dataset = inferencer.inference(
+                    model,
+                    input_dataset,
+                    remove_image_flag=remove_image_flag)
+                response = output_dataset.backend_dataset['text']
+                print(response[0])
+                print("\n", end="")
+                context += response[0]
+            else:
+                # do the stream inference
+                print("Bot: ", end="")
+                print_index = 0
 
-            print("Bot: ", end="")
-            print_index = 0
+                token_per_step = 4
 
-            token_per_step = 4
+                for response, flag_break in inferencer.stream_inference(
+                    context=context,
+                    model=model,
+                    max_new_tokens=inferencer_args.max_new_tokens,
+                    token_per_step=token_per_step,
+                    temperature=inferencer_args.temperature,
+                    end_string=end_string,
+                    input_dataset=input_dataset
+                ):
+                    # Prints characters in the buffer
+                    new_print_index = print_index
+                    for char in response[print_index:]:
+                        if end_string is not None and char == end_string[0]:
+                            if new_print_index + len(end_string) >= len(response):
+                                break
 
-            for response, flag_break in inferencer.stream_inference(
-                context=context,
-                model=model,
-                max_new_tokens=inferencer_args.max_new_tokens,
-                token_per_step=token_per_step,
-                temperature=inferencer_args.temperature,
-                end_string=end_string,
-                input_dataset=input_dataset
-            ):
-                # Prints characters in the buffer
-                new_print_index = print_index
-                for char in response[print_index:]:
-                    if end_string is not None and char == end_string[0]:
-                        if new_print_index + len(end_string) >= len(response):
-                            break
+                        new_print_index += 1
+                        print(char, end="", flush=True)
 
-                    new_print_index += 1
-                    print(char, end="", flush=True)
+                    print_index = new_print_index
 
-                print_index = new_print_index
+                    if flag_break:
+                        break
+                print("\n", end="")
 
-                if flag_break:
-                    break
-            print("\n", end="")
-
-            context += response + "\n"
+                context += response + "\n"
 
 if __name__ == "__main__":
     main()
