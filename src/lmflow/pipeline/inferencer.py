@@ -161,21 +161,25 @@ class Inferencer(BasePipeline):
             if remove_image_flag:
                 # remove the image flag <ImageHere> in tokenization;
                 input['text'] = input['text'].split("<ImageHere>")
-                new_input = copy.deepcopy(input)
-                new_input['text'] = new_input['text'][-1]
-                input['text'] = input['text'][0]
-                inputs = model.encode(input,
-                                      return_tensors="pt",
-                                      add_special_tokens=True).to(device=self.local_rank)
-                new_inputs = model.encode(new_input,
-                                          return_tensors="pt",
-                                          add_special_tokens=False).to(device=self.local_rank)
-                image_token_indexes = [inputs["input_ids"].shape[1]]
-                inputs["input_ids"] = torch.cat([inputs["input_ids"],
-                                                 new_inputs["input_ids"]], dim=1) 
-                inputs["attention_mask"] = torch.cat([inputs["attention_mask"],
-                                                      new_inputs["attention_mask"]], dim=1)
-                # input['text'], image_token_indexes = process_image_flag(input["text"])
+                # TODO remove this code by update the tokenizer
+                input_ids = []
+                attention_mask = []
+                pixel_values = []
+                image_token_indexes = []
+                temp_input = copy.deepcopy(input)
+                for idx in range(len(input['text'])):
+                    temp_input['text'] = input['text'][idx]
+                    temp_inputs = model.encode(
+                        temp_input,
+                        return_tensors="pt",
+                        add_special_tokens=idx==0).to(device=self.local_rank)
+                    input_ids.append(temp_inputs['input_ids'])
+                    attention_mask.append(temp_inputs['attention_mask'])
+                    image_token_indexes.append(temp_inputs["input_ids"].shape[1])
+                    
+                inputs = temp_inputs
+                inputs["input_ids"] = torch.cat(input_ids, dim=1) 
+                inputs["attention_mask"] = torch.cat(attention_mask, dim=1)
             else:
                 if self.inferencer_args.device == "gpu":
                     inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
@@ -187,6 +191,7 @@ class Inferencer(BasePipeline):
                     )
             if remove_image_flag:
                 inputs["image_token_indexes"] = image_token_indexes
+                inputs["one_sample_multiple_images"] = True
 
             outputs = model.inference(
                 inputs,

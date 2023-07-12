@@ -6,6 +6,5 @@ deepspeed examples/vis_chatbot.py --model_name_or_path ${model} --deepspeed conf
                             --prompt_structure "{input_text}###Assistant:" \
                             --checkpoint_path ${checkpoint_path} \
                             --llm_model_name_or_path ${llm_model_name_or_path} \
-                            --image_path "/home/qlianab/base.jpg"
                             --low_resource True
 

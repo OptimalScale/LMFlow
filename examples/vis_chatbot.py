@@ -140,6 +140,10 @@ def main():
 
     # Chats
     model_name = model_args.model_name_or_path
+    if model_args.llm_model_name_or_path is not None:
+        model_name = model_name + " with {}".format(
+            model_args.llm_model_name_or_path
+        )
     if model_args.lora_model_path is not None:
         model_name += f" + {model_args.lora_model_path}"
 
@@ -174,6 +178,7 @@ def main():
     else:
         img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg'
         raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
+    base_size = raw_image.size
     image_list.append(np.array(raw_image))
     input_text = chatbot_args.input_text
     if chatbot_args.task == "image_caption" and len(input_text) == 0:
@@ -204,12 +209,19 @@ def main():
                 image_path = input_text[14:]
                 try:
                     raw_image = Image.open(image_path)
+                    # current dataset doesn't support batch of image with different shape
+                    # so we resize the image and convert then into a numpy array
+                    # In the future, we need to design a new dataset format that support 
+                    # batch of image with different shape
+                    raw_image = raw_image.resize(base_size)
                     image_list.append(np.array(raw_image))
                     context += sep + "Human: " + "<Img><ImageHere></Img> "
                     text_after_loading_image = True
+                    print("Finish loading image with path {}".format(image_path))
                     continue
                 except FileNotFoundError:
-                    print("Loading image failed")
+                    print("Load image failed with path {}".format(image_path))
+                    continue
             elif input_text == "reset":
                 context = ""
                 print("Chat history cleared")
@@ -223,10 +235,11 @@ def main():
             
             if not input_text:
                 input_text = " "
-                context += prompt_structure.format(input_text=input_text)
+            context += prompt_structure.format(input_text=input_text)
 
             # TODO handle when model doesn't have the get_max_length
             context = context[-model.get_max_length():]     # Memory of the bot
+            print(context)
             input_dataset = dataset.from_dict({
                 "type": "image_text",
                 "instances": [{"images": np.stack(image_list),
