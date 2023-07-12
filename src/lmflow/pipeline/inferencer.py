@@ -154,6 +154,10 @@ class Inferencer(BasePipeline):
             else:
                 input = current_batch['input']
                 input['text'] = prompt_structure.format(input=input['text'])
+
+            if 'images' in input and isinstance(input['images'], list):
+                input['images'] = np.array(input['images'])
+
             if remove_image_flag:
                 # remove the image flag <ImageHere> in tokenization;
                 input['text'] = input['text'].split("<ImageHere>")
