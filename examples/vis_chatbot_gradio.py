@@ -8,6 +8,8 @@ import logging
 import json
 from PIL import Image
 from lmflow.pipeline.inferencer import Inferencer
+
+import numpy as np
 import os
 import sys
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
@@ -168,26 +170,39 @@ def gradio_reset(chat_state, img_list):
         chat_state = ''
     if img_list is not None:
         img_list = []
-    return None, gr.update(value=None, interactive=True), gr.update(placeholder='Please upload your image first', interactive=False),gr.update(value="Upload & Start Chat", interactive=True), chat_state, img_list
+    return (
+        None,
+        gr.update(placeholder='Please upload your image first', interactive=False),
+        gr.update(value="Upload & Start Chat", interactive=True),
+        chat_state,
+        img_list,
+    )
 
-def upload_image(gr_image, text_input, chat_state):
-    if gr_image is None:
-        return None, None, gr.update(interactive=True), chat_state, None
-    image_list = []
+def upload_image(image_file, history, text_input, chat_state, image_list):
+    # if gr_image is None:
+    #     return None, None, gr.update(interactive=True), chat_state, None
+    history = history + [((image_file.name,), None)]
+
     if chat_state is None:
         if chatbot_args.prompt_format == "mini_gpt":
             chat_state = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
         else:
             chat_state = ''
-    image = read_img(gr_image)
-    image_list.append(image)
+    image = read_img(image_file.name)
+    if not isinstance(image_list, list):
+        image_list = []
+        image_list.append(image)
+    else:
+        image_list.append(image.resize(image_list[0].size))
+
     if chatbot_args.prompt_format == "mini_gpt":
         chat_state = "Human: " + "<Img><ImageHere></Img>"
-    return gr.update(interactive=False), \
-           gr.update(interactive=True, placeholder='Type and press Enter'), \
-           gr.update(value="Start Chatting", interactive=False), \
-           chat_state, \
-           image_list
+    return (
+        gr.update(interactive=True, placeholder='Enter text and press enter, or upload an image'),
+        history,
+        chat_state,
+        image_list,
+    )
 
 def read_img(image):
     if isinstance(image, str):
@@ -208,10 +223,10 @@ def gradio_ask(user_message, chatbot, chat_state):
     return '', chatbot, chat_state
 
 
-def gradio_answer(chatbot, chat_state, image_list, num_beams, temperature):
+def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0):
     input_dataset = dataset.from_dict({
         "type": "image_text",
-        "instances": [{"images": image_list[-1],
+        "instances": [{"images": image_list[0],
                         "text": chat_state}]
     })
     remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
@@ -223,61 +238,55 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams, temperature):
     chat_state += response[0]
     return chatbot, chat_state, image_list
 
+
 with gr.Blocks() as demo:
     gr.Markdown(title)
     gr.Markdown(description)
-    # gr.Markdown(article)
+    chatbot = gr.Chatbot([], elem_id="chatbot").style(height=500)
 
     with gr.Row():
-        with gr.Column(scale=0.5):
-            image = gr.Image(type="pil")
-            upload_button = gr.Button(value="Upload & Start Chat", interactive=True, variant="primary")
+        chat_state = gr.State()
+        image_list = gr.State()
+
+        with gr.Column(scale=0.1, min_width=0):
             clear = gr.Button("Restart")
 
-            num_beams = gr.Slider(
-                minimum=1,
-                maximum=10,
-                value=1,
-                step=1,
-                interactive=True,
-                label="beam search numbers)",
-            )
+        with gr.Column(scale=0.8):
+            text_input = gr.Textbox(
+                show_label=False,
+                placeholder="Enter text and press enter, or upload an image",
+            ).style(container=False)
 
-            temperature = gr.Slider(
-                minimum=0.1,
-                maximum=2.0,
-                value=1.0,
-                step=0.1,
-                interactive=True,
-                label="Temperature",
-            )
+        with gr.Column(scale=0.1, min_width=0):
+            upload_button = gr.UploadButton("📁", file_types=["image"])
 
-        with gr.Column():
-            chat_state = gr.State()
-            image_list = gr.State()
-            chatbot = gr.Chatbot(label='Chatbot')
-            text_input = gr.Textbox(label='User', placeholder='Please upload your image first', interactive=False)
-
-    upload_button.click(
-        fn=upload_image,
-        inputs=[image, text_input, chat_state],
-        outputs=[image, text_input, upload_button, chat_state, image_list],
-    )
-
-    text_input.submit(
-        fn=gradio_ask,
-        inputs=[text_input, chatbot, chat_state],
-        outputs=[text_input, chatbot, chat_state],
+    txt_msg = text_input.submit(
+		fn=gradio_ask,
+		inputs=[text_input, chatbot, chat_state],
+		outputs=[text_input, chatbot, chat_state],
+        queue=False,
     ).then(
         fn=gradio_answer,
-        inputs=[chatbot, chat_state, image_list, num_beams, temperature],
+        inputs=[chatbot, chat_state, image_list],
         outputs=[chatbot, chat_state, image_list],
     )
+    txt_msg.then(
+        lambda: gr.update(interactive=True), None, [text_input], queue=False
+    )
+
+    file_msg = upload_button.upload(
+		fn=upload_image,
+        inputs=[upload_button, chatbot, text_input, chat_state, image_list],
+        outputs=[text_input, chatbot, chat_state, image_list],
+		queue=False,
+    )
+
     clear.click(
         fn=gradio_reset,
         inputs=[chat_state, image_list],
-        outputs=[chatbot, image, text_input, upload_button, chat_state, image_list],
-        queue=False
+        outputs=[chatbot, text_input, upload_button, chat_state, image_list],
+        queue=False,
     )
+
 
 demo.launch(share=True, enable_queue=True)
