@@ -240,7 +240,6 @@ def main():
 
             # TODO handle when model doesn't have the get_max_length
             context = context[-model.get_max_length():]     # Memory of the bot
-            print(context)
             input_dataset = dataset.from_dict({
                 "type": "image_text",
                 "instances": [{"images": np.stack(image_list),
