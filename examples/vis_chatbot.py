@@ -200,6 +200,7 @@ def main():
         output = inferencer.inference(model, input_dataset)
         print(output.backend_dataset['text'])
     else:
+        # text, 1st image token, answer, text, 2nd image token, 
         while True:
             input_text = input("User >>> ")
             if input_text == "exit":

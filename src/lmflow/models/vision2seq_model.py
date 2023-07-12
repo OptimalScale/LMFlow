@@ -114,7 +114,6 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         attention_mask_with_images = []
         # currently we only support with one image
         start_index, end_index = 0, 0
-        import pdb; pdb.set_trace()
         assert len(image_token_indexes) == pixel_values.shape[0]
         # token format: (# text, # image)xN, # text
         for idx, image_token_index in enumerate(image_token_indexes):
@@ -126,7 +125,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                 attention_mask[:, start_index:end_index])
             attention_mask_with_images.append(language_attention_mask[idx][None])
             start_index = end_index
-    
+
         inputs_embeds_with_images.append(inputs_embeds[:, image_token_indexes[-1]:])
         inputs_embeds = torch.cat(inputs_embeds_with_images, dim=1)
         attention_mask_with_images.append(attention_mask[:, image_token_indexes[-1]:])

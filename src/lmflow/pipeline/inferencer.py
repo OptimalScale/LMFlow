@@ -176,7 +176,8 @@ class Inferencer(BasePipeline):
                     input_ids.append(temp_inputs['input_ids'])
                     attention_mask.append(temp_inputs['attention_mask'])
                     image_token_indexes.append(temp_inputs["input_ids"].shape[1])
-                    
+                if len(image_token_indexes) > 1:
+                    image_token_indexes = image_token_indexes[:-1]
                 inputs = temp_inputs
                 inputs["input_ids"] = torch.cat(input_ids, dim=1) 
                 inputs["attention_mask"] = torch.cat(attention_mask, dim=1)
