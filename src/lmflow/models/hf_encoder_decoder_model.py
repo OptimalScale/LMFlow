@@ -266,7 +266,6 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         outputs :
             The tokenized inputs.
         """
-        import pdb; pdb.set_trace()
         if isinstance(input, dict):
             # TODO refactor the input type to make it elegant.
             kwargs.update(input)
@@ -329,7 +328,6 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             The generated sequence output
         """
         # TODO need to discuss how to handle pad_token_id
-        import pdb; pdb.set_trace()
         if self.arch_type == "encoder_decoder":
             kwargs.update(pad_token_id=self.tokenizer.pad_token_id)
         elif self.arch_type == "vision_encoder_decoder":
