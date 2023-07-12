@@ -210,6 +210,22 @@ class ModelArguments:
         default=False,
         metadata={"help": "whether to load int8 quantization for inference"}
     )
+
+    def __post_init__(self):
+        if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
+            raise ValueError(
+                "--config_overrides can't be used in combination with --config_name or --model_name_or_path"
+            )
+
+
+@dataclass
+class VisModelArguments(ModelArguments):
+    low_resource: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "Use 8 bit and float16 when loading llm"
+        }
+    )
     custom_model: bool = field(
         default=False,
         metadata={"help": "flag for the model from huggingface or not"}
@@ -225,20 +241,8 @@ class ModelArguments:
                 "llm model in multi-modality model"
             )
         },
-    vis_llm_decoder_model: str = field(
-        default=None,
-        metadata={"help": "TEMPORARY: visual models like minigpt4's decoder llm model"}
-    )
-    vis_model_checkpoint_path: str = field(
-        default=None,
-        metadata={"help": "TEMPORARY: visual models' checkpoint for minigpt4"}
     )
 
-    def __post_init__(self):
-        if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
-            raise ValueError(
-                "--config_overrides can't be used in combination with --config_name or --model_name_or_path"
-            )
 
 
 @dataclass

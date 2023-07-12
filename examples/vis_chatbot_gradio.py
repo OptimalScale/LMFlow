@@ -21,7 +21,7 @@ from typing import Optional
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
-from lmflow.args import (ModelArguments, DatasetArguments, \
+from lmflow.args import (VisModelArguments, DatasetArguments, \
                          InferencerArguments, AutoArguments)
 
 MAX_BOXES = 20
@@ -115,7 +115,7 @@ pipeline_name = "inferencer"
 PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
 parser = HfArgumentParser((
-    ModelArguments,
+    VisModelArguments,
     PipelineArguments,
     ChatbotArguments,
 ))

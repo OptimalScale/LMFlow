@@ -21,7 +21,7 @@ from transformers import HfArgumentParser
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
-from lmflow.args import (ModelArguments, DatasetArguments, \
+from lmflow.args import (VisModelArguments, DatasetArguments, \
                             InferencerArguments, AutoArguments)
 
 logging.disable(logging.ERROR)
@@ -79,30 +79,6 @@ class ChatbotArguments:
         }
     )
 
-@dataclass
-class VisModelArguments(ModelArguments):
-    low_resource: Optional[bool] = field(
-        default=False,
-        metadata={
-            "help": "Use 8 bit and float16 when loading llm"
-        }
-    )
-    custom_model: bool = field(
-        default=False,
-        metadata={"help": "flag for the model from huggingface or not"}
-    )
-    checkpoint_path: str = field(
-        default=None,
-        metadata={"help": "path for model checkpoint"}
-    )
-    llm_model_name_or_path: Optional[str] = field(
-        default=None,
-        metadata={
-            "help": (
-                "llm model in multi-modality model"
-            )
-        },
-    )
 
 def main():
     pipeline_name = "inferencer"
