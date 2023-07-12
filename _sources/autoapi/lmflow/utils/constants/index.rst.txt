@@ -1,0 +1,61 @@
+:py:mod:`lmflow.utils.constants`
+================================
+
+.. py:module:: lmflow.utils.constants
+
+.. autoapi-nested-parse::
+
+   Commonly used constants.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Module Contents
+---------------
+
+.. py:data:: TEXT_ONLY_DATASET_DESCRIPTION
+   
+
+   
+
+.. py:data:: TEXT_ONLY_DATASET_DETAILS
+   
+
+   
+
+.. py:data:: TEXT2TEXT_DATASET_DESCRIPTION
+   
+
+   
+
+.. py:data:: TEXT2TEXT_DATASET_DETAILS
+   
+
+   
+
+.. py:data:: FLOAT_ONLY_DATASET_DESCRIPTION
+   
+
+   
+
+.. py:data:: TEXT_ONLY_DATASET_LONG_DESCRITION
+   
+
+   
+
+.. py:data:: TEXT2TEXT_DATASET_LONG_DESCRITION
+   
+
+   
+
+.. py:data:: DATASET_DESCRIPTION_MAP
+   
+
+   
+
+.. py:data:: INSTANCE_FIELDS_MAP
+   
+
+   
+

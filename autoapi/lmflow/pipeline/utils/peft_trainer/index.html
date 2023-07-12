@@ -1,0 +1,718 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>lmflow.pipeline.utils.peft_trainer &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/lmflow/pipeline/utils/peft_trainer/index';</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="lmflow.pipeline.utils.raft_trainer" href="../raft_trainer/index.html" />
+    <link rel="prev" title="lmflow.pipeline.utils" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../blogs/index.html">
+                        Blogs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../../../index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../about/index.html">
+                        About
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../blogs/index.html">
+                        Blogs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../../../index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../about/index.html">
+                        About
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../datasets/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.datasets</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../datasets/dataset/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.datasets.dataset</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../models/interfaces/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.interfaces</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../models/interfaces/tunable/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.interfaces.tunable</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/auto_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.auto_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/base_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.base_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/decoder_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.decoder_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/encoder_decoder_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.encoder_decoder_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/hf_decoder_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.hf_decoder_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/hf_encoder_decoder_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.hf_encoder_decoder_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/regression_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.regression_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/text_regression_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.text_regression_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/vision2seq_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.vision2seq_model</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils.peft_trainer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../raft_trainer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils.raft_trainer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_pipeline/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.auto_pipeline</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../base_aligner/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.base_aligner</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../base_pipeline/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.base_pipeline</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../base_tuner/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.base_tuner</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../evaluator/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.evaluator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../finetuner/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.finetuner</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../inferencer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.inferencer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../raft_aligner/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.raft_aligner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/flash_attention/bloom_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.bloom_flash_attention</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/flash_attention/gpt2_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.gpt2_flash_attention</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/flash_attention/gpt_neo_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.gpt_neo_flash_attention</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/flash_attention/llama_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.llama_flash_attention</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/flash_attention/triton_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../utils/constants/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.constants</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../utils/data_utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.data_utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../args/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.args</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../version/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.version</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils.peft_trainer</span></code></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="module-lmflow.pipeline.utils.peft_trainer">
+<span id="lmflow-pipeline-utils-peft-trainer"></span><h1><a class="reference internal" href="#module-lmflow.pipeline.utils.peft_trainer" title="lmflow.pipeline.utils.peft_trainer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils.peft_trainer</span></code></a><a class="headerlink" href="#module-lmflow.pipeline.utils.peft_trainer" title="Permalink to this heading">#</a></h1>
+<p>Trainer for Peft models</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.pipeline.utils.peft_trainer.PeftTrainer" title="lmflow.pipeline.utils.peft_trainer.PeftTrainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeftTrainer</span></code></a></p></td>
+<td><p>Trainer is a simple but feature-complete training and eval loop for PyTorch, optimized for 🤗 Transformers.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback" title="lmflow.pipeline.utils.peft_trainer.PeftSavingCallback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeftSavingCallback</span></code></a></p></td>
+<td><p>Correctly save PEFT model and not full model</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.pipeline.utils.peft_trainer.PeftTrainer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.pipeline.utils.peft_trainer.</span></span><span class="sig-name descname"><span class="pre">PeftTrainer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/pipeline/utils/peft_trainer.html#PeftTrainer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.pipeline.utils.peft_trainer.PeftTrainer" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">transformers.Trainer</span></code></p>
+<p>Trainer is a simple but feature-complete training and eval loop for PyTorch, optimized for 🤗 Transformers.</p>
+<dl>
+<dt>Args:</dt><dd><dl>
+<dt>model ([<cite>PreTrainedModel</cite>] or <cite>torch.nn.Module</cite>, <em>optional</em>):</dt><dd><p>The model to train, evaluate or use for predictions. If not provided, a <cite>model_init</cite> must be passed.</p>
+<p>&lt;Tip&gt;</p>
+<p>[<cite>Trainer</cite>] is optimized to work with the [<cite>PreTrainedModel</cite>] provided by the library. You can still use
+your own models defined as <cite>torch.nn.Module</cite> as long as they work the same way as the 🤗 Transformers
+models.</p>
+<p>&lt;/Tip&gt;</p>
+</dd>
+<dt>args ([<cite>TrainingArguments</cite>], <em>optional</em>):</dt><dd><p>The arguments to tweak for training. Will default to a basic instance of [<cite>TrainingArguments</cite>] with the
+<cite>output_dir</cite> set to a directory named <em>tmp_trainer</em> in the current directory if not provided.</p>
+</dd>
+<dt>data_collator (<cite>DataCollator</cite>, <em>optional</em>):</dt><dd><p>The function to use to form a batch from a list of elements of <cite>train_dataset</cite> or <cite>eval_dataset</cite>. Will
+default to [<cite>default_data_collator</cite>] if no <cite>tokenizer</cite> is provided, an instance of
+[<cite>DataCollatorWithPadding</cite>] otherwise.</p>
+</dd>
+<dt>train_dataset (<cite>torch.utils.data.Dataset</cite> or <cite>torch.utils.data.IterableDataset</cite>, <em>optional</em>):</dt><dd><p>The dataset to use for training. If it is a [<cite>~datasets.Dataset</cite>], columns not accepted by the
+<cite>model.forward()</cite> method are automatically removed.</p>
+<p>Note that if it’s a <cite>torch.utils.data.IterableDataset</cite> with some randomization and you are training in a
+distributed fashion, your iterable dataset should either use a internal attribute <cite>generator</cite> that is a
+<cite>torch.Generator</cite> for the randomization that must be identical on all processes (and the Trainer will
+manually set the seed of this <cite>generator</cite> at each epoch) or have a <cite>set_epoch()</cite> method that internally
+sets the seed of the RNGs used.</p>
+</dd>
+<dt>eval_dataset (Union[<cite>torch.utils.data.Dataset</cite>, Dict[str, <cite>torch.utils.data.Dataset</cite>]), <em>optional</em>):</dt><dd><p>The dataset to use for evaluation. If it is a [<cite>~datasets.Dataset</cite>], columns not accepted by the
+<cite>model.forward()</cite> method are automatically removed. If it is a dictionary, it will evaluate on each
+dataset prepending the dictionary key to the metric name.</p>
+</dd>
+<dt>tokenizer ([<cite>PreTrainedTokenizerBase</cite>], <em>optional</em>):</dt><dd><p>The tokenizer used to preprocess the data. If provided, will be used to automatically pad the inputs to the
+maximum length when batching inputs, and it will be saved along the model to make it easier to rerun an
+interrupted training or reuse the fine-tuned model.</p>
+</dd>
+<dt>model_init (<cite>Callable[[], PreTrainedModel]</cite>, <em>optional</em>):</dt><dd><p>A function that instantiates the model to be used. If provided, each call to [<cite>~Trainer.train</cite>] will start
+from a new instance of the model as given by this function.</p>
+<p>The function may have zero argument, or a single one containing the optuna/Ray Tune/SigOpt trial object, to
+be able to choose different architectures according to hyper parameters (such as layer count, sizes of
+inner layers, dropout probabilities etc).</p>
+</dd>
+<dt>compute_metrics (<cite>Callable[[EvalPrediction], Dict]</cite>, <em>optional</em>):</dt><dd><p>The function that will be used to compute metrics at evaluation. Must take a [<cite>EvalPrediction</cite>] and return
+a dictionary string to metric values.</p>
+</dd>
+<dt>callbacks (List of [<cite>TrainerCallback</cite>], <em>optional</em>):</dt><dd><p>A list of callbacks to customize the training loop. Will add those to the list of default callbacks
+detailed in [here](callback).</p>
+<p>If you want to remove one of the default callbacks used, use the [<cite>Trainer.remove_callback</cite>] method.</p>
+</dd>
+<dt>optimizers (<cite>Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR]</cite>, <em>optional</em>): A tuple</dt><dd><p>containing the optimizer and the scheduler to use. Will default to an instance of [<cite>AdamW</cite>] on your model
+and a scheduler given by [<cite>get_linear_schedule_with_warmup</cite>] controlled by <cite>args</cite>.</p>
+</dd>
+<dt>preprocess_logits_for_metrics (<cite>Callable[[torch.Tensor, torch.Tensor], torch.Tensor]</cite>, <em>optional</em>):</dt><dd><p>A function that preprocess the logits right before caching them at each evaluation step. Must take two
+tensors, the logits and the labels, and return the logits once processed as desired. The modifications made
+by this function will be reflected in the predictions received by <cite>compute_metrics</cite>.</p>
+<p>Note that the labels (second parameter) will be <cite>None</cite> if the dataset does not have them.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Important attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>model</strong> – Always points to the core model. If using a transformers model, it will be a [<cite>PreTrainedModel</cite>]
+subclass.</p></li>
+<li><p><strong>model_wrapped</strong> – Always points to the most external model in case one or more other modules wrap the
+original model. This is the model that should be used for the forward pass. For example, under <cite>DeepSpeed</cite>,
+the inner model is wrapped in <cite>DeepSpeed</cite> and then again in <cite>torch.nn.DistributedDataParallel</cite>. If the inner
+model hasn’t been wrapped, then <cite>self.model_wrapped</cite> is the same as <cite>self.model</cite>.</p></li>
+<li><p><strong>is_model_parallel</strong> – Whether or not a model has been switched to a model parallel mode (different from
+data parallelism, this means some of the model layers are split on different GPUs).</p></li>
+<li><p><strong>place_model_on_device</strong> – Whether or not to automatically place the model on the device - it will be set
+to <cite>False</cite> if model parallel or deepspeed is used, or if the default
+<cite>TrainingArguments.place_model_on_device</cite> is overridden to return <cite>False</cite> .</p></li>
+<li><p><strong>is_in_train</strong> – Whether or not a model is currently running <cite>train</cite> (e.g. when <cite>evaluate</cite> is called while
+in <cite>train</cite>)</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.pipeline.utils.peft_trainer.PeftTrainer._save_checkpoint">
+<span class="sig-name descname"><span class="pre">_save_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/pipeline/utils/peft_trainer.html#PeftTrainer._save_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.pipeline.utils.peft_trainer.PeftTrainer._save_checkpoint" title="Permalink to this definition">#</a></dt>
+<dd><p>Don’t save base model, optimizer etc.
+but create checkpoint folder (needed for saving adapter)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.pipeline.utils.peft_trainer.PeftSavingCallback">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.pipeline.utils.peft_trainer.</span></span><span class="sig-name descname"><span class="pre">PeftSavingCallback</span></span><a class="reference internal" href="../../../../../_modules/lmflow/pipeline/utils/peft_trainer.html#PeftSavingCallback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">transformers.trainer_callback.TrainerCallback</span></code></p>
+<p>Correctly save PEFT model and not full model</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.pipeline.utils.peft_trainer.PeftSavingCallback._save">
+<span class="sig-name descname"><span class="pre">_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/pipeline/utils/peft_trainer.html#PeftSavingCallback._save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback._save" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_train_end">
+<span class="sig-name descname"><span class="pre">on_train_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.training_args.TrainingArguments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.trainer_callback.TrainerState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.trainer_callback.TrainerControl</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/pipeline/utils/peft_trainer.html#PeftSavingCallback.on_train_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_train_end" title="Permalink to this definition">#</a></dt>
+<dd><p>Save final best model adapter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_epoch_end">
+<span class="sig-name descname"><span class="pre">on_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.training_args.TrainingArguments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.trainer_callback.TrainerState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.trainer_callback.TrainerControl</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/pipeline/utils/peft_trainer.html#PeftSavingCallback.on_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_epoch_end" title="Permalink to this definition">#</a></dt>
+<dd><p>Save intermediate model adapters in case of interrupted training</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_save">
+<span class="sig-name descname"><span class="pre">on_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.training_args.TrainingArguments</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.trainer_callback.TrainerState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">transformers.trainer_callback.TrainerControl</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/pipeline/utils/peft_trainer.html#PeftSavingCallback.on_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_save" title="Permalink to this definition">#</a></dt>
+<dd><p>Event called after a checkpoint save.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils</span></code></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../raft_trainer/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils.raft_trainer</span></code></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftTrainer"><code class="docutils literal notranslate"><span class="pre">PeftTrainer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftTrainer._save_checkpoint"><code class="docutils literal notranslate"><span class="pre">PeftTrainer._save_checkpoint()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback"><code class="docutils literal notranslate"><span class="pre">PeftSavingCallback</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback._save"><code class="docutils literal notranslate"><span class="pre">PeftSavingCallback._save()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_train_end"><code class="docutils literal notranslate"><span class="pre">PeftSavingCallback.on_train_end()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_epoch_end"><code class="docutils literal notranslate"><span class="pre">PeftSavingCallback.on_epoch_end()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_save"><code class="docutils literal notranslate"><span class="pre">PeftSavingCallback.on_save()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftTrainer">PeftTrainer</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftTrainer._save_checkpoint">_save_checkpoint</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback">PeftSavingCallback</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback._save">_save</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_train_end">on_train_end</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_epoch_end">on_epoch_end</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.pipeline.utils.peft_trainer.PeftSavingCallback.on_save">on_save</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="../../../../../_sources/autoapi/lmflow/pipeline/utils/peft_trainer/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright LMFlow 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

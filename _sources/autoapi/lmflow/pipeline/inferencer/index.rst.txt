@@ -1,0 +1,153 @@
+:py:mod:`lmflow.pipeline.inferencer`
+====================================
+
+.. py:module:: lmflow.pipeline.inferencer
+
+.. autoapi-nested-parse::
+
+   The Inferencer class simplifies the process of model inferencing.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   lmflow.pipeline.inferencer.Inferencer
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   lmflow.pipeline.inferencer.rstrip_partial_utf8
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   lmflow.pipeline.inferencer.supported_dataset_type
+
+
+.. py:function:: rstrip_partial_utf8(string)
+
+
+.. py:data:: supported_dataset_type
+   :annotation: = ['text_only', 'image_text']
+
+   
+
+.. py:class:: Inferencer(model_args, data_args, inferencer_args)
+
+   Bases: :py:obj:`lmflow.pipeline.base_pipeline.BasePipeline`
+
+   
+   Initializes the `Inferencer` class with given arguments.
+
+
+   :Parameters:
+
+       **model_args** : ModelArguments object.
+           Contains the arguments required to load the model.
+
+       **data_args** : DatasetArguments object.
+           Contains the arguments required to load the dataset.
+
+       **inferencer_args** : InferencerArguments object.
+           Contains the arguments required to perform inference.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+   .. py:method:: create_dataloader(dataset: lmflow.datasets.dataset.Dataset)
+
+      
+      Batchlize dataset and format it to dataloader.
+
+      Args:
+          dataset (Dataset): the dataset object
+
+      Output:
+          dataloader (batchlize): the dataloader object
+          dataset_size (int): the length of the dataset
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: inference(model, dataset: lmflow.datasets.dataset.Dataset, max_new_tokens: int = 100, temperature: float = 0.0, prompt_structure: str = '{input}', remove_image_flag: bool = False)
+
+      
+      Perform inference for a model
+
+
+      :Parameters:
+
+          **model** : TunableModel object.
+              TunableModel to perform inference
+
+          **dataset** : Dataset object.
+              ..
+
+          **Returns:**
+              ..
+
+          **output_dataset: Dataset object.**
+              ..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: stream_inference(context, model, max_new_tokens, token_per_step, temperature, end_string, input_dataset)
+
+
+

@@ -1,0 +1,1045 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'blogs/benchmark';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Examples" href="../examples/index.html" />
+    <link rel="prev" title="Blogs" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Blogs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../autoapi/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../about/index.html">
+                        About
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="index.html">
+                        Blogs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../autoapi/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../about/index.html">
+                        About
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Blogs</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms">
+<h1>LMFlow Benchmark: An Automatic Evaluation Framework for Open-Source LLMs<a class="headerlink" href="#lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms" title="Permalink to this heading">#</a></h1>
+<p>May 9, 2023</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<p>Evaluation of a chat-style Large Language Model (LLM) has been a huge challenge since the breakthrough of ChatGPT. On the one hand, researchers and engineers need a reliable way to compare two models and decide which model to choose under a certain application scenario. On the other hand, they have to monitor the model performance during the training of an LLM to avoid performance issues such as forgetting.</p>
+<p>Recent work of Vicuna introduces comparison methods of human evaluation, a.k.a. Chatbot Arena. They also pioneered the evaluation method by invoking GPT-4 to compare the outputs of two models. However, those methods require expensive human labeling or GPT-4 API calls, which are neither scalable nor convenient for LLM development.</p>
+<p>In this article, we introduce LMFlow benchmark, a new benchmark which provides a cheap and easy-to-use evaluation framework that can help reflect different aspects of LLMs. We have open-sourced the dataset and the code as well, so that everyone in the LLM community can use those toolkits to evaluate, monitor or compare different LLMs.</p>
+</section>
+<section id="metric">
+<h2>Metric<a class="headerlink" href="#metric" title="Permalink to this heading">#</a></h2>
+<p>In our evaluation framework, Negative Log Likelihood (NLL) is used for evaluating LLM
+<img alt="" src="../_images/nll.png" /></p>
+<p>which corresponds to the LLM model’s prediction probability over a corpus set given their contexts. If the corpus set itself indicates a certain type of LLM ability, such as multi-round conversation, instruction following, math problem solving, role-playing, then NLL on those corpora can provide quantitative metrics to reflect those abilities.</p>
+<p><img alt="" src="../_images/benchmark-1.png" /></p>
+<p>The key idea behind NLL, is that</p>
+<p><em>Generation ability is positively correlated with prediction ability.</em></p>
+<p>For instance, an LLM which performs well in essay writing should have no problem understanding and predicting a reference human essay, just like human chess masters performing well at memorizing an endgame on a chessboard.</p>
+<p>Besides NLL, another similar and commonly used metric in NLP is Perplexity (PPL):</p>
+<p><img alt="" src="../_images/ppl.png" /></p>
+<p>Nevertheless, perplexity intrinsically depends on the lengths of the tokenized sequences, which induces unfair comparison between models with different tokenizers. For example, if a model has a smaller vocabulary size, it inherently results in a longer tokenized sequence and a lower token-level perplexity. Thus in all our experiments, we use NLL instead of PPL.</p>
+<p>One huge advantage of NLL evaluation is that it does not require human involvement during the evaluation process. As long as the test reference corpus is given, one can evaluate different aspects of an LLM’s ability automatically. This makes the evaluation of LLM more accessible to researchers.</p>
+<p>Besides its convenience, NLL itself is also a good metric. In our experimental results in commonsense QA, we find that NLL is correlated with QA accuracy when comparing the different finetuned versions of a single model.</p>
+<p><strong>Table 1: Accuracy results in traditional commonsense QA benchmarks</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-center"><p>winogrande</p></th>
+<th class="head text-center"><p>boolq</p></th>
+<th class="head text-center"><p>arc_e</p></th>
+<th class="head text-center"><p>hellaswag</p></th>
+<th class="head text-center"><p>piqa</p></th>
+<th class="head text-center"><p>obqa</p></th>
+<th class="head text-center"><p>arc_c</p></th>
+<th class="head text-center"><p>Average</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>bloom-3b</p></td>
+<td class="text-center"><p>58.7</p></td>
+<td class="text-center"><p>61.6</p></td>
+<td class="text-center"><p>59.5</p></td>
+<td class="text-center"><p>52.7</p></td>
+<td class="text-center"><p>70.8</p></td>
+<td class="text-center"><p>42.2</p></td>
+<td class="text-center"><p>30.6</p></td>
+<td class="text-center"><p>53.7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>bloom-7.1b</p></td>
+<td class="text-center"><p>64.4</p></td>
+<td class="text-center"><p>62.9</p></td>
+<td class="text-center"><p>65.0</p></td>
+<td class="text-center"><p>59.6</p></td>
+<td class="text-center"><p>73.6</p></td>
+<td class="text-center"><p>35.8</p></td>
+<td class="text-center"><p>33.4</p></td>
+<td class="text-center"><p>56.3</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>opt-6.9b</p></td>
+<td class="text-center"><p>65.2</p></td>
+<td class="text-center"><p>66.1</p></td>
+<td class="text-center"><p>65.6</p></td>
+<td class="text-center"><p>67.2</p></td>
+<td class="text-center"><p>76.5</p></td>
+<td class="text-center"><p>37.4</p></td>
+<td class="text-center"><p>34.6</p></td>
+<td class="text-center"><p>58.9</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>opt-13b</p></td>
+<td class="text-center"><p>65.0</p></td>
+<td class="text-center"><p>65.9</p></td>
+<td class="text-center"><p>67.1</p></td>
+<td class="text-center"><p>69.8</p></td>
+<td class="text-center"><p>76.9</p></td>
+<td class="text-center"><p>39.0</p></td>
+<td class="text-center"><p>35.7</p></td>
+<td class="text-center"><p>59.9</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>llama-7b</p></td>
+<td class="text-center"><p>67.9</p></td>
+<td class="text-center"><p>73.2</p></td>
+<td class="text-center"><p>67.3</p></td>
+<td class="text-center"><p>73.0</p></td>
+<td class="text-center"><p>78.3</p></td>
+<td class="text-center"><p>42.4</p></td>
+<td class="text-center"><p>41.4</p></td>
+<td class="text-center"><p>62.7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>llama-13b</p></td>
+<td class="text-center"><p><strong>70.0</strong></p></td>
+<td class="text-center"><p><strong>68.5</strong></p></td>
+<td class="text-center"><p><strong>74.5</strong></p></td>
+<td class="text-center"><p><strong>76.2</strong></p></td>
+<td class="text-center"><p><strong>79.1</strong></p></td>
+<td class="text-center"><p><strong>42.2</strong></p></td>
+<td class="text-center"><p><strong>44.5</strong></p></td>
+<td class="text-center"><p><strong>65.0</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 2: NLL results in corpus of commonsense QA benchmarks</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-center"><p>winogrande</p></th>
+<th class="head text-center"><p>boolq</p></th>
+<th class="head text-center"><p>arc_e</p></th>
+<th class="head text-center"><p>hellaswag</p></th>
+<th class="head text-center"><p>piqa</p></th>
+<th class="head text-center"><p>obqa</p></th>
+<th class="head text-center"><p>arc_c</p></th>
+<th class="head text-center"><p>Average</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>bloom-3b</p></td>
+<td class="text-center"><p>86.5</p></td>
+<td class="text-center"><p>228</p></td>
+<td class="text-center"><p>86</p></td>
+<td class="text-center"><p>245</p></td>
+<td class="text-center"><p>134</p></td>
+<td class="text-center"><p>64.5</p></td>
+<td class="text-center"><p>101.5</p></td>
+<td class="text-center"><p>135.1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>bloom-7.1b</p></td>
+<td class="text-center"><p>85</p></td>
+<td class="text-center"><p>215</p></td>
+<td class="text-center"><p>81.5</p></td>
+<td class="text-center"><p>237</p></td>
+<td class="text-center"><p>130</p></td>
+<td class="text-center"><p>62.5</p></td>
+<td class="text-center"><p>96</p></td>
+<td class="text-center"><p>129.5</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>opt-6.9b</p></td>
+<td class="text-center"><p>81.5</p></td>
+<td class="text-center"><p>200</p></td>
+<td class="text-center"><p>81.5</p></td>
+<td class="text-center"><p>224</p></td>
+<td class="text-center"><p>125</p></td>
+<td class="text-center"><p>61</p></td>
+<td class="text-center"><p>96</p></td>
+<td class="text-center"><p>124.1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>opt-13b</p></td>
+<td class="text-center"><p>82</p></td>
+<td class="text-center"><p>198</p></td>
+<td class="text-center"><p>82.5</p></td>
+<td class="text-center"><p>220</p></td>
+<td class="text-center"><p>125</p></td>
+<td class="text-center"><p>61.8</p></td>
+<td class="text-center"><p>97</p></td>
+<td class="text-center"><p>123.7</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>llama-7b</p></td>
+<td class="text-center"><p>79.5</p></td>
+<td class="text-center"><p>167</p></td>
+<td class="text-center"><p>71.5</p></td>
+<td class="text-center"><p>214</p></td>
+<td class="text-center"><p>121</p></td>
+<td class="text-center"><p>58</p></td>
+<td class="text-center"><p>85</p></td>
+<td class="text-center"><p>113.7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>llama-13b</p></td>
+<td class="text-center"><p><strong>79</strong></p></td>
+<td class="text-center"><p><strong>153</strong></p></td>
+<td class="text-center"><p><strong>70</strong></p></td>
+<td class="text-center"><p><strong>207</strong></p></td>
+<td class="text-center"><p><strong>119</strong></p></td>
+<td class="text-center"><p><strong>57.3</strong></p></td>
+<td class="text-center"><p><strong>83</strong></p></td>
+<td class="text-center"><p><strong>109.7</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Figure 1: Correlation between NLL and accuracy on commonsense QA benchmarks</strong></p>
+<p><img alt="" src="../_images/benchmark-2.png" /></p>
+<p>In the above figure, one can find that QA accuracy is roughly correlated to NLL. Thus NLL is able to reflect the “magnitude” of prediction level difference between models. A huge gap in NLL normally entails a huge performance gap.</p>
+<p>In the following sections, we provide a comprehensive evaluation of currently available LLM models and summarize their performance. Due to page limits, we only demonstrate partial evaluation results in this article. The full results can be found here <a class="reference external" href="https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing">LLM Comparison Sheet 0501</a>. One can also evaluate their own LLM models using our LMFlow evaluation toolkit (<a class="reference external" href="https://optimalscale.github.io/LMFlow/examples/TASK_GUIDE.html">https://optimalscale.github.io/LMFlow/examples/TASK_GUIDE.html</a>).</p>
+<p>We also introduce our own finetuned model Robin-7b-Chat and compare its performance with some other popular models. One may try our online demo LMFlow-Chat at <a class="reference external" href="https://lmflow.com/">https://lmflow.com/</a>.</p>
+</section>
+<section id="chat-performance">
+<h2>Chat Performance<a class="headerlink" href="#chat-performance" title="Permalink to this heading">#</a></h2>
+<p>The first aspect of LLM is chat performance, especially multi-round chat. Based on our experimental results, we have the following observations:</p>
+<ol class="arabic simple">
+<li><p><em>Without finetuning, foundation models do not perform well on chat.</em></p></li>
+<li><p><em>After finetuning, foundation models can all obtain huge performance gain.</em></p></li>
+<li><p><em>Our Robin-Chat-7b achieves comparable chat performance with Vicuna-13b.</em></p></li>
+</ol>
+<p><strong>Table 3: NLL on multi-round chat datasets, Lower the better</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-center"><p>En_multi_round_chat</p></th>
+<th class="head text-center"><p>En_singe_round_chat</p></th>
+<th class="head text-center"><p>Average</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Bloom-7.1b</p></td>
+<td class="text-center"><p>188</p></td>
+<td class="text-center"><p>213</p></td>
+<td class="text-center"><p>200.5</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Bloom-7.1b-chat</p></td>
+<td class="text-center"><p>164</p></td>
+<td class="text-center"><p>181</p></td>
+<td class="text-center"><p>172.5</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Llama-7b</p></td>
+<td class="text-center"><p>163</p></td>
+<td class="text-center"><p>184</p></td>
+<td class="text-center"><p>173.5</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Vicuna-7b</p></td>
+<td class="text-center"><p>155</p></td>
+<td class="text-center"><p>175</p></td>
+<td class="text-center"><p>165</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Vicuna-13b</p></td>
+<td class="text-center"><p>150</p></td>
+<td class="text-center"><p>170</p></td>
+<td class="text-center"><p>160</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Robin-Chat-7b</p></td>
+<td class="text-center"><p><strong>146</strong></p></td>
+<td class="text-center"><p><strong>164</strong></p></td>
+<td class="text-center"><p><strong>155</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p>We also evaluate Vicuna-13b and our Robin-Chat-7b model qualitatively via use cases. It turns out that Robin-Chat-7b’s performance is comparable to Vicuna-13b. For example, both models can effortlessly refer to the conversation context with only slight mistakes, where Vicuna-13b sometimes doesn’t count the item correctly, while Robin-Chat-7b introduces only Mexican foods for international cuisine recommendations and omits other choices.</p>
+<p><strong>Table 4: Use cases of multi-round chat</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Round</p></th>
+<th class="head text-center"><p>Question</p></th>
+<th class="head text-center"><p>Vicuna-13b</p></th>
+<th class="head text-center"><p>Robin-Chat-7b</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>R1</p></td>
+<td class="text-center"><p>Where is the capital of USA?</p></td>
+<td class="text-center"><p>The capital of the United States is <strong>Washington, D.C.</strong> (District of Columbia). It is located on the east coast of the country, in the northern part of the state of Maryland. Washington, D.C. is named after George Washington, the first president of the United States. It is a federal district, which means that it is not part of any state, but is instead directly administered by the federal government. The city is home to many national landmarks, including the White House, the Capitol Building, and the Supreme Court. It is also home to many museums, monuments, and other cultural institutions.</p></td>
+<td class="text-center"><p>The capital of the United States is <strong>Washington, D.C.</strong> (District of Columbia). It is located on the east coast of the USA, between the states of Maryland and Virginia.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>R2</p></td>
+<td class="text-center"><p>Can you introduce some popular food there?</p></td>
+<td class="text-center"><p><p>Washington, D.C. is a city with a diverse food scene, and there are many popular restaurants and cuisines to choose from. Some popular foods in Washington, D.C. include:</p><p>- American Classics: There are many restaurants in Washington, D.C. that serve classic American dishes such as hamburgers, hot dogs, and apple pie.</p><p>- Seafood: Washington, D.C. is located near the Chesapeake Bay, which is known for its fresh seafood. Many restaurants in the city serve dishes such as crab cakes, shrimp, and oysters.</p><p>- Ethnic Cuisine: Washington, D.C. has a diverse population, and there are many restaurants that serve food from different parts of the world. Some popular ethnic cuisines include Mexican, Chinese, Japanese, and Korean.</p><p>- Barbecue: Washington, D.C. is also known for its barbecue restaurants. Many of these restaurants serve pulled pork, ribs, and brisket.</p><p>- <strong>Donuts</strong>: Washington, D.C. is home to the famous “Donut Happy” which is a famous donut shop with a variety of flavors and toppings.</p><p>- Street Food: There are also many street food options in Washington, D.C. such as food trucks and stands that serve food such as falafel, kebabs, and tacos.</p><p>These are just a few examples of the many types of food that are available in Washington, D.C. There is something for everyone in this city when it comes to food.</p><p></p></p></td>
+<td class="text-center"><p><p>Washington, D.C. is a diverse city with a wide range of cuisines to choose from. Here are some popular foods that you can try when you visit:</p><p>1. Soul food: This style of cuisine originated in the southern United States and is known for its bold flavors and hearty portions. Some popular soul food dishes in Washington, D.C. include fried chicken, collard greens, and macaroni and cheese.</p><p>2. Ethiopian cuisine: Ethiopian food is known for its spicy and flavorful dishes, and it is a popular choice in Washington, D.C. Some popular dishes include injera (a sourdough flatbread), wat (a spicy vegetable stew), and kitfo (a spicy meat dish).</p><p>3. Seafood: Washington, D.C. is located near the Chesapeake Bay and has easy access to fresh seafood. Some popular seafood dishes include crab cakes, oysters, and seafood pasta.</p><p>4. BBQ: Washington, D.C. has a thriving barbecue scene, with many restaurants serving up slow-cooked meats and sides. Some popular BBQ spots include Ben’s Chili Bowl, Pete’s Soul Vegetarian, and Smoke &amp; Barrel.</p><p>5. <strong>International cuisine:</strong> Washington, D.C. is a hub for international diplomacy, and as a result, it has a diverse culinary scene with many restaurants serving dishes from around the world. Some popular international cuisines include Japanese, Indian, and <strong>Mexican.</strong></p><p></p></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>R3</p></td>
+<td class="text-center"><p>Can you be more specific about the <strong>fifth item</strong> above?</p></td>
+<td class="text-center"><p><p>Sure, <strong>the fifth item I mentioned, “Barbecue,”</strong> refers to a style of cooking and food that originated in the southern United States. Barbecue is usually made with meat that is slow-cooked over an open flame or heated coals. The meat is often marinated and then sauced, and it is typically served with a variety of sides such as coleslaw, baked beans, and corn on the cob. Barbecue is a popular cuisine in Washington, D.C. and many of the restaurants serve pulled pork, ribs, and brisket. Some of the most popular barbecue restaurants in Washington, D.C. include:</p><p>- The Rib Pit</p><p>- The Smokehouse</p><p>- The BBQ Joint</p><p>- The Salt Line</p><p>- The Sovereign</p><p>These are just a few examples of the many barbecue restaurants in Washington, D.C. that offer delicious and flavorful barbecue dishes.</p></p></td>
+<td class="text-center"><p><p>Sure! Here are some specific recommendations for <strong>Mexican food</strong> in Washington, D.C.:</p><p>1. Margarita’s - This popular Mexican restaurant in Adams Morgan has been serving up authentic Mexican cuisine for over 30 years. Some of their most popular dishes include their tacos al pastor (grilled marinated pork), enchiladas (meat or cheese filled tortillas), and chiles rellenos (stuffed peppers).</p><p>2. El Comal - This cozy little restaurant in the Columbia Heights neighborhood has been serving up traditional Mexican cuisine for over 20 years. Some of their most popular dishes include their mole (a rich, spicy sauce made from a blend of chiles, spices, and chocolate), tacos de carnitas (crispy pork tacos), and chiles rellenos de queso (cheese stuffed peppers).</p><p>3. Casa Oaxaca - This upscale Mexican restaurant in the Shaw neighborhood has a menu that features a wide range of traditional and modern dishes. Some of their most popular dishes include their ceviche (raw fish marinated in lime juice and spices), mole negro (a rich, dark mole sauce), and chiles en nogada (a spicy dish made with poblano peppers, walnuts, and honey).</p><p>4. Taco King - This popular taco chain has several locations in the Washington, D.C. area, including one in the Adams Morgan neighborhood. They offer a wide range of tacos, burritos, and other Mexican dishes at affordable prices. Some of their most popular items include their carne asada tacos, chicken tacos, and quesadillas.</p><p>5. Los Tacos No. 1 - This small, casual taco stand in the Columbia Heights neighborhood has a menu that features a wide range of tacos, burritos, and other Mexican dishes. Some of their most popular items include their adobada tacos (marinated pork tacos), al pastor tacos (grilled marinated pork tacos), and chicken tacos.</p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Experiment Details</strong></p>
+<p>Our dataset comes from real conversation history between humans and ChatGPT. We collect 183 English conversations with a total of 447 rounds of chats, where the original conversation history is already multi-round. For single-round NLL evaluation, we break a multi-round conversation into multiple single-round text pairs. For example, with a conversation history</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Q1, A1
+
+Q2, A2
+
+Q3, A3
+</pre></div>
+</div>
+<p>where Q stands for Question, A stands for answer, we can get three single-round examples:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Context: Q1
+
+Output: A1
+
+Context: Q1, A1, Q2
+
+Output: A2
+
+Context: Q1, A1, Q2, A2, Q3
+
+Ouptut: A3
+</pre></div>
+</div>
+</section>
+<section id="commonsense-performance">
+<h2>CommonSense Performance<a class="headerlink" href="#commonsense-performance" title="Permalink to this heading">#</a></h2>
+<p>Another important aspect of an LLM model is its common sense ability, where a model should acquire a certain level of factual knowledge and utilize them properly under different scenarios. Regarding this aspect of the ability, we found:</p>
+<ol class="arabic simple">
+<li><p><em>Finetuning on chat dataset results in commonsense degradation.</em></p></li>
+<li><p><em>Our Robin-Chat-7b model still achieves a competitive performance.</em></p></li>
+</ol>
+<p><strong>Table 5: Accuracy results in commonsense QA benchmarks</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-center"><p>winogrand</p></th>
+<th class="head text-center"><p>boolq</p></th>
+<th class="head text-center"><p>arc_easy</p></th>
+<th class="head text-center"><p>hellaswag</p></th>
+<th class="head text-center"><p>piqa</p></th>
+<th class="head text-center"><p>obqa</p></th>
+<th class="head text-center"><p>arc_c</p></th>
+<th class="head text-center"><p>Average</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Bloom-7.1b</p></td>
+<td class="text-center"><p>64.4</p></td>
+<td class="text-center"><p>62.9</p></td>
+<td class="text-center"><p>65.0</p></td>
+<td class="text-center"><p>59.6</p></td>
+<td class="text-center"><p>73.6</p></td>
+<td class="text-center"><p>35.8</p></td>
+<td class="text-center"><p>33.4</p></td>
+<td class="text-center"><p>56.4</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Bloom-7.1b-chat</p></td>
+<td class="text-center"><p>60.3</p></td>
+<td class="text-center"><p>56.8</p></td>
+<td class="text-center"><p>61.3</p></td>
+<td class="text-center"><p>58.7</p></td>
+<td class="text-center"><p>72.7</p></td>
+<td class="text-center"><p>37.8</p></td>
+<td class="text-center"><p>38.7</p></td>
+<td class="text-center"><p>55.2</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Llama-7b</p></td>
+<td class="text-center"><p>67.9</p></td>
+<td class="text-center"><p>73.2</p></td>
+<td class="text-center"><p>67.3</p></td>
+<td class="text-center"><p>73.0</p></td>
+<td class="text-center"><p>78.4</p></td>
+<td class="text-center"><p>42.4</p></td>
+<td class="text-center"><p>41.4</p></td>
+<td class="text-center"><p>62.7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Vicuna-7b</p></td>
+<td class="text-center"><p>63.7</p></td>
+<td class="text-center"><p>77.4</p></td>
+<td class="text-center"><p>63.1</p></td>
+<td class="text-center"><p>68.8</p></td>
+<td class="text-center"><p>76.3</p></td>
+<td class="text-center"><p>39.6</p></td>
+<td class="text-center"><p>38.7</p></td>
+<td class="text-center"><p>61.1</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Vicuna-13b</p></td>
+<td class="text-center"><p>66.2</p></td>
+<td class="text-center"><p>79.9</p></td>
+<td class="text-center"><p>64.7</p></td>
+<td class="text-center"><p>73.0</p></td>
+<td class="text-center"><p>77.6</p></td>
+<td class="text-center"><p>41.6</p></td>
+<td class="text-center"><p>40.4</p></td>
+<td class="text-center"><p>63.3</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Robin-Chat-7b</p></td>
+<td class="text-center"><p>64.7</p></td>
+<td class="text-center"><p>75.2</p></td>
+<td class="text-center"><p>69.8</p></td>
+<td class="text-center"><p>72.4</p></td>
+<td class="text-center"><p>76.6</p></td>
+<td class="text-center"><p>39.0</p></td>
+<td class="text-center"><p>42.9</p></td>
+<td class="text-center"><p>62.9</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 6: NLL results in corpus of commonsense QA benchmarks</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-center"><p>winogrand</p></th>
+<th class="head text-center"><p>boolq</p></th>
+<th class="head text-center"><p>arc_easy</p></th>
+<th class="head text-center"><p>hellaswag</p></th>
+<th class="head text-center"><p>piqa</p></th>
+<th class="head text-center"><p>obqa</p></th>
+<th class="head text-center"><p>arc_c</p></th>
+<th class="head text-center"><p>Average</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Bloom-7.1b</p></td>
+<td class="text-center"><p>96.0</p></td>
+<td class="text-center"><p>254</p></td>
+<td class="text-center"><p>89</p></td>
+<td class="text-center"><p>266</p></td>
+<td class="text-center"><p>147</p></td>
+<td class="text-center"><p>69</p></td>
+<td class="text-center"><p>106.5</p></td>
+<td class="text-center"><p>146.7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Bloom-7.1b-chat</p></td>
+<td class="text-center"><p>85.0</p></td>
+<td class="text-center"><p>215</p></td>
+<td class="text-center"><p>81.5</p></td>
+<td class="text-center"><p>237</p></td>
+<td class="text-center"><p>130</p></td>
+<td class="text-center"><p>62.5</p></td>
+<td class="text-center"><p>96</p></td>
+<td class="text-center"><p>129.5</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Llama-7b</p></td>
+<td class="text-center"><p>79.5</p></td>
+<td class="text-center"><p>167</p></td>
+<td class="text-center"><p>71.5</p></td>
+<td class="text-center"><p>214</p></td>
+<td class="text-center"><p>121</p></td>
+<td class="text-center"><p>58</p></td>
+<td class="text-center"><p>85</p></td>
+<td class="text-center"><p>113.7</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Vicuna-7b</p></td>
+<td class="text-center"><p>97.0</p></td>
+<td class="text-center"><p>219</p></td>
+<td class="text-center"><p>89</p></td>
+<td class="text-center"><p>258</p></td>
+<td class="text-center"><p>151</p></td>
+<td class="text-center"><p>72</p></td>
+<td class="text-center"><p>105</p></td>
+<td class="text-center"><p>141.6</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Vicuna-13b</p></td>
+<td class="text-center"><p>95.5</p></td>
+<td class="text-center"><p>207</p></td>
+<td class="text-center"><p>88.5</p></td>
+<td class="text-center"><p>262</p></td>
+<td class="text-center"><p>149</p></td>
+<td class="text-center"><p>73</p></td>
+<td class="text-center"><p>105</p></td>
+<td class="text-center"><p>140.0</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Robin-Chat-7b</p></td>
+<td class="text-center"><p>89.0</p></td>
+<td class="text-center"><p>200</p></td>
+<td class="text-center"><p>81</p></td>
+<td class="text-center"><p>240</p></td>
+<td class="text-center"><p>139</p></td>
+<td class="text-center"><p>65.5</p></td>
+<td class="text-center"><p>96.5</p></td>
+<td class="text-center"><p>130.1</p></td>
+</tr>
+</tbody>
+</table>
+<p>It is surprising to find that finetuning actually leads to commonsense degradation. A more well-known consequence of this issue is hallucination, where models tend to give plausible but factually incorrect or irrelevant answers. One explanation of this phenomenon is that LLMs “forget” the pretrained knowledge during finetuning when attempting to fit the finetune dataset.</p>
+<p>As one can see from the table above, both Vicuna and Robin suffer from this commonsense degradation issue. However, Robin suffers less. We conjecture that this improvement is brought by finetuning with smaller-sized but higher-quality dataset. Vicuna uses sharegpt data with ~900MB size and was finetuned for 3 epochs, while Robin uses multiple sources of dataset with ~600MB size and was only finetuned for 2 epochs. This suggests that in the finetuning stage, data quality plays a critical role.</p>
+<p>This improvement gives Vicuna-13b a run for its money when competing with Robin. The following examples show that Robin-Chat-7b possesses a comparable level of commonsense when compared with Vicuna-13b.</p>
+<p><strong>Table 7: Use cases of commonsense QA</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Question</p></th>
+<th class="head text-center"><p>Vicuna-13b</p></th>
+<th class="head text-center"><p>Robin-Chat-7b</p></th>
+<th class="head text-center"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><p>I go to a friend’s home but the door is locked. However, I smell coal gas. Should I break the window?</p><p></p></p></td>
+<td class="text-center"><p>If you smell coal gas, it is important to get out of the house as quickly as possible and call the fire department or the gas company. Coal gas is a flammable gas that can be dangerous and even deadly if it is not properly ventilated. If the door is locked, you <strong>should not break the window because it could cause a fire or explosion</strong>. Instead, try to find another way to escape the house or call for help. If you cannot leave the house safely, try to stay calm and wait for help to arrive.</p></td>
+<td class="text-center"><p>No, it is not recommended to break a window in this situation. <strong>Breaking a window can be dangerous and can cause injury or damage to yourself or others</strong>. Additionally, it is <strong>illegal</strong> to break a window to enter a property without permission. Instead, you should try to find another way to enter the home, such as by using a key or by calling the homeowner or a locksmith for assistance. If you are unable to enter the home, you should call the emergency services or the police for assistance. In the meantime, it is important to <strong>avoid using any sources of heat</strong>, such as a lighter or matches, as these can cause a gas leak or explosion. If you smell gas, you should evacuate the area immediately and call the emergency services or the gas company for assistance.</p></td>
+<td class="text-center"><p><em>Breaking the window helps the ventilation and will not cause a gas explosion directly. However, it is indeed illegal and may injure yourself when breaking the window.</em></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Can I bring my pet ferret to that beautiful pacific island of USA to attend ICML 2023?</p></td>
+<td class="text-center"><p>I’m sorry, but I am <strong>not aware of</strong> the specific policies regarding pets at the ICML 2023 conference or the island you are referring to. It would be best to check with the conference organizers or the local authorities on the island to determine if ferrets are allowed and if there are any necessary procedures or requirements for bringing a pet to the conference.</p></td>
+<td class="text-center"><p><p>It is <strong>not recommended</strong> to bring a pet ferret to the United States, including to attend ICML 2023. Ferrets are not permitted as pets in many areas of the United States, and <strong>it is illegal</strong> to bring them into the country without proper documentation and licensing. Additionally, ferrets can <strong>carry diseases</strong> that are not common in humans but can be dangerous to people, such as toxoplasmosis and salmonellosis. It is important to prioritize the health and safety of yourself and others by not bringing a pet ferret to a crowded event like ICML 2023.</p><p></p></p></td>
+<td class="text-center"><p><em>ICML 2023 will be held in Hawaii, where ferrets are strictly prohibited as pets because they are potential carriers of the rabies virus.</em></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Experiment Details</strong></p>
+<p>Here, we make use of  Eleuther AI’s LM evaluation harness repository (<a class="github reference external" href="https://github.com/EleutherAI/lm-evaluation-harness">EleutherAI/lm-evaluation-harness</a>) to get QA accuracy results. We also evaluate all models’ NLL metrics on their datasets, with their questions as contexts and answers as output sentences.</p>
+</section>
+<section id="instruction-following">
+<h2>Instruction Following<a class="headerlink" href="#instruction-following" title="Permalink to this heading">#</a></h2>
+<p>The final aspect we evaluate is instruction following, where a model is expected to loyally obey the user’s instructions, given the instruction being ethically or legally appropriate. It turns out that,</p>
+<ol class="arabic simple">
+<li><p><em>Without finetuning, foundation models do not perform well on instruction following.</em></p></li>
+<li><p><em>Finetuning on chat dataset helps improve the performance.</em></p></li>
+<li><p><em>Our Robin-Chat is still comparable with Vicuna-13b.</em></p></li>
+</ol>
+<p><strong>Table 8: NLL on instruction following chat datasets</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p></p></th>
+<th class="head text-center"><p>gpt4_en_instruction</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Alpaca</p></td>
+<td class="text-center"><p>222</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Llama-7b</p></td>
+<td class="text-center"><p>214</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Vicuna-7b</p></td>
+<td class="text-center"><p>211</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Vicuna-13b</p></td>
+<td class="text-center"><p>206</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Robin-Chat-7b</p></td>
+<td class="text-center"><p><strong>180</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p>Following examples show that Robin-Chat-7b can generate similar responses on instruction following tasks when compared with Vicuna-13b.</p>
+<p><strong>Table 9: Uses cases of instruction following</strong></p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Question</p></th>
+<th class="head text-center"><p>Vicuna-13b</p></th>
+<th class="head text-center"><p>Robin-Chat-7b</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Can you write quicksort?</p></td>
+<td class="text-center"><p><p>Yes, here is a simple implementation of the quicksort algorithm in Python:</p><p>def quicksort(arr):</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>if len(arr) &lt;= 1:</p><p><code class="docutils literal notranslate">&#160;&#160;&#160;&#160;&#160;&#160;&#160; </code>return arr</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>pivot = arr[len(arr) // 2]</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>left = [x for x in arr if x &lt; pivot]</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>middle = [x for x in arr if x == pivot]</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>right = [x for x in arr if x &gt; pivot]</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>return quicksort(left) + middle + quicksort(right)</p><p></p><p>This implementation uses the middle element of the array as the pivot, and then partitions the array into three sub-arrays: one containing all elements that are less than the pivot, one containing all elements that are equal to the pivot, and one containing all elements that are greater than the pivot. It then recursively applies the quicksort algorithm to the left and right sub-arrays, and returns the concatenation of the sorted left sub-array, the unsorted middle sub-array, and the sorted right sub-array.</p><p>This implementation has a time complexity of O(n log n) due to the recursive calls, although it could potentially be faster in practice if the pivot is carefully chosen.</p><p></p></p></td>
+<td class="text-center"><p><p>Sure, here is a simple implementation of the quicksort algorithm in Python:</p><p>def quicksort(arr):</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>if len(arr) &lt;= 1:</p><p><code class="docutils literal notranslate">&#160;&#160;&#160;&#160;&#160;&#160;&#160; </code>return arr</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>pivot = arr[len(arr) // 2]</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>left = [x for x in arr if x &lt; pivot]</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>middle = [x for x in arr if x == pivot]</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>right = [x for x in arr if x &gt; pivot]</p><p><code class="docutils literal notranslate">&#160;&#160;&#160; </code>return quicksort(left) + middle + quicksort(right)</p><p></p><p>This implementation chooses the middle element of the array as the pivot, and then partitions the array into three parts: elements less than the pivot, elements equal to the pivot, and elements greater than the pivot. It then recursively applies the quicksort algorithm to the left and right subarrays, and concatenates the results with the middle subarray to produce the final sorted array.</p><p>Note that this implementation uses a single pass through the array, which is the most efficient way to sort an array using quicksort.</p></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Instruction: Find synonyms for the given word. You need to write down how the provided synonyms differ from the original word in terms of meaning, usage, etc. adversity</p></td>
+<td class="text-center"><p><p>Synonyms for “adversity” include:</p><p>- Difficulty</p><p>- Hardship</p><p>- Trouble</p><p>- Misfortune</p><p>- Adversity</p><p>- Difficulties</p><p>- Hard times</p><p>All of these words refer to challenging or unpleasant circumstances or situations. However, “adversity” specifically connotes a difficult or hostile situation that is caused by external factors, such as an enemy or a natural disaster. “Difficulty” and “hardship” can be caused by external or internal factors, and can refer to a wide range of challenges, from mild inconveniences to major setbacks. “Trouble” often connotes a specific type of difficulty or distress, such as financial trouble or legal trouble. “Misfortune” specifically refers to bad luck or ill fate, while “hard times” refers to a general period of economic or social distress.</p></p></td>
+<td class="text-center"><p><p>1. Hardship</p><p>2. Struggle</p><p>3. Difficulty</p><p>4. Oppression</p><p>5. Trial</p><p>6. Affliction</p><p>7. Distress</p><p>8. Calamity</p><p>9. Tribulation</p><p>10. Hardship</p><p>Adversity refers to difficult or challenging circumstances or conditions. Hardship, struggle, difficulty, oppression, trial, affliction, distress, and calamity are all words that can be used to describe adversity, but they often imply a more specific or intense situation. For example, hardship can refer to a general difficulty or challenge, while struggle implies a more intense battle or conflict. Difficulty and oppression imply a more specific obstacle or injustice, while trial and affliction suggest a more specific test or suffering. Trial can also refer to a legal proceeding, while tribulation implies a more general time of suffering or persecution.</p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Experiment Details</strong></p>
+<p>In order to make evaluations for models’ instruction following ability, we collected GPT-4 instruction data from the project “Instruction Tuning with GPT-4”, which provides many instruction tuning data labeled by GPT-4. We sample 1,000 English data and manually filtered examples with the following issues, where 767 effective samples remain after the filtering:</p>
+<ol class="arabic simple">
+<li><p>Long response with too many nonsense words</p></li>
+<li><p>Incomplete input texts</p></li>
+<li><p>Specific domains involving chemistry/biology, where most LLM models do not possess the knowledge and always fail</p></li>
+</ol>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this heading">#</a></h2>
+<p>In this article, we introduce LMFlow’s evaluation framework, which uses NLL metric to reflect LLM models’ ability. NLL provides a good metric to evaluate different aspects of a LLM model. According to our evaluation results, Robin-7b achieves on-par performance when compared with Vicuna-13b. As our Robin-7b model is finetuned with different sources of dataset instead of sharegpt only, this shows that Vicuna can be further improved or surpassed with smaller-sized models and better dataset.</p>
+<p>The checkpoint of Robin-7b is now available for engineers and researchers to download and use (<a class="github reference external" href="https://github.com/OptimalScale/LMFlow#model-zoo">OptimalScale/LMFlow</a>). Its effectiveness demonstrates that a multi-aspect evaluation is indeed essential to the development of LLMs.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<p>Vicuna Chatbot Arena: <a class="reference external" href="https://chat.lmsys.org/?arena">https://chat.lmsys.org/?arena</a></p>
+<p>lm-evaluation-harness: <a class="github reference external" href="https://github.com/EleutherAI/lm-evaluation-harness">EleutherAI/lm-evaluation-harness</a></p>
+<p>LMFlow: <a class="github reference external" href="https://github.com/OptimalScale/LMFlow">OptimalScale/LMFlow</a></p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Blogs</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../examples/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Examples</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metric">Metric</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chat-performance">Chat Performance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commonsense-performance">CommonSense Performance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instruction-following">Instruction Following</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="../_sources/blogs/benchmark.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright LMFlow 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

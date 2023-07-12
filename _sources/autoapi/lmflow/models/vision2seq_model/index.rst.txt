@@ -1,0 +1,91 @@
+:py:mod:`lmflow.models.vision2seq_model`
+========================================
+
+.. py:module:: lmflow.models.vision2seq_model
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   lmflow.models.vision2seq_model.CustomAutoVision2SeqModel
+
+
+
+
+.. py:class:: CustomAutoVision2SeqModel(config: transformers.Blip2Config)
+
+   Bases: :py:obj:`transformers.Blip2ForConditionalGeneration`, :py:obj:`lmflow.models.base_model.BaseModel`
+
+   
+   An abstract class to handle weights initialization and a simple interface for downloading and loading pretrained
+   models.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+   .. py:method:: vision_model_from_pretrained(pretrained_path)
+
+
+   .. py:method:: qformer_from_pretrained(pretrained_path)
+
+
+   .. py:method:: language_model_from_pretrained(pretrained_path, low_resource=False)
+
+
+   .. py:method:: generate(pixel_values: torch.FloatTensor, input_ids: Optional[torch.LongTensor] = None, attention_mask: Optional[torch.LongTensor] = None, image_token_indexes: Optional[List] = [0], one_sample_multiple_images: Optional[bool] = False, **generate_kwargs) -> torch.LongTensor
+
+      
+      Overrides `generate` function to be able to use the model as a conditional generator.
+
+      Args:
+          pixel_values (`torch.FloatTensor` of shape (batch_size, num_channels, height, width)):
+              Input images to be processed.
+          input_ids (`torch.LongTensor` of shape (batch_size, sequence_length), *optional*):
+              The sequence used as a prompt for the generation.
+          attention_mask (`torch.LongTensor` of shape (batch_size, sequence_length), *optional*):
+              Mask to avoid performing attention on padding token indices
+          image_token_indexes (bool, *optional*):
+              The index for inserting the image tokens.
+          one_sample_multiple_images: (bool, *optional*):
+              The flag for inference that the input batch size is 1 and contain multiple images.
+
+      Returns:
+          captions (list): A list of strings of length batch_size * num_captions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

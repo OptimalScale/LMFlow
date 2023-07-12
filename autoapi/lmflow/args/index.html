@@ -1,0 +1,1388 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>lmflow.args &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/lmflow/args/index';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="lmflow.version" href="../version/index.html" />
+    <link rel="prev" title="lmflow.utils.data_utils" href="../utils/data_utils/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../blogs/index.html">
+                        Blogs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../about/index.html">
+                        About
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../blogs/index.html">
+                        Blogs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../about/index.html">
+                        About
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../datasets/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.datasets</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../datasets/dataset/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.datasets.dataset</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../models/interfaces/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.interfaces</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../models/interfaces/tunable/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.interfaces.tunable</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../models/auto_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.auto_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../models/base_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.base_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../models/decoder_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.decoder_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../models/encoder_decoder_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.encoder_decoder_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../models/hf_decoder_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.hf_decoder_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../models/hf_encoder_decoder_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.hf_encoder_decoder_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../models/regression_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.regression_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../models/text_regression_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.text_regression_model</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../models/vision2seq_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.models.vision2seq_model</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../pipeline/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../pipeline/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../pipeline/utils/peft_trainer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils.peft_trainer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pipeline/utils/raft_trainer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.utils.raft_trainer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../pipeline/auto_pipeline/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.auto_pipeline</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pipeline/base_aligner/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.base_aligner</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pipeline/base_pipeline/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.base_pipeline</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pipeline/base_tuner/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.base_tuner</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pipeline/evaluator/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.evaluator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pipeline/finetuner/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.finetuner</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pipeline/inferencer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.inferencer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../pipeline/raft_aligner/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.pipeline.raft_aligner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utils/flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utils/flash_attention/bloom_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.bloom_flash_attention</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/flash_attention/gpt2_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.gpt2_flash_attention</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/flash_attention/gpt_neo_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.gpt_neo_flash_attention</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/flash_attention/llama_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.llama_flash_attention</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/flash_attention/triton_flash_attention/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../utils/constants/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.constants</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utils/data_utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.data_utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.args</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../version/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.version</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.args</span></code></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="module-lmflow.args">
+<span id="lmflow-args"></span><h1><a class="reference internal" href="#module-lmflow.args" title="lmflow.args"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.args</span></code></a><a class="headerlink" href="#module-lmflow.args" title="Permalink to this heading">#</a></h1>
+<p>This script defines dataclasses: ModelArguments and DatasetArguments,
+that contain the arguments for the model and dataset used in training.</p>
+<p>It imports several modules, including dataclasses, field from typing, Optional from typing,
+require_version from transformers.utils.versions, MODEL_FOR_CAUSAL_LM_MAPPING,
+and TrainingArguments from transformers.</p>
+<p>MODEL_CONFIG_CLASSES is assigned a list of the model config classes from
+MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types
+extracted from the MODEL_CONFIG_CLASSES.</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.args.ModelArguments" title="lmflow.args.ModelArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelArguments</span></code></a></p></td>
+<td><p>Define a class ModelArguments using the dataclass decorator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.args.DatasetArguments" title="lmflow.args.DatasetArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DatasetArguments</span></code></a></p></td>
+<td><p>Define a class DatasetArguments using the dataclass decorator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.args.FinetunerArguments" title="lmflow.args.FinetunerArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FinetunerArguments</span></code></a></p></td>
+<td><p>Adapt transformers.TrainingArguments</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.args.EvaluatorArguments" title="lmflow.args.EvaluatorArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EvaluatorArguments</span></code></a></p></td>
+<td><p>Define a class EvaluatorArguments using the dataclass decorator. The class contains several optional</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.args.InferencerArguments" title="lmflow.args.InferencerArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InferencerArguments</span></code></a></p></td>
+<td><p>Define a class InferencerArguments using the dataclass decorator. The class contains several optional</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.args.RaftAlignerArguments" title="lmflow.args.RaftAlignerArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RaftAlignerArguments</span></code></a></p></td>
+<td><p>Define a class RaftAlignerArguments to configure raft aligner.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.args.BenchmarkingArguments" title="lmflow.args.BenchmarkingArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BenchmarkingArguments</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.args.AutoArguments" title="lmflow.args.AutoArguments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AutoArguments</span></code></a></p></td>
+<td><p>Automatically choose arguments from FinetunerArguments or EvaluatorArguments.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.args.MODEL_CONFIG_CLASSES" title="lmflow.args.MODEL_CONFIG_CLASSES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MODEL_CONFIG_CLASSES</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.args.MODEL_TYPES" title="lmflow.args.MODEL_TYPES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MODEL_TYPES</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.args.PIPELINE_ARGUMENT_MAPPING" title="lmflow.args.PIPELINE_ARGUMENT_MAPPING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PIPELINE_ARGUMENT_MAPPING</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="lmflow.args.MODEL_CONFIG_CLASSES">
+<span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">MODEL_CONFIG_CLASSES</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#MODEL_CONFIG_CLASSES"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.MODEL_CONFIG_CLASSES" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="lmflow.args.MODEL_TYPES">
+<span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">MODEL_TYPES</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#MODEL_TYPES"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.MODEL_TYPES" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">ModelArguments</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments" title="Permalink to this definition">#</a></dt>
+<dd><p>Define a class ModelArguments using the dataclass decorator.
+The class contains several optional parameters that can be used to configure a model.</p>
+<dl class="simple">
+<dt>model_name_or_path<span class="classifier">str</span></dt><dd><p>a string representing the path or name of a pretrained
+model checkpoint for weights initialization. If None, a model will be trained from scratch.</p>
+</dd>
+<dt>model_type<span class="classifier">str</span></dt><dd><p>a string representing the type of model to use if training from
+scratch. If not provided, a pretrained model will be used.</p>
+</dd>
+<dt>config_overrides<span class="classifier">str</span></dt><dd><p>a string representing the default config settings to override
+when training a model from scratch.</p>
+</dd>
+<dt>config_name<span class="classifier">str</span></dt><dd><p>a string representing the name or path of the pretrained config to
+use, if different from the model_name_or_path.</p>
+</dd>
+<dt>tokenizer_name<span class="classifier">str</span></dt><dd><p>a string representing the name or path of the pretrained tokenizer
+to use, if different from the model_name_or_path.</p>
+</dd>
+<dt>cache_dir<span class="classifier">str</span></dt><dd><p>a string representing the path to the directory where pretrained models
+downloaded from huggingface.co will be stored.</p>
+</dd>
+<dt>use_fast_tokenizer<span class="classifier">bool</span></dt><dd><p>a boolean indicating whether to use a fast tokenizer (backed by the
+tokenizers library) or not.</p>
+</dd>
+<dt>model_revision<span class="classifier">str</span></dt><dd><p>a string representing the specific model version to use (can be a
+branch name, tag name, or commit id).</p>
+</dd>
+<dt>use_auth_token<span class="classifier">bool</span></dt><dd><p>a boolean indicating whether to use the token generated when running
+huggingface-cli login (necessary to use this script with private models).</p>
+</dd>
+<dt>torch_dtype<span class="classifier">str</span></dt><dd><p>a string representing the dtype to load the model under. If auto is
+passed, the dtype will be automatically derived from the model’s weights.</p>
+</dd>
+<dt>use_ram_optimized_load<span class="classifier">bool</span></dt><dd><p>a boolean indicating whether to use disk mapping when memory is not
+enough.</p>
+</dd>
+<dt>use_int8<span class="classifier">bool</span></dt><dd><p>a boolean indicating whether to load int8 quantization for inference.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.model_name_or_path">
+<span class="sig-name descname"><span class="pre">model_name_or_path</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.model_name_or_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.model_name_or_path" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.lora_model_path">
+<span class="sig-name descname"><span class="pre">lora_model_path</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.lora_model_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.lora_model_path" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.model_type">
+<span class="sig-name descname"><span class="pre">model_type</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.model_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.model_type" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.arch_type">
+<span class="sig-name descname"><span class="pre">arch_type</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.arch_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.arch_type" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.config_overrides">
+<span class="sig-name descname"><span class="pre">config_overrides</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.config_overrides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.config_overrides" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">arch_type</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.arch_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.config_name">
+<span class="sig-name descname"><span class="pre">config_name</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.config_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.config_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.tokenizer_name">
+<span class="sig-name descname"><span class="pre">tokenizer_name</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.tokenizer_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.tokenizer_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.cache_dir">
+<span class="sig-name descname"><span class="pre">cache_dir</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.cache_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.cache_dir" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.use_fast_tokenizer">
+<span class="sig-name descname"><span class="pre">use_fast_tokenizer</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.use_fast_tokenizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.use_fast_tokenizer" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.model_revision">
+<span class="sig-name descname"><span class="pre">model_revision</span></span><em class="property"><span class="w"> </span><span class="pre">:str</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.model_revision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.model_revision" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.use_auth_token">
+<span class="sig-name descname"><span class="pre">use_auth_token</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.use_auth_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.use_auth_token" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.torch_dtype">
+<span class="sig-name descname"><span class="pre">torch_dtype</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.torch_dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.torch_dtype" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.use_lora">
+<span class="sig-name descname"><span class="pre">use_lora</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.use_lora"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.use_lora" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.lora_r">
+<span class="sig-name descname"><span class="pre">lora_r</span></span><em class="property"><span class="w"> </span><span class="pre">:int</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.lora_r"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.lora_r" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.lora_alpha">
+<span class="sig-name descname"><span class="pre">lora_alpha</span></span><em class="property"><span class="w"> </span><span class="pre">:int</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.lora_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.lora_alpha" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.lora_target_modules">
+<span class="sig-name descname"><span class="pre">lora_target_modules</span></span><em class="property"><span class="w"> </span><span class="pre">:List[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.lora_target_modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.lora_target_modules" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.lora_dropout">
+<span class="sig-name descname"><span class="pre">lora_dropout</span></span><em class="property"><span class="w"> </span><span class="pre">:float</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.lora_dropout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.lora_dropout" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.save_aggregated_lora">
+<span class="sig-name descname"><span class="pre">save_aggregated_lora</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.save_aggregated_lora"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.save_aggregated_lora" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.use_ram_optimized_load">
+<span class="sig-name descname"><span class="pre">use_ram_optimized_load</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.use_ram_optimized_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.use_ram_optimized_load" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.use_flash_attention">
+<span class="sig-name descname"><span class="pre">use_flash_attention</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.use_flash_attention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.use_flash_attention" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.args.ModelArguments.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/lmflow/args.html#ModelArguments.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.ModelArguments.__post_init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">DatasetArguments</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments" title="Permalink to this definition">#</a></dt>
+<dd><p>Define a class DatasetArguments using the dataclass decorator.
+The class contains several optional parameters that can be used to configure a dataset for a language model.</p>
+<dl class="simple">
+<dt>dataset_path<span class="classifier">str</span></dt><dd><p>a string representing the path of the dataset to use.</p>
+</dd>
+<dt>dataset_name<span class="classifier">str</span></dt><dd><p>a string representing the name of the dataset to use. The default value is “customized”.</p>
+</dd>
+<dt>is_custom_dataset<span class="classifier">bool</span></dt><dd><p>a boolean indicating whether to use custom data. The default value is False.</p>
+</dd>
+<dt>customized_cache_dir<span class="classifier">str</span></dt><dd><p>a string representing the path to the directory where customized dataset caches will be stored.</p>
+</dd>
+<dt>dataset_config_name<span class="classifier">str</span></dt><dd><p>a string representing the configuration name of the dataset to use (via the datasets library).</p>
+</dd>
+<dt>train_file<span class="classifier">str</span></dt><dd><p>a string representing the path to the input training data file (a text file).</p>
+</dd>
+<dt>validation_file<span class="classifier">str</span></dt><dd><p>a string representing the path to the input evaluation data file to evaluate the perplexity on (a text file).</p>
+</dd>
+<dt>max_train_samples<span class="classifier">int</span></dt><dd><p>an integer indicating the maximum number of training examples to use for debugging or quicker training.
+If set, the training dataset will be truncated to this number.</p>
+</dd>
+<dt>max_eval_samples: int</dt><dd><p>an integer indicating the maximum number of evaluation examples to use for debugging or quicker training.
+If set, the evaluation dataset will be truncated to this number.</p>
+</dd>
+<dt>streaming<span class="classifier">bool</span></dt><dd><p>a boolean indicating whether to enable streaming mode.</p>
+</dd>
+<dt>block_size: int</dt><dd><p>an integer indicating the optional input sequence length after tokenization. The training dataset will be
+truncated in blocks of this size for training.</p>
+</dd>
+</dl>
+<p>The class also includes some additional parameters that can be used to configure the dataset further, such as <cite>overwrite_cache</cite>,
+<cite>validation_split_percentage</cite>, <cite>preprocessing_num_workers</cite>, <cite>disable_group_texts</cite>, <cite>demo_example_in_prompt</cite>, <cite>explanation_in_prompt</cite>,
+<cite>keep_linebreaks</cite>, and <cite>prompt_structure</cite>.</p>
+<p>The field function is used to set default values and provide help messages for each parameter. The Optional type hint is
+used to indicate that a parameter is optional. The metadata argument is used to provide additional information about
+each parameter, such as a help message.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.dataset_path">
+<span class="sig-name descname"><span class="pre">dataset_path</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.dataset_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.dataset_path" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.dataset_name">
+<span class="sig-name descname"><span class="pre">dataset_name</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.dataset_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.dataset_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.is_custom_dataset">
+<span class="sig-name descname"><span class="pre">is_custom_dataset</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[bool]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.is_custom_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.is_custom_dataset" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.customized_cache_dir">
+<span class="sig-name descname"><span class="pre">customized_cache_dir</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.customized_cache_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.customized_cache_dir" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.dataset_config_name">
+<span class="sig-name descname"><span class="pre">dataset_config_name</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.dataset_config_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.dataset_config_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.train_file">
+<span class="sig-name descname"><span class="pre">train_file</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.train_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.train_file" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.validation_file">
+<span class="sig-name descname"><span class="pre">validation_file</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.validation_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.validation_file" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.max_train_samples">
+<span class="sig-name descname"><span class="pre">max_train_samples</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.max_train_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.max_train_samples" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.max_eval_samples">
+<span class="sig-name descname"><span class="pre">max_eval_samples</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.max_eval_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.max_eval_samples" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.streaming">
+<span class="sig-name descname"><span class="pre">streaming</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.streaming"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.streaming" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.block_size">
+<span class="sig-name descname"><span class="pre">block_size</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.block_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.block_size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.overwrite_cache">
+<span class="sig-name descname"><span class="pre">overwrite_cache</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.overwrite_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.overwrite_cache" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.validation_split_percentage">
+<span class="sig-name descname"><span class="pre">validation_split_percentage</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.validation_split_percentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.validation_split_percentage" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.preprocessing_num_workers">
+<span class="sig-name descname"><span class="pre">preprocessing_num_workers</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.preprocessing_num_workers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.preprocessing_num_workers" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.group_texts_batch_size">
+<span class="sig-name descname"><span class="pre">group_texts_batch_size</span></span><em class="property"><span class="w"> </span><span class="pre">:int</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.group_texts_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.group_texts_batch_size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.disable_group_texts">
+<span class="sig-name descname"><span class="pre">disable_group_texts</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.disable_group_texts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.disable_group_texts" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.keep_linebreaks">
+<span class="sig-name descname"><span class="pre">keep_linebreaks</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.keep_linebreaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.keep_linebreaks" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.test_file">
+<span class="sig-name descname"><span class="pre">test_file</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.test_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.test_file" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.args.DatasetArguments.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/lmflow/args.html#DatasetArguments.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.DatasetArguments.__post_init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.args.FinetunerArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">FinetunerArguments</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#FinetunerArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.FinetunerArguments" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">transformers.TrainingArguments</span></code></p>
+<p>Adapt transformers.TrainingArguments</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.FinetunerArguments.eval_dataset_path">
+<span class="sig-name descname"><span class="pre">eval_dataset_path</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#FinetunerArguments.eval_dataset_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.FinetunerArguments.eval_dataset_path" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">EvaluatorArguments</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments" title="Permalink to this definition">#</a></dt>
+<dd><p>Define a class EvaluatorArguments using the dataclass decorator. The class contains several optional
+parameters that can be used to configure a evaluator.</p>
+<dl class="simple">
+<dt>local_rank<span class="classifier">str</span></dt><dd><p>For distributed training: local_rank</p>
+</dd>
+</dl>
+<p>random_shuffle : bool</p>
+<p>use_wandb : bool</p>
+<p>random_seed : int, default = 1</p>
+<p>output_dir : str, default = ‘./output_dir’,</p>
+<dl class="simple">
+<dt>mixed_precision<span class="classifier">str, choice from [“bf16”,”fp16”].</span></dt><dd><p>mixed precision mode, whether to use bf16 or fp16</p>
+</dd>
+<dt>deepspeed :</dt><dd><p>Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
+loaded json file as a dict</p>
+</dd>
+<dt>temperature<span class="classifier">float</span></dt><dd><p>An argument of model.generate in huggingface to control the diversity of generation.</p>
+</dd>
+<dt>repetition_penalty<span class="classifier">float</span></dt><dd><p>An argument of model.generate in huggingface to penalize repetitions.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.local_rank">
+<span class="sig-name descname"><span class="pre">local_rank</span></span><em class="property"><span class="w"> </span><span class="pre">:int</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.local_rank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.local_rank" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.random_shuffle">
+<span class="sig-name descname"><span class="pre">random_shuffle</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[bool]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.random_shuffle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.random_shuffle" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.use_wandb">
+<span class="sig-name descname"><span class="pre">use_wandb</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[bool]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.use_wandb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.use_wandb" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.random_seed">
+<span class="sig-name descname"><span class="pre">random_seed</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.random_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.random_seed" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.output_dir">
+<span class="sig-name descname"><span class="pre">output_dir</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.output_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.output_dir" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.mixed_precision">
+<span class="sig-name descname"><span class="pre">mixed_precision</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.mixed_precision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.mixed_precision" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.deepspeed">
+<span class="sig-name descname"><span class="pre">deepspeed</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.deepspeed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.deepspeed" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.answer_type">
+<span class="sig-name descname"><span class="pre">answer_type</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.answer_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.answer_type" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.prompt_structure">
+<span class="sig-name descname"><span class="pre">prompt_structure</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.prompt_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.prompt_structure" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.evaluate_block_size">
+<span class="sig-name descname"><span class="pre">evaluate_block_size</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.evaluate_block_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.evaluate_block_size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.metric">
+<span class="sig-name descname"><span class="pre">metric</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.metric" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.inference_batch_size_per_device">
+<span class="sig-name descname"><span class="pre">inference_batch_size_per_device</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.inference_batch_size_per_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.inference_batch_size_per_device" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.use_accelerator_for_evaluator">
+<span class="sig-name descname"><span class="pre">use_accelerator_for_evaluator</span></span><em class="property"><span class="w"> </span><span class="pre">:bool</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.use_accelerator_for_evaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.use_accelerator_for_evaluator" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.temperature">
+<span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="w"> </span><span class="pre">:float</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.temperature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.temperature" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.repetition_penalty">
+<span class="sig-name descname"><span class="pre">repetition_penalty</span></span><em class="property"><span class="w"> </span><span class="pre">:float</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.repetition_penalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.repetition_penalty" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.EvaluatorArguments.max_new_tokens">
+<span class="sig-name descname"><span class="pre">max_new_tokens</span></span><em class="property"><span class="w"> </span><span class="pre">:int</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#EvaluatorArguments.max_new_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.EvaluatorArguments.max_new_tokens" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">InferencerArguments</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments" title="Permalink to this definition">#</a></dt>
+<dd><p>Define a class InferencerArguments using the dataclass decorator. The class contains several optional
+parameters that can be used to configure a inferencer.</p>
+<dl class="simple">
+<dt>local_rank<span class="classifier">str</span></dt><dd><p>For distributed training: local_rank</p>
+</dd>
+</dl>
+<p>random_seed : int, default = 1</p>
+<dl class="simple">
+<dt>deepspeed :</dt><dd><p>Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
+loaded json file as a dict</p>
+</dd>
+<dt>mixed_precision<span class="classifier">str, choice from [“bf16”,”fp16”].</span></dt><dd><p>mixed precision mode, whether to use bf16 or fp16</p>
+</dd>
+<dt>temperature<span class="classifier">float</span></dt><dd><p>An argument of model.generate in huggingface to control the diversity of generation.</p>
+</dd>
+<dt>repetition_penalty<span class="classifier">float</span></dt><dd><p>An argument of model.generate in huggingface to penalize repetitions.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.device">
+<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="w"> </span><span class="pre">:str</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.device" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.local_rank">
+<span class="sig-name descname"><span class="pre">local_rank</span></span><em class="property"><span class="w"> </span><span class="pre">:int</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.local_rank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.local_rank" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.temperature">
+<span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="w"> </span><span class="pre">:float</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.temperature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.temperature" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.repetition_penalty">
+<span class="sig-name descname"><span class="pre">repetition_penalty</span></span><em class="property"><span class="w"> </span><span class="pre">:float</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.repetition_penalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.repetition_penalty" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.max_new_tokens">
+<span class="sig-name descname"><span class="pre">max_new_tokens</span></span><em class="property"><span class="w"> </span><span class="pre">:int</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.max_new_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.max_new_tokens" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.random_seed">
+<span class="sig-name descname"><span class="pre">random_seed</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.random_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.random_seed" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.deepspeed">
+<span class="sig-name descname"><span class="pre">deepspeed</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.deepspeed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.deepspeed" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.mixed_precision">
+<span class="sig-name descname"><span class="pre">mixed_precision</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.mixed_precision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.mixed_precision" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.InferencerArguments.do_sample">
+<span class="sig-name descname"><span class="pre">do_sample</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[bool]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#InferencerArguments.do_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.InferencerArguments.do_sample" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">RaftAlignerArguments</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">transformers.TrainingArguments</span></code></p>
+<p>Define a class RaftAlignerArguments to configure raft aligner.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments.output_reward_path">
+<span class="sig-name descname"><span class="pre">output_reward_path</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments.output_reward_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments.output_reward_path" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments.output_min_length">
+<span class="sig-name descname"><span class="pre">output_min_length</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments.output_min_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments.output_min_length" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments.output_max_length">
+<span class="sig-name descname"><span class="pre">output_max_length</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments.output_max_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments.output_max_length" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments.num_raft_iteration">
+<span class="sig-name descname"><span class="pre">num_raft_iteration</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments.num_raft_iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments.num_raft_iteration" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments.raft_batch_size">
+<span class="sig-name descname"><span class="pre">raft_batch_size</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments.raft_batch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments.raft_batch_size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments.top_reward_percentage">
+<span class="sig-name descname"><span class="pre">top_reward_percentage</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[float]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments.top_reward_percentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments.top_reward_percentage" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments.inference_batch_size_per_device">
+<span class="sig-name descname"><span class="pre">inference_batch_size_per_device</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[int]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments.inference_batch_size_per_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments.inference_batch_size_per_device" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.RaftAlignerArguments.collection_strategy">
+<span class="sig-name descname"><span class="pre">collection_strategy</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#RaftAlignerArguments.collection_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.RaftAlignerArguments.collection_strategy" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.args.BenchmarkingArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">BenchmarkingArguments</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#BenchmarkingArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.BenchmarkingArguments" title="Permalink to this definition">#</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.BenchmarkingArguments.dataset_name">
+<span class="sig-name descname"><span class="pre">dataset_name</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#BenchmarkingArguments.dataset_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.BenchmarkingArguments.dataset_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.args.BenchmarkingArguments.lm_evaluation_metric">
+<span class="sig-name descname"><span class="pre">lm_evaluation_metric</span></span><em class="property"><span class="w"> </span><span class="pre">:Optional[str]</span></em><a class="reference internal" href="../../../_modules/lmflow/args.html#BenchmarkingArguments.lm_evaluation_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.BenchmarkingArguments.lm_evaluation_metric" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="lmflow.args.PIPELINE_ARGUMENT_MAPPING">
+<span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">PIPELINE_ARGUMENT_MAPPING</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#PIPELINE_ARGUMENT_MAPPING"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.PIPELINE_ARGUMENT_MAPPING" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.args.AutoArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.args.</span></span><span class="sig-name descname"><span class="pre">AutoArguments</span></span><a class="reference internal" href="../../../_modules/lmflow/args.html#AutoArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.AutoArguments" title="Permalink to this definition">#</a></dt>
+<dd><p>Automatically choose arguments from FinetunerArguments or EvaluatorArguments.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.args.AutoArguments.get_pipeline_args_class">
+<span class="sig-name descname"><span class="pre">get_pipeline_args_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/lmflow/args.html#AutoArguments.get_pipeline_args_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.args.AutoArguments.get_pipeline_args_class" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../utils/data_utils/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.utils.data_utils</span></code></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../version/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lmflow.version</span></code></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.MODEL_CONFIG_CLASSES"><code class="docutils literal notranslate"><span class="pre">MODEL_CONFIG_CLASSES</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.MODEL_TYPES"><code class="docutils literal notranslate"><span class="pre">MODEL_TYPES</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments"><code class="docutils literal notranslate"><span class="pre">ModelArguments</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.model_name_or_path"><code class="docutils literal notranslate"><span class="pre">ModelArguments.model_name_or_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_model_path"><code class="docutils literal notranslate"><span class="pre">ModelArguments.lora_model_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.model_type"><code class="docutils literal notranslate"><span class="pre">ModelArguments.model_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.arch_type"><code class="docutils literal notranslate"><span class="pre">ModelArguments.arch_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.config_overrides"><code class="docutils literal notranslate"><span class="pre">ModelArguments.config_overrides</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">ModelArguments.arch_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.config_name"><code class="docutils literal notranslate"><span class="pre">ModelArguments.config_name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.tokenizer_name"><code class="docutils literal notranslate"><span class="pre">ModelArguments.tokenizer_name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.cache_dir"><code class="docutils literal notranslate"><span class="pre">ModelArguments.cache_dir</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_fast_tokenizer"><code class="docutils literal notranslate"><span class="pre">ModelArguments.use_fast_tokenizer</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.model_revision"><code class="docutils literal notranslate"><span class="pre">ModelArguments.model_revision</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_auth_token"><code class="docutils literal notranslate"><span class="pre">ModelArguments.use_auth_token</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.torch_dtype"><code class="docutils literal notranslate"><span class="pre">ModelArguments.torch_dtype</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_lora"><code class="docutils literal notranslate"><span class="pre">ModelArguments.use_lora</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_r"><code class="docutils literal notranslate"><span class="pre">ModelArguments.lora_r</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_alpha"><code class="docutils literal notranslate"><span class="pre">ModelArguments.lora_alpha</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_target_modules"><code class="docutils literal notranslate"><span class="pre">ModelArguments.lora_target_modules</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_dropout"><code class="docutils literal notranslate"><span class="pre">ModelArguments.lora_dropout</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.save_aggregated_lora"><code class="docutils literal notranslate"><span class="pre">ModelArguments.save_aggregated_lora</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_ram_optimized_load"><code class="docutils literal notranslate"><span class="pre">ModelArguments.use_ram_optimized_load</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_flash_attention"><code class="docutils literal notranslate"><span class="pre">ModelArguments.use_flash_attention</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.__post_init__"><code class="docutils literal notranslate"><span class="pre">ModelArguments.__post_init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments"><code class="docutils literal notranslate"><span class="pre">DatasetArguments</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.dataset_path"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.dataset_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.dataset_name"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.dataset_name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.is_custom_dataset"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.is_custom_dataset</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.customized_cache_dir"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.customized_cache_dir</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.dataset_config_name"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.dataset_config_name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.train_file"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.train_file</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.validation_file"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.validation_file</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.max_train_samples"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.max_train_samples</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.max_eval_samples"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.max_eval_samples</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.streaming"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.streaming</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.block_size"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.block_size</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.overwrite_cache"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.overwrite_cache</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.validation_split_percentage"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.validation_split_percentage</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.preprocessing_num_workers"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.preprocessing_num_workers</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.group_texts_batch_size"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.group_texts_batch_size</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.disable_group_texts"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.disable_group_texts</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.keep_linebreaks"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.keep_linebreaks</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.test_file"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.test_file</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.__post_init__"><code class="docutils literal notranslate"><span class="pre">DatasetArguments.__post_init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.FinetunerArguments"><code class="docutils literal notranslate"><span class="pre">FinetunerArguments</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.FinetunerArguments.eval_dataset_path"><code class="docutils literal notranslate"><span class="pre">FinetunerArguments.eval_dataset_path</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.local_rank"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.local_rank</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.random_shuffle"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.random_shuffle</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.use_wandb"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.use_wandb</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.random_seed"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.random_seed</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.output_dir"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.output_dir</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.mixed_precision"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.mixed_precision</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.deepspeed"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.deepspeed</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.answer_type"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.answer_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.prompt_structure"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.prompt_structure</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.evaluate_block_size"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.evaluate_block_size</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.metric"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.metric</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.inference_batch_size_per_device"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.inference_batch_size_per_device</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.use_accelerator_for_evaluator"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.use_accelerator_for_evaluator</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.temperature"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.temperature</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.repetition_penalty"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.repetition_penalty</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.max_new_tokens"><code class="docutils literal notranslate"><span class="pre">EvaluatorArguments.max_new_tokens</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments"><code class="docutils literal notranslate"><span class="pre">InferencerArguments</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.device"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.device</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.local_rank"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.local_rank</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.temperature"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.temperature</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.repetition_penalty"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.repetition_penalty</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.max_new_tokens"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.max_new_tokens</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.random_seed"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.random_seed</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.deepspeed"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.deepspeed</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.mixed_precision"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.mixed_precision</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.do_sample"><code class="docutils literal notranslate"><span class="pre">InferencerArguments.do_sample</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.output_reward_path"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments.output_reward_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.output_min_length"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments.output_min_length</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.output_max_length"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments.output_max_length</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.num_raft_iteration"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments.num_raft_iteration</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.raft_batch_size"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments.raft_batch_size</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.top_reward_percentage"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments.top_reward_percentage</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.inference_batch_size_per_device"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments.inference_batch_size_per_device</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.collection_strategy"><code class="docutils literal notranslate"><span class="pre">RaftAlignerArguments.collection_strategy</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.BenchmarkingArguments"><code class="docutils literal notranslate"><span class="pre">BenchmarkingArguments</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.BenchmarkingArguments.dataset_name"><code class="docutils literal notranslate"><span class="pre">BenchmarkingArguments.dataset_name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.BenchmarkingArguments.lm_evaluation_metric"><code class="docutils literal notranslate"><span class="pre">BenchmarkingArguments.lm_evaluation_metric</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.PIPELINE_ARGUMENT_MAPPING"><code class="docutils literal notranslate"><span class="pre">PIPELINE_ARGUMENT_MAPPING</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.AutoArguments"><code class="docutils literal notranslate"><span class="pre">AutoArguments</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.AutoArguments.get_pipeline_args_class"><code class="docutils literal notranslate"><span class="pre">AutoArguments.get_pipeline_args_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.MODEL_CONFIG_CLASSES">MODEL_CONFIG_CLASSES</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.MODEL_TYPES">MODEL_TYPES</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments">ModelArguments</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.model_name_or_path">model_name_or_path</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_model_path">lora_model_path</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.model_type">model_type</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.arch_type">arch_type</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.config_overrides">config_overrides</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id0">arch_type</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.config_name">config_name</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.tokenizer_name">tokenizer_name</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.cache_dir">cache_dir</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_fast_tokenizer">use_fast_tokenizer</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.model_revision">model_revision</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_auth_token">use_auth_token</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.torch_dtype">torch_dtype</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_lora">use_lora</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_r">lora_r</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_alpha">lora_alpha</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_target_modules">lora_target_modules</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.lora_dropout">lora_dropout</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.save_aggregated_lora">save_aggregated_lora</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_ram_optimized_load">use_ram_optimized_load</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.use_flash_attention">use_flash_attention</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.ModelArguments.__post_init__">__post_init__</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments">DatasetArguments</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.dataset_path">dataset_path</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.dataset_name">dataset_name</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.is_custom_dataset">is_custom_dataset</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.customized_cache_dir">customized_cache_dir</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.dataset_config_name">dataset_config_name</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.train_file">train_file</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.validation_file">validation_file</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.max_train_samples">max_train_samples</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.max_eval_samples">max_eval_samples</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.streaming">streaming</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.block_size">block_size</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.overwrite_cache">overwrite_cache</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.validation_split_percentage">validation_split_percentage</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.preprocessing_num_workers">preprocessing_num_workers</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.group_texts_batch_size">group_texts_batch_size</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.disable_group_texts">disable_group_texts</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.keep_linebreaks">keep_linebreaks</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.test_file">test_file</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.DatasetArguments.__post_init__">__post_init__</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.FinetunerArguments">FinetunerArguments</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.FinetunerArguments.eval_dataset_path">eval_dataset_path</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments">EvaluatorArguments</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.local_rank">local_rank</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.random_shuffle">random_shuffle</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.use_wandb">use_wandb</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.random_seed">random_seed</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.output_dir">output_dir</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.mixed_precision">mixed_precision</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.deepspeed">deepspeed</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.answer_type">answer_type</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.prompt_structure">prompt_structure</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.evaluate_block_size">evaluate_block_size</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.metric">metric</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.inference_batch_size_per_device">inference_batch_size_per_device</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.use_accelerator_for_evaluator">use_accelerator_for_evaluator</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.temperature">temperature</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.repetition_penalty">repetition_penalty</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.EvaluatorArguments.max_new_tokens">max_new_tokens</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments">InferencerArguments</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.device">device</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.local_rank">local_rank</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.temperature">temperature</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.repetition_penalty">repetition_penalty</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.max_new_tokens">max_new_tokens</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.random_seed">random_seed</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.deepspeed">deepspeed</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.mixed_precision">mixed_precision</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.InferencerArguments.do_sample">do_sample</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments">RaftAlignerArguments</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.output_reward_path">output_reward_path</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.output_min_length">output_min_length</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.output_max_length">output_max_length</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.num_raft_iteration">num_raft_iteration</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.raft_batch_size">raft_batch_size</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.top_reward_percentage">top_reward_percentage</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.inference_batch_size_per_device">inference_batch_size_per_device</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.RaftAlignerArguments.collection_strategy">collection_strategy</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.BenchmarkingArguments">BenchmarkingArguments</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.BenchmarkingArguments.dataset_name">dataset_name</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.BenchmarkingArguments.lm_evaluation_metric">lm_evaluation_metric</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.PIPELINE_ARGUMENT_MAPPING">PIPELINE_ARGUMENT_MAPPING</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.AutoArguments">AutoArguments</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.args.AutoArguments.get_pipeline_args_class">get_pipeline_args_class</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/autoapi/lmflow/args/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright LMFlow 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

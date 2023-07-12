@@ -1,0 +1,1171 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lmflow.args &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lmflow/args';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../blogs/index.html">
+                        Blogs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../autoapi/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../about/index.html">
+                        About
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../blogs/index.html">
+                        Blogs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../autoapi/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../about/index.html">
+                        About
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../lmflow.html" class="nav-link">lmflow</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">lmflow.args</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for lmflow.args</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># coding=utf-8</span>
+<span class="sd">&quot;&quot;&quot;This script defines dataclasses: ModelArguments and DatasetArguments,</span>
+<span class="sd">that contain the arguments for the model and dataset used in training.</span>
+
+<span class="sd">It imports several modules, including dataclasses, field from typing, Optional from typing,</span>
+<span class="sd">require_version from transformers.utils.versions, MODEL_FOR_CAUSAL_LM_MAPPING,</span>
+<span class="sd">and TrainingArguments from transformers.</span>
+
+<span class="sd">MODEL_CONFIG_CLASSES is assigned a list of the model config classes from</span>
+<span class="sd">MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types</span>
+<span class="sd">extracted from the MODEL_CONFIG_CLASSES.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">transformers.utils.versions</span> <span class="kn">import</span> <span class="n">require_version</span>
+
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MODEL_FOR_CAUSAL_LM_MAPPING</span><span class="p">,</span>
+    <span class="n">TrainingArguments</span><span class="p">,</span>
+<span class="p">)</span>
+
+<div class="viewcode-block" id="MODEL_CONFIG_CLASSES"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.MODEL_CONFIG_CLASSES">[docs]</a><span class="n">MODEL_CONFIG_CLASSES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">MODEL_FOR_CAUSAL_LM_MAPPING</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+<div class="viewcode-block" id="MODEL_TYPES"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.MODEL_TYPES">[docs]</a><span class="n">MODEL_TYPES</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">model_type</span> <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">MODEL_CONFIG_CLASSES</span><span class="p">)</span></div>
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="ModelArguments"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments">[docs]</a><span class="k">class</span> <span class="nc">ModelArguments</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define a class ModelArguments using the dataclass decorator. </span>
+<span class="sd">    The class contains several optional parameters that can be used to configure a model. </span>
+<span class="sd">    </span>
+<span class="sd">    model_name_or_path : str</span>
+<span class="sd">        a string representing the path or name of a pretrained</span>
+<span class="sd">        model checkpoint for weights initialization. If None, a model will be trained from scratch.</span>
+
+<span class="sd">    model_type :  str</span>
+<span class="sd">        a string representing the type of model to use if training from</span>
+<span class="sd">        scratch. If not provided, a pretrained model will be used.</span>
+<span class="sd">    </span>
+<span class="sd">    config_overrides :  str</span>
+<span class="sd">        a string representing the default config settings to override</span>
+<span class="sd">        when training a model from scratch.</span>
+<span class="sd">    </span>
+<span class="sd">    config_name : str</span>
+<span class="sd">        a string representing the name or path of the pretrained config to</span>
+<span class="sd">        use, if different from the model_name_or_path.</span>
+<span class="sd">    </span>
+<span class="sd">    tokenizer_name :  str</span>
+<span class="sd">        a string representing the name or path of the pretrained tokenizer</span>
+<span class="sd">        to use, if different from the model_name_or_path.</span>
+
+<span class="sd">    cache_dir :  str</span>
+<span class="sd">        a string representing the path to the directory where pretrained models</span>
+<span class="sd">        downloaded from huggingface.co will be stored.</span>
+
+<span class="sd">    use_fast_tokenizer : bool</span>
+<span class="sd">        a boolean indicating whether to use a fast tokenizer (backed by the</span>
+<span class="sd">        tokenizers library) or not.</span>
+
+<span class="sd">    model_revision :  str</span>
+<span class="sd">        a string representing the specific model version to use (can be a</span>
+<span class="sd">        branch name, tag name, or commit id).</span>
+
+<span class="sd">    use_auth_token : bool</span>
+<span class="sd">        a boolean indicating whether to use the token generated when running</span>
+<span class="sd">        huggingface-cli login (necessary to use this script with private models).</span>
+
+<span class="sd">    torch_dtype :  str</span>
+<span class="sd">        a string representing the dtype to load the model under. If auto is</span>
+<span class="sd">        passed, the dtype will be automatically derived from the model&#39;s weights.</span>
+
+<span class="sd">    use_ram_optimized_load : bool</span>
+<span class="sd">        a boolean indicating whether to use disk mapping when memory is not</span>
+<span class="sd">        enough.</span>
+<span class="sd">    use_int8 : bool</span>
+<span class="sd">        a boolean indicating whether to load int8 quantization for inference.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ModelArguments.model_name_or_path"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.model_name_or_path">[docs]</a>    <span class="n">model_name_or_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The model checkpoint for weights initialization.Don&#39;t set if you want to train a model from scratch.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.lora_model_path"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.lora_model_path">[docs]</a>    <span class="n">lora_model_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The incremental model diff introduced by LoRA finetuning.&quot;</span>
+                <span class="s2">&quot; Along with the original non-finetuned model forms the whole&quot;</span>
+                <span class="s2">&quot; finetuned model.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.model_type"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.model_type">[docs]</a>    <span class="n">model_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;If training from scratch, pass a model type from the list: &quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">MODEL_TYPES</span><span class="p">)},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.arch_type"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.arch_type">[docs]</a>    <span class="n">arch_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;decoder_only&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The architecture type of the model. Currently supported decoder_only or encoder_decoder&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.config_overrides"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.config_overrides">[docs]</a>    <span class="n">config_overrides</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Override some existing default config settings when a model is trained from scratch. Example: &quot;</span>
+                <span class="s2">&quot;n_embd=10,resid_pdrop=0.2,scale_attn_weights=false,summary_type=cls_index&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+    <span class="n">arch_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;decoder_only&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Model architecture type, e.g. </span><span class="se">\&quot;</span><span class="s2">decoder_only</span><span class="se">\&quot;</span><span class="s2">,&quot;</span>
+                <span class="s2">&quot; </span><span class="se">\&quot;</span><span class="s2">encoder_decoder</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;decoder_only&quot;</span><span class="p">,</span> <span class="s2">&quot;encoder_decoder&quot;</span><span class="p">,</span> <span class="s2">&quot;text_regression&quot;</span><span class="p">,</span> <span class="s2">&quot;vision_encoder_decoder&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+<div class="viewcode-block" id="ModelArguments.config_name"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.config_name">[docs]</a>    <span class="n">config_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Pretrained config name or path if not the same as model_name&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.tokenizer_name"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.tokenizer_name">[docs]</a>    <span class="n">tokenizer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Pretrained tokenizer name or path if not the same as model_name&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.cache_dir"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.cache_dir">[docs]</a>    <span class="n">cache_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Where do you want to store the pretrained models downloaded from huggingface.co&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.use_fast_tokenizer"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.use_fast_tokenizer">[docs]</a>    <span class="n">use_fast_tokenizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether to use one of the fast tokenizer (backed by the tokenizers library) or not.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.model_revision"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.model_revision">[docs]</a>    <span class="n">model_revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The specific model version to use (can be a branch name, tag name or commit id).&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.use_auth_token"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.use_auth_token">[docs]</a>    <span class="n">use_auth_token</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Will use the token generated when running `huggingface-cli login` (necessary to use this script &quot;</span>
+                <span class="s2">&quot;with private models).&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.torch_dtype"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.torch_dtype">[docs]</a>    <span class="n">torch_dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Override the default `torch.dtype` and load the model under this dtype. If `auto` is passed, the &quot;</span>
+                <span class="s2">&quot;dtype will be automatically derived from the model&#39;s weights.&quot;</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">,</span> <span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;float32&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.use_lora"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.use_lora">[docs]</a>    <span class="n">use_lora</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether to lora.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.lora_r"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.lora_r">[docs]</a>    <span class="n">lora_r</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;the rank of the lora parameters. The smaller lora_r is , the fewer parameters lora has.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.lora_alpha"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.lora_alpha">[docs]</a>    <span class="n">lora_alpha</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.lora_target_modules"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.lora_target_modules">[docs]</a>    <span class="n">lora_target_modules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Pretrained config name or path if not the same as model_name&quot;</span><span class="p">,</span>
+                              <span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.lora_dropout"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.lora_dropout">[docs]</a>    <span class="n">lora_dropout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The dropout rate in lora.linear.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.save_aggregated_lora"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.save_aggregated_lora">[docs]</a>    <span class="n">save_aggregated_lora</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether to save aggregated lora.&quot;</span><span class="p">},</span>
+        <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.use_ram_optimized_load"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.use_ram_optimized_load">[docs]</a>    <span class="n">use_ram_optimized_load</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether use disk mapping when memory is not enough.&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="ModelArguments.use_flash_attention"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.use_flash_attention">[docs]</a>    <span class="n">use_flash_attention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;whether use flash attention layer to reduce GPU memory with&quot;</span>
+                <span class="s2">&quot; higher time cost.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ModelArguments.__post_init__"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.ModelArguments.__post_init__">[docs]</a>    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_overrides</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name_or_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;--config_overrides can&#39;t be used in combination with --config_name or --model_name_or_path&quot;</span>
+            <span class="p">)</span></div></div>
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="DatasetArguments"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments">[docs]</a><span class="k">class</span> <span class="nc">DatasetArguments</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define a class DatasetArguments using the dataclass decorator. </span>
+<span class="sd">    The class contains several optional parameters that can be used to configure a dataset for a language model. </span>
+<span class="sd">    </span>
+
+<span class="sd">    dataset_path : str</span>
+<span class="sd">        a string representing the path of the dataset to use.</span>
+
+<span class="sd">    dataset_name : str</span>
+<span class="sd">        a string representing the name of the dataset to use. The default value is &quot;customized&quot;.</span>
+
+<span class="sd">    is_custom_dataset : bool</span>
+<span class="sd">        a boolean indicating whether to use custom data. The default value is False.</span>
+
+<span class="sd">    customized_cache_dir : str</span>
+<span class="sd">        a string representing the path to the directory where customized dataset caches will be stored.</span>
+
+<span class="sd">    dataset_config_name : str</span>
+<span class="sd">        a string representing the configuration name of the dataset to use (via the datasets library).</span>
+
+<span class="sd">    train_file : str</span>
+<span class="sd">        a string representing the path to the input training data file (a text file).</span>
+
+<span class="sd">    validation_file : str</span>
+<span class="sd">        a string representing the path to the input evaluation data file to evaluate the perplexity on (a text file).</span>
+
+<span class="sd">    max_train_samples : int</span>
+<span class="sd">        an integer indicating the maximum number of training examples to use for debugging or quicker training. </span>
+<span class="sd">        If set, the training dataset will be truncated to this number.</span>
+
+<span class="sd">    max_eval_samples: int</span>
+<span class="sd">        an integer indicating the maximum number of evaluation examples to use for debugging or quicker training. </span>
+<span class="sd">        If set, the evaluation dataset will be truncated to this number.</span>
+
+<span class="sd">    streaming : bool</span>
+<span class="sd">        a boolean indicating whether to enable streaming mode.</span>
+
+<span class="sd">    block_size: int</span>
+<span class="sd">        an integer indicating the optional input sequence length after tokenization. The training dataset will be </span>
+<span class="sd">        truncated in blocks of this size for training.</span>
+
+<span class="sd">    The class also includes some additional parameters that can be used to configure the dataset further, such as `overwrite_cache`,</span>
+<span class="sd">    `validation_split_percentage`, `preprocessing_num_workers`, `disable_group_texts`, `demo_example_in_prompt`, `explanation_in_prompt`,</span>
+<span class="sd">    `keep_linebreaks`, and `prompt_structure`.</span>
+
+<span class="sd">    The field function is used to set default values and provide help messages for each parameter. The Optional type hint is</span>
+<span class="sd">    used to indicate that a parameter is optional. The metadata argument is used to provide additional information about </span>
+<span class="sd">    each parameter, such as a help message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DatasetArguments.dataset_path"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.dataset_path">[docs]</a>    <span class="n">dataset_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The path of the dataset to use.&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.dataset_name"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.dataset_name">[docs]</a>    <span class="n">dataset_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;customized&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Should be </span><span class="se">\&quot;</span><span class="s2">customized</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.is_custom_dataset"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.is_custom_dataset">[docs]</a>    <span class="n">is_custom_dataset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;whether to use custom data&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.customized_cache_dir"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.customized_cache_dir">[docs]</a>    <span class="n">customized_cache_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;.cache/llm-ft/datasets&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Where do you want to store the customized dataset caches&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.dataset_config_name"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.dataset_config_name">[docs]</a>    <span class="n">dataset_config_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The configuration name of the dataset to use (via the datasets library).&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.train_file"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.train_file">[docs]</a>    <span class="n">train_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The input training data file (a text file).&quot;</span><span class="p">})</span></div>
+<div class="viewcode-block" id="DatasetArguments.validation_file"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.validation_file">[docs]</a>    <span class="n">validation_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;An optional input evaluation data file to evaluate the perplexity on (a text file).&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.max_train_samples"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.max_train_samples">[docs]</a>    <span class="n">max_train_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;For debugging purposes or quicker training, truncate the number of training examples to this &quot;</span>
+                <span class="s2">&quot;value if set.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.max_eval_samples"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.max_eval_samples">[docs]</a>    <span class="n">max_eval_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">1e10</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;For debugging purposes or quicker training, truncate the number of evaluation examples to this &quot;</span>
+                <span class="s2">&quot;value if set.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.streaming"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.streaming">[docs]</a>    <span class="n">streaming</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Enable streaming mode&quot;</span><span class="p">})</span></div>
+<div class="viewcode-block" id="DatasetArguments.block_size"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.block_size">[docs]</a>    <span class="n">block_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Optional input sequence length after tokenization. &quot;</span>
+                <span class="s2">&quot;The training dataset will be truncated in block of this size for training. &quot;</span>
+                <span class="s2">&quot;Default to the model max input length for single sentence inputs (take into account special tokens).&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.overwrite_cache"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.overwrite_cache">[docs]</a>    <span class="n">overwrite_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Overwrite the cached training and evaluation sets&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.validation_split_percentage"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.validation_split_percentage">[docs]</a>    <span class="n">validation_split_percentage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The percentage of the train set used as validation set in case there&#39;s no validation split&quot;</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.preprocessing_num_workers"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.preprocessing_num_workers">[docs]</a>    <span class="n">preprocessing_num_workers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The number of processes to use for the preprocessing.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.group_texts_batch_size"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.group_texts_batch_size">[docs]</a>    <span class="n">group_texts_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Number of samples that will be grouped together to go though&quot;</span>
+                <span class="s2">&quot; `group_texts` operation. See `--disable_group_texts` for&quot;</span>
+                <span class="s2">&quot; detailed explanation of this operation.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.disable_group_texts"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.disable_group_texts">[docs]</a>    <span class="n">disable_group_texts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Whether we group original samples together to generate sample&quot;</span>
+                <span class="s2">&quot; sequences of length `block_size`. By default, we group every&quot;</span>
+                <span class="s2">&quot; 1000 tokenized sequences together, divide them into &quot;</span>
+                <span class="s2">&quot; [</span><span class="si">{total_num_tokens}</span><span class="s2"> / </span><span class="si">{block_size}</span><span class="s2">] sequences, each with&quot;</span>
+                <span class="s2">&quot; `block_size` tokens (the remaining tokens are ommited.&quot;</span>
+                <span class="s2">&quot; If this flag is set to True, we only group 1 tokenized&quot;</span>
+                <span class="s2">&quot; sequence, i.e. cutting long sequence into chunks.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.keep_linebreaks"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.keep_linebreaks">[docs]</a>    <span class="n">keep_linebreaks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether to keep line breaks when using TXT files or not.&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="DatasetArguments.test_file"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.test_file">[docs]</a>    <span class="n">test_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Evaluation File Path&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="DatasetArguments.__post_init__"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.DatasetArguments.__post_init__">[docs]</a>    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">streaming</span><span class="p">:</span>
+            <span class="n">require_version</span><span class="p">(</span><span class="s2">&quot;datasets&gt;=2.0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;The streaming feature requires `datasets&gt;=2.0.0`&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_file</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need either a dataset name or a training/validation file.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">extension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="n">extension</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">],</span> <span class="s2">&quot;`train_file` should be a csv, a json or a txt file.&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">extension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="n">extension</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;txt&quot;</span><span class="p">],</span> <span class="s2">&quot;`validation_file` should be a csv, a json or a txt file.&quot;</span></div></div>
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="FinetunerArguments"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.FinetunerArguments">[docs]</a><span class="k">class</span> <span class="nc">FinetunerArguments</span><span class="p">(</span><span class="n">TrainingArguments</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adapt transformers.TrainingArguments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="FinetunerArguments.eval_dataset_path"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.FinetunerArguments.eval_dataset_path">[docs]</a>    <span class="n">eval_dataset_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The path of the eval dataset to use.&quot;</span><span class="p">}</span>
+    <span class="p">)</span></div></div>
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="EvaluatorArguments"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments">[docs]</a><span class="k">class</span> <span class="nc">EvaluatorArguments</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define a class EvaluatorArguments using the dataclass decorator. The class contains several optional</span>
+<span class="sd">    parameters that can be used to configure a evaluator.</span>
+
+<span class="sd">    local_rank : str</span>
+<span class="sd">        For distributed training: local_rank</span>
+
+<span class="sd">    random_shuffle : bool</span>
+
+<span class="sd">    use_wandb : bool</span>
+
+<span class="sd">    random_seed : int, default = 1</span>
+
+<span class="sd">    output_dir : str, default = &#39;./output_dir&#39;,</span>
+
+<span class="sd">    mixed_precision : str, choice from [&quot;bf16&quot;,&quot;fp16&quot;].</span>
+<span class="sd">        mixed precision mode, whether to use bf16 or fp16</span>
+
+<span class="sd">    deepspeed : </span>
+<span class="sd">        Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already</span>
+<span class="sd">        loaded json file as a dict</span>
+<span class="sd">        </span>
+<span class="sd">    temperature : float</span>
+<span class="sd">        An argument of model.generate in huggingface to control the diversity of generation.</span>
+<span class="sd">        </span>
+<span class="sd">    repetition_penalty : float</span>
+<span class="sd">        An argument of model.generate in huggingface to penalize repetitions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="EvaluatorArguments.local_rank"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.local_rank">[docs]</a>    <span class="n">local_rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;For distributed training: local_rank&quot;</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="EvaluatorArguments.random_shuffle"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.random_shuffle">[docs]</a>    <span class="n">random_shuffle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+    
+<div class="viewcode-block" id="EvaluatorArguments.use_wandb"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.use_wandb">[docs]</a>    <span class="n">use_wandb</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;When this flag is True, wandb will be enabled&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.random_seed"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.random_seed">[docs]</a>    <span class="n">random_seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;used to set random seed&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.output_dir"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.output_dir">[docs]</a>    <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;./output_dir&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Output path for the inferenced results&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.mixed_precision"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.mixed_precision">[docs]</a>    <span class="n">mixed_precision</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;bf16&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;mixed precision mode, whether to use bf16 or fp16&quot;</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;bf16&quot;</span><span class="p">,</span><span class="s2">&quot;fp16&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.deepspeed"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.deepspeed">[docs]</a>    <span class="n">deepspeed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already&quot;</span>
+                <span class="s2">&quot; loaded json file as a dict&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.answer_type"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.answer_type">[docs]</a>    <span class="n">answer_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">&#39;Question type for answer extraction from the decoder output.&#39;</span>
+                <span class="s1">&#39; Supported types: </span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   1) &quot;multiple_choice&quot;, e.g. A, B, C, D, ...</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   2) &quot;binary_choice&quot;, e.g. yes, no, maybe</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   3) &quot;math&quot;, e.g. 1.0, -3.52</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   4) &quot;text&quot;, e.g. &quot;I think that it is okay&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   5) Special treatment for several datasets</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;gsm8k&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;svamp&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;asdiv&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;addsub&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;singleeq&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;multiarith&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;aqua&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;csqa&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;strategyqa&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;pubmedqa&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;medmcqa&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;     - &quot;usmle&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.prompt_structure"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.prompt_structure">[docs]</a>    <span class="n">prompt_structure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{input}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s1">&#39;Prompt structure to facilitate prompt engineering during&#39;</span>
+                <span class="s1">&#39; inference. The model will receive&#39;</span>
+                <span class="s1">&#39; `prompt_structure.format(input=input)` as its input.&#39;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.evaluate_block_size"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.evaluate_block_size">[docs]</a>    <span class="n">evaluate_block_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;the model will have at least block_size tokens for context when calculating the conditional likelihood of any one token&quot;</span>
+                <span class="s2">&quot; (provided there are block_size preceding tokens available to condition on)&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.metric"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.metric">[docs]</a>    <span class="n">metric</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;the metric the model will be evaluated on&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ppl&quot;</span><span class="p">,</span> <span class="s2">&quot;perplexity&quot;</span><span class="p">,</span> <span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;nll&quot;</span><span class="p">,</span> <span class="s2">&quot;neg_log_likelihood&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.inference_batch_size_per_device"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.inference_batch_size_per_device">[docs]</a>    <span class="n">inference_batch_size_per_device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;every device will infer </span><span class="si">{inference_batch_size_per_device}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot; samples in parallel. The inferred results will be concatenaed&quot;</span>
+                <span class="s2">&quot; with inputs and attach a reward.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="EvaluatorArguments.use_accelerator_for_evaluator"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.use_accelerator_for_evaluator">[docs]</a>    <span class="n">use_accelerator_for_evaluator</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether to use Huggingface Accelerator instead of Deepspeed&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+        
+<div class="viewcode-block" id="EvaluatorArguments.temperature"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.temperature">[docs]</a>    <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature during inference.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+    
+<div class="viewcode-block" id="EvaluatorArguments.repetition_penalty"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.repetition_penalty">[docs]</a>    <span class="n">repetition_penalty</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Repetition_penalty during inference.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+        
+<div class="viewcode-block" id="EvaluatorArguments.max_new_tokens"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.EvaluatorArguments.max_new_tokens">[docs]</a>    <span class="n">max_new_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Maximum length during inference.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div></div>
+    
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="InferencerArguments"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments">[docs]</a><span class="k">class</span> <span class="nc">InferencerArguments</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define a class InferencerArguments using the dataclass decorator. The class contains several optional</span>
+<span class="sd">    parameters that can be used to configure a inferencer.</span>
+
+<span class="sd">    local_rank : str</span>
+<span class="sd">        For distributed training: local_rank</span>
+
+<span class="sd">    random_seed : int, default = 1</span>
+
+<span class="sd">    deepspeed :</span>
+<span class="sd">        Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already</span>
+<span class="sd">        loaded json file as a dict</span>
+<span class="sd">    mixed_precision : str, choice from [&quot;bf16&quot;,&quot;fp16&quot;].</span>
+<span class="sd">        mixed precision mode, whether to use bf16 or fp16</span>
+<span class="sd">    </span>
+<span class="sd">    temperature : float</span>
+<span class="sd">        An argument of model.generate in huggingface to control the diversity of generation.</span>
+<span class="sd">        </span>
+<span class="sd">    repetition_penalty : float</span>
+<span class="sd">        An argument of model.generate in huggingface to penalize repetitions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="InferencerArguments.device"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.device">[docs]</a>    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;device of chatbot&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span> <span class="s2">&quot;cpu&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="InferencerArguments.local_rank"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.local_rank">[docs]</a>    <span class="n">local_rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;For distributed training: local_rank&quot;</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+        
+<div class="viewcode-block" id="InferencerArguments.temperature"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.temperature">[docs]</a>    <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature during inference.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+    
+<div class="viewcode-block" id="InferencerArguments.repetition_penalty"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.repetition_penalty">[docs]</a>    <span class="n">repetition_penalty</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Repetition_penalty during inference.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+        
+<div class="viewcode-block" id="InferencerArguments.max_new_tokens"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.max_new_tokens">[docs]</a>    <span class="n">max_new_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Maximum length during inference.&quot;</span><span class="p">},</span>
+    <span class="p">)</span></div>
+        
+<div class="viewcode-block" id="InferencerArguments.random_seed"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.random_seed">[docs]</a>    <span class="n">random_seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;used to set random seed&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="InferencerArguments.deepspeed"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.deepspeed">[docs]</a>    <span class="n">deepspeed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already&quot;</span>
+                <span class="s2">&quot; loaded json file as a dict&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="InferencerArguments.mixed_precision"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.mixed_precision">[docs]</a>    <span class="n">mixed_precision</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;bf16&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;mixed precision mode, whether to use bf16 or fp16&quot;</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;bf16&quot;</span><span class="p">,</span><span class="s2">&quot;fp16&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="InferencerArguments.do_sample"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.InferencerArguments.do_sample">[docs]</a>    <span class="n">do_sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;whether turn on true random sampling during inference.&quot;</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div></div>
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="RaftAlignerArguments"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments">[docs]</a><span class="k">class</span> <span class="nc">RaftAlignerArguments</span><span class="p">(</span><span class="n">TrainingArguments</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define a class RaftAlignerArguments to configure raft aligner.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="RaftAlignerArguments.output_reward_path"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments.output_reward_path">[docs]</a>    <span class="n">output_reward_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;tmp/raft_aligner/&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The path of output rewards.&quot;</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="RaftAlignerArguments.output_min_length"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments.output_min_length">[docs]</a>    <span class="n">output_min_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;minimum length of the output token sequence generated from&quot;</span>
+                <span class="s2">&quot; model given an input.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="RaftAlignerArguments.output_max_length"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments.output_max_length">[docs]</a>    <span class="n">output_max_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;maximum length of the output token sequence generated from&quot;</span>
+                <span class="s2">&quot; model given an output.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="RaftAlignerArguments.num_raft_iteration"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments.num_raft_iteration">[docs]</a>    <span class="n">num_raft_iteration</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;number of iterations of the raft aligner.&quot;</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="RaftAlignerArguments.raft_batch_size"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments.raft_batch_size">[docs]</a>    <span class="n">raft_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;only select </span><span class="si">{raft_batch_size}</span><span class="s2"> samples each time for STF training.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="RaftAlignerArguments.top_reward_percentage"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments.top_reward_percentage">[docs]</a>    <span class="n">top_reward_percentage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;only top </span><span class="si">{top_reward_percentage}</span><span class="s2"> samples in the raft batch,&quot;</span>
+                <span class="s2">&quot; (in terms of rewards), will be used for SFT the model.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="RaftAlignerArguments.inference_batch_size_per_device"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments.inference_batch_size_per_device">[docs]</a>    <span class="n">inference_batch_size_per_device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;every device will infer </span><span class="si">{inference_batch_size_per_device}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot; samples in parallel. The inferred results will be concatenaed&quot;</span>
+                <span class="s2">&quot; with inputs and attach a reward.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="RaftAlignerArguments.collection_strategy"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.RaftAlignerArguments.collection_strategy">[docs]</a>    <span class="n">collection_strategy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{collection_strategy}</span><span class="s2"> is either top or local&quot;</span>
+                <span class="s2">&quot; top means that we rank the samples globally regardless of the prompts&quot;</span>
+                <span class="s2">&quot; local means that we only rank the samples with the same prompt&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div></div>
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="BenchmarkingArguments"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.BenchmarkingArguments">[docs]</a><span class="k">class</span> <span class="nc">BenchmarkingArguments</span><span class="p">:</span>
+<div class="viewcode-block" id="BenchmarkingArguments.dataset_name"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.BenchmarkingArguments.dataset_name">[docs]</a>    <span class="n">dataset_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;benchmark dataset name provided by lmflow&quot;</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+<div class="viewcode-block" id="BenchmarkingArguments.lm_evaluation_metric"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.BenchmarkingArguments.lm_evaluation_metric">[docs]</a>    <span class="n">lm_evaluation_metric</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;the metric the model will be evaluated on&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="s2">&quot;acc_norm&quot;</span><span class="p">,</span> <span class="s2">&quot;bleu&quot;</span><span class="p">,</span> <span class="s2">&quot;chrf&quot;</span><span class="p">,</span> <span class="s2">&quot;em&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;ppl&quot;</span><span class="p">,</span> \
+                <span class="s2">&quot;ter&quot;</span><span class="p">,</span> <span class="s2">&quot;r@1&quot;</span><span class="p">,</span> <span class="s2">&quot;r@2&quot;</span><span class="p">,</span> <span class="s2">&quot;mrr&quot;</span><span class="p">,</span> <span class="s2">&quot;mc1&quot;</span><span class="p">,</span> <span class="s2">&quot;mc2&quot;</span><span class="p">,</span> <span class="s2">&quot;word_perplexity&quot;</span><span class="p">,</span> \
+                    <span class="s2">&quot;byte_perplexity&quot;</span><span class="p">,</span> <span class="s2">&quot;bits_per_byte&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div></div>
+
+
+
+<div class="viewcode-block" id="PIPELINE_ARGUMENT_MAPPING"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.PIPELINE_ARGUMENT_MAPPING">[docs]</a><span class="n">PIPELINE_ARGUMENT_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;finetuner&quot;</span><span class="p">:</span> <span class="n">FinetunerArguments</span><span class="p">,</span>
+    <span class="s2">&quot;evaluator&quot;</span><span class="p">:</span> <span class="n">EvaluatorArguments</span><span class="p">,</span>
+    <span class="s2">&quot;inferencer&quot;</span><span class="p">:</span> <span class="n">InferencerArguments</span><span class="p">,</span>
+    <span class="s2">&quot;raft_aligner&quot;</span><span class="p">:</span> <span class="n">RaftAlignerArguments</span><span class="p">,</span>
+<span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="AutoArguments"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.AutoArguments">[docs]</a><span class="k">class</span> <span class="nc">AutoArguments</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Automatically choose arguments from FinetunerArguments or EvaluatorArguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AutoArguments.get_pipeline_args_class"><a class="viewcode-back" href="../../autoapi/lmflow/args/index.html#lmflow.args.AutoArguments.get_pipeline_args_class">[docs]</a>    <span class="k">def</span> <span class="nf">get_pipeline_args_class</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">PIPELINE_ARGUMENT_MAPPING</span><span class="p">[</span><span class="n">pipeline_name</span><span class="p">]</span></div></div>
+</pre></div>
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright LMFlow 2023.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
