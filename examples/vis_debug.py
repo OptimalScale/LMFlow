@@ -7,6 +7,7 @@ from cmath import e
 from dataclasses import dataclass, field
 import logging
 import json
+import numpy as np
 import requests
 from PIL import Image
 import os
@@ -131,7 +132,7 @@ def main():
         "\n"
         f"#############################################################################\n"
         f"##   A {model_name} chatbot is now chatting with you!\n"
-        f"##   The command for loading a new image: ###Load image:"
+        f"##   The command for loading a new image: ###Load image:\n"
         f"#############################################################################\n"
         "\n"
     )
@@ -158,6 +159,7 @@ def main():
     else:
         img_url = 'https://storage.googleapis.com/sfr-vision-language-research/BLIP/demo.jpg'
         raw_image = Image.open(requests.get(img_url, stream=True).raw).convert('RGB')
+    raw_image = np.array(raw_image)
     image_list.append(raw_image)
     input_text = chatbot_args.input_text
     if chatbot_args.task == "image_caption" and len(input_text) == 0:
