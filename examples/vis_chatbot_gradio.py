@@ -123,7 +123,7 @@ model_args, pipeline_args, chatbot_args = (
     parser.parse_args_into_dataclasses()
 )
 
-with open (pipeline_args.deepspeed, "r") as f:
+with open(pipeline_args.deepspeed, "r") as f:
     ds_config = json.load(f)
 
 model = AutoModel.get_model(
@@ -185,7 +185,7 @@ def upload_image(gr_image, text_input, chat_state):
            gr.update(value="Start Chatting", interactive=False), \
            chat_state, \
            image_list
-        
+
 def read_img(image):
     if isinstance(image, str):
         raw_image = Image.open(image).convert('RGB')
@@ -198,8 +198,8 @@ def read_img(image):
 def gradio_ask(user_message, chatbot, chat_state):
     if len(user_message) == 0:
         return gr.update(interactive=True, placeholder='Input should not be empty!'), chatbot, chat_state
-    user_message = prompt_structure.format(input_text=user_message)
-    chat_state = chat_state + user_message
+    prompted_user_message = prompt_structure.format(input_text=user_message)
+    chat_state = chat_state + prompted_user_message
 
     chatbot = chatbot + [[user_message, None]]
     return '', chatbot, chat_state
@@ -230,7 +230,7 @@ with gr.Blocks() as demo:
             image = gr.Image(type="pil")
             upload_button = gr.Button(value="Upload & Start Chat", interactive=True, variant="primary")
             clear = gr.Button("Restart")
-            
+
             num_beams = gr.Slider(
                 minimum=1,
                 maximum=10,
@@ -239,7 +239,7 @@ with gr.Blocks() as demo:
                 interactive=True,
                 label="beam search numbers)",
             )
-            
+
             temperature = gr.Slider(
                 minimum=0.1,
                 maximum=2.0,
@@ -254,12 +254,27 @@ with gr.Blocks() as demo:
             image_list = gr.State()
             chatbot = gr.Chatbot(label='Chatbot')
             text_input = gr.Textbox(label='User', placeholder='Please upload your image first', interactive=False)
-    
-    upload_button.click(upload_image, [image, text_input, chat_state], [image, text_input, upload_button, chat_state, image_list])
-    
-    text_input.submit(gradio_ask, [text_input, chatbot, chat_state], [text_input, chatbot, chat_state]).then(
-        gradio_answer, [chatbot, chat_state, image_list, num_beams, temperature], [chatbot, chat_state, image_list]
+
+    upload_button.click(
+        fn=upload_image,
+        inputs=[image, text_input, chat_state],
+        outputs=[image, text_input, upload_button, chat_state, image_list],
     )
-    clear.click(gradio_reset, [chat_state, image_list], [chatbot, image, text_input, upload_button, chat_state, image_list], queue=False)
+
+    text_input.submit(
+        fn=gradio_ask,
+        inputs=[text_input, chatbot, chat_state],
+        outputs=[text_input, chatbot, chat_state],
+    ).then(
+        fn=gradio_answer,
+        inputs=[chatbot, chat_state, image_list, num_beams, temperature],
+        outputs=[chatbot, chat_state, image_list],
+    )
+    clear.click(
+        fn=gradio_reset,
+        inputs=[chat_state, image_list],
+        outputs=[chatbot, image, text_input, upload_button, chat_state, image_list],
+        queue=False
+    )
 
 demo.launch(share=True, enable_queue=True)
