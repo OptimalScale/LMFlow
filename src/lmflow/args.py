@@ -198,6 +198,14 @@ class ModelArguments:
             )
         }
     )
+    do_position_interpolation: bool = field(
+        default =  False,
+        metadata={
+            "help": (
+                "whether do position interpolation for llama models."
+            )
+        }   
+    )
     use_int8: bool = field(
         default=False,
         metadata={"help": "whether to load int8 quantization for inference"}
