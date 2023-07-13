@@ -93,7 +93,7 @@ def stream_generate(inputs,context_len = 1024, max_new_tokens=128, end_string="#
             skip_special_tokens=True,
             spaces_between_special_tokens=False,
         )
-        
+
         if end_string in output:
             index = output.index(end_string)
             output = output[:index]

@@ -189,7 +189,8 @@ def upload_image(image_file, history, text_input, chat_state, image_list):
         else:
             chat_state = ''
     image = read_img(image_file.name)
-    if not isinstance(image_list, list) or len(image_list) == 0:
+    if not isinstance(image_list, list) or (
+            isinstance(image_list, list) and len(image_list) == 0):
         image_list = []
         image_list.append(image)
     else:
@@ -217,6 +218,8 @@ def gradio_ask(user_message, chatbot, chat_state):
     if len(user_message) == 0:
         return gr.update(interactive=True, placeholder='Input should not be empty!'), chatbot, chat_state
     prompted_user_message = prompt_structure.format(input_text=user_message)
+    if chat_state is None:
+        chat_state = ''
     chat_state = chat_state + prompted_user_message
 
     chatbot = chatbot + [[user_message, None]]

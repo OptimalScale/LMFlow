@@ -4,9 +4,9 @@ import torch
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Convert checkpoint from MiniGPT4")
-    parser.add_argument("model_path", type=str, help="the model path for the to convert checkpoint")
-    parser.add_argument("save_path", default=None, type=str, help="the save path for converted checkpoint")
-    args = argparse.parse_args()
+    parser.add_argument("--model_path", type=str, help="the model path for the to convert checkpoint")
+    parser.add_argument("--save_path", default=None, type=str, help="the save path for converted checkpoint")
+    args = parser.parse_args()
     return args
 
 
@@ -20,8 +20,8 @@ if __name__ == "__main__":
     new_model = {}
     for key, item in model.items():
         key = key.replace("Qformer", "qformer")
-        key = key.replace("llama_proj", "languange_projection")
-        key = key.replace("llama", "language_model")
+        key = key.replace("llama_proj", "language_projection")
+        key = key.replace("llama_model.model", "language_model.model")
         new_model[key] = item
     if args.save_path is None:
         end_string = osp.splitext(args.model_path)
@@ -31,5 +31,4 @@ if __name__ == "__main__":
     else:
         save_path = args.save_path
 
-
-    torch.save(save_path, new_model)
+    torch.save(new_model, save_path)
