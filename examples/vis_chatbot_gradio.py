@@ -189,14 +189,14 @@ def upload_image(image_file, history, text_input, chat_state, image_list):
         else:
             chat_state = ''
     image = read_img(image_file.name)
-    if not isinstance(image_list, list):
+    if not isinstance(image_list, list) or len(image_list) == 0:
         image_list = []
         image_list.append(image)
     else:
         image_list.append(image.resize(image_list[0].size))
 
     if chatbot_args.prompt_format == "mini_gpt":
-        chat_state = "Human: " + "<Img><ImageHere></Img>"
+        chat_state += "Human: " + "<Img><ImageHere></Img>"
     return (
         gr.update(interactive=True, placeholder='Enter text and press enter, or upload an image'),
         history,
@@ -226,7 +226,7 @@ def gradio_ask(user_message, chatbot, chat_state):
 def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0):
     input_dataset = dataset.from_dict({
         "type": "image_text",
-        "instances": [{"images": image_list[0],
+        "instances": [{"images": np.stack([np.array(i) for i in image_list]),
                         "text": chat_state}]
     })
     remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
