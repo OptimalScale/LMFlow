@@ -214,7 +214,17 @@ class Inferencer(BasePipeline):
 
         return output_dataset
     
-    def stream_inference(self, context, model, max_new_tokens, token_per_step, temperature, end_string, input_dataset):
+    def stream_inference(
+        self,
+        context,
+        model,
+        max_new_tokens,
+        token_per_step,
+        temperature,
+        end_string,
+        input_dataset,
+        remove_image_flag: bool=False,
+    ):
         response = ""
         history = []
         if "ChatGLMModel" in self.config.architectures:
@@ -228,6 +238,7 @@ class Inferencer(BasePipeline):
                     dataset=input_dataset,
                     max_new_tokens=token_per_step,
                     temperature=self.inferencer_args.temperature,
+                    remove_image_flag=remove_image_flag,
                 )
                 new_append_text = output_dataset.to_dict()["instances"][0]["text"]
                 new_append_text = rstrip_partial_utf8(new_append_text)

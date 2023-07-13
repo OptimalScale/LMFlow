@@ -6,6 +6,7 @@
 from dataclasses import dataclass, field
 import logging
 import json
+import time
 from PIL import Image
 from lmflow.pipeline.inferencer import Inferencer
 
@@ -234,12 +235,45 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
     })
     remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
 
-    output_dataset = inferencer.inference(model, input_dataset, 
-                        remove_image_flag=remove_image_flag)
-    response = output_dataset.backend_dataset['text']
-    chatbot[-1][-1] = response[0]
-    chat_state += response[0]
-    return chatbot, chat_state, image_list
+    chatbot[-1][1] = ''
+
+    print_index = 0
+    token_per_step = 10
+    max_new_tokens = 512
+    temperature = 0.7
+
+    for response, flag_break in inferencer.stream_inference(
+        context=chatbot,
+        model=model,
+        max_new_tokens=max_new_tokens,
+        token_per_step=token_per_step,
+        temperature=temperature,
+        end_string=end_string,
+        input_dataset=input_dataset,
+        remove_image_flag=remove_image_flag,
+    ):
+        # Prints characters in the buffer
+        new_print_index = print_index
+        for char in response[print_index:]:
+            if end_string is not None and char == end_string[0]:
+                if new_print_index + len(end_string) >= len(response):
+                    break
+
+            new_print_index += 1
+            chatbot[-1][1] += char
+            chat_state += char
+            time.sleep(0.1)
+            yield chatbot, chat_state, image_list
+
+        print_index = new_print_index
+
+        if flag_break:
+            break
+
+    char = "\n"
+    chatbot[-1][1] += char
+    chat_state += char
+    yield chatbot, chat_state, image_list
 
 
 with gr.Blocks() as demo:
