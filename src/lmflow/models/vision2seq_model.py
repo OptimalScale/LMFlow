@@ -186,11 +186,10 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         inputs_embeds = inputs_embeds.to(self.language_model.lm_head.weight.dtype)
         attention_mask = attention_mask.to(self.language_model.lm_head.weight.dtype)
 
-        if not (self.use_prompt_cache and input_ids.shape[0] == 1):
+        if not self.use_prompt_cache or batch_size != 1:
             outputs = self.language_model.generate(
                 inputs_embeds=inputs_embeds,
                 attention_mask=attention_mask,
-                use_cache=self.save_cache,
                 **generate_kwargs,
             )
         else:
