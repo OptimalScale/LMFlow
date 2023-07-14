@@ -242,6 +242,14 @@ class VisModelArguments(ModelArguments):
             )
         },
     )
+    use_prompt_cache: bool = field(
+        default=False,
+        metadata={"help": "Whether to use prompt cache."},
+    )
+    prompt_cache_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to prompt cache."},
+    )
 
 
 

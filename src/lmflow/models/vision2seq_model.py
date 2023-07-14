@@ -18,7 +18,7 @@ from .base_model import BaseModel
 class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
     def __init__(self, config: Blip2Config):
         Blip2ForConditionalGeneration.__init__(self, config)
-
+        self.with_prompt_cache = False
 
     def vision_model_from_pretrained(self, pretrained_path):
         self.vision_model = self.vision_model.from_pretrained(
@@ -30,8 +30,12 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                                 config=self.config.qformer_config)
         # print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
 
-    def language_model_from_pretrained(self, pretrained_path, low_resource=False):
+    def language_model_from_pretrained(self,
+                                       pretrained_path,
+                                       low_resource=False,
+                                       use_prompt_cache=False):
         # TODO remove the low resource related loading in the future
+        self.use_prompt_cache = use_prompt_cache
         if low_resource:
             kwargs = dict(
                 torch_dtype=torch.float16,
@@ -44,6 +48,53 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                                 pretrained_path,
                                 config=self.config.text_config,
                                 **kwargs)
+
+    def register_prompt_cache(self, prompt_ids, prompt_keys_values):
+        """
+        Udpate the prompt id and embedding for reuse in the future
+
+        Args:
+            prompt_ids (torch.LongTensor): The id of the prompt.
+            prompt_keys_values (torch.FloatTensor): The embedding of the prompt.
+
+        Returns:
+            None
+        """
+        self.prompt_ids = prompt_ids
+        self.prompt_keys_values = prompt_keys_values
+        self.with_prompt_cache = True
+
+    def save_prompt_cache(self, path):
+        """
+        Save prompt embedding and id.
+
+        Args:
+            path: The path to save the prompt embedding and id.
+        
+        Returns:
+            None
+        """
+         
+        torch.save(
+            dict(
+                prompt_ids=self.prompt_ids,
+                prompt_keys_values=self.prompt_keys_values
+            ),
+            path)
+
+    def load_prompt_cache(self, path):
+        """
+        Load prompt embedding and id.
+        Args:
+            path: The path to load the prompt embedding and id.
+        
+        Returns:
+            None
+        """
+        prompt_cache = torch.load(path)
+        self.register_prompt_cache(prompt_cache["prompt_ids"],
+                                   prompt_cache["prompt_keys_values"])
+
 
     @torch.no_grad()
     def generate(
@@ -116,6 +167,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         start_index, end_index = 0, 0
         assert len(image_token_indexes) == pixel_values.shape[0]
         # token format: (# text, # image)xN, # text
+
         for idx, image_token_index in enumerate(image_token_indexes):
             end_index += image_token_index
             inputs_embeds_with_images.append(
@@ -133,9 +185,42 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         # comebine the embeds
         inputs_embeds = inputs_embeds.to(self.language_model.lm_head.weight.dtype)
         attention_mask = attention_mask.to(self.language_model.lm_head.weight.dtype)
-        outputs = self.language_model.generate(
-            inputs_embeds=inputs_embeds,
-            attention_mask=attention_mask,
-            **generate_kwargs,
-        )
+
+        if not (self.use_prompt_cache and input_ids.shape[0] == 1):
+            outputs = self.language_model.generate(
+                inputs_embeds=inputs_embeds,
+                attention_mask=attention_mask,
+                use_cache=self.save_cache,
+                **generate_kwargs,
+            )
+        else:
+            # current resuse prompt embeddings is not supported when batch size is 1;
+            past_key_values = None
+            prompt_length = image_token_indexes[0]
+            if self.with_prompt_cache is False:
+                prompt_ids = input_ids[:, :prompt_length]
+                outputs = self.language_model.generate(
+                    inputs_embeds=inputs_embeds[:, :prompt_length],
+                    attention_mask=attention_mask[:, :prompt_length],
+                    use_cache=self.use_prompt_cache,
+                    **generate_kwargs,
+                )
+                past_key_values = outputs["past_key_values"]
+                self.register_prompt_cache(prompt_ids, past_key_values)
+
+            prompt_length = self.prompt_id.shape[1]
+            if torch.all(input_ids[:, :prompt_length] == self.prompt_id):
+                past_key_values = self.prompt_key_values
+            else:
+                past_key_values = None
+            generate_kwargs["past_key_values"] = past_key_values
+
+            outputs = self.language_model.generate(
+                inputs_embeds=inputs_embeds[:, prompt_length:],
+                attention_mask=attention_mask[:, prompt_length:],
+                use_cache=self.use_prompt_cache,
+                **generate_kwargs,
+            )
+            outputs = outputs.logits
+
         return outputs

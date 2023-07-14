@@ -11,6 +11,7 @@ import numpy as np
 import requests
 from PIL import Image
 import os
+import os.path as osp
 import sys
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from typing import Optional
@@ -166,6 +167,12 @@ def main():
     # if text after loading image, we add it when loading image
     # else, we add it when read the text.
     text_after_loading_image = True
+
+    if model_args.use_prompt_cache:
+        if osp.exists(model_args.prompt_cache_path):
+            model.backend_model.load_prompt_cache(
+                model_args.prompt_cache_path)
+
     if chatbot_args.task == "image_caption":
         # single round reasoning
         input_dataset = dataset.from_dict({
@@ -219,9 +226,10 @@ def main():
             input_dataset = dataset.from_dict({
                 "type": "image_text",
                 "instances": [{"images": np.stack(image_list),
-                            "text":  context,}]
+                               "text":  context,}]
             })
             remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
+            begin_time = time.time()
             if not chatbot_args.stream_inference:
                 # directly inference the results
                 output_dataset = inferencer.inference(
@@ -265,6 +273,13 @@ def main():
                 print("\n", end="")
 
                 context += response + "\n"
-
+            
+            if model_args.use_prompt_cache:
+                osp.makedirs(osp.dirname(model_args.prompt_cache_path),
+                             exist_ok=True)
+                model.backend_model.save_prompt_cache(
+                            model_args.prompt_cache_path)
+            end_time = time.time()
+            print("Whole data and model forward time", end_time - begin_time)
 if __name__ == "__main__":
     main()
