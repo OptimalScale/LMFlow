@@ -1,8 +1,6 @@
 import torch
 import transformers
 import transformers.models.llama.modeling_llama
-from einops import rearrange
-import random
 
 
 class ScaledRotaryEmbedding(torch.nn.Module):
