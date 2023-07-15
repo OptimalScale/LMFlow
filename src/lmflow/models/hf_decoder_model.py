@@ -52,7 +52,16 @@ from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
 )
+from typing import Optional, Tuple, Union, List, Callable, Dict, Any
+from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList, GenerationConfig, ModelOutput
+from transformers.generation.logits_process import LogitsProcessor
 
+class InvalidScoreLogitsProcessor(LogitsProcessor):
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
+        if torch.isnan(scores).any() or torch.isinf(scores).any():
+            scores.zero_()
+            scores[..., 5] = 5e4
+        return scores
 
 logger = logging.getLogger(__name__)
 
@@ -644,3 +653,21 @@ class HFDecoderModel(DecoderModel, Tunable):
         Return the backend model.
         """
         return self.backend_model
+
+    @torch.no_grad()
+    def chat(self, query: str, history: List[Tuple[str, str]] = None, max_length: int = 8192, num_beams=1,
+             do_sample=True, top_p=0.8, temperature=0.8, logits_processor=None, **kwargs):
+        if history is None:
+            history = []
+        if logits_processor is None:
+            logits_processor = LogitsProcessorList()
+        logits_processor.append(InvalidScoreLogitsProcessor())
+        gen_kwargs = {"max_length": max_length, "num_beams": num_beams, "do_sample": do_sample, "top_p": top_p,
+                      "temperature": temperature, "logits_processor": logits_processor, **kwargs}
+        inputs = self.build_inputs(self.tokenizer, query, history=history)
+        outputs = self.inference(**inputs, **gen_kwargs)
+        outputs = outputs.tolist()[0][len(inputs["input_ids"][0]):]
+        response = self.tokenizer.decode(outputs)
+        # response = self.process_response(response)
+        history = history + [(query, response)]
+        return response, history

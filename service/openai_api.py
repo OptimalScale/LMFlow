@@ -54,7 +54,7 @@ world_size = int(os.getenv("WORLD_SIZE", "1"))
 torch.cuda.set_device(local_rank)
 model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config, use_accelerator=True)
 accelerator = Accelerator()
-model.eval()
+# model.eval()
 print("model = ", model)
 
 @asynccontextmanager
@@ -157,7 +157,7 @@ async def create_chat_completion(request: ChatCompletionRequest):
     #     generate = predict(query, history, request.model)
     #     return EventSourceResponse(generate, media_type="text/event-stream")
 
-    response, _ = model.chat(tokenizer, query, history=history)
+    response, _ = model.chat(query, history=history)
     choice_data = ChatCompletionResponseChoice(
         index=0,
         message=ChatMessage(role="assistant", content=response),
