@@ -3,8 +3,9 @@
 # Usage: python openai_api.py
 # Visit http://localhost:8000/docs for documents.
 
-
+import os
 import time
+import json
 import torch
 import uvicorn
 from pydantic import BaseModel, Field
@@ -14,7 +15,47 @@ from contextlib import asynccontextmanager
 from typing import Any, Dict, List, Literal, Optional, Union
 from transformers import AutoTokenizer, AutoModel
 from sse_starlette.sse import ServerSentEvent, EventSourceResponse
+from lmflow.models.auto_model import AutoModel
+from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
+from transformers import HfArgumentParser
+from accelerate import Accelerator
+from dataclasses import dataclass, field
 
+@dataclass
+class AppArguments:
+    end_string: Optional[str] = field(
+        default="##",
+        metadata={
+            "help": "end string mark of the chatbot's output"
+        },
+    )
+    max_new_tokens: Optional[int] = field(
+        default=200,
+        metadata={
+            "help": "maximum number of generated tokens"
+        },
+    )
+
+parser = HfArgumentParser((
+        ModelArguments,
+        AppArguments,
+))
+
+model_args, app_args = (
+        parser.parse_args_into_dataclasses()
+    )
+
+ds_config_path = "./examples/ds_config.json"
+with open (ds_config_path, "r") as f:
+    ds_config = json.load(f)
+
+local_rank = int(os.getenv("LOCAL_RANK", "0"))
+world_size = int(os.getenv("WORLD_SIZE", "1"))
+torch.cuda.set_device(local_rank)
+model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config, use_accelerator=True)
+accelerator = Accelerator()
+model.eval()
+print("model = ", model)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI): # collects GPU memory
@@ -112,9 +153,9 @@ async def create_chat_completion(request: ChatCompletionRequest):
             if prev_messages[i].role == "user" and prev_messages[i+1].role == "assistant":
                 history.append([prev_messages[i].content, prev_messages[i+1].content])
 
-    if request.stream:
-        generate = predict(query, history, request.model)
-        return EventSourceResponse(generate, media_type="text/event-stream")
+    # if request.stream:
+    #     generate = predict(query, history, request.model)
+    #     return EventSourceResponse(generate, media_type="text/event-stream")
 
     response, _ = model.chat(tokenizer, query, history=history)
     choice_data = ChatCompletionResponseChoice(
@@ -167,11 +208,11 @@ async def predict(query: str, history: List[List[str]], model_id: str):
 
 
 if __name__ == "__main__":
-    tokenizer = AutoTokenizer.from_pretrained("LMFlow/Full-Robin-7b-v2", trust_remote_code=True)
-    model = AutoModel.from_pretrained("LMFlow/Full-Robin-7b-v2", trust_remote_code=True).cuda()
+    # tokenizer = AutoTokenizer.from_pretrained("LMFlow/Full-Robin-7b-v2", trust_remote_code=True)
+    # model = AutoModel.from_pretrained("LMFlow/Full-Robin-7b-v2", trust_remote_code=True).cuda()
     # 多显卡支持，使用下面两行代替上面一行，将num_gpus改为你实际的显卡数量
     # from utils import load_model_on_gpus
     # model = load_model_on_gpus("THUDM/chatglm2-6b", num_gpus=2)
-    model.eval()
+    # model.eval()
 
     uvicorn.run(app, host='0.0.0.0', port=8000, workers=1)
