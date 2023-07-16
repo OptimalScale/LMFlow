@@ -168,7 +168,6 @@ class HFDecoderModel(DecoderModel, Tunable):
         for gpu in GPU_SUPPORT_FLASH_ATTENTION:
             if gpu in torch.cuda.get_device_name():
                 supported_gpu_device = gpu
-
                 
         if model_args.use_flash_attention:
             if not any(model_supported in config.architectures
