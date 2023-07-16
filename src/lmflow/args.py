@@ -198,14 +198,6 @@ class ModelArguments:
             )
         }
     )
-    use_interpolation: bool = field(
-        default=False,
-        metadata={
-            "help": (
-                "whether do position interpolation for llama models."
-            )
-        }   
-    )
     truncate_to_model_max_length: bool = field(
         default=True,
         metadata={
