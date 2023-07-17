@@ -168,7 +168,13 @@ class HFDecoderModel(DecoderModel, Tunable):
         for gpu in GPU_SUPPORT_FLASH_ATTENTION:
             if gpu in torch.cuda.get_device_name():
                 supported_gpu_device = gpu
-                
+        if model_args.do_position_interpolation:
+            if "LlamaForCausalLM" in config.architectures:
+                #if "LlamaForCausalLM" in config.architectures:
+                from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
+                        replace_llama_rope_with_scaled_rope,
+                )
+                replace_llama_rope_with_scaled_rope()
         if model_args.use_flash_attention:
             if not any(model_supported in config.architectures
                        for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
@@ -248,7 +254,9 @@ class HFDecoderModel(DecoderModel, Tunable):
             # We resize the embeddings only when necessary to avoid index errors.
             # If you are creating a model from scratch on a small vocab and want a
             # smaller embedding size, remove this test.
-            embedding_size = model.get_input_embeddings().weight.shape[0]
+            with deepspeed.zero.GatheredParameters(model.get_input_embeddings().weight, modifier_rank=None):
+                weights = model.get_input_embeddings().weight
+                embedding_size = weights.shape[0]
             if len(tokenizer) > embedding_size:
                 model.resize_token_embeddings(len(tokenizer))
 
