@@ -149,7 +149,8 @@ class Finetuner(BaseTuner):
                         f"({model_max_length})."
                         f"Using block_size={data_args.block_size}.")
                     block_size = data_args.block_size
-
+            else:
+                block_size = data_args.block_size
         # Main data processing function that will concatenate all texts from
         # our dataset and generate chunks of block_size.
         def group_texts(examples):
