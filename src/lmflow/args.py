@@ -703,6 +703,46 @@ class RaftAlignerArguments(TrainingArguments):
             ),
         },
     )
+    raft_mode: Optional[str] = field(
+        default="xxx",
+        metadata={
+            "help": (
+                "{mode} is either raft_get_samples or raft_get_rewards"
+                "it suggests us to either collect new samples or compute the rewards"
+            ),
+        },
+    )
+    raft_random_seed: Optional[int] = field(
+        default=1,
+        metadata={
+            "help": (
+                "{raft_random_seed} is the random seed, which must be set to be different for different iterations of raft"
+            ),
+        },
+    )
+    raft_infer_set: Optional[str] = field(
+        default="xxx",
+        metadata={
+            "help": (
+                "{raft_infer_set} is the path to store the inferred set"
+            ),
+        },
+    )
+    raft_filtered_set: Optional[str] = field(
+        default="yyy",
+        metadata={
+            "help": (
+                "{raft_filtered_set} is the path to store the filtered set"
+            ),
+        },
+    )
+    raft_exp_dir: Optional[str] = field(
+        default="output_models/iter_raft_align",
+        metadata={
+            "help": "main directory to run raft experiments"
+        },
+    )
+    
 
 @dataclass
 class BenchmarkingArguments:
