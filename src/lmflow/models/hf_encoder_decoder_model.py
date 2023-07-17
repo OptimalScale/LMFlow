@@ -269,7 +269,12 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         if isinstance(input, dict):
             # TODO refactor the input type to make it elegant.
             kwargs.update(input)
-            return self.tokenizer(*args, **kwargs)
+            import time
+            start = time.time()
+            tokens = self.tokenizer(*args, **kwargs)
+            end = time.time()
+            print('#######', end - start)
+            return tokens
         elif isinstance(input, list):
             return self.tokenizer(text=input, *args, **kwargs)#batch encode,will automatically do left padding
         elif isinstance(input, str):

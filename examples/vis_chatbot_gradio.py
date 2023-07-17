@@ -238,7 +238,7 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
     chatbot[-1][1] = ''
 
     print_index = 0
-    token_per_step = 10
+    token_per_step = 48
     max_new_tokens = 512
     temperature = 0.7
 

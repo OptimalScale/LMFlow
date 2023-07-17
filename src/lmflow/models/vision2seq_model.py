@@ -19,6 +19,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
     def __init__(self, config: Blip2Config):
         Blip2ForConditionalGeneration.__init__(self, config)
         self.with_prompt_cache = False
+        self.cache_dict = {}
 
     def vision_model_from_pretrained(self, pretrained_path):
         self.vision_model = self.vision_model.from_pretrained(
@@ -131,6 +132,27 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             batch_size = pixel_values.shape[0]
         else:
             batch_size = 1
+
+        # image_id = pixel_values.cpu().numpy().tobytes()
+        # if image_id in self.cache_dict:
+        #     language_model_inputs = self.cache_dict[image_id]
+        # else:
+        #     # print("========", pixel_values)
+        #     image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
+        #     image_attention_mask = torch.ones(image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device)
+
+        #     query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
+        #     query_outputs = self.qformer(
+        #         query_embeds=query_tokens,
+        #         encoder_hidden_states=image_embeds,
+        #         encoder_attention_mask=image_attention_mask,
+        #         return_dict=True,
+        #     )
+        #     query_output = query_outputs.last_hidden_state
+
+        #     language_model_inputs = self.language_projection(query_output)
+        #     self.cache_dict[image_id] = language_model_inputs
+
         image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
         image_attention_mask = torch.ones(image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device)
 
@@ -144,6 +166,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         query_output = query_outputs.last_hidden_state
 
         language_model_inputs = self.language_projection(query_output)
+
         language_attention_mask = torch.ones(
             language_model_inputs.size()[:-1], dtype=torch.long, device=language_model_inputs.device
         )
