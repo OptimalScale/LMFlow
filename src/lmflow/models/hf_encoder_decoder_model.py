@@ -20,6 +20,7 @@ and question answering.
 
 import copy
 import logging
+import time
 from typing import List, Union
 
 import deepspeed
@@ -332,6 +333,9 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         outputs :
             The generated sequence output
         """
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: model.inference: start", flush=True)
+
         # TODO need to discuss how to handle pad_token_id
         if self.arch_type == "encoder_decoder":
             kwargs.update(pad_token_id=self.tokenizer.pad_token_id)
@@ -341,6 +345,9 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             input_ids = inputs.pop('input_ids')
             kwargs.update(**inputs)
             inputs = input_ids
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: model.inference: kwargs update end", flush=True)
 
         with torch.no_grad():
             if self.device == "gpu":
@@ -361,6 +368,10 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 raise NotImplementedError(
                     f"device \"{self.device}\" is not supported"
                 )
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: model.inference: end", flush=True)
+
         return outputs
 
 

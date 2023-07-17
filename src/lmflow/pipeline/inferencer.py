@@ -11,6 +11,7 @@ import sys
 import numpy as np
 import datetime
 import json
+import time
 
 from transformers import AutoConfig
 import torch.distributed as dist
@@ -89,10 +90,8 @@ class Inferencer(BasePipeline):
             data_dict = dataset.to_dict()
             inputs = [instance["text"] for instance in data_dict["instances"] ]
         elif dataset.get_type() == "image_text":
-            backend_dataset = dataset.get_backend_dataset()
-            # can not do the do_dict information because the data contains image.
-            inputs = [backend_dataset.__getitem__(idx)
-                        for idx in range(len(backend_dataset))]
+            inputs = dataset.to_list()
+
         dataset_size = len(inputs)
         dataset_buf = []
         for idx in range(dataset_size):
@@ -138,7 +137,15 @@ class Inferencer(BasePipeline):
                 'input dataset should have type {}'.format(
                                         supported_dataset_type))
 
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: inferencer.inference: start", flush=True)
+        # print(f'type of context text: {type(dataset.to_dict()["instances"][0]["text"])}', flush=True)
+
         dataloader, data_size = self.create_dataloader(dataset)
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: inferencer.inference: create_dataloader end", flush=True)
+        # print(f'type of context text: {type(dataset.to_dict()["instances"][0]["text"])}', flush=True)
 
         # The output dataset
         output_dict = {
@@ -182,6 +189,9 @@ class Inferencer(BasePipeline):
                 inputs["input_ids"] = torch.cat(input_ids, dim=1) 
                 inputs["attention_mask"] = torch.cat(attention_mask, dim=1)
             else:
+                # current_time = time.strftime("%H:%M:%S", time.localtime())
+                # print(f"{current_time}: inferencer.inference: model.encode start", flush=True)
+
                 if self.inferencer_args.device == "gpu":
                     inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
                 elif self.inferencer_args.device == "cpu":
@@ -190,10 +200,18 @@ class Inferencer(BasePipeline):
                     raise NotImplementedError(
                         f"device \"{self.inferencer_args.device}\" is not supported"
                     )
+
+                # current_time = time.strftime("%H:%M:%S", time.localtime())
+                # print(f"{current_time}: inferencer.inference: model.encode end", flush=True)
+                # print(f'type of context text: {type(dataset.to_dict()["instances"][0]["text"])}', flush=True)
+
             if remove_image_flag:
                 inputs["image_token_indexes"] = image_token_indexes
                 inputs["one_sample_multiple_images"] = True
 
+            # current_time = time.strftime("%H:%M:%S", time.localtime())
+            # print(f"{current_time}: inferencer.inference: model.inference start", flush=True)
+            # print(f'type of context text: {type(dataset.to_dict()["instances"][0]["text"])}', flush=True)
             outputs = model.inference(
                 inputs,
                 max_new_tokens=max_new_tokens,
@@ -201,7 +219,10 @@ class Inferencer(BasePipeline):
                 repetition_penalty=self.inferencer_args.repetition_penalty,
                 do_sample=self.inferencer_args.do_sample,
             )
-            
+            # current_time = time.strftime("%H:%M:%S", time.localtime())
+            # print(f"{current_time}: inferencer.inference: model.inference end", flush=True)
+            # print(f'type of context text: {type(dataset.to_dict()["instances"][0]["text"])}', flush=True)
+
             text_out = model.decode(outputs[0], skip_special_tokens=True)
             # only return the generation, trucating the input
             if self.model_args.arch_type != "vision_encoder_decoder":
@@ -209,8 +230,16 @@ class Inferencer(BasePipeline):
                 text_out = text_out[prompt_length:]
             output_dict["instances"].append({ "text": text_out })
 
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: inferencer.inference: output dataset prepare start", flush=True)
+        # print(f'type of context text: {type(dataset.to_dict()["instances"][0]["text"])}', flush=True)
+
         output_dataset = Dataset(DatasetArguments(dataset_path = None))
         output_dataset = output_dataset.from_dict(output_dict)
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: inferencer.inference: output dataset prepare end", flush=True)
+        # print(f'type of context text: {type(dataset.to_dict()["instances"][0]["text"])}', flush=True)
 
         return output_dataset
     
@@ -232,6 +261,9 @@ class Inferencer(BasePipeline):
                 response = rstrip_partial_utf8(response)
                 yield response, False
         else:
+            # current_time = time.strftime("%H:%M:%S", time.localtime())
+            # print(f"{current_time}: inferencer.stream_inference: start", flush=True)
+
             for _ in range(0, self.inferencer_args.max_new_tokens // token_per_step):
                 output_dataset = self.inference(
                     model=model,
@@ -240,23 +272,22 @@ class Inferencer(BasePipeline):
                     temperature=self.inferencer_args.temperature,
                     remove_image_flag=remove_image_flag,
                 )
+
                 new_append_text = output_dataset.to_dict()["instances"][0]["text"]
                 new_append_text = rstrip_partial_utf8(new_append_text)
                 response += new_append_text
-                if input_dataset.get_type() != "image_text":
-                    input_dict = input_dataset.to_dict()
-                    input_dict["instances"][0]["text"] += new_append_text
-                else:
-                    # currently image type doesn't support to_dict;
-                    # to_dict would convert the PIL file into bytes format.
-                    # TODO check how to fix this confilct and remove the if else;
-                    inputs = input_dataset.backend_dataset.__getitem__(0)
-                    input_dict = dict(
-                        type="image_text",
-                        instances=[inputs])
-                    input_dict["instances"][0]["text"] += new_append_text
 
+                # current_time = time.strftime("%H:%M:%S", time.localtime())
+                # print(f"{current_time}: inferencer.stream_inference: partial inference end", flush=True)
+                # print(f'type of context text: {type(input_dataset.to_dict()["instances"][0]["text"])}', flush=True)
+
+                input_dict = input_dataset.to_dict()
+                input_dict["instances"][0]["text"] += new_append_text
                 input_dataset = input_dataset.from_dict(input_dict)
+
+                # current_time = time.strftime("%H:%M:%S", time.localtime())
+                # print(f"{current_time}: inferencer.stream_inference: output encapsulation end", flush=True)
+                # print(f'type of context text: {type(input_dataset.to_dict()["instances"][0]["text"])}', flush=True)
 
                 flag_break = False
                 try:
@@ -268,4 +299,7 @@ class Inferencer(BasePipeline):
 
                 response = response[:index]
 
+                # current_time = time.strftime("%H:%M:%S", time.localtime())
+                # print(f"{current_time}: inferencer.stream_inference: {_} end", flush=True)
+                # print(f'type of context text: {type(input_dataset.to_dict()["instances"][0]["text"])}', flush=True)
                 yield response, flag_break

@@ -3,10 +3,11 @@
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A simple Multimodal chatbot implemented with lmflow APIs.
 """
-from dataclasses import dataclass, field
+import asyncio
 import logging
 import json
 import time
+
 from PIL import Image
 from lmflow.pipeline.inferencer import Inferencer
 
@@ -138,7 +139,7 @@ model = AutoModel.get_model(
 )
 
 data_args = DatasetArguments(dataset_path=None)
-dataset = Dataset(data_args)
+dataset = Dataset(data_args, backend="dict")
 
 inferencer = AutoPipeline.get_pipeline(
     pipeline_name=pipeline_name,
@@ -155,11 +156,6 @@ if model_args.lora_model_path is not None:
 
 end_string = chatbot_args.end_string
 prompt_structure = chatbot_args.prompt_structure
-
-
-token_per_step = 4
-
-
 
 title = """<h1 align="center">Demo of Multi-modality chatbot from LMFlow</h1>"""
 description = """<h3>This is the demo of Multi-modality chatbot from LMFlow. Upload your images and start chatting!</h3>"""
@@ -227,7 +223,7 @@ def gradio_ask(user_message, chatbot, chat_state):
     return '', chatbot, chat_state
 
 
-def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0):
+async def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0):
     input_dataset = dataset.from_dict({
         "type": "image_text",
         "instances": [{"images": np.stack([np.array(i) for i in image_list]),
@@ -238,8 +234,8 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
     chatbot[-1][1] = ''
 
     print_index = 0
-    token_per_step = 48
-    max_new_tokens = 512
+    token_per_step = 20 # 48
+    max_new_tokens = 1024
     temperature = 0.7
 
     for response, flag_break in inferencer.stream_inference(
@@ -262,8 +258,9 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
             new_print_index += 1
             chatbot[-1][1] += char
             chat_state += char
-            time.sleep(0.1)
+            await asyncio.sleep(0.1)
             yield chatbot, chat_state, image_list
+            # await asyncio.sleep(1)
 
         print_index = new_print_index
 

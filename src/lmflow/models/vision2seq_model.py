@@ -4,6 +4,7 @@
 
 import copy
 import logging
+import time
 import torch
 from typing import List, Optional, Union
 
@@ -125,6 +126,9 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         Returns:
             captions (list): A list of strings of length batch_size * num_captions.
         """
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: start", flush=True)
+
         if hasattr(self, "hf_device_map"):
             # preprocess for `accelerate`
             self._preprocess_accelerate()
@@ -132,6 +136,9 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             batch_size = pixel_values.shape[0]
         else:
             batch_size = 1
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: _preprocess_accelerate end", flush=True)
 
         # image_id = pixel_values.cpu().numpy().tobytes()
         # if image_id in self.cache_dict:
@@ -156,6 +163,9 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
         image_attention_mask = torch.ones(image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device)
 
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: image_embeds end", flush=True)
+
         query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
         query_outputs = self.qformer(
             query_embeds=query_tokens,
@@ -165,7 +175,13 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         )
         query_output = query_outputs.last_hidden_state
 
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: query_outputs end", flush=True)
+
         language_model_inputs = self.language_projection(query_output)
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: language_model_inputs end", flush=True)
 
         language_attention_mask = torch.ones(
             language_model_inputs.size()[:-1], dtype=torch.long, device=language_model_inputs.device
@@ -180,6 +196,9 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             attention_mask = torch.ones_like(input_ids)
             attention_mask = attention_mask.to(language_attention_mask.device)
 
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: attention_mask end", flush=True)
+
         # concatenate query embeddings with prompt embeddings
         inputs_embeds = self.get_input_embeddings()(input_ids)
         inputs_embeds = inputs_embeds.to(language_model_inputs.device)
@@ -191,6 +210,9 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         assert len(image_token_indexes) == pixel_values.shape[0]
         # token format: (# text, # image)xN, # text
 
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: input_embeds end", flush=True)
+
         for idx, image_token_index in enumerate(image_token_indexes):
             end_index += image_token_index
             inputs_embeds_with_images.append(
@@ -201,6 +223,9 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             attention_mask_with_images.append(language_attention_mask[idx][None])
             start_index = end_index
 
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: xxx_with_images end", flush=True)
+
         inputs_embeds_with_images.append(inputs_embeds[:, image_token_indexes[-1]:])
         inputs_embeds = torch.cat(inputs_embeds_with_images, dim=1)
         attention_mask_with_images.append(attention_mask[:, image_token_indexes[-1]:])
@@ -208,6 +233,9 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         # comebine the embeds
         inputs_embeds = inputs_embeds.to(self.language_model.lm_head.weight.dtype)
         attention_mask = attention_mask.to(self.language_model.lm_head.weight.dtype)
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: llm generate start", flush=True)
 
         if not self.use_prompt_cache or batch_size != 1:
             outputs = self.language_model.generate(
@@ -230,12 +258,18 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                 past_key_values = outputs["past_key_values"]
                 self.register_prompt_cache(prompt_ids, past_key_values)
 
+            # current_time = time.strftime("%H:%M:%S", time.localtime())              
+            # print(f"{current_time}: model.generate: first llm generate end", flush=True)
+
             prompt_length = self.prompt_id.shape[1]
             if torch.all(input_ids[:, :prompt_length] == self.prompt_id):
                 past_key_values = self.prompt_key_values
             else:
                 past_key_values = None
             generate_kwargs["past_key_values"] = past_key_values
+
+            # current_time = time.strftime("%H:%M:%S", time.localtime())              
+            # print(f"{current_time}: model.generate: second llm generate start", flush=True)
 
             outputs = self.language_model.generate(
                 inputs_embeds=inputs_embeds[:, prompt_length:],
@@ -244,5 +278,11 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                 **generate_kwargs,
             )
             outputs = outputs.logits
+
+            # current_time = time.strftime("%H:%M:%S", time.localtime())              
+            # print(f"{current_time}: model.generate: second llm generate end", flush=True)
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())              
+        # print(f"{current_time}: model.generate: end", flush=True)
 
         return outputs
