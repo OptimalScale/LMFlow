@@ -6,6 +6,7 @@ import copy
 import logging
 import time
 import torch
+import torch.nn as nn
 from typing import List, Optional, Union
 
 from transformers import (
@@ -46,11 +47,17 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             )
         else:
             kwargs = {}
+        past_model_dim = self.language_model.model_dim
         self.language_model = AutoModelForCausalLM.from_pretrained(
                                 pretrained_path,
                                 config=self.config.text_config,
                                 **kwargs)
-
+        if self.config.text_config.hidden_size != past_model_dim:
+            # should update the language projection layer
+            in_channels = self.language_projection.in_features
+            self.language_projection = nn.Linear(in_channels,
+                                                 self.config.text_config.hidden_size,
+                                                 bias=True)
     def register_prompt_cache(self, prompt_ids, prompt_keys_values):
         """
         Udpate the prompt id and embedding for reuse in the future

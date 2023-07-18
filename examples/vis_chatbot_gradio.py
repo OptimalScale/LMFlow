@@ -3,7 +3,6 @@
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A simple Multimodal chatbot implemented with lmflow APIs.
 """
-import asyncio
 import logging
 import json
 import time
@@ -46,7 +45,7 @@ title = """
 <p>We have thoroughly tested this toolkit and are pleased to make it available under <a class="reference external" href="https://github.com/OptimalScale/LMFlow">Github</a>.</p>
 """
 css = """
-#user {                                                                         
+#user {
     float: right;
     position:relative;
     right:5px;
@@ -57,11 +56,11 @@ css = """
     padding: 2px 8px;
     font-size: 14px;
     background:	#9DC284;
-    border-radius:5px; 
+    border-radius:5px;
     margin:10px 0px;
 }
-                                             
-#chatbot {                                                                      
+
+#chatbot {
     float: left;
     position:relative;
     right:5px;
@@ -72,7 +71,7 @@ css = """
     padding: 2px 8px;
     font-size: 14px;
     background:#7BA7D7;
-    border-radius:5px; 
+    border-radius:5px;
     margin:10px 0px;
 }
 """
@@ -223,7 +222,7 @@ def gradio_ask(user_message, chatbot, chat_state):
     return '', chatbot, chat_state
 
 
-async def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0):
+def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0):
     input_dataset = dataset.from_dict({
         "type": "image_text",
         "instances": [{"images": np.stack([np.array(i) for i in image_list]),
@@ -258,7 +257,6 @@ async def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperatur
             new_print_index += 1
             chatbot[-1][1] += char
             chat_state += char
-            await asyncio.sleep(0.1)
             yield chatbot, chat_state, image_list
             # await asyncio.sleep(1)
 
