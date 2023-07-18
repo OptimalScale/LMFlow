@@ -26,9 +26,10 @@ if __name__ == "__main__":
     if args.save_path is None:
         end_string = osp.splitext(args.model_path)
         save_path = osp.dirname(args.model_path) + \
-                    osp.basename(args.model_path) + \
-                    "-converted" + osp.splitext(args.model_path)
+                    osp.basename(args.model_path).replace(".pth", "") + \
+                    "-converted" + osp.splitext(args.model_path)[-1]
     else:
         save_path = args.save_path
+    print("save_path: {}".format(save_path))
 
     torch.save(new_model, save_path)
