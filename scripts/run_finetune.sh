@@ -15,6 +15,8 @@ log_dir=${project_dir}/log/${exp_id}
 
 dataset_path=${project_dir}/data/alpaca/train
 
+cn_tokenizer_path=${project_dir}/output_models/merged_llama_tokenizer_hf
+
 mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
@@ -23,6 +25,7 @@ deepspeed ${deepspeed_args} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --num_train_epochs 0.01 \
+    --tokenizer_name ${cn_tokenizer_path} \
     --learning_rate 2e-5 \
     --block_size 512 \
     --per_device_train_batch_size 1 \
