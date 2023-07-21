@@ -68,10 +68,10 @@ from transformers.modelcard import TrainingSummary
 from transformers.modeling_utils import PreTrainedModel, load_sharded_checkpoint, unwrap_model
 from transformers.models.auto.modeling_auto import MODEL_FOR_CAUSAL_LM_MAPPING_NAMES, MODEL_MAPPING_NAMES
 from transformers.optimization import Adafactor, get_scheduler
-from transformers.pytorch_utils import ALL_LAYERNORM_LAYERS, 
+from transformers.pytorch_utils import ALL_LAYERNORM_LAYERS
 
 is_torch_greater_or_equal_than_1_10 = version.parse(torch.__version__) >= version.parse("1.10")
-is_torch_less_than_1_11 = version.parse(torch.__version__) <= version.parse("1.11")
+is_torch_less_than_1_11 = version.parse(torch.__version__) < version.parse("1.11")
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from transformers.trainer_callback import (
     CallbackHandler,
