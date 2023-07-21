@@ -163,6 +163,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                 logger.info(f"New config: {config}")
 
         #position interpolation
+        if model_args.do_position_interpolation and model_args.do_NTK_scaling:
+           raise ValueError(f"cannot support both methods now")
         if model_args.do_position_interpolation:
             if "LlamaForCausalLM" in config.architectures:
                 from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
@@ -175,8 +177,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                     repalce_llama_rope_init_with_scaled_rope_init,
                 )
                 repalce_llama_rope_init_with_scaled_rope_init()
+                
         # Whether use flash attention
-        
         supported_gpu_device = None
         for gpu in GPU_SUPPORT_FLASH_ATTENTION:
             if gpu in torch.cuda.get_device_name():
