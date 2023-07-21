@@ -210,9 +210,17 @@ class ModelArguments:
         default = False,
         metadata={
             "help": (
-                "whether do position interpolation for the model."
+                "whether do position interpolation for llama model."
             )
         }   
+    )
+    do_NTK_scale: bool = field(
+        default = False,
+        metadata={
+            "help": (
+                "whether do NTK scale for llama model."
+            )
+        }
     )
     use_int8: bool = field(
         default=False,

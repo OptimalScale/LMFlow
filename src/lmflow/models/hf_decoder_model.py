@@ -175,6 +175,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                         replace_llama_rope_with_scaled_rope,
                 )
                 replace_llama_rope_with_scaled_rope()
+        if model_args.do_NTK_scale:
+            if "LlamaForCausalLM" in config.architectures:
+                from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
+                    repalce_llama_rope_init_with_scaled_rope_init,
+                )
+                repalce_llama_rope_init_with_scaled_rope_init()
         if model_args.use_flash_attention:
             if not any(model_supported in config.architectures
                        for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
