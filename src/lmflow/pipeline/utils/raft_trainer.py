@@ -20,20 +20,32 @@ from tqdm.auto import tqdm
 
 # Integrations must be imported before ML frameworks:
 # isort: off
-from transformers.integrations import (
-    default_hp_search_backend,
+
+### Fix the import bug in the latest version
+try:
+    from transformers.integrations import (
+        default_hp_search_backend,
+        get_reporting_integration_callbacks,
+        hp_params,
+        is_fairscale_available,
+        is_optuna_available,
+        is_ray_tune_available,
+        is_sigopt_available,
+        is_wandb_available,
+        run_hp_search_optuna,
+        run_hp_search_ray,
+        run_hp_search_sigopt,
+        run_hp_search_wandb,
+    )
+except ImportError:
+    from transformers.integrations import (
     get_reporting_integration_callbacks,
     hp_params,
     is_fairscale_available,
-    is_optuna_available,
-    is_ray_tune_available,
-    is_sigopt_available,
-    is_wandb_available,
-    run_hp_search_optuna,
-    run_hp_search_ray,
-    run_hp_search_sigopt,
-    run_hp_search_wandb,
-)
+    )
+    from transformers.hyperparameter_search import default_hp_search_backend,ALL_HYPERPARAMETER_SEARCH_BACKENDS
+
+    
 
 # isort: on
 
@@ -2504,15 +2516,15 @@ class RaftTrainer:
                     "To install sigopt run `pip install sigopt`."
                 )
         backend = HPSearchBackend(backend)
-        if backend == HPSearchBackend.OPTUNA and not is_optuna_available():
+        if backend == HPSearchBackend.OPTUNA:
             raise RuntimeError("You picked the optuna backend, but it is not installed. Use `pip install optuna`.")
-        if backend == HPSearchBackend.RAY and not is_ray_tune_available():
+        if backend == HPSearchBackend.RAY:
             raise RuntimeError(
                 "You picked the Ray Tune backend, but it is not installed. Use `pip install 'ray[tune]'`."
             )
-        if backend == HPSearchBackend.SIGOPT and not is_sigopt_available():
+        if backend == HPSearchBackend.SIGOPT:
             raise RuntimeError("You picked the sigopt backend, but it is not installed. Use `pip install sigopt`.")
-        if backend == HPSearchBackend.WANDB and not is_wandb_available():
+        if backend == HPSearchBackend.WANDB:
             raise RuntimeError("You picked the wandb backend, but it is not installed. Use `pip install wandb`.")
         self.hp_search_backend = backend
         if self.model_init is None:
@@ -2524,14 +2536,19 @@ class RaftTrainer:
         self.hp_name = hp_name
         self.compute_objective = default_compute_objective if compute_objective is None else compute_objective
 
-        backend_dict = {
-            HPSearchBackend.OPTUNA: run_hp_search_optuna,
-            HPSearchBackend.RAY: run_hp_search_ray,
-            HPSearchBackend.SIGOPT: run_hp_search_sigopt,
-            HPSearchBackend.WANDB: run_hp_search_wandb,
-        }
-        best_run = backend_dict[backend](self, n_trials, direction, **kwargs)
-
+        try:
+            backend_dict = {
+                HPSearchBackend.OPTUNA: run_hp_search_optuna,
+                HPSearchBackend.RAY: run_hp_search_ray,
+                HPSearchBackend.SIGOPT: run_hp_search_sigopt,
+                HPSearchBackend.WANDB: run_hp_search_wandb,
+            }
+            backend_run = backend_dict[backend]
+        except NameError:
+            ALL_HYPERPARAMETER_SEARCH_BACKENDS
+            backend_obj = ALL_HYPERPARAMETER_SEARCH_BACKENDS[backend]()
+            backend_run = backend_obj.run
+        best_run = backend_run(self, n_trials, direction, **kwargs)
         self.hp_search_backend = None
         return best_run
 
