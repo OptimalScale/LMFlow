@@ -198,6 +198,14 @@ class ModelArguments:
             )
         }
     )
+    truncate_to_model_max_length: bool = field(
+        default=True,
+        metadata={
+            "help": (
+                "whether truncate the dataset to model max length."
+            )
+        }
+    )
     use_int8: bool = field(
         default=False,
         metadata={"help": "whether to load int8 quantization for inference"}

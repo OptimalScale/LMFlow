@@ -323,11 +323,14 @@ class Evaluator(BasePipeline):
         texts = [ instance["text"] for instance in data_dict["instances"] ]
         encodings = model.get_tokenizer()("\n\n".join(texts), return_tensors="pt")
         # Define some constant
-        try:
-            max_length = min(model.get_backend_model().config.n_positions, model.get_max_length())
-        except:
-            max_length = min(1024, model.get_max_length())
-
+        if self.model_args.truncate_to_model_max_length:
+            try:
+                max_length = min(model.get_backend_model().config.n_positions, model.get_max_length())
+            except:
+                max_length = min(1024, model.get_max_length())
+        else:
+            max_length = self.block_size
+        
         if verbose:
             print(f"The maximum sequence length : {max_length}")
         seq_len = encodings.input_ids.size(1)

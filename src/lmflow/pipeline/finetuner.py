@@ -130,14 +130,27 @@ class Finetuner(BaseTuner):
                 block_size = 1024
         else:
             if data_args.block_size > model_max_length:
-                logger.warning(
-                    f"The block_size passed ({data_args.block_size}) is larger"
-	    			f" than the maximum length for the model"
-                    f"({model_max_length})."
-                    f" Using block_size={model_max_length}."
-                )
-            block_size = min(data_args.block_size, model_max_length)
-
+                if self.model_args.truncate_to_model_max_length:        
+                    logger.warning(
+                        f"The block_size passed ({data_args.block_size}) is larger"
+                        f" than the maximum length for the model"
+                        f"({model_max_length})."
+                        f" Using block_size={model_max_length}."
+                        f"If you would like to use a longer 'block_size' that is"
+                        f" longer than the maximum length supported by the model,"
+                        f" you can override this behavior with"
+                        f"default with `--truncate_to_model_max_length False`."
+                    )
+                    block_size = model_max_length
+                else:
+                    logger.warning(
+                        f"The block_size passed ({data_args.block_size}) is larger"
+                        f"than the maximum length for the model"
+                        f"({model_max_length})."
+                        f"Using block_size={data_args.block_size}.")
+                    block_size = data_args.block_size
+            else:
+                block_size = data_args.block_size
         # Main data processing function that will concatenate all texts from
         # our dataset and generate chunks of block_size.
         def group_texts(examples):
