@@ -118,7 +118,6 @@ from transformers.trainer_utils import (
     TrainerMemoryTracker,
     TrainOutput,
     default_compute_objective,
-    default_hp_space,
     denumpify_detensorize,
     enable_full_determinism,
     find_executable_batch_size,
@@ -2534,11 +2533,6 @@ class RaftTrainer:
             raise RuntimeError(
                 "To use hyperparameter search, you need to pass your model through a model_init function."
             )
-
-        self.hp_space = default_hp_space[backend] if hp_space is None else hp_space
-        self.hp_name = hp_name
-        self.compute_objective = default_compute_objective if compute_objective is None else compute_objective
-
         try:
             backend_dict = {
                 HPSearchBackend.OPTUNA: run_hp_search_optuna,
@@ -2551,6 +2545,16 @@ class RaftTrainer:
             ALL_HYPERPARAMETER_SEARCH_BACKENDS
             backend_obj = ALL_HYPERPARAMETER_SEARCH_BACKENDS[backend]()
             backend_run = backend_obj.run
+        try:
+            from transformers.trainer_utils import default_hp_space
+        except ImportError:
+            default_hp_space = backend_obj.default_hp_space
+
+        self.hp_space = default_hp_space[backend] if hp_space is None else hp_space
+        self.hp_name = hp_name
+        self.compute_objective = default_compute_objective if compute_objective is None else compute_objective
+
+
         best_run = backend_run(self, n_trials, direction, **kwargs)
         self.hp_search_backend = None
         return best_run
