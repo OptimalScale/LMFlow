@@ -206,6 +206,22 @@ class ModelArguments:
             )
         }
     )
+    do_position_interpolation: bool = field(
+        default = False,
+        metadata={
+            "help": (
+                "whether do position interpolation for llama model."
+            )
+        }   
+    )
+    do_NTK_scaling: bool = field(
+        default = False,
+        metadata={
+            "help": (
+                "whether do NTK scale for llama model."
+            )
+        }
+    )
     use_int8: bool = field(
         default=False,
         metadata={"help": "whether to load int8 quantization for inference"}

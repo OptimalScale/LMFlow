@@ -168,7 +168,19 @@ class HFDecoderModel(DecoderModel, Tunable):
         for gpu in GPU_SUPPORT_FLASH_ATTENTION:
             if gpu in torch.cuda.get_device_name():
                 supported_gpu_device = gpu
-                
+        if model_args.do_position_interpolation:
+            if "LlamaForCausalLM" in config.architectures:
+                #if "LlamaForCausalLM" in config.architectures:
+                from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
+                        replace_llama_rope_with_scaled_rope,
+                )
+                replace_llama_rope_with_scaled_rope()
+        if model_args.do_NTK_scaling:
+            if "LlamaForCausalLM" in config.architectures:
+                from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
+                    repalce_llama_rope_init_with_scaled_rope_init,
+                )
+                repalce_llama_rope_init_with_scaled_rope_init()
         if model_args.use_flash_attention:
             if not any(model_supported in config.architectures
                        for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
