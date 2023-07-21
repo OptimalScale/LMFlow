@@ -223,11 +223,19 @@ class Inferencer(BasePipeline):
             # print(f"{current_time}: inferencer.inference: model.inference end", flush=True)
             # print(f'type of context text: {type(dataset.to_dict()["instances"][0]["text"])}', flush=True)
 
-            text_out = model.decode(outputs[0], skip_special_tokens=True)
             # only return the generation, trucating the input
             if self.model_args.arch_type != "vision_encoder_decoder":
+                text_out = model.decode(outputs[0], skip_special_tokens=True)
                 prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
                 text_out = text_out[prompt_length:]
+            else:
+                # to avoid redundant/missing leading space problem, we use a
+                # part of the input text
+                input_text = inputs['input_ids'][0][-1:]
+                text_out = model.decode(torch.cat([input_text, outputs[0]]), skip_special_tokens=True)
+                prompt_length = len(model.decode(input_text, skip_special_tokens=True,))
+                text_out = text_out[prompt_length:]
+
             output_dict["instances"].append({ "text": text_out })
 
         # current_time = time.strftime("%H:%M:%S", time.localtime())
