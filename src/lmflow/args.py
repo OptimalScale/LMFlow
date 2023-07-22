@@ -210,16 +210,47 @@ class ModelArguments:
         default=False,
         metadata={"help": "whether to load int8 quantization for inference"}
     )
-    custom_model: bool = field(
-        default=False,
-        metadata={"help": "flag for the model from huggingface or not"}
-    )
 
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
             raise ValueError(
                 "--config_overrides can't be used in combination with --config_name or --model_name_or_path"
             )
+
+
+@dataclass
+class VisModelArguments(ModelArguments):
+    low_resource: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "Use 8 bit and float16 when loading llm"
+        }
+    )
+    custom_model: bool = field(
+        default=False,
+        metadata={"help": "flag for the model from huggingface or not"}
+    )
+    checkpoint_path: str = field(
+        default=None,
+        metadata={"help": "path for model checkpoint"}
+    )
+    llm_model_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "llm model in multi-modality model"
+            )
+        },
+    )
+    use_prompt_cache: bool = field(
+        default=False,
+        metadata={"help": "Whether to use prompt cache."},
+    )
+    prompt_cache_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to prompt cache."},
+    )
+
 
 
 @dataclass

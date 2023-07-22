@@ -17,3 +17,4 @@ lm-eval @ git+https://github.com/EleutherAI/lm-evaluation-harness.git@e47e01beea
 dill<0.3.5
 bitsandbytes==0.38.1
 pydantic<=1.10.9
+gradio
