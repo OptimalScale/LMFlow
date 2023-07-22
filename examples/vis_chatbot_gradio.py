@@ -216,7 +216,7 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
                 new_print_index += 1
                 chatbot[-1][1] += char
                 chat_state += char
-                time.sleep(0.03)
+                time.sleep(0.05)
                 yield chatbot, chat_state, image_list
 
             print_index = new_print_index
