@@ -32,18 +32,6 @@ logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
 torch.multiprocessing.set_start_method('spawn', force=True)
 
-title = """
-<h1 align="center">LMFlow-CHAT</h1>
-<link rel="stylesheet" href="/path/to/styles/default.min.css">
-<script src="/path/to/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
-
-<img src="https://optimalscale.github.io/LMFlow/_static/logo.png" alt="LMFlow" style="width: 30%; min-width: 60px; display: block; margin: auto; background-color: transparent;">
-
-<p>LMFlow is in extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.</p>
-
-<p>We have thoroughly tested this toolkit and are pleased to make it available under <a class="reference external" href="https://github.com/OptimalScale/LMFlow">Github</a>.</p>
-"""
 css = """
 #user {
     float: right;
@@ -334,12 +322,10 @@ if __name__ == "__main__":
     end_string = chatbot_args.end_string
     prompt_structure = chatbot_args.prompt_structure
 
-    title = """<h1 align="center">Demo of Multi-modality chatbot from LMFlow</h1>"""
-    description = """<h3>This is the demo of Multi-modality chatbot from LMFlow. Upload your images and start chatting!</h3>"""
+    title = """<h1 align="center">LMFlow Multi-modal chatbot</h1>"""
 
     with gr.Blocks() as demo:
         gr.Markdown(title)
-        gr.Markdown(description)
         chatbot = gr.Chatbot([], elem_id="chatbot").style(height=500)
 
         with gr.Row():
