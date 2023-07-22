@@ -19,7 +19,7 @@ model=Salesforce/blip2-flan-t5-xxl
 #     --task vqa \
 #     --custom_model \
 #     --prompt_format mini_gpt \
-#     --prompt_structure "{input_text}###Assistant:" \
+#     --prompt_structure "###Human: {input_text}###Assistant:" \
 #     --llm_model_name_or_path Tribbiani/vicuna-7b \
 #     --checkpoint_path output_models/pretrained_minigpt4_7b_converted.pth \
 #     --low_resource True \

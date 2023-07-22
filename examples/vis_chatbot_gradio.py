@@ -110,7 +110,7 @@ def gradio_reset(chat_state, img_list):
         img_list = []
     return (
         None,
-        gr.update(placeholder='Please upload your image first', interactive=False),
+        gr.update(placeholder="Please upload an image first", interactive=False),
         gr.update(value="Upload & Start Chat", interactive=True),
         chat_state,
         img_list,
@@ -204,7 +204,7 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
                 new_print_index += 1
                 chatbot[-1][1] += char
                 chat_state += char
-                time.sleep(0.05)
+                time.sleep(0.06)
                 yield chatbot, chat_state, image_list
 
             print_index = new_print_index
@@ -322,7 +322,7 @@ if __name__ == "__main__":
     end_string = chatbot_args.end_string
     prompt_structure = chatbot_args.prompt_structure
 
-    title = """<h1 align="center">LMFlow Multi-modal chatbot</h1>"""
+    title = """<h1 align="center">LMFlow Multi-modal Chatbot</h1>"""
 
     with gr.Blocks() as demo:
         gr.Markdown(title)
@@ -338,7 +338,8 @@ if __name__ == "__main__":
             with gr.Column(scale=0.8):
                 text_input = gr.Textbox(
                     show_label=False,
-                    placeholder="Enter text and press enter, or upload an image",
+                    placeholder="Please upload an image first",
+                    interactive=False,
                 ).style(container=False)
 
             with gr.Column(scale=0.1, min_width=0):
