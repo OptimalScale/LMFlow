@@ -147,7 +147,7 @@ def upload_image(image_file, history, text_input, chat_state, image_list):
         image_list.append(image.resize(image_list[0].size))
 
     if chatbot_args.prompt_format == "mini_gpt":
-        chat_state += "Human: " + "<Img><ImageHere></Img>"
+        chat_state += "### Human: " + "<Img><ImageHere></Img>"
     return (
         gr.update(interactive=True, placeholder='Enter text and press enter, or upload an image'),
         history,

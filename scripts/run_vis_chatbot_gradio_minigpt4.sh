@@ -1,14 +1,49 @@
+#!/bin/bash
+
 model=Salesforce/blip2-flan-t5-xxl
-checkpoint_path=/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/minigpt4/prerained_minigpt4_7b_converted.pth
-llm_model_name_or_path=/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/
-deepspeed examples/vis_chatbot_gradio.py --model_name_or_path ${model} \
-                                         --deepspeed configs/ds_config_multimodal.json \
-                                         --arch_type vision_encoder_decoder \
-                                         --task vqa \
-                                         --custom_model \
-                                         --prompt_format mini_gpt \
-                                         --prompt_structure "{input_text}###Assistant:" \
-                                         --checkpoint_path ${checkpoint_path} \
-                                         --llm_model_name_or_path ${llm_model_name_or_path} \
-                                         --low_resource True \
-                                         ${@:1}
+
+# if [ ! -f output_models/pretrained_minigpt4_7b.pth ]; then
+#   cd output_models && ./download.sh minigpt4_7b && cd -
+# fi
+# 
+# if [ ! -f output_models/pretrained_minigpt4_7b_converted.pth ]; then
+#   python utils/convert_minigpt4_checkpoints.py \
+#       --model_path output_models/pretrained_minigpt4_7b.pth \
+#       --save_path output_models/pretrained_minigpt4_7b_converted.pth
+# fi
+# 
+# deepspeed --master_port=11005 examples/vis_chatbot_gradio.py \
+#     --model_name_or_path ${model} \
+#     --deepspeed configs/ds_config_multimodal.json \
+#     --arch_type vision_encoder_decoder \
+#     --task vqa \
+#     --custom_model \
+#     --prompt_format mini_gpt \
+#     --prompt_structure "{input_text}###Assistant:" \
+#     --llm_model_name_or_path Tribbiani/vicuna-7b \
+#     --checkpoint_path output_models/pretrained_minigpt4_7b_converted.pth \
+#     --low_resource True \
+#     --max_new_tokens 1024
+
+if [ ! -f output_models/pretrained_minigpt4_13b.pth ]; then
+  cd output_models && ./download.sh minigpt4_13b && cd -
+fi
+
+if [ ! -f output_models/pretrained_minigpt4_13b_converted.pth ]; then
+  python utils/convert_minigpt4_checkpoints.py \
+      --model_path output_models/pretrained_minigpt4_13b.pth \
+      --save_path output_models/pretrained_minigpt4_13b_converted.pth
+fi
+
+deepspeed --master_port=11005 examples/vis_chatbot_gradio.py \
+    --model_name_or_path ${model} \
+    --deepspeed configs/ds_config_multimodal.json \
+    --arch_type vision_encoder_decoder \
+    --task vqa \
+    --custom_model \
+    --prompt_format mini_gpt \
+    --prompt_structure "###Human: {input_text}###Assistant:" \
+    --llm_model_name_or_path Tribbiani/vicuna-13b \
+    --checkpoint_path output_models/pretrained_minigpt4_13b_converted.pth \
+    --low_resource True \
+    --max_new_tokens 1024
