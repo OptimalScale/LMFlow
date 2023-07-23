@@ -163,15 +163,15 @@ class HFDecoderModel(DecoderModel, Tunable):
                 logger.info(f"New config: {config}")
 
         #position interpolation
-        if model_args.do_position_interpolation and model_args.do_NTK_scaling:
-           raise ValueError(f"cannot support both methods now")
+        if model_args.do_position_interpolation and model_args.do_ntk_scaling:
+           raise ValueError(f"annot support both --do_position_interpolation and --do_ntk_scaling now")
         if model_args.do_position_interpolation:
             if "LlamaForCausalLM" in config.architectures:
                 from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
                         replace_llama_rope_with_scaled_rope,
                 )
                 replace_llama_rope_with_scaled_rope()
-        if model_args.do_NTK_scaling:
+        if model_args.do_ntk_scaling:
             if "LlamaForCausalLM" in config.architectures:
                 from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
                     repalce_llama_rope_init_with_scaled_rope_init,
