@@ -373,6 +373,11 @@ if __name__ == "__main__":
             queue=False,
         )
 
-    demo.launch(share=True, enable_queue=True)
+    demo.queue(
+        max_size=1,
+        batch=False,
+        max_batch_size=1,
+        api_open=False,
+    ).launch(share=True)
     inferencer_process.join()
 
