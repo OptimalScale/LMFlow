@@ -103,6 +103,18 @@ function main() {
         tar zxvf ${filename}
         rm ${filename}
     fi
+
+    if [ "$1" = "minigpt4_7b" -o "$1" = "all" ]; then
+        echo "downloading minigpt4_7b"
+        filename='pretrained_minigpt4_7b.pth'
+        wget ${public_server}/${filename}
+    fi
+
+    if [ "$1" = "minigpt4_13b" -o "$1" = "all" ]; then
+        echo "downloading minigpt4_13b"
+        filename='pretrained_minigpt4_13b.pth'
+        wget ${public_server}/${filename}
+    fi
 }
 
 main "$@"
