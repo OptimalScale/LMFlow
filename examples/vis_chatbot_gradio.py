@@ -180,6 +180,16 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
     temperature = 0.7
     context = chatbot
 
+    # Another user may have exited during the handling of his/her response,
+    # Wait for inferencer process to complete its job, after which "busy" mark
+    # in the request_queue will be released
+    while not request_queue.empty():
+        time.sleep(0.01)
+
+    # Clean response_queue left by the previous user
+    while not response_queue.empty():
+        response_queue.get()
+
     request_queue.put((
         context,
         max_new_tokens,
@@ -248,6 +258,7 @@ def start_inferencer(
 
     while True:
         if not request_queue.empty():
+            request_queue.put("busy")
             request = request_queue.get()
 
             context = request[0]
@@ -278,6 +289,10 @@ def start_inferencer(
                 response_text = ''
                 flag_break = True
                 response_queue.put((response_text, flag_break))
+
+            mark = ""
+            while mark != "busy":
+                mark = request_queue.get()     # Release the "busy" mark
 
         time.sleep(0.001)
 
@@ -373,11 +388,6 @@ if __name__ == "__main__":
             queue=False,
         )
 
-    demo.queue(
-        max_size=1,
-        batch=False,
-        max_batch_size=1,
-        api_open=False,
-    ).launch(share=True)
+    demo.queue(max_size=1, api_open=False).launch(share=True)
     inferencer_process.join()
 
