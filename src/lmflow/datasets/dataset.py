@@ -10,8 +10,10 @@ Face dataset, mapping datasets, and retrieving the backend dataset and arguments
 
 
 # Importing necessary libraries and modules
-from cmath import e
+import copy
 import json
+
+from cmath import e
 from pathlib import Path
 from typing import Optional
 
@@ -230,6 +232,10 @@ class Dataset:
             self._check_data_format()
 
             return self
+        elif self.backend == "dict":
+            self.backend_dataset = dict_obj
+            self.type = dict_obj[KEY_TYPE]
+            return self
         else:
             raise NotImplementedError(
                 f'Currently .from_dict is not supported for backend "{backend}"'
@@ -295,9 +301,28 @@ class Dataset:
                 ]
 
             return dict_obj
+        elif self.backend == "dict":
+            dict_obj = self.backend_dataset
+            return dict_obj
         else:
             raise NotImplementedError(
                 f'Current .to_dict is not supported for backend "{backend}"'
+            )
+
+
+    def to_list(self):
+        """Returns a list of instances."""
+        if self.backend == "huggingface":
+            instance_list = [self.backend_dataset.__getitem__(idx)
+                             for idx in range(len(self.backend_dataset))]
+            return instance_list
+        elif self.backend == "dict":
+            instance_list = copy.deepcopy(self.backend_dataset[KEY_INSTANCES])
+            # TODO: should be a list of instances, instance should be huggingface datasets row format
+            return instance_list
+        else:
+            raise NotImplementedError(
+                f'Current .to_list is not supported for backend "{backend}"'
             )
 
 

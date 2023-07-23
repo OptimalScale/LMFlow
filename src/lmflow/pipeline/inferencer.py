@@ -11,6 +11,7 @@ import sys
 import numpy as np
 import datetime
 import json
+import time
 
 from transformers import AutoConfig
 import torch.distributed as dist
@@ -89,10 +90,8 @@ class Inferencer(BasePipeline):
             data_dict = dataset.to_dict()
             inputs = [instance["text"] for instance in data_dict["instances"] ]
         elif dataset.get_type() == "image_text":
-            backend_dataset = dataset.get_backend_dataset()
-            # can not do the do_dict information because the data contains image.
-            inputs = [backend_dataset.__getitem__(idx)
-                        for idx in range(len(backend_dataset))]
+            inputs = dataset.to_list()
+
         dataset_size = len(inputs)
         dataset_buf = []
         for idx in range(dataset_size):
@@ -137,7 +136,6 @@ class Inferencer(BasePipeline):
             raise NotImplementedError(
                 'input dataset should have type {}'.format(
                                         supported_dataset_type))
-
         dataloader, data_size = self.create_dataloader(dataset)
 
         # The output dataset
@@ -154,20 +152,33 @@ class Inferencer(BasePipeline):
             else:
                 input = current_batch['input']
                 input['text'] = prompt_structure.format(input=input['text'])
-            
+
+            if 'images' in input and isinstance(input['images'], list):
+                input['images'] = np.array(input['images'])
+
             if remove_image_flag:
+                # remove the image flag <ImageHere> in tokenization;
                 input['text'] = input['text'].split("<ImageHere>")
-                new_input = copy.deepcopy(input)
-                new_input['text'] = new_input['text'][-1]
-                input['text'] = input['text'][0]
-                inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
-                new_inputs = model.encode(new_input, return_tensors="pt").to(device=self.local_rank)
-                image_token_indexes = [inputs["input_ids"].shape[1]]
-                inputs["input_ids"] = torch.cat([inputs["input_ids"],
-                                                 new_inputs["input_ids"]], dim=1) 
-                inputs["attention_mask"] = torch.cat([inputs["attention_mask"],
-                                                      new_inputs["attention_mask"]], dim=1)
-                # input['text'], image_token_indexes = process_image_flag(input["text"])
+                # TODO remove this code by update the tokenizer
+                input_ids = []
+                attention_mask = []
+                pixel_values = []
+                image_token_indexes = []
+                temp_input = copy.deepcopy(input)
+                for idx in range(len(input['text'])):
+                    temp_input['text'] = input['text'][idx]
+                    temp_inputs = model.encode(
+                        temp_input,
+                        return_tensors="pt",
+                        add_special_tokens=idx==0).to(device=self.local_rank)
+                    input_ids.append(temp_inputs['input_ids'])
+                    attention_mask.append(temp_inputs['attention_mask'])
+                    image_token_indexes.append(temp_inputs["input_ids"].shape[1])
+                if len(image_token_indexes) > 1:
+                    image_token_indexes = image_token_indexes[:-1]
+                inputs = temp_inputs
+                inputs["input_ids"] = torch.cat(input_ids, dim=1) 
+                inputs["attention_mask"] = torch.cat(attention_mask, dim=1)
             else:
                 if self.inferencer_args.device == "gpu":
                     inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
@@ -177,8 +188,10 @@ class Inferencer(BasePipeline):
                     raise NotImplementedError(
                         f"device \"{self.inferencer_args.device}\" is not supported"
                     )
+
             if remove_image_flag:
                 inputs["image_token_indexes"] = image_token_indexes
+                inputs["one_sample_multiple_images"] = True
 
             outputs = model.inference(
                 inputs,
@@ -187,12 +200,20 @@ class Inferencer(BasePipeline):
                 repetition_penalty=self.inferencer_args.repetition_penalty,
                 do_sample=self.inferencer_args.do_sample,
             )
-            
-            text_out = model.decode(outputs[0], skip_special_tokens=True)
+
             # only return the generation, trucating the input
             if self.model_args.arch_type != "vision_encoder_decoder":
+                text_out = model.decode(outputs[0], skip_special_tokens=True)
                 prompt_length = len(model.decode(inputs[0], skip_special_tokens=True,))
                 text_out = text_out[prompt_length:]
+            else:
+                # to avoid redundant/missing leading space problem, we use a
+                # part of the input text
+                input_text = inputs['input_ids'][0][-1:]
+                text_out = model.decode(torch.cat([input_text, outputs[0]]), skip_special_tokens=True)
+                prompt_length = len(model.decode(input_text, skip_special_tokens=True,))
+                text_out = text_out[prompt_length:]
+
             output_dict["instances"].append({ "text": text_out })
 
         output_dataset = Dataset(DatasetArguments(dataset_path = None))
@@ -200,7 +221,17 @@ class Inferencer(BasePipeline):
 
         return output_dataset
     
-    def stream_inference(self, context, model, max_new_tokens, token_per_step, temperature, end_string, input_dataset):
+    def stream_inference(
+        self,
+        context,
+        model,
+        max_new_tokens,
+        token_per_step,
+        temperature,
+        end_string,
+        input_dataset,
+        remove_image_flag: bool=False,
+    ):
         response = ""
         history = []
         if "ChatGLMModel" in self.config.architectures:
@@ -214,23 +245,15 @@ class Inferencer(BasePipeline):
                     dataset=input_dataset,
                     max_new_tokens=token_per_step,
                     temperature=self.inferencer_args.temperature,
+                    remove_image_flag=remove_image_flag,
                 )
+
                 new_append_text = output_dataset.to_dict()["instances"][0]["text"]
                 new_append_text = rstrip_partial_utf8(new_append_text)
                 response += new_append_text
-                if input_dataset.get_type() != "image_text":
-                    input_dict = input_dataset.to_dict()
-                    input_dict["instances"][0]["text"] += new_append_text
-                else:
-                    # currently image type doesn't support to_dict;
-                    # to_dict would convert the PIL file into bytes format.
-                    # TODO check how to fix this confilct and remove the if else;
-                    inputs = input_dataset.backend_dataset.__getitem__(0)
-                    input_dict = dict(
-                        type="image_text",
-                        instances=[inputs])
-                    input_dict["instances"][0]["text"] += new_append_text
 
+                input_dict = input_dataset.to_dict()
+                input_dict["instances"][0]["text"] += new_append_text
                 input_dataset = input_dataset.from_dict(input_dict)
 
                 flag_break = False

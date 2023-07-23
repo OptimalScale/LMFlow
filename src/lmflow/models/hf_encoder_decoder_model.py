@@ -20,6 +20,7 @@ and question answering.
 
 import copy
 import logging
+import time
 from typing import List, Union
 
 import deepspeed
@@ -46,6 +47,7 @@ from transformers import (
     AutoModelForVision2Seq,
     AutoModel,
     AutoProcessor,
+    LlamaTokenizer
 )
 
 from transformers import (Blip2VisionConfig,
@@ -181,21 +183,16 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             #     self.backend_model = model_register.from_pretrained(
             #         model_args.model_name_or_path)
             else:
-                # model = CustomAutoVision2SeqModel.from_pretrained(
-                #     model_args.model_name_or_path,
-                # )
-                vision_config = Blip2VisionConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                qformer_config = Blip2QFormerConfig.from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                text_config = LlamaConfig.from_pretrained("/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/")
-                config = Blip2Config.from_vision_qformer_text_configs(vision_config, qformer_config, text_config)
-                model = CustomAutoVision2SeqModel(config)
-                model.vision_model_from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                model.qformer_from_pretrained("Salesforce/blip2-flan-t5-xxl")
-                model.language_model_from_pretrained("/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/vicuna-7b/")
-                state_dict = torch.load(
-                    "/scratch/PI/tongzhang/qinglian/checkpoints/pretrained_weights/minigpt4/prerained_minigpt4_7b_converted.pth",
-                    map_location="cpu")
+                model = CustomAutoVision2SeqModel.from_pretrained(model_args.model_name_or_path)
+                if model_args.llm_model_name_or_path is not None:
+                    text_config = LlamaConfig.from_pretrained(model_args.llm_model_name_or_path)
+                    model.config.text_config = text_config
+                model.language_model_from_pretrained(model_args.llm_model_name_or_path,
+                                                     low_resource=model_args.low_resource)
+                state_dict = torch.load(model_args.checkpoint_path, map_location="cpu")
                 model.load_state_dict(state_dict, strict=False)
+                # model = CustomAutoVision2SeqModel.from_pretrained(
+                    # "/home/qlianab/checkpoints/pretrained_weights/minigpt4-lmflow-vicuna-7b-low_resource/"）
                 self.backend_model = model
 
             if self.arch_type == "encoder_decoder":
@@ -204,8 +201,9 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 tokenizer_register = AutoProcessor
             else:
                 raise NotImplementedError
-
             self.tokenizer = tokenizer_register.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
+            if model_args.llm_model_name_or_path is not None:
+                self.tokenizer.tokenizer = LlamaTokenizer.from_pretrained(model_args.llm_model_name_or_path)
             self.backend_model_full = self.backend_model
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
@@ -272,7 +270,8 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         if isinstance(input, dict):
             # TODO refactor the input type to make it elegant.
             kwargs.update(input)
-            return self.tokenizer(*args, **kwargs)
+            tokens = self.tokenizer(*args, **kwargs)
+            return tokens
         elif isinstance(input, list):
             return self.tokenizer(text=input, *args, **kwargs)#batch encode,will automatically do left padding
         elif isinstance(input, str):
@@ -330,6 +329,9 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         outputs :
             The generated sequence output
         """
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: model.inference: start", flush=True)
+
         # TODO need to discuss how to handle pad_token_id
         if self.arch_type == "encoder_decoder":
             kwargs.update(pad_token_id=self.tokenizer.pad_token_id)
@@ -339,6 +341,9 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             input_ids = inputs.pop('input_ids')
             kwargs.update(**inputs)
             inputs = input_ids
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: model.inference: kwargs update end", flush=True)
 
         with torch.no_grad():
             if self.device == "gpu":
@@ -359,6 +364,10 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 raise NotImplementedError(
                     f"device \"{self.device}\" is not supported"
                 )
+
+        # current_time = time.strftime("%H:%M:%S", time.localtime())
+        # print(f"{current_time}: model.inference: end", flush=True)
+
         return outputs
 
 
