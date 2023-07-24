@@ -1,0 +1,1 @@
+python utils/convert_json_to_txt.py ./data/wiki_zh_eval
