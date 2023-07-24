@@ -7,7 +7,7 @@ import logging
 import json
 from pathlib import Path
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 if __name__ == '__main__':
     
