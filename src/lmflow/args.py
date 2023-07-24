@@ -214,7 +214,7 @@ class ModelArguments:
             )
         }   
     )
-    do_NTK_scaling: bool = field(
+    do_ntk_scaling: bool = field(
         default = False,
         metadata={
             "help": (
