@@ -22,5 +22,3 @@ def mkdir(path):
         os.makedirs(path)
 mkdir(output_dir)
 spm.SentencePieceTrainer.train('--input={} --model_prefix={} --model_type={} --vocab_size={} --user_defined_symbols={}'.format(dataset_path,output_dir+'/example',model_type,vocab_size,user_defined_symbols))
-sp = spm.SentencePieceProcessor()
-sp.load('example.model')

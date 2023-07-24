@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--tokenizer_dir', default='pinkmanlove/llama-7b-hf', type=str, required=False)
-    parser.add_argument('--chinese_sp_model_file', default='./output_models/llama_chinese_sp.model', type=str)
+    parser.add_argument('--chinese_sp_model_file', default='./output_models/new_tokenizer/example.model', type=str)
     args = parser.parse_args()
 
 
