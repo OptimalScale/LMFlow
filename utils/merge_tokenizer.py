@@ -53,13 +53,13 @@ if __name__ == '__main__':
     output_sp_dir = output_dir + '/merged_tokenizer_sp'
     output_hf_dir = output_dir + '/merged_tokenizer_hf' # the path to save tokenizer
     os.makedirs(output_sp_dir,exist_ok=True)
-    with open(output_sp_dir+'/chinese_llama.model', 'wb') as f:
+    with open(output_sp_dir+'/merged_tokenizer.model', 'wb') as f:
         f.write(old_spm.SerializeToString())
     
-    tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=tokenizer_dir,vocab_file=output_sp_dir+'/chinese_llama.model')
+    tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=tokenizer_dir,vocab_file=output_sp_dir+'/merged_tokenizer.model')
 
     tokenizer.save_pretrained(output_hf_dir)
-    logging.info(f"Chinese-LLaMA tokenizer has been saved to %s",output_dir)
+    logging.info(f"Merged tokenizer has been saved to %s",output_dir)
 
 
     # Test

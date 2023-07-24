@@ -15,7 +15,7 @@ python utils/train_tokenizer.py --dataset_path ./data/wiki_zh_eval/converted_dat
         --model_type bpe \
         --output_dir ./output_models/new_tokenizer \
         --user_defined_symbols 0,1,2,3,4,5,6,7,8,9,% \
-        --vocab_size 10000
+        --vocab_size 20000
 
 # merge the new tokenizer with the old one
 python utils/merge_tokenizer.py --chinese_sp_model_file ./output_models/new_tokenizer/example.model \

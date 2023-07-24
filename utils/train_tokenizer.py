@@ -26,4 +26,4 @@ if __name__ == '__main__':
             os.makedirs(path)
     mkdir(output_dir)
 
-    spm.SentencePieceTrainer.train('--input={} --model_prefix={} --model_type={} --vocab_size={} --user_defined_symbols={}'.format(dataset_path,output_dir+'/example',model_type,vocab_size,user_defined_symbols))
+    spm.SentencePieceTrainer.train('--input={} --model_prefix={} --model_type={} --vocab_size={} --user_defined_symbols={} --minloglevel=1'.format(dataset_path,output_dir+'/example',model_type,vocab_size,user_defined_symbols))
