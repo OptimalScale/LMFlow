@@ -13,6 +13,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 from transformers import AutoTokenizer
 
+logging.basicConfig(level=logging.INFO)
+
 if __name__ == '__main__':
     
     os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"]="python"
@@ -57,17 +59,17 @@ if __name__ == '__main__':
     tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=tokenizer_dir,vocab_file=output_sp_dir+'/chinese_llama.model')
 
     tokenizer.save_pretrained(output_hf_dir)
-    logging.info(f"Chinese-LLaMA tokenizer has been saved to {output_hf_dir}")
+    logging.info(f"Chinese-LLaMA tokenizer has been saved to %s",output_dir)
 
 
     # Test
     old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir)
     new_tokenizer = AutoTokenizer.from_pretrained(output_hf_dir)
-    logging.info(f"Old tokenizer vocab size: {len(old_tokenizer)}")
-    logging.info(f"New tokenizer vocab size: {len(new_tokenizer)}")
+    logging.info(f"Old tokenizer vocab size: %d",len(old_tokenizer))
+    logging.info(f"New tokenizer vocab size: %d",len(new_tokenizer))
     
     text='''白日依山尽，黄河入海流。欲穷千里目，更上一层楼。
     The primary use of LLaMA is research on large language models, including'''
-    logging.info(f"Test text:\n {text}")
-    logging.info(f"Tokenized by LLaMA tokenizer:{old_tokenizer.tokenize(text)}")
-    logging.info(f"Tokenized by Chinese-LLaMA tokenizer:{new_tokenizer.tokenize(text)}")
+    logging.info(f"Test text:\n %s",text)
+    logging.info(f"Tokenized by LLaMA tokenizer:%s",old_tokenizer.tokenize(text))
+    logging.info(f"Tokenized by Chinese-LLaMA tokenizer:%s",new_tokenizer.tokenize(text))

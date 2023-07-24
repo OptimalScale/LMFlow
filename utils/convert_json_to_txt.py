@@ -7,6 +7,8 @@ import logging
 import json
 from pathlib import Path
 
+logging.basicConfig(level=logging.INFO)
+
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
@@ -33,7 +35,7 @@ if __name__ == '__main__':
                 
 
     if Path(outputfile).exists() and not args.overwrite:
-        logging.warning(f"File {outputfile} exists, will not overwrite.")
+        logging.warning(f"File %s exists, will not overwrite.", outputfile)
     else:
         with open(outputfile, "w") as f:
             for line in outputs_list:
