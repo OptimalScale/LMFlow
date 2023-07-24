@@ -1,5 +1,5 @@
 #!/bin/bash
-
+mkdir -p ./output_models/merged_tokenizer
 python utils/train_tokenizer.py --dataset_path ./data/wiki_zh_eval/converted_data.txt \
         --model_type bpe \
         --output_dir ./output_models/new_tokenizer \
