@@ -1,11 +1,13 @@
-import torch
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+import argparse
 import os
+
 from sentencepiece import sentencepiece_model_pb2 as sp_pb2_model
 import sentencepiece as spm
+
+import torch
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 from transformers import AutoTokenizer
-import argparse
-    
     
 if __name__ == '__main__':
     
@@ -14,12 +16,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--tokenizer_dir', default='pinkmanlove/llama-7b-hf', type=str, required=False)
     parser.add_argument('--chinese_sp_model_file', default='./output_models/new_tokenizer/example.model', type=str)
+    parser.add_argument('--output_dir', default='./output_models/merged_tokenizer', type=str, required=False)
     args = parser.parse_args()
 
 
     tokenizer_dir = args.tokenizer_dir
     chinese_sp_model_file = args.chinese_sp_model_file
-
+    output_dir = args.output_dir
+    
     # load
     old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir)
     chinese_sp_model = spm.SentencePieceProcessor()
@@ -50,8 +54,8 @@ if __name__ == '__main__':
     print(f"New model pieces: {len(old_spm.pieces)}")
 
     ## Save
-    output_sp_dir = './output_models/merged_tokenizer_sp'
-    output_hf_dir = './output_models/merged_tokenizer_hf' # the path to save tokenizer
+    output_sp_dir = output_dir + '/merged_tokenizer_sp'
+    output_hf_dir = output_dir + '/merged_tokenizer_hf' # the path to save tokenizer
     os.makedirs(output_sp_dir,exist_ok=True)
     with open(output_sp_dir+'/chinese_llama.model', 'wb') as f:
         f.write(old_spm.SerializeToString())

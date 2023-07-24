@@ -1,7 +1,6 @@
-import sentencepiece as spm
-import sys
-import os
 import argparse
+import os
+import sentencepiece as spm
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset_path', default='./data/wiki_zh_eval/converted_data.txt', type=str, required=False)
