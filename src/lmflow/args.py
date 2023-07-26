@@ -685,7 +685,12 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
-
+    multithread_inference: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "whether turn on multithread inference."
+        },
+    )
 @dataclass
 class RaftAlignerArguments(TrainingArguments):
     """

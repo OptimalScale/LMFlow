@@ -47,4 +47,4 @@ deepspeed --master_port=11005 examples/vis_chatbot.py \
     --checkpoint_path output_models/pretrained_minigpt4_7b_converted.pth \
     --low_resource True \
     --max_new_tokens 1024 \
-    --stream_inference True
+    --multithread_inference True

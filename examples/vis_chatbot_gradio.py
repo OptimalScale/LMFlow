@@ -17,7 +17,7 @@ import torch
 import warnings
 import gradio as gr
 from dataclasses import dataclass, field
-from transformers import HfArgumentParser
+from transformers import HfArgumentParser, TextIteratorStreamer
 from typing import Optional
 
 from lmflow.datasets.dataset import Dataset
@@ -256,47 +256,90 @@ def start_inferencer(
         pipeline_args=pipeline_args,
     )
 
-    while True:
-        if not request_queue.empty():
-            request_queue.put("busy")
-            request = request_queue.get()
+    if pipeline_args.multithread_inference is False:
 
-            context = request[0]
-            max_new_tokens = request[1]
-            token_per_step = request[2]
-            temperature = request[3]
-            end_string = request[4]
-            input_dataset = request[5]
-            remove_image_flag = request[6]
+        while True:
+            if not request_queue.empty():
+                request_queue.put("busy")
+                request = request_queue.get()
 
-            break_in_the_middle = False
-            for response_text, flag_break in inferencer.stream_inference(
-                context=context,
-                model=model,
-                max_new_tokens=max_new_tokens,
-                token_per_step=token_per_step,
-                temperature=temperature,
-                end_string=end_string,
-                input_dataset=input_dataset,
-                remove_image_flag=remove_image_flag,
-            ):
-                response_queue.put((response_text, flag_break))
-                if flag_break:
-                    break_in_the_middle = True
-                    break
+                context = request[0]
+                max_new_tokens = request[1]
+                token_per_step = request[2]
+                temperature = request[3]
+                end_string = request[4]
+                input_dataset = request[5]
+                remove_image_flag = request[6]
+                start_time = time.time()
+                break_in_the_middle = False
+                for response_text, flag_break in inferencer.stream_inference(
+                    context=context,
+                    model=model,
+                    max_new_tokens=max_new_tokens,
+                    token_per_step=token_per_step,
+                    temperature=temperature,
+                    end_string=end_string,
+                    input_dataset=input_dataset,
+                    remove_image_flag=remove_image_flag,
+                ):
+                    response_queue.put((response_text, flag_break))
+                    if flag_break:
+                        break_in_the_middle = True
+                        break
 
-            if not break_in_the_middle:
-                response_text = ''
-                flag_break = True
-                response_queue.put((response_text, flag_break))
+                if not break_in_the_middle:
+                    response_text = ''
+                    flag_break = True
+                    response_queue.put((response_text, flag_break))
 
-            mark = ""
-            while mark != "busy":
-                mark = request_queue.get()     # Release the "busy" mark
+                mark = ""
+                while mark != "busy":
+                    mark = request_queue.get()     # Release the "busy" mark
+                print("Inference time: ", time.time() - start_time)
+            time.sleep(0.001)
+    else:
+        while True:
+            if not request_queue.empty():
+                request_queue.put("busy")
+                request = request_queue.get()
 
-        time.sleep(0.001)
-
-
+                context = request[0]
+                max_new_tokens = request[1]
+                token_per_step = request[2]
+                temperature = request[3]
+                end_string = request[4]
+                input_dataset = request[5]
+                remove_image_flag = request[6]
+                start_time = time.time()
+                streamer = TextIteratorStreamer(
+                    tokenizer=model.tokenizer,
+                    skip_prompt=True,
+                    skip_special_tokens=True,
+                    timeout=15)
+                thread = inferencer.inference(
+                    model=model,
+                    max_new_tokens=max_new_tokens,
+                    temperature=temperature,
+                    dataset=input_dataset,
+                    remove_image_flag=remove_image_flag,
+                    multithread_stream_inference=True,
+                    streamer=streamer)
+                thread.start()
+                response_text = ""
+                for output in streamer:
+                    response_text += output
+                    print(response_text)
+                    if not response_text.endswith(end_string):
+                        response_queue.put((response_text, False))
+                    else:
+                        print("ending")
+                        response_queue.put((response_text, True))
+                        break
+                mark = ""
+                while mark != "busy":
+                    mark = request_queue.get()
+                print("Inference time: ", time.time() - start_time)
+            time.sleep(0.001)
 if __name__ == "__main__":
     pipeline_name = "inferencer"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)

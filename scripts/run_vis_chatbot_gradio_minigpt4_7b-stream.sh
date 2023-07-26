@@ -35,7 +35,7 @@ if [ ! -f output_models/pretrained_minigpt4_7b_converted.pth ]; then
       --save_path output_models/pretrained_minigpt4_7b_converted.pth
 fi
 
-deepspeed --master_port=11005 examples/vis_chatbot.py \
+deepspeed --master_port=11005 examples/vis_chatbot_gradio.py \
     --model_name_or_path ${model} \
     --deepspeed configs/ds_config_multimodal.json \
     --arch_type vision_encoder_decoder \
@@ -47,4 +47,4 @@ deepspeed --master_port=11005 examples/vis_chatbot.py \
     --checkpoint_path output_models/pretrained_minigpt4_7b_converted.pth \
     --low_resource True \
     --max_new_tokens 1024 \
-    --stream_inference True
+    --multithread_inference True

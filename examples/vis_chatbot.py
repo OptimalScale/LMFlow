@@ -18,7 +18,7 @@ import time
 from typing import Optional
 import warnings
 
-from transformers import HfArgumentParser
+from transformers import HfArgumentParser, TextIteratorStreamer
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
@@ -231,6 +231,31 @@ def main():
             })
             remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
             begin_time = time.time()
+            streamer = TextIteratorStreamer(
+                tokenizer=model.tokenizer,
+                skip_prompt=True,
+                skip_special_tokens=True,
+                timeout=15)
+            if pipeline_args.multithread_inference:
+                thread = inferencer.inference(
+                    model,
+                    input_dataset,
+                    streamer=streamer,
+                    multithread_stream_inference=True,
+                    remove_image_flag=remove_image_flag)
+                thread.start()
+                response = ""
+                for output in streamer:
+                    response += output
+                    print(output, end="", flush=True)
+
+                    if response.endswith(end_string):
+                        break
+                context += response
+                print("\n", end="")
+                end_time = time.time()
+                print("Whole data and model forward time", end_time - begin_time)
+                continue
             if not chatbot_args.stream_inference:
                 # directly inference the results
                 output_dataset = inferencer.inference(

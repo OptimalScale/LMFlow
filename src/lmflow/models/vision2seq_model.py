@@ -4,6 +4,7 @@
 
 import copy
 import logging
+from threading import Thread
 import time
 import torch
 import torch.nn as nn
@@ -12,7 +13,8 @@ from typing import List, Optional, Union
 from transformers import (
     Blip2ForConditionalGeneration,
     Blip2Config,
-    AutoModelForCausalLM
+    AutoModelForCausalLM,
+    TextStreamer
 )
 
 from .base_model import BaseModel
@@ -97,14 +99,13 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         Load prompt embedding and id.
         Args:
             path: The path to load the prompt embedding and id.
-        
+
         Returns:
             None
         """
         prompt_cache = torch.load(path)
         self.register_prompt_cache(prompt_cache["prompt_ids"],
                                    prompt_cache["prompt_keys_values"])
-
 
     @torch.no_grad()
     def generate(
@@ -114,6 +115,8 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         attention_mask: Optional[torch.LongTensor] = None,
         image_token_indexes: Optional[List] = [0],
         one_sample_multiple_images: Optional[bool] = False,
+        streamer: Optional[TextStreamer] = None,
+        multithread_stream_inference: Optional[bool] = False,
         **generate_kwargs,
     ) -> torch.LongTensor:
         """
@@ -196,7 +199,14 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         # comebine the embeds
         inputs_embeds = inputs_embeds.to(self.language_model.lm_head.weight.dtype)
         attention_mask = attention_mask.to(self.language_model.lm_head.weight.dtype)
-
+        if multithread_stream_inference is True:
+            outputs = Thread(target=self.language_model.generate,
+                             kwargs=dict(
+                                inputs_embeds=inputs_embeds,
+                                attention_mask=attention_mask,
+                                streamer=streamer,
+                                **generate_kwargs))
+            return outputs
         if not self.use_prompt_cache or batch_size != 1:
             outputs = self.language_model.generate(
                 inputs_embeds=inputs_embeds,

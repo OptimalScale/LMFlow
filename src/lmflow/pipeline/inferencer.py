@@ -13,7 +13,7 @@ import datetime
 import json
 import time
 
-from transformers import AutoConfig
+from transformers import AutoConfig, TextStreamer
 import torch.distributed as dist
 
 from lmflow.args import DatasetArguments
@@ -107,6 +107,37 @@ class Inferencer(BasePipeline):
         )
         return dataloader, dataset_size
 
+    def preprocess_multimodal_input(self,
+                                    model,
+                                    input: dict,
+                                    image_flag: str="<ImageHere>"):
+        """
+        Preprocess the multimodal input for the model.
+        Remove the image flag.
+        """
+        # remove the image flag <ImageHere> in tokenization;
+        input['text'] = input['text'].split("<ImageHere>")
+        # TODO remove this code by update the tokenizer
+        input_ids = []
+        attention_mask = []
+        image_token_indexes = []
+        temp_input = copy.deepcopy(input)
+        temp_inputs = {}
+        for idx in range(len(input['text'])):
+            temp_input['text'] = input['text'][idx]
+            temp_inputs = model.encode(
+                temp_input,
+                return_tensors="pt",
+                add_special_tokens=idx == 0).to(device=self.local_rank)
+            input_ids.append(temp_inputs['input_ids'])
+            attention_mask.append(temp_inputs['attention_mask'])
+            image_token_indexes.append(temp_inputs["input_ids"].shape[1])
+        if len(image_token_indexes) > 1:
+            image_token_indexes = image_token_indexes[:-1]
+        inputs = temp_inputs
+        inputs["input_ids"] = torch.cat(input_ids, dim=1) 
+        inputs["attention_mask"] = torch.cat(attention_mask, dim=1)
+        return inputs, image_token_indexes
 
     def inference(
         self,
@@ -116,6 +147,8 @@ class Inferencer(BasePipeline):
         temperature: float=0.0,
         prompt_structure: str='{input}',
         remove_image_flag: bool=False,
+        streamer: TextStreamer=None,
+        multithread_stream_inference: bool=False,
     ):
         """
         Perform inference for a model
@@ -157,28 +190,10 @@ class Inferencer(BasePipeline):
                 input['images'] = np.array(input['images'])
 
             if remove_image_flag:
-                # remove the image flag <ImageHere> in tokenization;
-                input['text'] = input['text'].split("<ImageHere>")
-                # TODO remove this code by update the tokenizer
-                input_ids = []
-                attention_mask = []
-                pixel_values = []
-                image_token_indexes = []
-                temp_input = copy.deepcopy(input)
-                for idx in range(len(input['text'])):
-                    temp_input['text'] = input['text'][idx]
-                    temp_inputs = model.encode(
-                        temp_input,
-                        return_tensors="pt",
-                        add_special_tokens=idx==0).to(device=self.local_rank)
-                    input_ids.append(temp_inputs['input_ids'])
-                    attention_mask.append(temp_inputs['attention_mask'])
-                    image_token_indexes.append(temp_inputs["input_ids"].shape[1])
-                if len(image_token_indexes) > 1:
-                    image_token_indexes = image_token_indexes[:-1]
-                inputs = temp_inputs
-                inputs["input_ids"] = torch.cat(input_ids, dim=1) 
-                inputs["attention_mask"] = torch.cat(attention_mask, dim=1)
+                inputs, image_token_indexes = \
+                    self.preprocess_multimodal_input(model=model,
+                                                    input=input,
+                                                    image_flag="<ImageHere>")
             else:
                 if self.inferencer_args.device == "gpu":
                     inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
@@ -192,14 +207,26 @@ class Inferencer(BasePipeline):
             if remove_image_flag:
                 inputs["image_token_indexes"] = image_token_indexes
                 inputs["one_sample_multiple_images"] = True
-
-            outputs = model.inference(
-                inputs,
-                max_new_tokens=max_new_tokens,
-                temperature=self.inferencer_args.temperature,
-                repetition_penalty=self.inferencer_args.repetition_penalty,
-                do_sample=self.inferencer_args.do_sample,
-            )
+            if multithread_stream_inference is False:
+                outputs = model.inference(
+                    inputs,
+                    max_new_tokens=max_new_tokens,
+                    temperature=self.inferencer_args.temperature,
+                    repetition_penalty=self.inferencer_args.repetition_penalty,
+                    do_sample=self.inferencer_args.do_sample,
+                )
+            else:
+                # TODO check if the length of the dataloader is 1.
+                outputs = model.inference(
+                    inputs,
+                    max_new_tokens=max_new_tokens,
+                    temperature=self.inferencer_args.temperature,
+                    repetition_penalty=self.inferencer_args.repetition_penalty,
+                    do_sample=self.inferencer_args.do_sample,
+                    streamer=streamer,
+                    multithread_stream_inference=True,
+                )
+                return outputs
 
             # only return the generation, trucating the input
             if self.model_args.arch_type != "vision_encoder_decoder":
@@ -267,3 +294,4 @@ class Inferencer(BasePipeline):
                 response = response[:index]
 
                 yield response, flag_break
+
