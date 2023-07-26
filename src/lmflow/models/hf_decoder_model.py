@@ -414,6 +414,19 @@ class HFDecoderModel(DecoderModel, Tunable):
                         )
                         token_dict["labels"][i].extend(labels[i])
 
+            # artificial pad to max_length
+            if data_args.disable_group_texts:
+                for i in range(num_example):
+                    token_dict["input_ids"][i].extend(
+                        [self.tokenizer.pad_token_id for _ in range(data_args.block_size-len(token_dict["input_ids"][i]))]
+                    )
+                    token_dict["attention_mask"][i].extend(
+                        [0 for _ in range(data_args.block_size-len(token_dict["attention_mask"][i]))]
+                    )
+                    token_dict["labels"][i].extend(
+                        [-100 for _ in range(data_args.block_size-len(token_dict["labels"][i]))]
+                    )
+
             # clm input could be much much longer than block_size
             if "Token indices sequence length is longer than the" in cl.out:
                 tok_logger.warning(
