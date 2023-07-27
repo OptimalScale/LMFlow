@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 import torch
 import transformers
 from einops import rearrange
-from flash_attn.flash_attn_interface import flash_attn_unpadded_qkvpacked_func
+from flash_attn.flash_attn_interface import flash_attn_varlen_qkvpacked_func as flash_attn_unpadded_qkvpacked_func
 from flash_attn.bert_padding import unpad_input, pad_input
 
 def _attn(self, query, key, value, attention_mask=None, head_mask=None):

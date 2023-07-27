@@ -9,7 +9,7 @@ from transformers.models.bloom.modeling_bloom import dropout_add
 
 from einops import rearrange
 
-from .triton_flash_attention import flash_attn_qkvpacked_func
+from .triton_flash_attention import flash_attn_varlen_qkvpacked_func as flash_attn_qkvpacked_func
 
 def forward(
         self,
