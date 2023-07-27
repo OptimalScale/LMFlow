@@ -129,8 +129,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                 " script, save it, and load it from here, using"
                 " --tokenizer_name."
             )
-
-        self.tokenizer = tokenizer  
+        tokenizer.name_or_path=''
+        self.tokenizer = tokenizer 
 
         torch_dtype = (
             model_args.torch_dtype
