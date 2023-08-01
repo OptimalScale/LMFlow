@@ -203,8 +203,6 @@ class ModelArguments:
         metadata={
             "help": (
                 "whether truncate the dataset to model max length."
-                "Linear_scaling credits to the Reddit user /u/kaiokendev. https://arxiv.org/abs/2306.15595"
-                "NTK_scaling credits to the Reddit users /u/bloc97 and /u/emozilla. https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/ntkaware_scaled_rope_allows_llama_models_to_have/"
             )
         }
     )
@@ -213,6 +211,10 @@ class ModelArguments:
         metadata={
             "help": (
                 "whether do ROPE scaling for llama model."
+                "Linear_scaling credits to the Reddit user /u/kaiokendev."
+                "https://arxiv.org/abs/2306.15595"
+                "NTK_scaling credits to the Reddit users /u/bloc97 and /u/emozilla."
+                "https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/ntkaware_scaled_rope_allows_llama_models_to_have/"
             )
         }   
     )
