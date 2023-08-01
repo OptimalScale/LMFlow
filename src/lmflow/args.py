@@ -206,19 +206,31 @@ class ModelArguments:
             )
         }
     )
-    do_position_interpolation: bool = field(
+    do_rope_scaling: bool = field(
         default = False,
         metadata={
             "help": (
-                "whether do position interpolation for llama model."
+                "whether do ROPE scaling for llama model."
+                "Linear_scaling credits to the Reddit user /u/kaiokendev."
+                "https://arxiv.org/abs/2306.15595"
+                "NTK_scaling credits to the Reddit users /u/bloc97 and /u/emozilla."
+                "https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/ntkaware_scaled_rope_allows_llama_models_to_have/"
             )
         }   
     )
-    do_ntk_scaling: bool = field(
-        default = False,
+    rope_pi_ratio: int = field(
+        default=1,
         metadata={
             "help": (
-                "whether do NTK scale for llama model."
+                "the ratio of pi in RoPE scaling."
+            )
+        }
+    )
+    rope_ntk_ratio: int = field(
+        default=1,
+        metadata={
+            "help": (
+                "the ratio of NTK in RoPE scaling."
             )
         }
     )

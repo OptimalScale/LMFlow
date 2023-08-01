@@ -178,20 +178,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                 logger.info(f"New config: {config}")
 
         #position interpolation
-        if model_args.do_position_interpolation and model_args.do_ntk_scaling:
-           raise ValueError(f"annot support both --do_position_interpolation and --do_ntk_scaling now")
-        if model_args.do_position_interpolation:
+        if model_args.do_rope_scaling:
             if "LlamaForCausalLM" in config.architectures:
                 from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
-                        replace_llama_rope_with_scaled_rope,
+                        replace_llama_with_condense,
                 )
-                replace_llama_rope_with_scaled_rope()
-        if model_args.do_ntk_scaling:
-            if "LlamaForCausalLM" in config.architectures:
-                from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
-                    repalce_llama_rope_init_with_scaled_rope_init,
-                )
-                repalce_llama_rope_init_with_scaled_rope_init()
+                replace_llama_with_condense(model_args.rope_pi_ratio, model_args.rope_ntk_ratio)
                 
         # Whether use flash attention
         supported_gpu_device = None
