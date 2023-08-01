@@ -24,8 +24,6 @@ from typing import List, Union
 
 import deepspeed
 
-import flash_attn
-
 from peft import (
     LoraConfig,
     PeftModel,
@@ -65,16 +63,25 @@ MODELS_SUPPORT_FLASH_ATTENTION = [
     "BloomForCausalLM"
 ]
 
-if int(flash_attn.__version__.split(".")[0]) == 2:
-    GPU_SUPPORT_FLASH_ATTENTION = {
-        "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
-        "A40": ["LlamaForCausalLM","GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
-    }
-if int(flash_attn.__version__.split(".")[0]) == 1:
-    GPU_SUPPORT_FLASH_ATTENTION = {
+GPU_SUPPORT_FLASH_ATTENTION = {
         "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
         "A40": ["GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
     }
+
+try:
+    import flash_attn
+    if int(flash_attn.__version__.split(".")[0]) == 2:
+        GPU_SUPPORT_FLASH_ATTENTION = {
+            "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
+            "A40": ["LlamaForCausalLM","GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
+        }
+    if int(flash_attn.__version__.split(".")[0]) == 1:
+        GPU_SUPPORT_FLASH_ATTENTION = {
+            "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
+            "A40": ["GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
+        }
+except ImportError:
+    pass
 
 class HFDecoderModel(DecoderModel, Tunable):
     r"""
