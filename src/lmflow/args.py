@@ -206,19 +206,27 @@ class ModelArguments:
             )
         }
     )
-    do_position_interpolation: bool = field(
+    do_rope_scaling: bool = field(
         default = False,
         metadata={
             "help": (
-                "whether do position interpolation for llama model."
+                "whether do ROPE scaling for llama model."
             )
         }   
     )
-    do_ntk_scaling: bool = field(
-        default = False,
+    pi_ratio: int = field(
+        default=1,
         metadata={
             "help": (
-                "whether do NTK scale for llama model."
+                "the ratio of pi in ROPE scaling."
+            )
+        }
+    )
+    ntk_ratio: int = field(
+        default=1,
+        metadata={
+            "help": (
+                "the ratio of ntk in ROPE scaling."
             )
         }
     )
