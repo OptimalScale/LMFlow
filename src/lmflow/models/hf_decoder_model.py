@@ -183,7 +183,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 from lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch import (
                         replace_llama_with_condense,
                 )
-                replace_llama_with_condense(model_args.pi_ratio, model_args.ntk_ratio)
+                replace_llama_with_condense(model_args.rope_pi_ratio, model_args.rope_ntk_ratio)
                 
         # Whether use flash attention
         supported_gpu_device = None
