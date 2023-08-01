@@ -1,6 +1,4 @@
 from functools import partial
-import logging
-logging.basicConfig(level=logging.INFO)
 
 import torch
 import transformers

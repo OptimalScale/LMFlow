@@ -218,7 +218,7 @@ class ModelArguments:
         default=1,
         metadata={
             "help": (
-                "the ratio of pi in ROPE scaling."
+                "the ratio of pi in RoPE scaling."
             )
         }
     )
@@ -226,7 +226,7 @@ class ModelArguments:
         default=1,
         metadata={
             "help": (
-                "the ratio of ntk in ROPE scaling."
+                "the ratio of NTK in RoPE scaling."
             )
         }
     )
