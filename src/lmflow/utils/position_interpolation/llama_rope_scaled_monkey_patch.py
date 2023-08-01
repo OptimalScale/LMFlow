@@ -12,7 +12,7 @@ class CondenseRotaryEmbedding(torch.nn.Module):
         
         self.ntk_ratio = ntk_ratio
         max_position_embeddings *= ntk_ratio
-        base = base * a ** (dim / (dim-2)) #Base change formula
+        base = base * ntk_ratio ** (dim / (dim-2)) #Base change formula
         
         inv_freq = 1.0 / (base ** (torch.arange(0, dim, 2).float().to(device) / dim))
         self.register_buffer("inv_freq", inv_freq)
@@ -20,7 +20,6 @@ class CondenseRotaryEmbedding(torch.nn.Module):
         # Build here to make `torch.jit.trace` work.
         self.pi_ratio = pi_ratio
         max_position_embeddings *= pi_ratio
-        logging.info(f"Condensing Positional embeddings from {max_position_embeddings} to {max_position_embeddings // pi_ratio}")
         self.max_seq_len_cached = max_position_embeddings
         t = torch.arange(self.max_seq_len_cached, device=self.inv_freq.device, dtype=self.inv_freq.dtype) / pi_ratio
         freqs = torch.einsum("i,j->ij", t, self.inv_freq)
