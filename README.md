@@ -48,8 +48,9 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 
 
 <details> <summary>More news...</summary>
+
 * [2023-04-15] Inference: Support streaming output and ChatGLM.
-* [2023-04-02] [Web service](https://lmflow.com/) is online! -->
+* [2023-04-02] [Web service](https://lmflow.com/) is online!
 * [2023-04-01] Release three instruction-tuned checkpoints and three medical checkpoints in [model zoo](https://github.com/OptimalScale/LMFlow#model-zoo): LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned, LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.
 * [2023-03-27] Support full tuning and lora tuning for all decoder models.
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance).
