@@ -50,7 +50,7 @@ To emphasize its significance, we applied task tuning to LLaMA models on PubMedQ
 
 |                |  PubMedQA | MedQA-USMLE | MedMCQA |  Average |
 |:---------:|:--------:|:-----------:|:-------:|:----:|
-| Human (pass)   |  60.0   |     50.0    |         |      |
+| Human (pass)   |  | 60.0   |     50.0             |      |
 | Human (expert) |    78.0   |     87.0    |  90.0   | 85.0 |
 |   |      |              |    |  |
 |  InstructGPT 175B   |   73.2   |     46.0    |  44.0   | 54.4 |
