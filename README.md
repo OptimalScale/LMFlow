@@ -338,7 +338,7 @@ Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cp
 
 ### 4.4 Vocabulary List Extension
 
-Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check [vocab_extension](https://github.com/OptimalScale/LMFlow/scripts/vocab_extension) for more details.
+Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check [vocab_extension](https://github.com/OptimalScale/LMFlow/tree/main/scripts/vocab_extension) for more details.
 
 
 ## 5. Model Release
