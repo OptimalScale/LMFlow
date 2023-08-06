@@ -5,7 +5,7 @@ For more details of these techniques, you can checkout the links below:
 https://arxiv.org/abs/2306.15595
 * NTK scaling: \
 https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/ntkaware_scaled_rope_allows_llama_models_to_have/
-# Usage
+## Usage
 To use the Position Interpolation Techniques, you need to set the following options:
 ```
 --truncate_to_model_max_length False
