@@ -155,6 +155,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 )
 
         except RecursionError:
+            logger.warning("The tokenizer_config.json file doesn't set the special tokens. Using default values: <unk>, <s>, </s> for unknown token, bos token and eos token respectively.")
             if model_args.tokenizer_name:
                 tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, unk_token="<unk>",
                                                     bos_token="<s>",
@@ -172,8 +173,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                     " script, save it, and load it from here, using"
                     " --tokenizer_name."
                 )
-
-            logger.warning("The tokenizer_config.json file doesn't set the special tokens. Using default values: <unk>, <s>, </s>")
             
         self.tokenizer = tokenizer  
 
