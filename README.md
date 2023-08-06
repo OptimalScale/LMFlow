@@ -336,6 +336,13 @@ You can config the deepspeed under configs. Details can be referred at [DeepSpee
 
 Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
 
+### 4.4 Vocabulary List Extension
+
+Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
+
+### 4.5 Position Interpolation for LLaMA Models
+Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techniques for LLaMA models. Check [postion_interpolation](
+https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details
 
 ## 5. Model Release
 
