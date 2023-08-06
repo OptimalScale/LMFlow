@@ -140,18 +140,40 @@ class HFDecoderModel(DecoderModel, Tunable):
             "revision": model_args.model_revision,
             "use_auth_token": True if model_args.use_auth_token else None,
         }
-        if model_args.tokenizer_name:
-            tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs)
-        elif model_args.model_name_or_path:
-            tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, **tokenizer_kwargs)
-        else:
-            raise ValueError(
-                "You are instantiating a new tokenizer from scratch. This is"
-                " not supported by this script. You can do it from another"
-                " script, save it, and load it from here, using"
-                " --tokenizer_name."
-            )
+        
+        try:
+            if model_args.tokenizer_name:
+                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs)
+            elif model_args.model_name_or_path:
+                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, **tokenizer_kwargs)
+            else:
+                raise ValueError(
+                    "You are instantiating a new tokenizer from scratch. This is"
+                    " not supported by this script. You can do it from another"
+                    " script, save it, and load it from here, using"
+                    " --tokenizer_name."
+                )
 
+        except RecursionError:
+            logger.warning("The tokenizer_config.json file doesn't set the special tokens. Using default values: <unk>, <s>, </s> for unknown token, bos token and eos token respectively.")
+            if model_args.tokenizer_name:
+                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, unk_token="<unk>",
+                                                    bos_token="<s>",
+                                                    eos_token="</s>",
+                                                    **tokenizer_kwargs)
+            elif model_args.model_name_or_path:
+                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, unk_token="<unk>",
+                                                    bos_token="<s>",
+                                                    eos_token="</s>",
+                                                    **tokenizer_kwargs)
+            else:
+                raise ValueError(
+                    "You are instantiating a new tokenizer from scratch. This is"
+                    " not supported by this script. You can do it from another"
+                    " script, save it, and load it from here, using"
+                    " --tokenizer_name."
+                )
+            
         self.tokenizer = tokenizer  
 
         torch_dtype = (
