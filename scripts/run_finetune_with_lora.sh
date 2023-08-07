@@ -12,6 +12,9 @@ output_dir=${project_dir}/output_models/${exp_id}
 log_dir=${project_dir}/log/${exp_id}
 
 dataset_path=${project_dir}/data/alpaca/train
+if [ ! -d ${dataset_path} ]; then
+  cd data && ./download.sh alpaca && cd -
+fi
 
 mkdir -p ${output_dir} ${log_dir}
 
