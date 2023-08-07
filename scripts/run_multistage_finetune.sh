@@ -11,6 +11,9 @@ project_dir=$(cd "$(dirname $0)"/..; pwd)
 output_dir=${project_dir}/output_models/${exp_id}
 log_dir=${project_dir}/log/${exp_id}
 dataset_path="${project_dir}/data/example_dataset/train"
+if [ ! -d ${dataset_path} ]; then
+  cd data && ./download.sh example_dataset && cd -
+fi
 
 mkdir -p ${output_dir} ${log_dir}
 

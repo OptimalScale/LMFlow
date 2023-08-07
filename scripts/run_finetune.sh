@@ -14,6 +14,9 @@ output_dir=${project_dir}/output_models/${exp_id}
 log_dir=${project_dir}/log/${exp_id}
 
 dataset_path=${project_dir}/data/alpaca/train
+if [ ! -d ${dataset_path} ]; then
+  cd data && ./download.sh alpaca && cd -
+fi
 
 mkdir -p ${output_dir} ${log_dir}
 
@@ -27,7 +30,7 @@ deepspeed ${deepspeed_args} \
     --block_size 512 \
     --per_device_train_batch_size 1 \
     --deepspeed configs/ds_config_zero3.json \
-    --bf16 \
+    --fp16 \
     --run_name finetune \
     --validation_split_percentage 0 \
     --logging_steps 20 \
