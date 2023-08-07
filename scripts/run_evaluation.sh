@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ ! -d data/MedQA-USMLE ]; then
+  cd data && ./download.sh MedQA-USMLE && cd -
+fi
+
 CUDA_VISIBLE_DEVICES=0 \
     deepspeed examples/evaluation.py \
     --answer_type medmcqa \
