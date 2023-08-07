@@ -29,7 +29,7 @@ deepspeed ${deepspeed_args} \
     --lora_r 8 \
     --save_aggregated_lora 1\
     --deepspeed configs/ds_config_zero2.json \
-    --bf16 \
+    --fp16 \
     --run_name finetune_with_lora \
     --validation_split_percentage 0 \
     --logging_steps 20 \
