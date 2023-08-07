@@ -81,5 +81,5 @@ if __name__ == '__main__':
     text='''白日依山尽，黄河入海流。欲穷千里目，更上一层楼。
     The primary use of LLaMA is research on large language models, including'''
     logging.info(f"Test text:\n %s",text)
-    logging.info(f"Tokenized by LLaMA tokenizer:%s",old_tokenizer.tokenize(text))
-    logging.info(f"Tokenized by Chinese-LLaMA tokenizer:%s",new_tokenizer.tokenize(text))
+    logging.info(f"Tokenized by original tokenizer:%s",old_tokenizer.tokenize(text))
+    logging.info(f"Tokenized by merged tokenizer:%s",new_tokenizer.tokenize(text))
