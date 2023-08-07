@@ -346,7 +346,8 @@ Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techn
 https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 
 ### 4.6 FlashAttention-2
-Now LMFlow supports the latest FlashAttention-2. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
+Now LMFlow supports the latest [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
+
 ## 5. Model Release
 
 ### 5.1 Medical Model Checkpoints
