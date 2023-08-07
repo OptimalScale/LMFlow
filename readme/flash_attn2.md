@@ -5,21 +5,14 @@ Here is an example of how to use it:
 #!/bin/bash
 pip install flash_attn==2.0.2
 
-model=pinkmanlove/llama-7b-hf
-lora_args=""
-if [ $# -ge 1 ]; then
-  model=$1
-fi
-if [ $# -ge 2 ]; then
-  lora_args="--lora_model_path $2"
-fi
-
-CUDA_VISIBLE_DEVICES=0 \
-  deepspeed examples/chatbot.py \
-      --deepspeed configs/ds_config_chatbot.json \
-      --model_name_or_path ${model} \
-      --use_flash_attention True \
-      ${lora_args}
+deepspeed --master_port=11000 \
+   examples/chatbot.py \                           
+      --deepspeed configs/ds_config_chatbot.json \                              
+      --model_name_or_path LMFlow/Full-Robin-7b-v2 \                                                     
+      --max_new_tokens 1024 \
+      --prompt_structure "###Human: {input_text}###Assistant:" \
+      --end_string "#" \
+      --use_flash_attention True
 ```
 
 Upgrade to LMFlow now and experience the future of language modeling!
