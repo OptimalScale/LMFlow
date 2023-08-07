@@ -41,12 +41,12 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 * [2023-05-30] Release [Robin-13B-v2](https://huggingface.co/OptimalScale/robin-13b-v2-delta) and [Robin-33B-v2](https://huggingface.co/OptimalScale/robin-33b-v2-delta)!
 * [2023-05-15] Release [LMFlow-data](http://lmflow.org:5000/lmflow_data.tar.gz), the training dataset of Robin-7B-v2. A new [test data](http://lmflow.org:5000/lmflow_chat_en_dialog_multiturn_single_nll_text2text.tar.gz) is also released.
 * [2023-05-09] Release [Robin-7B-v2](http://lmflow.org:5000/robin-7b-v2-delta.tar.gz), achieving competitive performance on chitchat, commonsense reasoning and instruction-following tasks. Refer to our [comprehensive study](https://medium.com/@hkust.ml/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418).
-* [2023-05-08] Release [LMFlow Benchmark](https://medium.com/@hkust.ml/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418), an automatic evaluation framework for open-source chat-style LLMs. [Benchmark results](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit#gid=0) on 31 popular models are reported. [Participate in LMFlow Benchmark](https://github.com/OptimalScale/LMFlow#33-lmflow-benchmark).
-* [2023-04-21] Release [Robin-7B](http://lmflow.org:5000/robin-7b.tar.gz) (based on LLaMA-7B), and two models for commercial use: Parakeets-2.7B (based on GPT-NEO-2.7B) and Cokatoo-7B (based on StableLM-7B) [Download here](https://github.com/OptimalScale/LMFlow/tree/main#model-zoo)
 
 
 <details> <summary>More news...</summary>
 
+* [2023-05-08] Release [LMFlow Benchmark](https://medium.com/@hkust.ml/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418), an automatic evaluation framework for open-source chat-style LLMs. [Benchmark results](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit#gid=0) on 31 popular models are reported. [Participate in LMFlow Benchmark](https://github.com/OptimalScale/LMFlow#33-lmflow-benchmark).
+* [2023-04-21] Release [Robin-7B](http://lmflow.org:5000/robin-7b.tar.gz) (based on LLaMA-7B), and two models for commercial use: Parakeets-2.7B (based on GPT-NEO-2.7B) and Cokatoo-7B (based on StableLM-7B) [Download here](https://github.com/OptimalScale/LMFlow/tree/main#model-zoo)
 * [2023-04-15] Inference: Support streaming output and ChatGLM.
 * [2023-04-10] We propose a new alignment algorithm: [Reward rAnked FineTuning (RAFT)](https://optimalscale.github.io/LMFlow/examples/raft.html), which is more efficient than conventional (PPO-based) RLHF. [[Paper](https://arxiv.org/abs/2304.06767)]
 * [2023-04-02] [Web service](https://lmflow.com/) is online!
@@ -55,6 +55,215 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance).
 * [2023-03-27] Release code and checkpoints - [version 0.0.1](https://optimalscale.github.io/LMFlow/)! [Our tasked-tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance).
 </details>
+
+
+## Supported Pipelines
+
+| Pipelines   |   Status |
+|----------|:-------------:|
+| Task Tuning |  :white_check_mark: Supported |
+| Instruction Tuning |  :white_check_mark: Supported |
+| Parameter-Efficient Tuning |  :white_check_mark: Supported |
+| Alignment Tuning |  :white_check_mark: Supported |
+| Large Model Inference |  :white_check_mark: Supported |
+
+## Supported Models
+
+Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 Hugging Face.
+LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
+
+
+## Quick Start
+
+### Setup
+
+Our package has been fully tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested.
+You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
+
+```bash
+git clone https://github.com/OptimalScale/LMFlow.git
+cd LMFlow
+conda create -n lmflow python=3.9 -y
+conda activate lmflow
+conda install mpi4py
+./install.sh
+```
+
+### Prepare Dataset
+
+Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
+
+### Finetuning
+
+You can run `scripts/run_finetune.sh` to finetune a GPT-2 base model
+```sh
+./scripts/run_finetune.sh
+```
+
+If you would like to provide arguments for deepspeed to reflect your machine
+settings, you may pass the corresponding deepspeed arguments to the script. For
+example,
+```sh
+./scripts/run_finetune.sh "--num_gpus=8 --master_port 10001"
+```
+
+To enable LoRA finetuning, you may refer to
+```sh
+./scripts/run_finetune_with_lora.sh
+```
+which can be run in similar manner.
+
+For detailed configurations, one may modify these scripts directly. These
+scripts actually just call python script `examples/finetune.py`, which can
+be run in following manner,
+
+```sh
+deepspeed ${deepspeed_args} \
+  examples/finetune.py \
+    --deepspeed configs/ds_config_zero3.json \
+    --bf16 \
+    --run_name finetune_with_lora \
+    --model_name_or_path facebook/galactica-1.3b \
+    --num_train_epochs 0.01 \
+    --learning_rate 2e-5 \
+    --dataset_path ${dataset_path} \
+    --per_device_train_batch_size 1 \
+    --per_device_eval_batch_size 1 \
+    --validation_split_percentage 0 \
+    --logging_steps 20 \
+    --block_size 512 \
+    --do_train \
+    --output_dir output_models/finetune \
+    --overwrite_output_dir \
+    --ddp_timeout 72000 \
+    --save_steps 5000 \
+    --dataloader_num_workers 1
+```
+Here we set number of epochs `--num_train_epochs` to `0.01` so that the
+finetuning process can be finished quickly. If you wish to obtain a model with
+better performance, feel free to adjust those hyperparameters. You may run
+```python
+python examples/finetune.py -h
+```
+Note: In the case of a small training data set, the value of ``block_size`` needs to be reduced, otherwise there will be no samples available in the Epoch iterator.
+
+to view all possible finetuning arguments. The finetuned model checkpoint will
+be saved in the argument specified by `--output_dir`, which is
+`output_models/finetune` in the above example.
+We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process and serve the model in our web service.
+
+### Evaluation
+
+One can directly run evaluation with an existing Hugging Face model, e.g. to run
+GPT2 large, one may execute
+```sh
+./scripts/run_evaluation.sh
+```
+or run the corresponding python script
+```python
+CUDA_VISIBLE_DEVICES=0 \
+    deepspeed examples/evaluate.py \
+    --answer_type medmcqa \
+    --model_name_or_path gpt2-large \
+    --dataset_path data/MedQA-USMLE/validation \
+    --deepspeed examples/ds_config.json
+```
+To load the finetuned model, specify `--model_name_or_path` with the saved
+model checkpoint directory path.
+
+For LoRA finetuned models, one may refer to
+```sh
+./scripts/run_evaluation_with_lora.sh
+```
+
+Those scripts invoke the examples `examples/*.py` built based on our APIs. For
+more API-related examples, one may refer to the methods in the unittest
+`tests`.
+
+### LMFlow Benchmark
+LMFlow Benchmark is an automatic evaluation framework for open-source large language models.
+We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
+
+You can directly run the LMFlow benchmark evaluation to obtain the results to participate in the
+[LLM comparision](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing).
+For example, to run GPT2 XL, one may execute
+```sh
+./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
+```
+`--model_name_or_path` is required, you may fill in huggingface model name or local model path here.
+
+To check the evaluation results, you may check `benchmark.log` in `./output_dir/gpt2-xl_lmflow_chat_nll_eval`,
+`./output_dir/gpt2-xl_all_nll_eval` and `./output_dir/gpt2-xl_commonsense_qa_eval`.
+
+## Additional Notes
+### LLaMA Checkpoint
+
+Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/checkpoints.html).
+
+### DeepSpeed Config
+You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
+
+
+### LLaMA Inference on CPU
+
+Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
+
+### Vocabulary List Extension
+
+Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check out [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
+
+### Position Interpolation for LLaMA Models
+Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techniques for LLaMA models. Check out [postion_interpolation](
+https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
+
+### Flash Attention 2.0
+Now LMFlow supports the latest Flash Attention 2.0. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
+
+## Model Release
+
+### Medical Model Checkpoints
+You can run following script to download our medical model checkpoints :
+
+```bash
+cd output_models
+bash download.sh medical_ckpt
+cd -
+```
+You can also directly download our model via google drive link : [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
+
+### Instruction Model Checkpoints
+Similarly, you can run following script to download our instruction model checkpoints :
+```bash
+cd output_models
+bash download.sh instruction_ckpt
+cd -
+```
+
+You can also directly download our model via google drive link : [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
+
+### Reproduce the result
+
+After downloading the model checkpoints, you can merge the lora model into the base model via
+```
+python examples/merge_lora.py \
+    --model_name_or_path {huggingface-model-name-or-path-to-base-model} \
+    --lora_model_path {path-to-lora-model} \
+    --output_model_path {path-to-merged-model}
+```
+
+Or you can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
+
+For full model deltas, such as robin-7b-v2-delta, you may use the delta merge script to obtain the full model,
+```
+python utils/apply_delta.py \
+    --base-model-path {huggingface-model-name-or-path-to-base-model} \
+    --delta-path {path-to-delta-model} \
+    --target-model-path {path-to-merged-model}
+```
+
+Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
+
+
 
 ## Demos
 We provide four kinds of demos which include
@@ -137,275 +346,8 @@ The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on th
 For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
 
 
-## Model Zoo
-We open-sourced the trained checkpoints to everyone for further training and inference.
-
-<table>
-<tr>
-  <td align="center"></td>
-  <td align="center"><a href="https://lmflow.org:10001/robin-7b.tar.gz" target="_blank"><img src="./assets/robin7b.jpg" width="300" /></a></td>
-  <td align="center"><a href="https://lmflow.org:10001/llama13b-lora-380k.tar.gz" target="_blank"><img src="./assets/robin13b.png" width="300" /></a></td>
-  <td align="center"><a href="https://lmflow.org:10001/llama30b-lora-170k.tar.gz" target="_blank"><img src="./assets/robin33b.png" width="300" /></a></td>
-  <td align="center"><a href="" target="_blank"><img src="./assets/robin65b.png" width="300" /></a></td>
-</tr>
-<tr>
-  <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center"><a href="https://lmflow.org:10001/robin-7b.tar.gz">Robin-7B :star: </a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="https://lmflow.org:10001/llama13b-lora-380k.tar.gz">Robin-13B</a><br />LLaMA-13B</td>
-  <td width="160" align="center"><a href="https://lmflow.org:10001/llama30b-lora-170k.tar.gz">Robin-33B</a><br />LLaMA-33B</td>
-  <td width="160" align="center"><a href="">Robin-65B</a><br />LLaMA-65B</td>
-</tr>
-<tr>
-  <td align="center"></td>
-  <td align="center"><a href="https://lmflow.org:10001/llama7b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin7b_.png" width="300" /></a></td>
-  <td align="center"><a href="https://lmflow.org:10001/llama13b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin13b_.jpg" width="300" /></a></td>
-  <td align="center"><a href="https://lmflow.org:10001/llama30b-lora-medical.tar.gz" target="_blank"><img src="./assets/robin33b_.png" width="300" /></a></td>
-  <td align="center"><a href="" target="_blank"><img src="./assets/robin65b_.png" width="300" /></a></td>
-</tr>
-<tr>
-  <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center"><a href="https://lmflow.org:10001/llama7b-lora-medical.tar.gz">Robin-7B-medical</a><br />LLaMA-7B</td>
-  <td width="160" align="center"><a href="https://lmflow.org:10001/llama13b-lora-medical.tar.gz">Robin-13B-medical</a><br />LLaMA-13B</td>
-  <td width="160" align="center"><a href="https://lmflow.org:10001/llama30b-lora-medical.tar.gz">Robin-33B-medical</a><br />LLaMA-33B</td>
-  <td width="160" align="center"><a href="">Robin-65B-medical</a><br />LLaMA-65B</td>
-</tr>
-<tr>
-  <td align="center"></td>
-  <td align="center"><a href="https://lmflow.org:10001/parakeets-2.7b.tar.gz" target="_blank"><img src="./assets/Parakeets.png" width="300" /></a></td>
-  <td align="center"><a href="" target="_blank"><img src="./assets/Cockatoo3b.png" width="300" /></a></td>
-  <td align="center"><a href="https://lmflow.org:10001/cockatoo-7b.tar.gz" target="_blank"><img src="./assets/Cockatoo7b.png" width="300" /></a></td>
-  <td align="center"></a></td>
-</tr>
-<tr>
-  <td width="160" align="center">Model<br />Base Model</td>
-  <td width="160" align="center"><a href="https://lmflow.org:10001/parakeets-2.7b.tar.gz">Parakeets-2.7B :star: </a><br />GPT-NEO-2.7B</td>
-  <td width="160" align="center"><a href="">Cockatoo-3B</a><br />StableLM-3B</td>
-  <td width="160" align="center"><a href="https://lmflow.org:10001/cockatoo-7b.tar.gz">Cockatoo-7B :star: </a><br />StableLM-7B</td>
-  <td width="160" align="center"><br /></td>
-</tr>
-</table>
-
-
-## Supported Pipelines
-
-| Pipelines   |   Status |
-|----------|:-------------:|
-| Task Tuning |  :white_check_mark: Supported |
-| Instruction Tuning |  :white_check_mark: Supported |
-| Parameter-Efficient Tuning |  :white_check_mark: Supported |
-| Alignment Tuning |  :white_check_mark: Supported |
-| Large Model Inference |  :white_check_mark: Supported |
-
-## Supported Models
-
-Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 Hugging Face.
-LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
-
-
-## 1.Setup
-
-Our package has been fully tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested.
-You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
-
-```bash
-git clone https://github.com/OptimalScale/LMFlow.git
-cd LMFlow
-conda create -n lmflow python=3.9 -y
-conda activate lmflow
-conda install mpi4py
-./install.sh
-```
-
-## 2.Prepare Dataset
-
-Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
-
-## 3. Running Scripts
-### 3.1 Finetuning
-
-You can run `scripts/run_finetune.sh` to finetune a GPT-2 base model
-```sh
-./scripts/run_finetune.sh
-```
-
-If you would like to provide arguments for deepspeed to reflect your machine
-settings, you may pass the corresponding deepspeed arguments to the script. For
-example,
-```sh
-./scripts/run_finetune.sh "--num_gpus=8 --master_port 10001"
-```
-
-To enable LoRA finetuning, you may refer to
-```sh
-./scripts/run_finetune_with_lora.sh
-```
-which can be run in similar manner.
-
-For detailed configurations, one may modify these scripts directly. These
-scripts actually just call python script `examples/finetune.py`, which can
-be run in following manner,
-
-```sh
-deepspeed ${deepspeed_args} \
-  examples/finetune.py \
-    --deepspeed configs/ds_config_zero3.json \
-    --bf16 \
-    --run_name finetune_with_lora \
-    --model_name_or_path facebook/galactica-1.3b \
-    --num_train_epochs 0.01 \
-    --learning_rate 2e-5 \
-    --dataset_path ${dataset_path} \
-    --per_device_train_batch_size 1 \
-    --per_device_eval_batch_size 1 \
-    --validation_split_percentage 0 \
-    --logging_steps 20 \
-    --block_size 512 \
-    --do_train \
-    --output_dir output_models/finetune \
-    --overwrite_output_dir \
-    --ddp_timeout 72000 \
-    --save_steps 5000 \
-    --dataloader_num_workers 1
-```
-Here we set number of epochs `--num_train_epochs` to `0.01` so that the
-finetuning process can be finished quickly. If you wish to obtain a model with
-better performance, feel free to adjust those hyperparameters. You may run
-```python
-python examples/finetune.py -h
-```
-Note: In the case of a small training data set, the value of ``block_size`` needs to be reduced, otherwise there will be no samples available in the Epoch iterator.
-
-to view all possible finetuning arguments. The finetuned model checkpoint will
-be saved in the argument specified by `--output_dir`, which is
-`output_models/finetune` in the above example.
-We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process and serve the model in our web service.
-
-### 3.2 Evaluation
-
-One can directly run evaluation with an existing Hugging Face model, e.g. to run
-GPT2 large, one may execute
-```sh
-./scripts/run_evaluation.sh
-```
-or run the corresponding python script
-```python
-CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/evaluate.py \
-    --answer_type medmcqa \
-    --model_name_or_path gpt2-large \
-    --dataset_path data/MedQA-USMLE/validation \
-    --deepspeed examples/ds_config.json
-```
-To load the finetuned model, specify `--model_name_or_path` with the saved
-model checkpoint directory path.
-
-For LoRA finetuned models, one may refer to
-```sh
-./scripts/run_evaluation_with_lora.sh
-```
-
-Those scripts invoke the examples `examples/*.py` built based on our APIs. For
-more API-related examples, one may refer to the methods in the unittest
-`tests`.
-
-### 3.3 LMFlow Benchmark
-LMFlow Benchmark is an automatic evaluation framework for open-source large language models.
-We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
-
-You can directly run the LMFlow benchmark evaluation to obtain the results to participate in the
-[LLM comparision](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing).
-For example, to run GPT2 XL, one may execute
-```sh
-./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
-```
-`--model_name_or_path` is required, you may fill in huggingface model name or local model path here.
-
-To check the evaluation results, you may check `benchmark.log` in `./output_dir/gpt2-xl_lmflow_chat_nll_eval`,
-`./output_dir/gpt2-xl_all_nll_eval` and `./output_dir/gpt2-xl_commonsense_qa_eval`.
-
-## 4. Additional Notes
-### 4.1 LLaMA Checkpoint
-
-Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/checkpoints.html).
-
-### 4.2 DeepSpeed Config
-You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
-
-
-### 4.3 LLaMA Inference on CPU
-
-Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
-
-### 4.4 Vocabulary List Extension
-
-Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check out [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
-
-### 4.5 Position Interpolation for LLaMA Models
-Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techniques for LLaMA models. Check out [postion_interpolation](
-https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
-
-### 4.6 Flash Attention 2.0
-Now LMFlow supports the latest Flash Attention 2.0. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
-## 5. Model Release
-
-### 5.1 Medical Model Checkpoints
-You can run following script to download our medical model checkpoints :
-
-```bash
-cd output_models
-bash download.sh medical_ckpt
-cd -
-```
-You can also directly download our model via google drive link : [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
-
-### 5.2 Instruction Model Checkpoints
-Similarly, you can run following script to download our instruction model checkpoints :
-```bash
-cd output_models
-bash download.sh instruction_ckpt
-cd -
-```
-
-You can also directly download our model via google drive link : [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
-
-### 5.3 Reproduce the result
-
-After downloading the model checkpoints, you can merge the lora model into the base model via
-```
-python examples/merge_lora.py \
-    --model_name_or_path {huggingface-model-name-or-path-to-base-model} \
-    --lora_model_path {path-to-lora-model} \
-    --output_model_path {path-to-merged-model}
-```
-
-Or you can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
-
-For full model deltas, such as robin-7b-v2-delta, you may use the delta merge script to obtain the full model,
-```
-python utils/apply_delta.py \
-    --base-model-path {huggingface-model-name-or-path-to-base-model} \
-    --delta-path {path-to-delta-model} \
-    --target-model-path {path-to-merged-model}
-```
-
-Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
-
 ## Documentation
 Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
-
-## Vision
-Hello there! We are excited to announce the upcoming release of our code repository that includes a complete LLM training process, enabling users to quickly build their own language models and train them effectively.
-
-Our code repository is not just a simple model; it includes the complete training workflow, model optimization, and testing tools. You can use it to build various types of language models, including conversation models, question-answering models, and text generation models, among others.
-
-Moreover, we aim to create an open and democratic LLM sharing platform where people can share their checkpoints and experiences to collectively improve the skills of the community. We welcome anyone who is interested in LLM to participate and join us in building an open and friendly community!
-
-Whether you are a beginner or an expert, we believe that you can benefit from this platform. Let's work together to build a vibrant and innovative LLM community!
-
-[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/u9VJNpzhvA)
-[![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1wju9nicy-woXbNtS~5MavHSAtiMxmxQ)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://s1.ax1x.com/2023/08/06/pPAQTPI.jpg)
-
 
 
 ## Acknowledgement
