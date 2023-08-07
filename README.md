@@ -194,19 +194,12 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 `./output_dir/gpt2-xl_all_nll_eval` and `./output_dir/gpt2-xl_commonsense_qa_eval`.
 
 ## Additional Notes
-### LLaMA Checkpoint
-
-Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/checkpoints.html).
-
-### DeepSpeed Config
-You can config the deepspeed under configs. Details can be referred at [DeepSpeed Configuration](https://www.deepspeed.ai/docs/config-json/)
-
 
 ### LLaMA Inference on CPU
 
 Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
 
-### Vocabulary List Extension
+### Vocabulary Extension
 
 Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check out [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
 
