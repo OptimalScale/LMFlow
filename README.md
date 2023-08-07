@@ -338,12 +338,14 @@ Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cp
 
 ### 4.4 Vocabulary List Extension
 
-Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
+Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check out [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
 
 ### 4.5 Position Interpolation for LLaMA Models
-Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techniques for LLaMA models. Check [postion_interpolation](
-https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details
+Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techniques for LLaMA models. Check out [postion_interpolation](
+https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 
+### 4.6 Flash Attention 2.0
+Now LMFlow supports the latest Flash Attention 2.0. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 ## 5. Model Release
 
 ### 5.1 Medical Model Checkpoints
