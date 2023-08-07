@@ -33,9 +33,11 @@ if __name__ == '__main__':
     try:
         old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir, use_fast=False)
     except RecursionError:
-        old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir, unk_token="<unk>",
+        old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir,
+                                                    unk_token="<unk>",
                                                     bos_token="<s>",
-                                                    eos_token="</s>", use_fast=False)
+                                                    eos_token="</s>",
+                                                    use_fast=False)
         
     if not isinstance(old_tokenizer,LlamaTokenizer):
         raise ValueError("The tokenizer is not a LlamaTokenizer, we only support LlamaTokenizer for now.")
@@ -66,17 +68,18 @@ if __name__ == '__main__':
         f.write(old_spm.SerializeToString())
     
     try:
-        tokenizer = AutoTokenizer.from_pretrain(
+        tokenizer = AutoTokenizer.from_pretrained(
             pretrained_model_name_or_path=tokenizer_dir,
             vocab_file=output_sp_dir+'/merged_tokenizer.model',
             use_fast=False
         )
     except RecursionError:
-        tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=tokenizer_dir,unk_token="<unk>",
-                                                    bos_token="<s>",
-                                                    eos_token="</s>",
-                                                    vocab_file=output_sp_dir+'/merged_tokenizer.model',
-                                                    use_fast=False)
+        tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=tokenizer_dir,
+                                                unk_token="<unk>",
+                                                bos_token="<s>",
+                                                eos_token="</s>",
+                                                vocab_file=output_sp_dir+'/merged_tokenizer.model',
+                                                use_fast=False)
 
     tokenizer.save_pretrained(output_hf_dir)
     logging.info(f"Merged tokenizer has been saved to %s",output_dir)
