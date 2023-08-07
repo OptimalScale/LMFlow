@@ -68,7 +68,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 ## Supported Models
 
 Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 Hugging Face.
-LLaMA, GPT2, GPT-Neo, Galactica, have been fully tested. We will support encoder models soon.
+Llama2, LLaMA, Bloom, GPT2, GPT-Neo, Galactica, ChatGLM2, and Baichuan have been fully tested.
 
 
 ## Quick Start
