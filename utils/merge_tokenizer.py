@@ -20,7 +20,7 @@ if __name__ == '__main__':
     os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"]="python"
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--tokenizer_dir', default='pinkmanlove/llama-7b-hf', type=str, required=False)
+    parser.add_argument('--tokenizer_dir', default='openlm-research/open_llama_3b', type=str, required=False)
     parser.add_argument('--chinese_sp_model_file', default='./output_models/new_tokenizer/example.model', type=str)
     parser.add_argument('--output_dir', default='./output_models/merged_tokenizer', type=str, required=False)
     args = parser.parse_args()
@@ -30,7 +30,12 @@ if __name__ == '__main__':
     output_dir = args.output_dir
     
     # load
-    old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir)
+    try:
+        old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir, use_fast=False)
+    except RecursionError:
+        old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir, unk_token="<unk>",
+                                                    bos_token="<s>",
+                                                    eos_token="</s>", use_fast=False)
     chinese_sp_model = spm.SentencePieceProcessor()
     chinese_sp_model.Load(chinese_sp_model_file)
 
@@ -56,15 +61,20 @@ if __name__ == '__main__':
     with open(output_sp_dir+'/merged_tokenizer.model', 'wb') as f:
         f.write(old_spm.SerializeToString())
     
-    tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=tokenizer_dir,vocab_file=output_sp_dir+'/merged_tokenizer.model')
-
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=tokenizer_dir,vocab_file=output_sp_dir+'/merged_tokenizer.model', use_fast=False)
+    except RecursionError:
+        tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=tokenizer_dir,unk_token="<unk>",
+                                                    bos_token="<s>",
+                                                    eos_token="</s>",
+                                                    vocab_file=output_sp_dir+'/merged_tokenizer.model',
+                                                    use_fast=False)
     tokenizer.save_pretrained(output_hf_dir)
     logging.info(f"Merged tokenizer has been saved to %s",output_dir)
 
 
     # Test
-    old_tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir)
-    new_tokenizer = AutoTokenizer.from_pretrained(output_hf_dir)
+    new_tokenizer = tokenizer
     logging.info(f"Old tokenizer vocab size: %d",len(old_tokenizer))
     logging.info(f"New tokenizer vocab size: %d",len(new_tokenizer))
     

@@ -19,5 +19,5 @@ python utils/train_tokenizer.py --dataset_path ./data/wiki_zh_eval/converted_dat
 # merge the new tokenizer with the old one
 mkdir -p ./output_models/merged_tokenizer
 python utils/merge_tokenizer.py --chinese_sp_model_file ./output_models/new_tokenizer/example.model \
-        --tokenizer_dir pinkmanlove/llama-7b-hf \
+        --tokenizer_dir openlm-research/open_llama_3b \
         --output_dir ./output_models/merged_tokenizer
