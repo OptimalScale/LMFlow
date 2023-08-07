@@ -35,4 +35,5 @@ if __name__ == '__main__':
     f' --vocab_size={vocab_size}'
     f' --user_defined_symbols={user_defined_symbols}'
     f' --max_sentencepiece_length={max_sentencepiece_length}'
+    f' --minloglevel=1'
     )
