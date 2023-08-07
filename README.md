@@ -33,6 +33,7 @@ Large Model for All. See our [vision](https://github.com/OptimalScale/LMFlow#vis
 
 
 ## Latest News
+* [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 * [2023-08-02] Support [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), and [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) models.
 * [2023-07-23] :rocket: [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh) is now available! Support multimodal inputs of images and texts. [Online Demo](http://multimodal.lmflow.online) is also provided (We hold the service on a single GPU, hence one may experience "queuing" or "application busy" sometimes when multiple users are accessing at the same time, please wait and attempt again later when such event happens) :rocket: ![image](https://github.com/OptimalScale/LMFlow/blob/rpan-vision-encoder/assets/multimodal-chatbot-demo.gif)
 * [2023-06-22]  [LMFlow paper](https://arxiv.org/abs/2306.12420) is out! Check out our implementation details at https://arxiv.org/abs/2306.12420
@@ -344,8 +345,8 @@ Now you can train your own sentencepiece tokenizer and merge it with model's ori
 Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techniques for LLaMA models. Check out [postion_interpolation](
 https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 
-### 4.6 Flash Attention 2.0
-Now LMFlow supports the latest Flash Attention 2.0. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
+### 4.6 FlashAttention-2
+Now LMFlow supports the latest FlashAttention-2. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 ## 5. Model Release
 
 ### 5.1 Medical Model Checkpoints
