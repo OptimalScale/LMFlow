@@ -165,6 +165,7 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 <details> <summary>Multimodal</summary>
 
 * Multimodal Chatbot
+
   LMFlow supports multimodal inputs of images and texts. Check out our [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh).
   [Online Demo](http://multimodal.lmflow.online) is also provided.
 </details>
