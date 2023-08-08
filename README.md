@@ -126,35 +126,7 @@ be saved in the argument specified by `--output_dir`, which is
 We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process and serve the model in our web service.
 
 ### Evaluation
-
-One can directly run evaluation with an existing Hugging Face model, e.g. to run
-GPT2 large, one may execute
-```sh
-./scripts/run_evaluation.sh
-```
-or run the corresponding python script
-```python
-CUDA_VISIBLE_DEVICES=0 \
-    deepspeed examples/evaluate.py \
-    --answer_type medmcqa \
-    --model_name_or_path gpt2-large \
-    --dataset_path data/MedQA-USMLE/validation \
-    --deepspeed examples/ds_config.json
-```
-To load the finetuned model, specify `--model_name_or_path` with the saved
-model checkpoint directory path.
-
-For LoRA finetuned models, one may refer to
-```sh
-./scripts/run_evaluation_with_lora.sh
-```
-
-Those scripts invoke the examples `examples/*.py` built based on our APIs. For
-more API-related examples, one may refer to the methods in the unittest
-`tests`.
-
-### LMFlow Benchmark
-LMFlow Benchmark is an automatic evaluation framework for open-source large language models.
+[LMFlow Benchmark](https://blog.gopenai.com/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418) is an automatic evaluation framework for open-source large language models.
 We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
 
 You can directly run the LMFlow benchmark evaluation to obtain the results to participate in the
