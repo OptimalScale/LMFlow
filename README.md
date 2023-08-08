@@ -93,6 +93,17 @@ After finetuning, you can run the following command to chat with the model.
 ./scripts/run_chatbot.sh {finetuned-checkpoints-path}
 ```
 
+### Deployment
+If you want to deploy your own model locally, we provide a gradio-based UI for building chatbots. 
+Running the following command will launch the demo for robin-7b:
+
+```sh
+pip install gradio
+python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
+```
+We also hosted it on Hugging Face [Space](https://huggingface.co/spaces/OptimalScale/Robin-7b).
+
+
 ### Evaluation
 [LMFlow Benchmark](https://blog.gopenai.com/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418) is an automatic evaluation framework for open-source large language models.
 We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
@@ -108,7 +119,17 @@ For example, to run GPT2 XL, one may execute
 To check the evaluation results, you may check `benchmark.log` in `./output_dir/gpt2-xl_lmflow_chat_nll_eval`,
 `./output_dir/gpt2-xl_all_nll_eval` and `./output_dir/gpt2-xl_commonsense_qa_eval`.
 
-## Additional Notes
+## Supported Features
+
+<details> <summary>Finetune Acceleration & Memory Optimization</summary>
+
+* LoRA
+* FlashAttention
+* Gradient Checkpointing
+* Deepspeed Zero3
+* Deepspeed offload
+
+</details>
 
 ### LLaMA Inference on CPU
 
@@ -124,19 +145,6 @@ https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.m
 
 ### Flash Attention 2.0
 Now LMFlow supports the latest Flash Attention 2.0. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
-
-
-
-## Deployment
-If you want to deploy your own model locally, we provide a gradio-based UI for building chatbots. 
-Running the following command will launch the demo for robin-7b:
-
-```sh
-pip install gradio
-python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
-```
-We also hosted it on Hugging Face [Space](https://huggingface.co/spaces/OptimalScale/Robin-7b).
-
 
 ## Support
 
