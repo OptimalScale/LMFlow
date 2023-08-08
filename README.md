@@ -157,51 +157,6 @@ https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.m
 ### Flash Attention 2.0
 Now LMFlow supports the latest Flash Attention 2.0. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 
-## Model Release
-
-### Medical Model Checkpoints
-You can run following script to download our medical model checkpoints :
-
-```bash
-cd output_models
-bash download.sh medical_ckpt
-cd -
-```
-You can also directly download our model via google drive link : [medical_ckpt.tar.gz](https://drive.google.com/file/d/1bnsQGNGNYchsOfiNyRAmL2fNiowbmFNw/view?usp=share_link)
-
-### Instruction Model Checkpoints
-Similarly, you can run following script to download our instruction model checkpoints :
-```bash
-cd output_models
-bash download.sh instruction_ckpt
-cd -
-```
-
-You can also directly download our model via google drive link : [instruction_ckpt.tar.gz](https://drive.google.com/file/d/1d_ioQ-ViVweeifbsFSO4pczc3UORFHZO/view?usp=share_link)
-
-### Reproduce the result
-
-After downloading the model checkpoints, you can merge the lora model into the base model via
-```
-python examples/merge_lora.py \
-    --model_name_or_path {huggingface-model-name-or-path-to-base-model} \
-    --lora_model_path {path-to-lora-model} \
-    --output_model_path {path-to-merged-model}
-```
-
-Or you can replace the `--lora_model_path` with `output_models/instruction_ckpt/llama7b-lora` (example for llama-7b for instruction) and replace `--model_name_or_path` with your converted llama model inside `LMFlow/scripts/run_evaluation_with_lora.sh` and run this shell script to reproduce the result.
-
-For full model deltas, such as robin-7b-v2-delta, you may use the delta merge script to obtain the full model,
-```
-python utils/apply_delta.py \
-    --base-model-path {huggingface-model-name-or-path-to-base-model} \
-    --delta-path {path-to-delta-model} \
-    --target-model-path {path-to-merged-model}
-```
-
-Then you can check the model performance at our [Doc](https://optimalscale.github.io/LMFlow/).
-
-
 
 ## Demos
 We provide four kinds of demos which include
