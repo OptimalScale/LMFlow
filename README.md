@@ -74,56 +74,18 @@ conda install mpi4py
 
 Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
-### Finetuning with full training
-
-You can run `scripts/run_finetune.sh` to finetune a GPT-2 base model
+### Finetuning (Full)
+Full training updates all the parameters to finetune a language model.
+Here is an example to finetune a GPT-2 base model
 ```sh
 ./scripts/run_finetune.sh
 ```
 
-### Finetuning with LoRA training
-
+### Finetuning (LoRA)
+LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
 ```sh
 ./scripts/run_finetune_with_lora.sh
 ```
-
-For detailed configurations, one may modify these scripts directly. 
-These scripts actually just call python script `examples/finetune.py`, which can be run in following manner,
-
-```sh
-deepspeed ${deepspeed_args} \
-  examples/finetune.py \
-    --deepspeed configs/ds_config_zero3.json \
-    --bf16 \
-    --run_name finetune_with_lora \
-    --model_name_or_path facebook/galactica-1.3b \
-    --num_train_epochs 0.01 \
-    --learning_rate 2e-5 \
-    --dataset_path ${dataset_path} \
-    --per_device_train_batch_size 1 \
-    --per_device_eval_batch_size 1 \
-    --validation_split_percentage 0 \
-    --logging_steps 20 \
-    --block_size 512 \
-    --do_train \
-    --output_dir output_models/finetune \
-    --overwrite_output_dir \
-    --ddp_timeout 72000 \
-    --save_steps 5000 \
-    --dataloader_num_workers 1
-```
-Here we set number of epochs `--num_train_epochs` to `0.01` so that the
-finetuning process can be finished quickly. If you wish to obtain a model with
-better performance, feel free to adjust those hyperparameters. You may run
-```python
-python examples/finetune.py -h
-```
-Note: In the case of a small training data set, the value of ``block_size`` needs to be reduced, otherwise there will be no samples available in the Epoch iterator.
-
-to view all possible finetuning arguments. The finetuned model checkpoint will
-be saved in the argument specified by `--output_dir`, which is
-`output_models/finetune` in the above example.
-We follow [Alpaca](https://github.com/tatsu-lab/stanford_alpaca) and [Vicuna](https://github.com/lm-sys/FastChat) in the model tuning process and serve the model in our web service.
 
 ### Evaluation
 [LMFlow Benchmark](https://blog.gopenai.com/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418) is an automatic evaluation framework for open-source large language models.
