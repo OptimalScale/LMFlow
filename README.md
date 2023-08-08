@@ -220,34 +220,6 @@ We also provide a simple demo to display the effectiveness of RAFT algorithm on 
 You can refer to either [Colab link](https://colab.research.google.com/drive/1bQmlSiKnqFjrkijFUJ5ylbYW-zUwObqL#scrollTo=9U2P_PUN-5xX) or `experimental/RAFT-diffusion/SD256-RAFT.ipynb`.
 The support of multi-modal training of LMFlow is under development.
 
-## Medical Performance
-
-|                |  PubMedQA (ID) | MedQA-USMLE (OOD) | MedMCQA (ID) |  Average |
-|:---------:|:--------:|:-----------:|:-------:|:----:|
-| Human (pass)   |     |     60.0    |    50.0     |      |
-| Human (expert) |    78.0   |     87.0    |  90.0   | 85.0 |
-|   |      |              |    |  |
-|  InstructGPT 175B   |   73.2   |     46.0    |  44.0   | 54.4 |
-|    ChatGPT |    63.9   |     **57.0**    |  44.7   | 55.2 |
-|      LLaMA 7B   |    5.2   |     27.1    |  24.3   | 18.9 |
-|      LLaMA 33B |    1.8   |     43.4    |  30.3   | 25.2 |
-|   |      |             |            |    |  |
-|   Task-tuned LLaMA 7B (Full) |   **75.1**   |     44.5    |  49.9   | 56.5 |
-| Task-tuned LLaMA 33B (LoRA) |  74.0  |  51.3   | **50.2**|**58.5**|
-
-The LLaMA 33B (LoRA) performance is achieved with only **~16h** finetuning on the training split of PubMedQA and MedMCQA with a single 8 \* A100 server.
-For more performance, including instruction tuning results, please refer to our [Documentation](https://optimalscale.github.io/LMFlow/).
-
-
-## Documentation
-Please refer to our [Documentation](https://optimalscale.github.io/LMFlow/) for more API reference and experimental results.
-
-
-## Acknowledgement
-LMFlow draws inspiration from various studies, including but not limited to:
-- Alpaca: https://github.com/tatsu-lab/stanford_alpaca
-- Vicuna: https://github.com/lm-sys/FastChat
-
 ## Support
 
 If you need any help, please submit a [Github](https://github.com/OptimalScale/LMFlow) issue.
@@ -255,11 +227,6 @@ If you need any help, please submit a [Github](https://github.com/OptimalScale/L
 ## License
 The code included in this project is licensed under the [Apache 2.0 license](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE).
 If you wish to use the codes and models included in this project for commercial purposes, please sign this [document](https://docs.google.com/forms/d/e/1FAIpQLSfJYcci6cbgpIvx_Fh1xDL6pNkzsjGDH1QIcm4cYk88K2tqkw/viewform?usp=pp_url) to obtain authorization.
-
-## Contributors
-<a href="https://github.com/OptimalScale/LMFlow/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=OptimalScale/LMFlow" />
-</a>
 
 ## Citation
 If you find this repository useful, please consider giving ⭐ and citing our [paper](https://arxiv.org/abs/2306.12420):
