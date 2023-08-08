@@ -54,6 +54,27 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 * [2023-03-27] Release code and checkpoints - [version 0.0.1](https://optimalscale.github.io/LMFlow/)! [Our tasked-tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance).
 </details>
 
+
+Table of Contents
+=================
+
+* [LMFlow](#lmflow)
+   * [Quick Start](#quick-start)
+      * [Finetuning](#finetuning)
+         * [Finetuning LoRA](#finetuning-lora)
+         * [Finetuning FlashAttention](#finetuning-flashattention)
+         * [Finetuning with Gradient Checkpointing](#finetuning-with-gradient-checkpointing)
+         * [Finetuning with Deepspeed Zero3](#finetuning-with-deepspeed-zero3)
+      * [Inference](#inference)
+         * [Inference with LLaMA Models](#inference-with-llama-models)
+         * [Inference with FlashAttention](#inference-with-flashattention)
+      * [Multimodal Chatbot](#multimodal-chatbot)
+   * [Supported Features](#supported-features)
+   * [Support](#support)
+   * [License](#license)
+   * [Citation](#citation)
+
+
 ## Quick Start
 
 ### Setup
@@ -182,11 +203,9 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 </details>
 
 
-
-
 ## Support
 
-If you need any help, please submit a [Github](https://github.com/OptimalScale/LMFlow) issue.
+If you need any help, please submit a Github issue.
 
 ## License
 The code included in this project is licensed under the [Apache 2.0 license](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE).
