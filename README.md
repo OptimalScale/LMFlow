@@ -54,23 +54,6 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 * [2023-03-27] Release code and checkpoints - [version 0.0.1](https://optimalscale.github.io/LMFlow/)! [Our tasked-tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance).
 </details>
 
-
-## Supported Pipelines
-
-| Pipelines   |   Status |
-|----------|:-------------:|
-| Task Tuning |  :white_check_mark: Supported |
-| Instruction Tuning |  :white_check_mark: Supported |
-| Parameter-Efficient Tuning |  :white_check_mark: Supported |
-| Alignment Tuning |  :white_check_mark: Supported |
-| Large Model Inference |  :white_check_mark: Supported |
-
-## Supported Models
-
-Seamlessly supported all the [decoder models](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads) in 🤗 Hugging Face.
-Llama2, LLaMA, Bloom, GPT2, GPT-Neo, Galactica, ChatGLM2, and Baichuan have been fully tested.
-
-
 ## Quick Start
 
 ### Setup
