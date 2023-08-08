@@ -125,6 +125,8 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 * LoRA
 * FlashAttention
+
+  LMFlow supports both FlashAttention-1 and the latest FlashAttention-2. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 * Gradient Checkpointing
 * Deepspeed Zero3
 * Deepspeed offload
@@ -139,19 +141,36 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 * FlashAttention
 
+  LMFlow supports both FlashAttention-1 and the latest FlashAttention-2. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
+
+</details>
+
+<details> <summary>Long Context</summary>
+
+* Position Interpolation for LLaMA Models
+
+  Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techniques for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
+
+</details>
+
+<details> <summary>Model Customization</summary>
+
+* Vocabulary Extension
+
+  Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check out [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
+
 </details>
 
 
-### Vocabulary Extension
+<details> <summary>Multimodal</summary>
 
-Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check out [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
+* Multimodal Chatbot
+  LMFlow supports multimodal inputs of images and texts. Check out our [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh).
+  [Online Demo](http://multimodal.lmflow.online) is also provided.
+</details>
 
-### Position Interpolation for LLaMA Models
-Now LMFlow supports the latest Linear & NTK (Neural Kernel theory) scaling techniques for LLaMA models. Check out [postion_interpolation](
-https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 
-### Flash Attention 2.0
-Now LMFlow supports the latest Flash Attention 2.0. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
+
 
 ## Support
 
