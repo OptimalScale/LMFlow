@@ -124,6 +124,8 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 <details> <summary>Finetune Acceleration & Memory Optimization</summary>
 
 * LoRA
+  
+    LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning. Check out [finetuning-lora](#finetuning-lora) for more details.
 * FlashAttention
 
   LMFlow supports both FlashAttention-1 and the latest FlashAttention-2. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
