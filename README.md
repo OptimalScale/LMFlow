@@ -131,9 +131,16 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 </details>
 
-### LLaMA Inference on CPU
+<details> <summary>Inference Acceleration</summary>
 
-Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
+* LLaMA Inference on CPU
+
+  Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
+
+* FlashAttention
+
+</details>
+
 
 ### Vocabulary Extension
 
