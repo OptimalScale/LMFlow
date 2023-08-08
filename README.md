@@ -55,25 +55,29 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 </details>
 
 
-Table of Contents
+## Table of Contents
 =================
 
-* [LMFlow](#lmflow)
-   * [Quick Start](#quick-start)
-      * [Finetuning](#finetuning)
-         * [Finetuning LoRA](#finetuning-lora)
-         * [Finetuning FlashAttention](#finetuning-flashattention)
-         * [Finetuning with Gradient Checkpointing](#finetuning-with-gradient-checkpointing)
-         * [Finetuning with Deepspeed Zero3](#finetuning-with-deepspeed-zero3)
-      * [Inference](#inference)
-         * [Inference with LLaMA Models](#inference-with-llama-models)
-         * [Inference with FlashAttention](#inference-with-flashattention)
-      * [Multimodal Chatbot](#multimodal-chatbot)
-   * [Supported Features](#supported-features)
-   * [Support](#support)
-   * [License](#license)
-   * [Citation](#citation)
 
+* [Quick Start](#quick-start)
+  * [Setup](#setup)
+  * [Prepare Dataset](#prepare-dataset)
+  * [Finetuning](#finetuning)
+      * [Finetuning Full](#finetuning-full)
+      * [Finetuning LoRA](#finetuning-lora)
+  * [Inference](#inference)
+  * [Deployment](#deployment)
+  * [Evaluation](#evaluation)
+* [Supported Features](#supported-features)
+  * [Finetune Acceleration & Memory Optimization](#fine-tune-acceleration--memory-optimization)
+  * [Inference Acceleration](#inference-acceleration)
+  * [Long Context](#long-context)
+  * [Model Customization](#model-customization)
+  * [Multimodal](#multimodal)
+
+* [Support](#support)
+* [License](#license)
+* [Citation](#citation)
 
 ## Quick Start
 
