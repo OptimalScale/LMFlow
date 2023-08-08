@@ -125,13 +125,22 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 * LoRA
   
-    LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning. Check out [finetuning-lora](#finetuning-lora) for more details.
+  LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning. Check out [finetuning-lora](#finetuning-lora) for more details.
+
 * FlashAttention
 
   LMFlow supports both FlashAttention-1 and the latest FlashAttention-2. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
+
 * Gradient Checkpointing
+  
+  [Gradient checkpointing](https://github.com/cybertronai/gradient-checkpointing) is a memory optimization technique that trades compute for memory. 
+  It is useful when the model is too large to fit into GPU memory. 
+  Use it by just adding `--gradient_checkpointing` to your training command.
+
 * Deepspeed Zero3
-* Deepspeed offload
+  
+  LMFlow supports [Deepspeed Zero-3 Offload](https://www.deepspeed.ai/2021/03/07/zero3-offload.html). 
+  We provide an example [deepspeed config](https://github.com/OptimalScale/LMFlow/blob/main/configs/ds_config_zero3.json), and you can directly use it.
 
 </details>
 
