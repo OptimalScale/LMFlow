@@ -1,4 +1,4 @@
-# Flash Attention 2.0
+# FlashAttention-2
 We're thrilled to announce that LMFlow now supports training and inference using **FlashAttention-2**! This cutting-edge feature will take your language modeling to the next level. To use it, simply add ``` --use_flash_attention True ``` to the corresponding bash script.
 Here is an example of how to use it:
 ```
