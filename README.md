@@ -56,20 +56,19 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 
 ## Table of Contents
-=================
 
 
 * [Quick Start](#quick-start)
   * [Setup](#setup)
   * [Prepare Dataset](#prepare-dataset)
-  * [Finetuning](#finetuning)
+  * [Finetuning](#finetuning-full)
       * [Finetuning Full](#finetuning-full)
       * [Finetuning LoRA](#finetuning-lora)
   * [Inference](#inference)
   * [Deployment](#deployment)
   * [Evaluation](#evaluation)
 * [Supported Features](#supported-features)
-  * [Finetune Acceleration & Memory Optimization](#fine-tune-acceleration--memory-optimization)
+  * [Finetune Acceleration & Memory Optimization](#fine-tune-acceleration-memory-optimization)
   * [Inference Acceleration](#inference-acceleration)
   * [Long Context](#long-context)
   * [Model Customization](#model-customization)
