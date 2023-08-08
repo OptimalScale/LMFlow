@@ -91,29 +91,21 @@ conda install mpi4py
 
 Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
-### Finetuning
+### Finetuning with full training
 
 You can run `scripts/run_finetune.sh` to finetune a GPT-2 base model
 ```sh
 ./scripts/run_finetune.sh
 ```
 
-If you would like to provide arguments for deepspeed to reflect your machine
-settings, you may pass the corresponding deepspeed arguments to the script. For
-example,
-```sh
-./scripts/run_finetune.sh "--num_gpus=8 --master_port 10001"
-```
+### Finetuning with LoRA training
 
-To enable LoRA finetuning, you may refer to
 ```sh
 ./scripts/run_finetune_with_lora.sh
 ```
-which can be run in similar manner.
 
-For detailed configurations, one may modify these scripts directly. These
-scripts actually just call python script `examples/finetune.py`, which can
-be run in following manner,
+For detailed configurations, one may modify these scripts directly. 
+These scripts actually just call python script `examples/finetune.py`, which can be run in following manner,
 
 ```sh
 deepspeed ${deepspeed_args} \
