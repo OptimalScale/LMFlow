@@ -87,6 +87,12 @@ LoRA is a parameter-efficient finetuning algorithm and is more efficient than fu
 ./scripts/run_finetune_with_lora.sh
 ```
 
+### Inference
+After finetuning, you can run the following command to chat with the model.
+```sh
+./scripts/run_chatbot.sh {finetuned-checkpoints-path}
+```
+
 ### Evaluation
 [LMFlow Benchmark](https://blog.gopenai.com/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418) is an automatic evaluation framework for open-source large language models.
 We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
@@ -120,67 +126,17 @@ https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.m
 Now LMFlow supports the latest Flash Attention 2.0. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 
 
-## Demos
-We provide four kinds of demos which include
-- Online Service: If you don't want to run any code and just want to try our models, we deploy our instruction-tuned LLaMA you to have a try.
-- Colab Chatbot (shell): An interactive shell-based chatbot for you to easily deploy a chatbot on colab.
-- Colab Chatbot (web): An interactive web-based chatbot for you to easily deploy your own chatbot on colab.
-- Local Deploy: We also provide a way for you to deploy your model/chatbot locally, which means you can deploy much larger model than previous three methods if you have enough resource.
 
-
-[![Code License](https://img.shields.io/badge/Online%20Service-Web-green.svg)](https://lmflow.com)
-[![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
-[![colab badge](https://img.shields.io/badge/Colab-(web)%20%20chatbot:%20gpt--neo-blue?logo=google-colab&amp)](https://colab.research.google.com/drive/1LLtiiQO-ZIIFsTKxYzGWYX9BDRc-v8dq?usp=sharing)
-[![colab badge](https://img.shields.io/badge/Colab-(demo)%20%20RAFT:%20diffusion-blueviolet?logo=google-colab&amp)](https://colab.research.google.com/drive/1bQmlSiKnqFjrkijFUJ5ylbYW-zUwObqL#scrollTo=9U2P_PUN-5xX)
-
-
-### Online Service
-Welcome to visit our [web service](https://lmflow.com/). We deploy LLaMA-7B-tuned model online for preview. Due to the high website traffic, sometimes the website may fail to respond. You can also deploy the chatbot following `Local Deploy`.
-
-### Colab chatbot (shell)
-<p align="center" width="100%">
-<img src="assets/colab-shell-chatbot-demo.png">
-</p>
-
-
-We provide a simple shell demo of chatbot with Google Colab's T4/P100/V100 GPU.
-Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
-unsatisfactory responses. To improve the performance, users can use their own
-dataset to finetune and obtain a better model with LMFlow. One can also try
-other available decoder-only models provided in
-🤗 [Hugging Face](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads), by
-
-```sh
-./scripts/run_chatbot.sh {another-model-name}
-```
-### Colab chatbot (web)
-We provide a simple web demo of chatbot with Google Colab's T4/P100/V100 GPU.
-Notice that the provided gpt-neo-2.7b model is **a rather weak model**, which only supports English and may sometimes generate
-unsatisfactory responses.
-
-
-### Local Deploy
-If you have resources and want to deploy your own model locally. We provide you an easy way to run a flask server to launch a backend (to further provide services to other frontend) and an interactive web frontend (to let you communicate directly) by
-```sh
-./scripts/run_app.sh
-```
-
-We also provide a gradio-based UI for building chatbots. Running the following command will launch the demo for robin-7b:
+## Deployment
+If you want to deploy your own model locally, we provide a gradio-based UI for building chatbots. 
+Running the following command will launch the demo for robin-7b:
 
 ```sh
 pip install gradio
 python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
 ```
-
 We also hosted it on Hugging Face [Space](https://huggingface.co/spaces/OptimalScale/Robin-7b).
 
-
-
-### Colab RAFT-diffusion
-
-We also provide a simple demo to display the effectiveness of RAFT algorithm on diffusion models.
-You can refer to either [Colab link](https://colab.research.google.com/drive/1bQmlSiKnqFjrkijFUJ5ylbYW-zUwObqL#scrollTo=9U2P_PUN-5xX) or `experimental/RAFT-diffusion/SD256-RAFT.ipynb`.
-The support of multi-modal training of LMFlow is under development.
 
 ## Support
 
