@@ -84,7 +84,7 @@ Our package has been fully tested on Linux OS (Ubuntu 20.04). Other OS platforms
 You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
 
 ```bash
-git clone https://github.com/OptimalScale/LMFlow.git
+git clone -b v0.0.4 https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
