@@ -118,7 +118,7 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune_with_lora.sh \
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train \
-  --output_model_path output_models/finetuned_gpt2_lora
+  --output_lora_path output_models/finetuned_gpt2_lora
 
 # Saves lora and merges into original model
 ./scripts/run_finetune_with_lora_save_aggregated_weights.sh \
