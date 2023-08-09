@@ -30,6 +30,7 @@ from peft import (
     TaskType,
     get_peft_config,
     get_peft_model,
+    prepare_model_for_kbit_training
 )
 
 import torch
@@ -277,7 +278,11 @@ class HFDecoderModel(DecoderModel, Tunable):
                     revision=model_args.model_revision,
                     use_auth_token=True if model_args.use_auth_token else None,
                     torch_dtype=torch_dtype,
+                    device_map={"":0},
                 )
+                if model_args.use_qlora:
+                    model.gradient_checkpointing_enable()
+                    model = prepare_model_for_kbit_training(model)
             else:
                 model = AutoModelForCausalLM.from_config(config)
                 n_params = sum(dict((p.data_ptr(), p.numel()) for p in model.parameters()).values())
