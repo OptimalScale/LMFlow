@@ -85,7 +85,7 @@ Our package has been fully tested on Linux OS (Ubuntu 20.04). Other OS platforms
 You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
 
 ```bash
-git clone -b v0.0.4 https://github.com/OptimalScale/LMFlow.git
+git clone -b v0.0.5 https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
@@ -101,19 +101,36 @@ Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASET
 Full training updates all the parameters to finetune a language model.
 Here is an example to finetune a GPT-2 base model
 ```sh
-./scripts/run_finetune.sh
+cd data && ./download.sh alpaca && cd -
+
+./scripts/run_finetune.sh \
+  --model_name_or_path gpt2 \
+  --dataset_path data/alpaca/train \
+  --output_model_path output_models/finetuned_gpt2
 ```
 
 ### Finetuning (LoRA)
 LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
 ```sh
-./scripts/run_finetune_with_lora.sh
+cd data && ./download.sh alpaca && cd -
+
+# Saves lora only
+./scripts/run_finetune_with_lora.sh \
+  --model_name_or_path facebook/galactica-1.3b \
+  --dataset_path data/alpaca/train \
+  --output_lora_path output_models/finetuned_galactica_lora
+
+# Saves lora and merges into original model
+./scripts/run_finetune_with_lora_save_aggregated_weights.sh \
+  --model_name_or_path facebook/galactica-1.3b \
+  --dataset_path data/alpaca/train \
+  --output_model_path output_models/finetuned_galactica
 ```
 
 ### Inference
 After finetuning, you can run the following command to chat with the model.
 ```sh
-./scripts/run_chatbot.sh {finetuned-checkpoints-path}
+./scripts/run_chatbot.sh output_models/finetuned_gpt2
 ```
 
 ### Deployment
