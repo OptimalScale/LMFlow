@@ -10,10 +10,6 @@ deepspeed_args="--master_port=11000"
 while [[ $# -ge 1 ]]; do
   key="$1"
   case ${key} in
-    -h|--help)
-      echo "${help_message}" 1>&2
-      exit 0
-      ;;
     -m|--model_name_or_path)
       model_name_or_path="$2"
       shift
