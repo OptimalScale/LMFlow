@@ -31,6 +31,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 
 ## Latest News
+* [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 * [2023-08-02] Support [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), and [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) models.
 * [2023-07-23] :rocket: [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh) is now available! Support multimodal inputs of images and texts. [Online Demo](http://multimodal.lmflow.online) is also provided (We hold the service on a single GPU, hence one may experience "queuing" or "application busy" sometimes when multiple users are accessing at the same time, please wait and attempt again later when such event happens) :rocket: ![image](https://github.com/OptimalScale/LMFlow/blob/rpan-vision-encoder/assets/multimodal-chatbot-demo.gif)
 * [2023-06-22]  [LMFlow paper](https://arxiv.org/abs/2306.12420) is out! Check out our implementation details at https://arxiv.org/abs/2306.12420
@@ -166,7 +167,9 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 </details>
 
+
 <details> <summary>Inference Acceleration</summary>
+
 
 * LLaMA Inference on CPU
 
@@ -188,6 +191,7 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 <details> <summary>Model Customization</summary>
 
+
 * Vocabulary Extension
 
   Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check out [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
@@ -202,6 +206,7 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
   LMFlow supports multimodal inputs of images and texts. Check out our [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh).
   [Online Demo](http://multimodal.lmflow.online) is also provided.
 </details>
+
 
 
 ## Support
