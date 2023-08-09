@@ -1,21 +1,46 @@
 #!/bin/bash
 # Please run this script under ${project_id} in project directory of
 
-deepspeed_args="--master_port=11000"      # Default argument
-if [ $# -ge 1 ]; then
-  deepspeed_args="$1"
-fi
+# Parses arguments
+model_name_or_path=gpt2
+dataset_path=data/alpaca/train
+output_dir=output_models/finetune
+deepspeed_args="--master_port=11000"
 
+while [[ $# -ge 1 ]]; do
+  key="$1"
+  case ${key} in
+    -h|--help)
+      echo "${help_message}" 1>&2
+      exit 0
+      ;;
+    -m|--model_name_or_path)
+      model_name_or_path="$2"
+      shift
+      ;;
+    -d|--dataset_path)
+      dataset_path="$2"
+      shift
+      ;;
+    -o|--output_lora_path)
+      output_dir="$2"
+      shift
+      ;;
+    --deepspeed_args)
+      deepspeed_args="$2"
+      shift
+      ;;
+    *)
+      echo "error: unknown option \"${key}\"" 1>&2
+      exit 1
+  esac
+  shift
+done
+
+# Finetune
 exp_id=finetune_with_lora
 project_dir=$(cd "$(dirname $0)"/..; pwd)
-output_dir=${project_dir}/output_models/${exp_id}
 log_dir=${project_dir}/log/${exp_id}
-
-dataset_path=${project_dir}/data/alpaca/train
-if [ ! -d ${dataset_path} ]; then
-  cd data && ./download.sh alpaca && cd -
-fi
-
 mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
