@@ -116,15 +116,15 @@ cd data && ./download.sh alpaca && cd -
 
 # Saves lora only
 ./scripts/run_finetune_with_lora.sh \
-  --model_name_or_path gpt2 \
+  --model_name_or_path facebook/galactica-1.3b \
   --dataset_path data/alpaca/train \
-  --output_lora_path output_models/finetuned_gpt2_lora
+  --output_lora_path output_models/finetuned_galactica_lora
 
 # Saves lora and merges into original model
 ./scripts/run_finetune_with_lora_save_aggregated_weights.sh \
-  --model_name_or_path gpt2 \
+  --model_name_or_path facebook/galactica-1.3b \
   --dataset_path data/alpaca/train \
-  --output_model_path output_models/finetuned_gpt2
+  --output_model_path output_models/finetuned_galactica
 ```
 
 ### Inference

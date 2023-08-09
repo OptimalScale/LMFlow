@@ -41,7 +41,7 @@ mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
   examples/finetune.py \
-    --model_name_or_path facebook/galactica-1.3b \
+    --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --num_train_epochs 0.01 \
@@ -53,14 +53,10 @@ deepspeed ${deepspeed_args} \
     --save_aggregated_lora 1\
     --deepspeed configs/ds_config_zero2.json \
     --fp16 \
-    --run_name finetune_with_lora \
+    --run_name ${exp_id} \
     --validation_split_percentage 0 \
     --logging_steps 20 \
     --do_train \
-    --do_eval \
-    --evaluation_strategy "steps" \
-    --eval_steps 1000 \
-    --eval_dataset_path ${eval_dataset_path} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
