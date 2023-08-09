@@ -165,6 +165,24 @@ class ModelArguments:
         default=False,
         metadata={"help": "Whether to lora."},
     )
+    use_qlora: bool = field(
+        default=False,
+        metadata="Whether to use qlora.",
+    )
+    bits: int = field(
+        default=4,
+        choices=[4,8],
+        metadata={"help": "The number of bits for quantization."},
+    )
+    quant_type: str = field(
+        default='nf4',
+        choices=['nf4', 'fp4'],
+        metadata={"help": "The quantization type for quantization."},
+    )
+    double_quant: bool = field(
+        default=True,
+        metadata={"help": "Whether to use double quantization."},
+    )
     lora_r: int = field(
         default=8,
         metadata={"help": "the rank of the lora parameters. The smaller lora_r is , the fewer parameters lora has."},

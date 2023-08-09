@@ -38,6 +38,9 @@ from transformers.deepspeed import HfDeepSpeedConfig
 
 from transformers.testing_utils import CaptureLogger
 
+from transformers import BitsAndBytesConfig
+import bitsandbytes
+
 from transformers import (
     CONFIG_MAPPING,
     AutoConfig,
@@ -253,10 +256,23 @@ class HFDecoderModel(DecoderModel, Tunable):
                     
         if tune_strategy == 'normal':
             if model_args.model_name_or_path:
+                compute_dtype = (torch.float16 if torch_dtype=='fp16' else (torch.bfloat16 if torch_dtype=='bf16' else torch.float32))
+                if model_args.use_qlora:
+                    model_args.use_lora = True
+                    quant_config = BitsAndBytesConfig(
+                        load_in_4bit=model_args.bits == 4,
+                        load_in_8bit=model_args.bits == 8,
+                        llm_int8_threshold=6.0,
+                        llm_int8_has_fp16_weight=False,
+                        bnb_4bit_compute_dtype=compute_dtype,
+                        bnb_4bit_use_double_quant=model_args.double_quant,
+                        bnb_4bit_quant_type=model_args.quant_type,
+                    )
                 model = AutoModelForCausalLM.from_pretrained(
                     model_args.model_name_or_path,
                     from_tf=bool(".ckpt" in model_args.model_name_or_path),
                     config=config,
+                    quantization_config=quant_config if args.use_qlora else None,
                     cache_dir=model_args.cache_dir,
                     revision=model_args.model_revision,
                     use_auth_token=True if model_args.use_auth_token else None,
