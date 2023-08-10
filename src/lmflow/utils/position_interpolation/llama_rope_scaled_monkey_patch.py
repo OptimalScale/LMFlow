@@ -32,6 +32,13 @@ class CondenseRotaryEmbedding(torch.nn.Module):
         # This `if` block is unlikely to be run after we build sin/cos in `__init__`. Keep the logic here just in case.
         if seq_len > self.max_seq_len_cached:
             self.max_seq_len_cached = seq_len
+            
+            base = self.base * (
+                (self.ntk_ratio * seq_len / self.max_position_embeddings) - (self.ntk_ratio - 1)
+            ) ** (self.dim / (self.dim - 2))
+            inv_freq = 1.0 / (base ** (torch.arange(0, self.dim, 2).float().to(x.device) / self.dim))
+            self.register_buffer("inv_freq", inv_freq, persistent=False)
+            
             t = torch.arange(self.max_seq_len_cached, device=x.device, dtype=self.inv_freq.dtype) / self.pi_ratio
             freqs = torch.einsum("i,j->ij", t, self.inv_freq)
             
