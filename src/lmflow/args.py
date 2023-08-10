@@ -167,13 +167,13 @@ class ModelArguments:
     )
     use_qlora: bool = field(
         default=False,
-        metadata="Whether to use qlora.",
+        metadata={"help": "Whether to use qlora."},
     )
     bits: int = field(
         default=4,
         metadata={"help": "The number of bits for quantization.",
                   "choices": [4, 8],},
-    )
+    )1
     quant_type: str = field(
         default='nf4',
         metadata={"help": "The quantization type for quantization.",
