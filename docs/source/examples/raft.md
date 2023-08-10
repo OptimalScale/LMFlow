@@ -60,6 +60,7 @@ Here is an example of dataset */home/xiongwei/LMFlow/data/hh_rlhf/sft/hh_rlhf_sf
 
 
 ```json
+
 {"type": "text_only", 
 "instances": 
 [
