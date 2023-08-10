@@ -171,13 +171,13 @@ class ModelArguments:
     )
     bits: int = field(
         default=4,
-        choices=[4,8],
-        metadata={"help": "The number of bits for quantization."},
+        metadata={"help": "The number of bits for quantization.",
+                  "choices": [4, 8],},
     )
     quant_type: str = field(
         default='nf4',
-        choices=['nf4', 'fp4'],
-        metadata={"help": "The quantization type for quantization."},
+        metadata={"help": "The quantization type for quantization.",
+                  "choices": ["nf4", "fp4"],},
     )
     double_quant: bool = field(
         default=True,
