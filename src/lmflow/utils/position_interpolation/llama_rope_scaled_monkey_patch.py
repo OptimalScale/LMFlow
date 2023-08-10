@@ -11,7 +11,7 @@ class CondenseRotaryEmbedding(torch.nn.Module):
         self.ntk_ratio = ntk_ratio
         max_position_embeddings *= ntk_ratio
         base = base * ntk_ratio ** (dim / (dim-2)) #Base change formula
-        
+        self.dim = dim
         inv_freq = 1.0 / (base ** (torch.arange(0, dim, 2).float().to(device) / dim))
         self.register_buffer("inv_freq", inv_freq)
         
