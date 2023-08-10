@@ -173,7 +173,7 @@ class ModelArguments:
         default=4,
         metadata={"help": "The number of bits for quantization.",
                   "choices": [4, 8],},
-    )1
+    )
     quant_type: str = field(
         default='nf4',
         metadata={"help": "The quantization type for quantization.",
