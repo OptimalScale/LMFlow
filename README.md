@@ -90,7 +90,7 @@ cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
 conda install mpi4py
-./install.sh
+bash install.sh
 ```
 
 ### Prepare Dataset
