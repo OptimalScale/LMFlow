@@ -21,8 +21,10 @@ and question answering.
 import hashlib
 import logging
 from typing import List, Union
-import os
+import os, shutil
 import deepspeed
+
+from pathlib import Path
 
 from peft import (
     LoraConfig,
@@ -659,11 +661,52 @@ class HFDecoderModel(DecoderModel, Tunable):
 
 
     def merge_lora_weights(self):
-        if self.model_args.use_lora:
+        if self.model_args.use_lora and not self.model_args.use_qlora:
+            self.get_backend_model().merge_and_unload()
+        elif self.model_args.use_qlora:
+            logger.warning("Reloading base model in 16-bit precision to merge adapter weights. NOTE: Your device must have"
+                           "sufficient memory to reload the model in half-precision without quantization.")
+            self.get_peft_without_qlora()
             self.get_backend_model().merge_and_unload()
         else:
             logger.warning("LoRA training is NOT enabled. Merging LoRA weights is not applicable.")
 
+    def get_peft_without_qlora(self):
+        tempdir = Path.cwd()/'TEMP'
+        tempdir = tempdir.resolve()
+
+        self.get_backend_model().save_pretrained(tempdir)
+
+        torch_dtype = (
+            self.model_args.torch_dtype
+            if self.model_args.torch_dtype in ["auto", None]
+            else getattr(torch, self.model_args.torch_dtype)
+        )
+        config_kwargs = {
+            "cache_dir": self.model_args.cache_dir,
+            "revision": self.model_args.model_revision,
+            "use_auth_token": True if self.model_args.use_auth_token else None,
+        }
+        config = AutoConfig.from_pretrained(self.model_args.model_name_or_path, **config_kwargs)
+        device_map = "auto"
+        if os.environ.get('LOCAL_RANK') is not None:
+            local_rank = int(os.environ.get('LOCAL_RANK','0'))
+            device_map = {'': local_rank}
+
+        self.backend_model_full = AutoModelForCausalLM(
+            self.model_args.model_name_or_path,
+            from_tf=bool(".ckpt" in self.model_args.model_name_or_path),
+            config=config,
+            cache_dir=self.model_args.cache_dir,
+            revision=self.model_args.model_revision,
+            use_auth_token=True if self.model_args.use_auth_token else None,
+            torch_dtype=torch_dtype,
+            device_map=device_map,
+            trust_remote_code = self.model_args.trust_remote_code,
+        )
+    
+        self.backend_model = get_peft_model(self.backend_model_full, tempdir)
+        shutil.rmtree(tempdir)
 
     def save(self, dir, save_full_model=False, *args, **kwargs):
         """
