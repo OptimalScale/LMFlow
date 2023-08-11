@@ -151,6 +151,14 @@ class ModelArguments:
             )
         },
     )
+    trust_remote_code : bool = field(
+        default=False,
+        metadata={
+            "help": (
+                "Whether to trust remote code when loading model."
+            )
+        },
+    )
     torch_dtype: Optional[str] = field(
         default=None,
         metadata={

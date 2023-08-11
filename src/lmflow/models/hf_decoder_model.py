@@ -279,6 +279,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     use_auth_token=True if model_args.use_auth_token else None,
                     torch_dtype=torch_dtype,
                     device_map={"":0},
+                    trust_remote_code = model_args.trust_remote_code,
                 )
                 if model_args.use_qlora:
                     model.gradient_checkpointing_enable()
