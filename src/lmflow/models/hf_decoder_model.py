@@ -21,7 +21,7 @@ and question answering.
 import hashlib
 import logging
 from typing import List, Union
-
+import os
 import deepspeed
 
 from peft import (
@@ -258,6 +258,11 @@ class HFDecoderModel(DecoderModel, Tunable):
         if tune_strategy == 'normal':
             if model_args.model_name_or_path:
                 compute_dtype = (torch.float16 if torch_dtype=='fp16' else (torch.bfloat16 if torch_dtype=='bf16' else torch.float32))
+                device_map = "auto"
+                if os.environ.get('LOCAL_RANK') is not None:
+                    local_rank = int(os.environ.get('LOCAL_RANK','0'))
+                    device_map = {'': local_rank}
+
                 if model_args.use_qlora:
                     model_args.use_lora = True
                     quant_config = BitsAndBytesConfig(
@@ -278,7 +283,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     revision=model_args.model_revision,
                     use_auth_token=True if model_args.use_auth_token else None,
                     torch_dtype=torch_dtype,
-                    device_map={"":0},
+                    device_map=device_map,
                     trust_remote_code = model_args.trust_remote_code,
                 )
                 if model_args.use_qlora:
