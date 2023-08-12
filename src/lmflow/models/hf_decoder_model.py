@@ -259,7 +259,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     
         if tune_strategy == 'normal':
             if model_args.model_name_or_path:
-                compute_dtype = (torch.float16 if torch_dtype=='fp16' else (torch.bfloat16 if torch_dtype=='bf16' else torch.float32))
+                compute_dtype = (torch.float16 if torch_dtype=='float16' else (torch.bfloat16 if torch_dtype=='bfloat16' else torch.float32))
                 device_map = "auto"
                 if os.environ.get('LOCAL_RANK') is not None:
                     local_rank = int(os.environ.get('LOCAL_RANK','0'))
