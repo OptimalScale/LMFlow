@@ -705,7 +705,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             trust_remote_code = self.model_args.trust_remote_code,
         )
     
-        self.backend_model = get_peft_model(self.backend_model_full, tempdir)
+        self.backend_model = PeftModel.from_pretrained(self.backend_model_full, tempdir)
         shutil.rmtree(tempdir)
 
     def save(self, dir, save_full_model=False, *args, **kwargs):
