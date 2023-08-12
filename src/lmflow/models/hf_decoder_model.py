@@ -674,6 +674,7 @@ class HFDecoderModel(DecoderModel, Tunable):
     def get_peft_without_qlora(self):
         tempdir = Path.cwd()/'TEMP'
         tempdir = tempdir.resolve()
+        tempdir = str(tempdir)
 
         self.get_backend_model().save_pretrained(tempdir)
 
