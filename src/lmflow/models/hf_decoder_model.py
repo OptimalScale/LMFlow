@@ -693,7 +693,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             local_rank = int(os.environ.get('LOCAL_RANK','0'))
             device_map = {'': local_rank}
 
-        self.backend_model_full = AutoModelForCausalLM(
+        self.backend_model_full = AutoModelForCausalLM.from_pretrained(
             self.model_args.model_name_or_path,
             from_tf=bool(".ckpt" in self.model_args.model_name_or_path),
             config=config,
