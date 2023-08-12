@@ -672,42 +672,43 @@ class HFDecoderModel(DecoderModel, Tunable):
             logger.warning("LoRA training is NOT enabled. Merging LoRA weights is not applicable.")
 
     def get_peft_without_qlora(self):
-        tempdir = Path.cwd()/'TEMP'
-        tempdir = tempdir.resolve()
-        tempdir = str(tempdir)
+        import tempfile
 
-        self.get_backend_model().save_pretrained(tempdir)
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            print('created temporary directory', tmpdirname)
 
-        torch_dtype = (
-            self.model_args.torch_dtype
-            if self.model_args.torch_dtype in ["auto", None]
-            else getattr(torch, self.model_args.torch_dtype)
-        )
-        config_kwargs = {
-            "cache_dir": self.model_args.cache_dir,
-            "revision": self.model_args.model_revision,
-            "use_auth_token": True if self.model_args.use_auth_token else None,
-        }
-        config = AutoConfig.from_pretrained(self.model_args.model_name_or_path, **config_kwargs)
-        device_map = "auto"
-        if os.environ.get('LOCAL_RANK') is not None:
-            local_rank = int(os.environ.get('LOCAL_RANK','0'))
-            device_map = {'': local_rank}
 
-        self.backend_model_full = AutoModelForCausalLM.from_pretrained(
-            self.model_args.model_name_or_path,
-            from_tf=bool(".ckpt" in self.model_args.model_name_or_path),
-            config=config,
-            cache_dir=self.model_args.cache_dir,
-            revision=self.model_args.model_revision,
-            use_auth_token=True if self.model_args.use_auth_token else None,
-            torch_dtype=torch_dtype,
-            device_map=device_map,
-            trust_remote_code = self.model_args.trust_remote_code,
-        )
-    
-        self.backend_model = PeftModel.from_pretrained(self.backend_model_full, tempdir)
-        shutil.rmtree(tempdir)
+            self.get_backend_model().save_pretrained(tmpdirname)
+
+            torch_dtype = (
+                self.model_args.torch_dtype
+                if self.model_args.torch_dtype in ["auto", None]
+                else getattr(torch, self.model_args.torch_dtype)
+            )
+            config_kwargs = {
+                "cache_dir": self.model_args.cache_dir,
+                "revision": self.model_args.model_revision,
+                "use_auth_token": True if self.model_args.use_auth_token else None,
+            }
+            config = AutoConfig.from_pretrained(self.model_args.model_name_or_path, **config_kwargs)
+            device_map = "auto"
+            if os.environ.get('LOCAL_RANK') is not None:
+                local_rank = int(os.environ.get('LOCAL_RANK','0'))
+                device_map = {'': local_rank}
+
+            self.backend_model_full = AutoModelForCausalLM.from_pretrained(
+                self.model_args.model_name_or_path,
+                from_tf=bool(".ckpt" in self.model_args.model_name_or_path),
+                config=config,
+                cache_dir=self.model_args.cache_dir,
+                revision=self.model_args.model_revision,
+                use_auth_token=True if self.model_args.use_auth_token else None,
+                torch_dtype=torch_dtype,
+                device_map=device_map,
+                trust_remote_code = self.model_args.trust_remote_code,
+            )
+        
+            self.backend_model = PeftModel.from_pretrained(self.backend_model_full, tmpdirname)
 
     def save(self, dir, save_full_model=False, *args, **kwargs):
         """
