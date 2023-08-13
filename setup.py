@@ -47,6 +47,6 @@ setup(
 try:
   gpu_state = subprocess.check_output(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"])
   if b"A100" or b"A40" in gpu_state:
-    subprocess.call(["pip", "install", "flash-attn==2.0.2"])
+    subprocess.call(["pip", "install", "flash-attn==2.0.4"])
 except:
   pass

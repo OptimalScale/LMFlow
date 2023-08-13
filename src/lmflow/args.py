@@ -151,6 +151,14 @@ class ModelArguments:
             )
         },
     )
+    trust_remote_code : bool = field(
+        default=False,
+        metadata={
+            "help": (
+                "Whether to trust remote code when loading model."
+            )
+        },
+    )
     torch_dtype: Optional[str] = field(
         default=None,
         metadata={
@@ -164,6 +172,24 @@ class ModelArguments:
     use_lora: bool = field(
         default=False,
         metadata={"help": "Whether to lora."},
+    )
+    use_qlora: bool = field(
+        default=False,
+        metadata={"help": "Whether to use qlora."},
+    )
+    bits: int = field(
+        default=4,
+        metadata={"help": "The number of bits for quantization.",
+                  "choices": [4, 8],},
+    )
+    quant_type: str = field(
+        default='nf4',
+        metadata={"help": "The quantization type for quantization.",
+                  "choices": ["nf4", "fp4"],},
+    )
+    double_quant: bool = field(
+        default=True,
+        metadata={"help": "Whether to use double quantization."},
     )
     lora_r: int = field(
         default=8,
