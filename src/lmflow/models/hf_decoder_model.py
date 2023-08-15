@@ -289,6 +289,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         device_map=device_map,
                         trust_remote_code = model_args.trust_remote_code,
                     )
+                #for deepspeed zero3, we don't need to specify device_map
                 except:
                     model = AutoModelForCausalLM.from_pretrained(
                         model_args.model_name_or_path,
