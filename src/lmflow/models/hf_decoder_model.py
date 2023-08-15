@@ -276,18 +276,31 @@ class HFDecoderModel(DecoderModel, Tunable):
                         bnb_4bit_use_double_quant=model_args.double_quant,
                         bnb_4bit_quant_type=model_args.quant_type,
                     )
-                model = AutoModelForCausalLM.from_pretrained(
-                    model_args.model_name_or_path,
-                    from_tf=bool(".ckpt" in model_args.model_name_or_path),
-                    config=config,
-                    quantization_config=quant_config if model_args.use_qlora else None,
-                    cache_dir=model_args.cache_dir,
-                    revision=model_args.model_revision,
-                    use_auth_token=True if model_args.use_auth_token else None,
-                    torch_dtype=torch_dtype,
-                    device_map=device_map,
-                    trust_remote_code = model_args.trust_remote_code,
-                )
+                try:
+                    model = AutoModelForCausalLM.from_pretrained(
+                        model_args.model_name_or_path,
+                        from_tf=bool(".ckpt" in model_args.model_name_or_path),
+                        config=config,
+                        quantization_config=quant_config if model_args.use_qlora else None,
+                        cache_dir=model_args.cache_dir,
+                        revision=model_args.model_revision,
+                        use_auth_token=True if model_args.use_auth_token else None,
+                        torch_dtype=torch_dtype,
+                        device_map=device_map,
+                        trust_remote_code = model_args.trust_remote_code,
+                    )
+                except:
+                    model = AutoModelForCausalLM.from_pretrained(
+                        model_args.model_name_or_path,
+                        from_tf=bool(".ckpt" in model_args.model_name_or_path),
+                        config=config,
+                        quantization_config=quant_config if model_args.use_qlora else None,
+                        cache_dir=model_args.cache_dir,
+                        revision=model_args.model_revision,
+                        use_auth_token=True if model_args.use_auth_token else None,
+                        torch_dtype=torch_dtype,
+                        trust_remote_code = model_args.trust_remote_code,
+                    )
                 if model_args.use_qlora:
                     model.gradient_checkpointing_enable()
                     model = prepare_model_for_kbit_training(model)
