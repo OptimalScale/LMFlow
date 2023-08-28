@@ -199,7 +199,11 @@ class Finetuner(BaseTuner):
         return lm_datasets
 
 
-    def tune(self, model, dataset, transform_dataset_in_place=True):
+    def tune(self,
+             model,
+             dataset,
+             transform_dataset_in_place=True,
+             data_collator=None):
         """
         Perform tuning for a model
 
@@ -219,12 +223,17 @@ class Finetuner(BaseTuner):
             dataset = copy.deepcopy(dataset)
 
         # Tokenization and text grouping must be done in the main process
-        with finetuner_args.main_process_first(desc="dataset map tokenization"):
-            tokenized_dataset = model.tokenize(dataset)
-            lm_dataset = self.group_text(
-                tokenized_dataset,
-                model_max_length=model.get_max_length(),
-            )
+        if dataset.backend == "custom_multi_modal":
+            dataset.backend_dataset.register_tokenizer(
+                model.tokenizer, model.image_processor)
+            lm_dataset = dataset
+        else:
+            with finetuner_args.main_process_first(desc="dataset map tokenization"):
+                tokenized_dataset = model.tokenize(dataset)
+                lm_dataset = self.group_text(
+                    tokenized_dataset,
+                    model_max_length=model.get_max_length(),
+                )
 
         train_dataset = lm_dataset.get_backend_dataset()
 
@@ -251,7 +260,6 @@ class Finetuner(BaseTuner):
             metric = evaluate.load("accuracy")
 
             def compute_metrics(eval_preds):
-                # import pdb; pdb.set_trace()
                 preds, labels = eval_preds
                 # preds have the same shape as the labels, after the argmax(-1) has been calculated
                 # by preprocess_logits_for_metrics but we need to shift the labels
@@ -273,7 +281,8 @@ class Finetuner(BaseTuner):
         else:
             FinetuningTrainer = Trainer
             trainer_callbacks = []
-
+        if data_collator is None:
+            data_collator = default_data_collator
         trainer = FinetuningTrainer(
             model=model.get_backend_model(),
             args=training_args,
@@ -281,12 +290,11 @@ class Finetuner(BaseTuner):
             eval_dataset=eval_dataset if training_args.do_eval else None,
             tokenizer=model.get_tokenizer(),
             # Data collator will default to DataCollatorWithPadding, so we change it.
-            data_collator=default_data_collator,
+            data_collator=data_collator,
             compute_metrics=compute_metrics if training_args.do_eval else None,
             preprocess_logits_for_metrics=preprocess_logits_for_metrics if training_args.do_eval else None,
             callbacks=trainer_callbacks
         )
-
         # Training
         if training_args.do_train:
             checkpoint = None

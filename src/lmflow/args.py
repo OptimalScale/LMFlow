@@ -288,6 +288,26 @@ class VisModelArguments(ModelArguments):
         default=None,
         metadata={"help": "path for model checkpoint"}
     )
+    custom_vision_model: bool = field(
+        default=False,
+        metadata={"help": "flag for the model from huggingface or not"}
+    )
+    image_encoder_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "The name or path of the image encoder to use."
+            )
+        },
+    )
+    qformer_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "llm model in multi-modality model"
+            )
+        },
+    )
     llm_model_name_or_path: Optional[str] = field(
         default=None,
         metadata={
@@ -303,6 +323,18 @@ class VisModelArguments(ModelArguments):
     prompt_cache_path: Optional[str] = field(
         default=None,
         metadata={"help": "Path to prompt cache."},
+    )
+    llava_loading: Optional[bool] = field(
+        default=False,
+        metadata={"help": "Whether to load module by module from pretrained model."},
+    )
+    with_qformer: Optional[bool] = field(
+        default=False,
+        metadata={"help": "Whether to use qformer."},
+    )
+    vision_select_layer: Optional[int] = field(
+        default=-2,
+        metadata={"help": "Which layer to select in vision model."},
     )
 
 
@@ -470,12 +502,34 @@ class DatasetArguments:
 
 
 @dataclass
+class MultiModalDatasetArguments(DatasetArguments):
+    image_folder: Optional[str] = field(
+        default=None, metadata={"help": "The folder of the image file."}
+    )
+    image_aspect_ratio: Optional[str] = field(
+        default="pad", metadata={"help": "The ratio type"}
+    )
+    is_multimodal: Optional[bool] = field(
+        default=True, metadata={"help": "Flag for the modality type."}
+    )
+    use_image_start_end: Optional[bool] = field(
+        default=True, metadata={"help": "Flag for the modality type."}
+    )
+
+
+
+@dataclass
 class FinetunerArguments(TrainingArguments):
     """
     Adapt transformers.TrainingArguments
     """
     eval_dataset_path: Optional[str] = field(
         default=None, metadata={"help": "The path of the eval dataset to use."}
+    )
+    remove_unused_columns: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "wheather to remove the unused columns in collate fn"}
     )
 
 

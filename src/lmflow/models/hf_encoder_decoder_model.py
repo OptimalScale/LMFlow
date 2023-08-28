@@ -34,7 +34,6 @@ from peft import (
 )
 
 import torch
-import transformers
 from transformers.deepspeed import HfDeepSpeedConfig
 
 from transformers.testing_utils import CaptureLogger
@@ -47,13 +46,9 @@ from transformers import (
     AutoModelForVision2Seq,
     AutoModel,
     AutoProcessor,
-    LlamaTokenizer
+    LlamaTokenizer,
+    LlamaConfig
 )
-
-from transformers import (Blip2VisionConfig,
-                          Blip2QFormerConfig,
-                          Blip2Config,
-                          LlamaConfig)
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.encoder_decoder_model import EncoderDecoderModel
@@ -183,38 +178,68 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             #     self.backend_model = model_register.from_pretrained(
             #         model_args.model_name_or_path)
             else:
-                model = CustomAutoVision2SeqModel.from_pretrained(model_args.model_name_or_path)
-                if model_args.llm_model_name_or_path is not None:
-                    text_config = LlamaConfig.from_pretrained(model_args.llm_model_name_or_path)
-                    model.config.text_config = text_config
-                model.language_model_from_pretrained(model_args.llm_model_name_or_path,
-                                                     low_resource=model_args.low_resource)
-                state_dict = torch.load(model_args.checkpoint_path, map_location="cpu")
-                model.load_state_dict(state_dict, strict=False)
-                # model = CustomAutoVision2SeqModel.from_pretrained(
-                    # "/home/qlianab/checkpoints/pretrained_weights/minigpt4-lmflow-vicuna-7b-low_resource/"）
+                if model_args.llava_loading is False:
+                    # FIXME remove the following from_pretrained code by
+                    # creating a unified pretrained model.
+                    model = CustomAutoVision2SeqModel.from_pretrained(model_args.model_name_or_path)
+                    if model_args.llm_model_name_or_path is not None:
+                        text_config = LlamaConfig.from_pretrained(model_args.llm_model_name_or_path)
+                        model.config.text_config = text_config
+                    model.language_model_from_pretrained(model_args.llm_model_name_or_path,
+                                                        low_resource=model_args.low_resource)
+                    state_dict = torch.load(model_args.checkpoint_path, map_location="cpu")
+                    model.load_state_dict(state_dict, strict=False)
+                    # model = CustomAutoVision2SeqModel.from_pretrained(
+                        # "/home/qlianab/checkpoints/pretrained_weights/minigpt4-lmflow-vicuna-7b-low_resource/"
+                else:
+                    config = AutoConfig.from_pretrained(
+                        model_args.model_name_or_path)
+                    if model_args.llm_model_name_or_path is not None:
+                        text_config = LlamaConfig.from_pretrained(
+                            model_args.llm_model_name_or_path)
+                        config.text_config = text_config
+                    model = CustomAutoVision2SeqModel(
+                        config,
+                        custom_vision_model=model_args.custom_vision_model,
+                        image_encoder_name_or_path=model_args.image_encoder_name_or_path,
+                        qformer_name_or_path=model_args.qformer_name_or_path,
+                        language_model_name_or_path=model_args.llm_model_name_or_path,
+                        with_qformer=model_args.with_qformer,
+                        model_args=model_args)
                 self.backend_model = model
 
+            # init tokenizer
             if self.arch_type == "encoder_decoder":
-                tokenizer_register = AutoTokenizer
+                self.tokenizer = AutoTokenizer.from_pretrained(
+                    model_args.model_name_or_path, trust_remote_code=True)
             elif self.arch_type == "vision_encoder_decoder":
-                tokenizer_register = AutoProcessor
+                if model_args.llava_loading is False:
+                    self.tokenizer = AutoProcessor.from_pretrained(
+                        model_args.model_name_or_path, trust_remote_code=True)
+                    if model_args.llm_model_name_or_path is not None:
+                        self.tokenizer.tokenizer = \
+                            AutoTokenizer.from_pretrained(
+                                model_args.llm_model_name_or_path)
+                    self.image_processor = self.tokenizer.image_processor
+                else:
+                    self.tokenizer = AutoTokenizer.from_pretrained(
+                        model_args.llm_model_name_or_path)
+                    self.image_processor = self.backend_model.image_processor
             else:
                 raise NotImplementedError
-            self.tokenizer = tokenizer_register.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
-            if model_args.llm_model_name_or_path is not None:
-                self.tokenizer.tokenizer = LlamaTokenizer.from_pretrained(model_args.llm_model_name_or_path)
+
             self.backend_model_full = self.backend_model
             if peft_model_id is not None:
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
                 )
-            if device == "gpu":
-                deepspeed.init_distributed()
-                self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
-                self.ds_engine.module.eval()
+            # import pdb; pdb.set_trace()
+            # if device == "gpu":
+            #     deepspeed.init_distributed()
+            #     self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
+            #     self.ds_engine.module.eval()
 
-            self.tokenizer.padding_side = "left" #necessary for auto-gressive inference
+            self.tokenizer.padding_side = "left" # necessary for auto-gressive inference
 
         elif tune_strategy == 'adapter':
             raise NotImplementedError('adapter tune strategy not implemented')

@@ -7,31 +7,101 @@ import logging
 import time
 import torch
 import torch.nn as nn
-from typing import List, Optional, Union
+from typing import List, Optional, Tuple, Union
+from torch.nn import CrossEntropyLoss
 
 from transformers import (
+    AutoModelForCausalLM,
+    AutoModelForSeq2SeqLM,
+    AutoModel,
     Blip2ForConditionalGeneration,
     Blip2Config,
-    AutoModelForCausalLM
+    Blip2QFormerModel,
+    Blip2VisionModel,
+    Blip2PreTrainedModel
 )
+from transformers.modeling_outputs import CausalLMOutputWithPast
 
 from .base_model import BaseModel
+from .vision_encoder import build_vision_tower
 
 class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
-    def __init__(self, config: Blip2Config):
-        Blip2ForConditionalGeneration.__init__(self, config)
-        self.with_prompt_cache = False
-        self.cache_dict = {}
+    def __init__(self,
+                 config: Blip2Config,
+                 custom_vision_model=False,
+                 image_encoder_name_or_path=None,
+                 qformer_name_or_path=None,
+                 language_model_name_or_path=None,
+                 with_qformer=True,
+                 model_args=None):
+        super(Blip2PreTrainedModel, self).__init__(config)
+        self.custom_vision_model = custom_vision_model
+        self.with_qformer = with_qformer
+        if custom_vision_model:
+            self.vision_model = build_vision_tower(model_args)
+            config.vision_config = self.vision_model.config
+            self.image_processor = self.vision_model.image_processor
+        elif image_encoder_name_or_path is not None:
+            self.vision_model = AutoModel.from_pretrained(
+                image_encoder_name_or_path)
+            config.vision_config = self.vision_model.config
+        else:
+            self.vision_model = Blip2VisionModel(config.vision_config)
+        if self.with_qformer:
+            if qformer_name_or_path is not None:
+                self.query_tokens = nn.Parameter(
+                    torch.zeros(1, config.num_query_tokens,
+                                config.qformer_config.hidden_size))
+                self.qformer = AutoModel.from_pretrained(
+                    qformer_name_or_path)
+            else:
+                self.query_tokens = nn.Parameter(
+                    torch.zeros(1, config.num_query_tokens,
+                                config.qformer_config.hidden_size))
+                self.qformer = Blip2QFormerModel(config.qformer_config)
+        if language_model_name_or_path is not None:
+            language_model = AutoModelForCausalLM.from_pretrained(
+                language_model_name_or_path)
+            config.text_config = language_model.config
+        else:
+            if config.use_decoder_only_language_model:
+                language_model = AutoModelForCausalLM.from_config(
+                    config.text_config)
+            else:
+                language_model = AutoModelForSeq2SeqLM.from_config(
+                    config.text_config)
+        # Update _tied_weights_keys using the base model used.
+        if language_model._tied_weights_keys is not None:
+            self._tied_weights_keys = [f"language_model.{k}" for k in language_model._tied_weights_keys]
+
+        self.language_model = language_model
+        if self.with_qformer:
+            self.language_projection = nn.Linear(
+                self.qformer.hidden_size,
+                self.language_model.config.hidden_size)
+        else:
+            self.language_projection = nn.Linear(
+                self.vision_model.hidden_size,
+                self.language_model.config.hidden_size)
+        if image_encoder_name_or_path is None and \
+           language_model_name_or_path is None:
+            self.post_init()
+        # for deepspeed
+        self.hidden_size = self.language_model.config.hidden_size
+        self.config.hidden_size = self.language_model.config.hidden_size
+    
+    def get_backend_model(self):
+        return self
 
     def vision_model_from_pretrained(self, pretrained_path):
         self.vision_model = self.vision_model.from_pretrained(
                                 pretrained_path,
                                 config=self.config.vision_config)
+
     def qformer_from_pretrained(self, pretrained_path):
         self.qformer = self.qformer.from_pretrained(
                                 pretrained_path,
                                 config=self.config.qformer_config)
-        # print(self.qformer.encoder.layer[11].output_query.dense.weight.mean())
 
     def language_model_from_pretrained(self,
                                        pretrained_path,
@@ -58,6 +128,16 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             self.language_projection = nn.Linear(in_channels,
                                                  self.config.text_config.hidden_size,
                                                  bias=True)
+
+    def vision_feature_select(self, image_forward_outs):
+        image_features = image_forward_outs.hidden_states[self.vision_feature_select_layer]
+        if self.select_vision_feature_type == "patch":
+            image_features = image_features[:, 1:]
+        elif self.select_vision_feature_type == "cls_patch":
+            image_features = image_features
+        else:
+            raise ValueError(f'Unexpected select feature: {self.select_feature}')
+        return image_features
 
     def register_prompt_cache(self, prompt_ids, prompt_keys_values):
         """
@@ -104,6 +184,86 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         prompt_cache = torch.load(path)
         self.register_prompt_cache(prompt_cache["prompt_ids"],
                                    prompt_cache["prompt_keys_values"])
+    
+    def get_tokenizer(self):
+        return self.tokenizer
+
+    def forward(
+        self,
+        input_ids: torch.LongTensor = None,
+        pixel_values: Optional[torch.FloatTensor] = None,
+        images: Optional[torch.FloatTensor] = None,
+        attention_mask: Optional[torch.Tensor] = None,
+        past_key_values: Optional[List[torch.FloatTensor]] = None,
+        inputs_embeds: Optional[torch.FloatTensor] = None,
+        labels: Optional[torch.LongTensor] = None,
+        use_cache: Optional[bool] = None,
+        output_attentions: Optional[bool] = None,
+        output_hidden_states: Optional[bool] = None,
+        return_dict: Optional[bool] = None,
+    ) -> Union[Tuple, CausalLMOutputWithPast]:
+        if pixel_values is None and images is not None:
+            pixel_values = images
+        output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
+        output_hidden_states = (
+            output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
+        )
+        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+        if self.custom_vision_model:
+            # do the processing in the vision model
+            # language is the causallm model.
+            # so use language model.model to do the embed_tokens
+            input_ids, attention_mask, past_key_values, inputs_embeds, labels = \
+                self.vision_model.prepare_inputs_labels_for_multimodal(
+                    input_ids, attention_mask,
+                    past_key_values, labels,
+                    pixel_values,
+                    self.language_projection,
+                    self.language_model.model)
+        else:
+            # do the processing as blip2 and mini gpt-4;
+            raise NotImplementedError
+        # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
+        # TODO check how to generate the labels with image embeddings
+        # print(input_ids, attention_mask)
+        # if inputs_embeds is not None:
+        #     print("input_embeds", inputs_embeds.shape)
+        # attention_mask.shape, inputs_embeds.shape)
+        outputs = self.language_model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            past_key_values=past_key_values,
+            inputs_embeds=inputs_embeds,
+            use_cache=use_cache,
+            output_attentions=output_attentions,
+            output_hidden_states=output_hidden_states,
+            return_dict=return_dict
+        )
+        if labels is not None:
+            logits = outputs[0]
+            shift_logits = logits[..., :-1, :].contiguous()
+            shift_labels = labels[..., 1:].contiguous()
+            # Flatten the tokens
+            loss_fct = CrossEntropyLoss()
+            shift_logits = shift_logits.view(
+                -1, self.config.text_config.vocab_size)
+            shift_labels = shift_labels.view(-1)
+            # Enable model/pipeline parallelism
+            shift_labels = shift_labels.to(shift_logits.device)
+            loss = loss_fct(shift_logits, shift_labels)
+        
+        if not return_dict:
+            output = (shift_logits,) + outputs[1:]
+            return ((loss,) + output) if loss is not None else output
+        
+        return CausalLMOutputWithPast(
+            loss=loss,
+            logits=logits,
+            past_key_values=outputs.past_key_values,
+            hidden_states=outputs.hidden_states,
+            attentions=outputs.attentions,
+        )
+
 
 
     @torch.no_grad()
@@ -141,19 +301,24 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             batch_size = pixel_values.shape[0]
         else:
             batch_size = 1
-
-        image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
+        if not self.custom_vision_model:
+            image_embeds = self.vision_model(pixel_values, return_dict=True).last_hidden_state
+        else:
+            image_embeds = self.vision_model.prepare_image_embeds(pixel_values)
         image_attention_mask = torch.ones(image_embeds.size()[:-1], dtype=torch.long, device=image_embeds.device)
-
-        query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-        query_outputs = self.qformer(
-            query_embeds=query_tokens,
-            encoder_hidden_states=image_embeds,
-            encoder_attention_mask=image_attention_mask,
-            return_dict=True,
-        )
+        if self.with_qformer:
+            query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
+            query_outputs = self.qformer(
+                query_embeds=query_tokens,
+                encoder_hidden_states=image_embeds,
+                encoder_attention_mask=image_attention_mask,
+                return_dict=True,
+            )
+        else:
+            query_outputs = image_embeds
         query_output = query_outputs.last_hidden_state
         language_model_inputs = self.language_projection(query_output)
+
 
         language_attention_mask = torch.ones(
             language_model_inputs.size()[:-1], dtype=torch.long, device=language_model_inputs.device

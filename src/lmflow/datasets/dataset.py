@@ -29,6 +29,8 @@ from lmflow.utils.constants import (
     INSTANCE_FIELDS_MAP,
 )
 
+from .multi_modal_dataset import CustomMultiModalDataset
+
 DATASET_TYPES = [
     "text_only",
     "text2text",
@@ -111,9 +113,14 @@ class Dataset:
         elif backend == "json":
             # TODO (@Jiachun)
             pass
+        elif backend == "custom_multi_modal":
+            raw_dataset = CustomMultiModalDataset(self.dataset_path, data_args)
+            self.backend_dataset = raw_dataset
         else:
             raise NotImplementedError(f'Unsupported dataset backend "{backend}"')
 
+    def __len__(self):
+        return len(self.backend_dataset)
 
     def _check_data_format(self):
         """Checks if data type and data structure matches
