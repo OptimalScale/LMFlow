@@ -385,7 +385,7 @@ class SpeculativeInferencer(Inferencer):
             prob = self.score_to_prob(pred.scores[0])
             sampled = self.sample(prob=prob, num_samples=1)
             new_tokens.append(sampled)
-            sequence = torch.cat([sequence, sampled['token']], dim=1)
+            sequence = torch.cat([sequence, sampled['sampled_token']], dim=1)
             
         return {"sequence": sequence, "new_tokens": new_tokens}
     
@@ -455,6 +455,8 @@ class SpeculativeInferencer(Inferencer):
             # STEP 1: Sample γ guesses x1,...,γ from Mq (draft model) autoregressively
             len_input_ids= input_ids.shape[1]
             outputs_draft = self.autoregressive_sampling(input_ids=input_ids, model=draft_model, num_new_tokens=gamma)
+            print(f"draft result: {outputs_draft['sequence']}")
+            print(f"draft result decoded: {draft_model.decode(outputs_draft['sequence'][0])}")
             
             
             # STEP 2: Run Mp (target model) in parallel
@@ -499,20 +501,21 @@ class SpeculativeInferencer(Inferencer):
 
             return flnal_sequences
         
-        
-        input_ids = inputs['input_ids']
+
         num_generated_new_tokens = 0
         while num_generated_new_tokens < max_new_tokens:
-            sampling_result = speculative_sampling(input_ids=input_ids,
+            print(f'=====New iter=====')
+            print(f"input_ids: {inputs}")
+            sampling_result = speculative_sampling(input_ids=inputs,
                                                    draft_model=draft_model,
                                                    model_list=model_list)
-            print(sampling_result)
-            print(model.decode(sampling_result[0]))
-            num_generated_new_tokens += len(sampling_result[0]) - len(input_ids)
-            input_ids = sampling_result
+            print(f'sampling result: {sampling_result}')
+            print(f'sampling result decoded: {model.decode(sampling_result[0])}')
+            num_generated_new_tokens += len(sampling_result[0]) - len(inputs)
+            inputs = sampling_result
         
         
-        return model.decode(input_ids[0])
+        return model.decode(inputs[0])
         
 
     def stream_inference(self):
