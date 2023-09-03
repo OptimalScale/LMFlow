@@ -58,7 +58,7 @@ def main():
         data_args=data_args,
         pipeline_args=pipeline_args,
     )
-    model = AutoModel.get_model(model_args, tune_strategy='none',
+    model = AutoModel.get_model(model_args, tune_strategy='finetune',
                                 ds_config=pipeline_args.deepspeed,
                                 custom_model=True)
     for param in model.backend_model.language_model.parameters():

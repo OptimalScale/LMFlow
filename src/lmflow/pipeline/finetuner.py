@@ -130,7 +130,7 @@ class Finetuner(BaseTuner):
                 block_size = 1024
         else:
             if data_args.block_size > model_max_length:
-                if self.model_args.truncate_to_model_max_length:        
+                if self.model_args.truncate_to_model_max_length:
                     logger.warning(
                         f"The block_size passed ({data_args.block_size}) is larger"
                         f" than the maximum length for the model"
@@ -296,6 +296,7 @@ class Finetuner(BaseTuner):
             callbacks=trainer_callbacks
         )
         # Training
+        # import pdb; pdb.set_trace()
         if training_args.do_train:
             checkpoint = None
             last_checkpoint = self.last_checkpoint

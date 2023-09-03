@@ -284,9 +284,9 @@ class VisModelArguments(ModelArguments):
         default=False,
         metadata={"help": "flag for the model from huggingface or not"}
     )
-    checkpoint_path: str = field(
+    pretrained_language_projection_path: str = field(
         default=None,
-        metadata={"help": "path for model checkpoint"}
+        metadata={"help": "path for model pretrained_language_projection_path"}
     )
     custom_vision_model: bool = field(
         default=False,
@@ -336,8 +336,14 @@ class VisModelArguments(ModelArguments):
         default=-2,
         metadata={"help": "Which layer to select in vision model."},
     )
-
-
+    llava_pretrain_model_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to llava pretrained model."},
+    )
+    save_pretrain_model_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to pretrained model."},
+    )
 
 @dataclass
 class DatasetArguments:

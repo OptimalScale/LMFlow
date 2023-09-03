@@ -129,7 +129,7 @@ class CLIPVisionTower(nn.Module):
             if (cur_input_ids == IMAGE_TOKEN_INDEX).sum() == 0:
                 # multimodal LLM, but the current sample is not multimodal
                 cur_input_embeds = language_model.embed_tokens(cur_input_ids)
-                cur_input_embeds = cur_input_embeds + (0. * language_model.language_projection(vision_tower.dummy_feature)).sum()
+                cur_input_embeds = cur_input_embeds + (0. * language_projection(vision_tower.dummy_feature)).sum()
                 new_input_embeds.append(cur_input_embeds)
                 if labels is not None:
                     new_labels.append(labels[batch_idx])
@@ -199,7 +199,6 @@ class CLIPVisionTower(nn.Module):
                     cur_new_label = torch.cat((cur_new_label, torch.full((max_len - cur_new_label.shape[0],), IGNORE_INDEX, dtype=cur_new_label.dtype, device=cur_new_label.device)), dim=0)
                     new_labels_align.append(cur_new_label)
                 new_labels = torch.stack(new_labels_align, dim=0)
-
             if attention_mask is not None:
                 new_attention_mask = []
                 for cur_attention_mask, cur_new_labels, cur_new_labels_align in zip(attention_mask, _new_labels, new_labels):
@@ -213,7 +212,6 @@ class CLIPVisionTower(nn.Module):
             new_input_embeds = torch.stack(new_input_embeds, dim=0)
             if labels is not None:
                 new_labels = torch.stack(new_labels, dim=0)
-
             if attention_mask is not None:
                 new_attn_mask_pad_left = torch.full((attention_mask.shape[0], new_input_embeds.shape[1] - input_ids.shape[1]), True, dtype=attention_mask.dtype, device=attention_mask.device)
                 attention_mask = torch.cat((new_attn_mask_pad_left, attention_mask), dim=1)

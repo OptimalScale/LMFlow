@@ -24,7 +24,6 @@ import time
 from typing import List, Union
 
 import deepspeed
-
 from peft import (
     LoraConfig,
     PeftModel,
@@ -46,7 +45,6 @@ from transformers import (
     AutoModelForVision2Seq,
     AutoModel,
     AutoProcessor,
-    LlamaTokenizer,
     LlamaConfig
 )
 
@@ -54,6 +52,7 @@ from lmflow.datasets.dataset import Dataset
 from lmflow.models.encoder_decoder_model import EncoderDecoderModel
 from lmflow.models.interfaces.tunable import Tunable
 from lmflow.models.vision2seq_model import CustomAutoVision2SeqModel
+from lmflow.models.utils import update_custom_config, load_llava_pretrain_model
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +88,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         device="gpu",
         use_accelerator=False,
         custom_model=False,
+        with_deepspeed=True,
         *args,
         **kwargs
     ):
@@ -114,7 +114,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             raise NotImplementedError(
                 f"tune_strategy \"{tune_strategy}\" is not supported"
             )
-        elif tune_strategy == 'none':
+        elif tune_strategy == 'none' or "finetune":
             if use_accelerator:
                 raise NotImplementedError(
                     f"Currently encoder2decoder model is not supported with accelerator"
@@ -187,43 +187,79 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                         model.config.text_config = text_config
                     model.language_model_from_pretrained(model_args.llm_model_name_or_path,
                                                         low_resource=model_args.low_resource)
-                    state_dict = torch.load(model_args.checkpoint_path, map_location="cpu")
+                    state_dict = torch.load(
+                        model_args.pretrained_language_projection_path,
+                        map_location="cpu")
                     model.load_state_dict(state_dict, strict=False)
+                    # model.save_pretrained("/home/qlianab/data1/checkpoints/minigpt-4_robin7b/")
                     # model = CustomAutoVision2SeqModel.from_pretrained(
                         # "/home/qlianab/checkpoints/pretrained_weights/minigpt4-lmflow-vicuna-7b-low_resource/"
                 else:
                     config = AutoConfig.from_pretrained(
                         model_args.model_name_or_path)
-                    if model_args.llm_model_name_or_path is not None:
-                        text_config = LlamaConfig.from_pretrained(
-                            model_args.llm_model_name_or_path)
-                        config.text_config = text_config
-                    model = CustomAutoVision2SeqModel(
-                        config,
-                        custom_vision_model=model_args.custom_vision_model,
-                        image_encoder_name_or_path=model_args.image_encoder_name_or_path,
-                        qformer_name_or_path=model_args.qformer_name_or_path,
-                        language_model_name_or_path=model_args.llm_model_name_or_path,
-                        with_qformer=model_args.with_qformer,
-                        model_args=model_args)
+                    if model_args.low_resource:
+                        kwargs = dict(
+                            torch_dtype=torch.float16,
+                            load_in_8bit=True,
+                            device_map="auto"
+                        )
+                    else:
+                        kwargs = {}
+                    if model_args.image_encoder_name_or_path is None and \
+                       model_args.qformer_name_or_path is None and \
+                       model_args.llm_model_name_or_path is None:
+                        config = AutoConfig.from_pretrained(
+                            model_args.model_name_or_path)
+                        model = CustomAutoVision2SeqModel.from_pretrained(
+                            model_args.model_name_or_path, **kwargs)
+                    else:
+                        config = update_custom_config(config, model_args)
+                        model = CustomAutoVision2SeqModel(
+                            config,
+                            image_encoder_name_or_path=model_args.image_encoder_name_or_path,
+                            qformer_name_or_path=model_args.qformer_name_or_path,
+                            language_model_name_or_path=model_args.llm_model_name_or_path,
+                            low_resource=model_args.low_resource)
+                        if model_args.pretrained_language_projection_path is not None:
+                            state_dict = torch.load(
+                                model_args.pretrained_language_projection_path, map_location="cpu")
+                            new_state_dict = {}
+                            new_state_dict['model.language_projection.weight'] = \
+                                state_dict['model.mm_projector.weight']
+                            new_state_dict['model.language_projection.bias'] = \
+                                state_dict['model.mm_projector.bias']
+                if model_args.llava_pretrain_model_path is not None:
+                    # used for inference that directly load the preatrain model
+                    model = load_llava_pretrain_model(
+                        model, model_args.llava_pretrain_model_path)
+                    if model_args.save_pretrain_model_path is not None:
+                        model.save_pretrained(
+                            model_args.save_pretrain_model_path)
                 self.backend_model = model
-
             # init tokenizer
             if self.arch_type == "encoder_decoder":
                 self.tokenizer = AutoTokenizer.from_pretrained(
                     model_args.model_name_or_path, trust_remote_code=True)
             elif self.arch_type == "vision_encoder_decoder":
                 if model_args.llava_loading is False:
+                    # blip2 image and token processor
                     self.tokenizer = AutoProcessor.from_pretrained(
                         model_args.model_name_or_path, trust_remote_code=True)
                     if model_args.llm_model_name_or_path is not None:
+                        # update the tokenizer from the custom llm.
                         self.tokenizer.tokenizer = \
                             AutoTokenizer.from_pretrained(
                                 model_args.llm_model_name_or_path)
                     self.image_processor = self.tokenizer.image_processor
+
                 else:
-                    self.tokenizer = AutoTokenizer.from_pretrained(
-                        model_args.llm_model_name_or_path)
+                    # image processor is stored in the vision encoder
+                    if model_args.llm_model_name_or_path is not None:
+                        self.tokenizer = AutoTokenizer.from_pretrained(
+                            model_args.llm_model_name_or_path)
+                    else:
+                        self.tokenizer = AutoTokenizer.from_pretrained(
+                            config.text_config._name_or_path)
                     self.image_processor = self.backend_model.image_processor
             else:
                 raise NotImplementedError
@@ -233,11 +269,13 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 self.backend_model = PeftModel.from_pretrained(
                     self.backend_model, peft_model_id
                 )
-            # import pdb; pdb.set_trace()
-            # if device == "gpu":
-            #     deepspeed.init_distributed()
-            #     self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
-            #     self.ds_engine.module.eval()
+            if tune_strategy == "none" and with_deepspeed is True:
+                # when load the model with 4bit / 8bit.
+                # fail to use deepspeed.
+                if device == "gpu":
+                    deepspeed.init_distributed()
+                    self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
+                    self.ds_engine.module.eval()
 
             self.tokenizer.padding_side = "left" # necessary for auto-gressive inference
 
@@ -292,10 +330,24 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         outputs :
             The tokenized inputs.
         """
+        # check how to handle the image processor
         if isinstance(input, dict):
             # TODO refactor the input type to make it elegant.
             kwargs.update(input)
-            tokens = self.tokenizer(*args, **kwargs)
+            if "images" not in input:
+                tokens = self.tokenizer(*args, **kwargs)
+            else:
+                if getattr(self.tokenizer, "image_processor", None) is not None:
+                    tokens = self.tokenizer(*args, **kwargs)
+                elif getattr(self, "image_processor", None) is not None:
+                    images = kwargs.pop("images")
+                    tokens = self.tokenizer(*args, **kwargs)
+                    images = self.image_processor.preprocess(
+                        images, return_tensors='pt')['pixel_values'][0]
+                    tokens['pixel_values'] = images
+                else:
+                    print("Can not find the image processor")
+                    raise NotImplementedError
             return tokens
         elif isinstance(input, list):
             return self.tokenizer(text=input, *args, **kwargs)#batch encode,will automatically do left padding
@@ -372,12 +424,20 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
 
         with torch.no_grad():
             if self.device == "gpu":
-                outputs = self.ds_engine.module.generate(
-                    input_ids=inputs,
-                    synced_gpus=True,
-                    *args,
-                    **kwargs
-                )
+                if getattr(self, "ds_engine", None) is not None:
+                    outputs = self.ds_engine.module.generate(
+                        input_ids=inputs,
+                        synced_gpus=True,
+                        *args,
+                        **kwargs
+                    )
+                else:
+                    outputs = self.backend_model.generate(
+                        input_ids=inputs,
+                        synced_gpus=True,
+                        *args,
+                        **kwargs,
+                    )
             elif self.device == "cpu":
                 outputs = self.backend_model.generate(
                     input_ids=inputs,

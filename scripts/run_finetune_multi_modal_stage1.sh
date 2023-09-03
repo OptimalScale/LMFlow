@@ -8,7 +8,7 @@ model_name_or_path=Salesforce/blip2-flan-t5-xxl
 dataset_path=/home/qlianab/data1/llm/CC3M-Pretrain-595K/cc3m_595k.json
 image_folder=/home/qlianab/data1/llm/CC3M-Pretrain-595K/images
 output_dir=output_models/finetune
-deepspeed_args="--master_port=12000 --include localhost:8"
+deepspeed_args="--master_port=12000 --include localhost:9"
 
 while [[ $# -ge 1 ]]; do
   key="$1"
@@ -55,7 +55,6 @@ deepspeed ${deepspeed_args} \
     --custom_vision_model True \
     --llm_model_name_or_path lmsys/vicuna-7b-v1.5 \
     --image_aspect_ratio None \
-    --num_train_epochs 1 \
     --fp16 True \
     --learning_rate 2e-5 \
     --gradient_accumulation_steps 1 \
@@ -71,5 +70,6 @@ deepspeed ${deepspeed_args} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
+    --max_steps 1 \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err

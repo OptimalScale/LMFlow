@@ -80,7 +80,12 @@ class ChatbotArguments:
             "help": "whether to do the stream inference"
         }
     )
-
+    with_deepspeed: Optional[bool] = field(
+        default=True,
+        metadata={
+            "help": "whether to use deepspeed"
+        }
+    )
 
 def main():
     pipeline_name = "inferencer"
@@ -104,10 +109,11 @@ def main():
         ds_config=ds_config,
         device=pipeline_args.device,
         custom_model=model_args.custom_model,
+        with_deepspeed=chatbot_args.with_deepspeed,
     )
 
     data_args = DatasetArguments(dataset_path=None)
-    dataset = Dataset(data_args)
+    dataset = Dataset(data_args, backend="dict")
 
     inferencer = AutoPipeline.get_pipeline(
         pipeline_name=pipeline_name,
@@ -140,13 +146,21 @@ def main():
     #     " unconditionally."
     # )
 
-    sep = "###"
 
     end_string = chatbot_args.end_string
     if chatbot_args.prompt_format == "mini_gpt":
         context = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
+        user_name = "Human"
+        sep = "###"
+
+    elif chatbot_args.prompt_format == "llava":
+        context = "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions."
+        user_name = "USER"
+        sep = " "
     else:
         context = ""
+        user_name = ""
+        sep = "###"
     prompt_structure = chatbot_args.prompt_structure
 
     # Load image and input text for reasoning
@@ -162,7 +176,9 @@ def main():
     if chatbot_args.task == "image_caption" and len(input_text) == 0:
         input_text = "a photography of"
     if chatbot_args.prompt_format == "mini_gpt":
-        context += sep + "Human: " + "<Img><ImageHere></Img> "
+        context += sep + user_name + ": " + "<Img><ImageHere></Img> "
+    elif chatbot_args.prompt_format == "llava":
+        context += sep + user_name + ": " + "<image>\n"
 
     # this flag is for determining if we need to add the ###Human: prompt
     # if text after loading image, we add it when loading image
@@ -179,7 +195,7 @@ def main():
         input_dataset = dataset.from_dict({
             "type": "image_text",
             "instances": [{"images": np.stack(image_list),
-                        "text":  input_text,}]
+                           "text":  input_text,}]
         })
         output = inferencer.inference(model, input_dataset)
         print(output.backend_dataset['text'])
@@ -200,7 +216,12 @@ def main():
                     # batch of image with different shape
                     raw_image = raw_image.resize(base_size)
                     image_list.append(np.array(raw_image))
-                    context += sep + "Human: " + "<Img><ImageHere></Img> "
+                    if chatbot_args.prompt_format == "mini_gpt":
+                        context += sep + user_name + ": " + "<Img><ImageHere></Img> "
+                    elif chatbot_args.prompt_format == "llava":
+                        context += sep + user_name + ": " + "<image>\n"
+                    else:
+                        raise NotImplementedError
                     text_after_loading_image = True
                     print("Finish loading image with path {}".format(image_path))
                     continue
@@ -213,8 +234,7 @@ def main():
                 continue
             
             if text_after_loading_image is False:
-                if chatbot_args.prompt_format == "mini_gpt":
-                    context += sep + "Human: "
+                context += sep + user_name + ": "
             else:
                 text_after_loading_image = False
             
@@ -229,14 +249,18 @@ def main():
                 "instances": [{"images": np.stack(image_list),
                                "text":  context,}]
             })
-            remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
+            if chatbot_args.prompt_format in ["mini_gpt", "llava"]:
+                remove_image_flag = True
+            else:
+                remove_image_flag = False
             begin_time = time.time()
             if not chatbot_args.stream_inference:
                 # directly inference the results
                 output_dataset = inferencer.inference(
                     model,
                     input_dataset,
-                    remove_image_flag=remove_image_flag)
+                    remove_image_flag=remove_image_flag,
+                    prompt_format=chatbot_args.prompt_format,)
                 response = output_dataset.backend_dataset['text']
                 print(response[0])
                 print("\n", end="")
