@@ -69,11 +69,18 @@ class CustomMultiModalDataset(Dataset):
                 self.data_args)
         else:
             data = copy.deepcopy([e["conversations"] for e in data])
-        data_dict = preprocess_llama_from_llava(
-            data,
-            self.tokenizer,
-            has_image=('image' in self.data_dict[i])
-        )
+        if self.data_args.sep_style == "plain":
+            data_dict = preprocess_llama_from_llava_plain(
+                data,
+                self.tokenizer,
+                has_image=('image' in self.data_dict[i])
+            )
+        else:
+            data_dict = preprocess_llama_from_llava_v1(
+                data,
+                self.tokenizer,
+                has_image=('image' in self.data_dict[i])
+            )
         if isinstance(i, int):
             data_dict = dict(input_ids=data_dict["input_ids"][0],
                              labels=data_dict["labels"][0])
@@ -139,7 +146,7 @@ def tokenizer_image_token(prompt,
     return input_ids
 
 
-def preprocess_llama_from_llava(
+def preprocess_llama_from_llava_plain(
     sources,
     tokenizer: transformers.PreTrainedTokenizer,
     has_image: bool = False):
@@ -159,6 +166,84 @@ def preprocess_llama_from_llava(
 
     return dict(input_ids=input_ids, labels=targets)
 
+def preprocess_llama_from_llava_v1(
+    sources,
+    tokenizer: transformers.PreTrainedTokenizer,
+    has_image: bool = False):
+    conv = conversation_lib.default_conversation.copy()
+    roles = {"human": conv.roles[0], "gpt": conv.roles[1]}
+
+    # Apply prompt templates
+    conversations = []
+    for i, source in enumerate(sources):
+        if roles[source[0]["from"]] != conv.roles[0]:
+            # Skip the first one if it is not from human
+            source = source[1:]
+
+        conv.messages = []
+        for j, sentence in enumerate(source):
+            role = roles[sentence["from"]]
+            assert role == conv.roles[j % 2], f"{i}"
+            conv.append_message(role, sentence["value"])
+        conversations.append(conv.get_prompt())
+
+    # Tokenize conversations
+
+    if has_image:
+        input_ids = torch.stack([tokenizer_image_token(prompt, tokenizer, return_tensors='pt') for prompt in conversations], dim=0)
+    else:
+        input_ids = tokenizer(
+            conversations,
+            return_tensors="pt",
+            padding="longest",
+            max_length=tokenizer.model_max_length,
+            truncation=True,
+        ).input_ids
+
+    targets = input_ids.clone()
+    assert conv.sep_style == conversation_lib.SeparatorStyle.TWO
+
+    # Mask targets
+    sep = conv.sep + conv.roles[1] + ": "
+    for conversation, target in zip(conversations, targets):
+        total_len = int(target.ne(tokenizer.pad_token_id).sum())
+
+        rounds = conversation.split(conv.sep2)
+        cur_len = 1
+        target[:cur_len] = IGNORE_INDEX
+        for i, rou in enumerate(rounds):
+            if rou == "":
+                break
+
+            parts = rou.split(sep)
+            if len(parts) != 2:
+                break
+            parts[0] += sep
+
+            if has_image:
+                round_len = len(tokenizer_image_token(rou, tokenizer))
+                instruction_len = len(tokenizer_image_token(parts[0], tokenizer)) - 2
+            else:
+                round_len = len(tokenizer(rou).input_ids)
+                instruction_len = len(tokenizer(parts[0]).input_ids) - 2
+
+            target[cur_len : cur_len + instruction_len] = IGNORE_INDEX
+
+            cur_len += round_len
+        target[cur_len:] = IGNORE_INDEX
+
+        if cur_len < tokenizer.model_max_length:
+            if cur_len != total_len:
+                target[:] = IGNORE_INDEX
+                print(
+                    f"WARNING: tokenization mismatch: {cur_len} vs. {total_len}."
+                    f" (ignored)"
+                )
+
+    return dict(
+        input_ids=input_ids,
+        labels=targets,
+    )
 
 @dataclass
 class DataCollatorForSupervisedDataset(object):

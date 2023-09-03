@@ -521,6 +521,9 @@ class MultiModalDatasetArguments(DatasetArguments):
     use_image_start_end: Optional[bool] = field(
         default=True, metadata={"help": "Flag for the modality type."}
     )
+    sep_style: Optional[str] = field(
+        default="plain", metadata={"help": "Sep style in multi_modality dataset."}
+    )
 
 
 
