@@ -1,6 +1,10 @@
 # MultiModal Conversation
+## Download dataset
+We use the dataset from LLava to present the example of multi-modaltiy training.
+Please first download the [pretrain dataset](https://huggingface.co/datasets/liuhaotian/LLaVA-CC3M-Pretrain-595K) for pre-training. Then download the [coco 2017](https://cocodataset.org/) and the [conversation file](https://huggingface.co/datasets/liuhaotian/LLaVA-Instruct-150K/blob/main/llava_instruct_80k.json) for finetuning.
+After downloading, modify the data path in the training script to your own path.
 ## Pretrain
-First following [LLava](https://github.com/haotian-liu/LLaVA) to download the dataset and run the following script for pretraining:
+Run the following script for pretraining:
 ```
 bash scripts/multimodal/run_finetune_multi_modal_stage1.sh
 ``` 
