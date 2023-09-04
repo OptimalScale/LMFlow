@@ -1,5 +1,5 @@
-model=/home/qlianab/data1/checkpoints/llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3
-deepspeed_args="--master_port=12000 --include localhost:9"
+model=/path/to/llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3
+deepspeed_args="--master_port=12000"
 
 deepspeed ${deepspeed_args} \
     examples/vis_chatbot.py \
@@ -8,7 +8,7 @@ deepspeed ${deepspeed_args} \
     --task vqa \
     --custom_model \
     --model_name_or_path ${model} \
-    --prompt_format llava \
+    --chatbot_format llava \
     --prompt_structure '{input_text} ASSISTANT:' \
     --low_resource True \
     --llava_loading True \

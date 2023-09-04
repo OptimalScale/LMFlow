@@ -114,6 +114,7 @@ class Dataset:
             # TODO (@Jiachun)
             pass
         elif backend == "custom_multi_modal":
+            # FIXME refactor the backend name
             raw_dataset = CustomMultiModalDataset(self.dataset_path, data_args)
             self.backend_dataset = raw_dataset
         else:

@@ -36,10 +36,8 @@ from lmflow.datasets.multi_modal_dataset import DataCollatorForSupervisedDataset
 from torch.utils.data import DataLoader
 
 
-
-
 def main():
-	# Parses arguments
+    # Parses arguments
     pipeline_name = "finetuner"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
@@ -58,16 +56,27 @@ def main():
         data_args=data_args,
         pipeline_args=pipeline_args,
     )
-    model = AutoModel.get_model(model_args, tune_strategy='finetune',
+    # do not resiger deepspeed in the model.
+    # with_deepspeed flag may be removed
+    # by modifying the tune strategy in the future.
+    model = AutoModel.get_model(model_args, tune_strategy='none',
                                 ds_config=pipeline_args.deepspeed,
-                                custom_model=True)
-    for param in model.backend_model.language_model.parameters():
-        param.requires_grad=False
-    for param in model.backend_model.vision_model.parameters():
-        param.requires_grad=False
+                                custom_model=True,
+                                with_deepspeed=False)
+    # FIXME check if need to move this part to hf_encoder_decoder.py
+    for param in model.backend_model.parameters():
+        param.requires_grad = False
+    if "language_projection" in pipeline_args.finetune_part:
+        for param in model.backend_model.language_projection.parameters():
+            param.requires_grad = True
+    if "language_model" in pipeline_args.finetune_part:
+        for param in model.backend_model.language_model.parameters():
+            param.requires_grad = True
+    if "vision_model" in pipeline_args.finetune_part:
+        for param in model.backend_model.vision_model.parameters():
+            param.requires_grad = True
+
     dataset = Dataset(data_args, backend="custom_multi_modal")
-    # dataset.backend_dataset.register_tokenizer(model.tokenizer, model.image_processor)
-    # dataset.backend_dataset.__getitem__(0)
     data_collator = DataCollatorForSupervisedDataset(tokenizer=model.tokenizer)
 
     # Finetuning

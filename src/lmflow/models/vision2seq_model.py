@@ -23,8 +23,8 @@ from transformers import (
 )
 from transformers.modeling_outputs import CausalLMOutputWithPast
 
-from .base_model import BaseModel
-from .vision_encoder import build_vision_tower
+from lmflow.models.base_model import BaseModel
+from lmflow.models.vision_encoder import build_vision_tower
 
 
 class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):

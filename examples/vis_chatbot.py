@@ -64,7 +64,7 @@ class ChatbotArguments:
             )
         }
     )
-    prompt_format: Optional[str] = field(
+    chatbot_type: Optional[str] = field(
         default="None",
         metadata={
             "help": (
@@ -148,12 +148,12 @@ def main():
 
 
     end_string = chatbot_args.end_string
-    if chatbot_args.prompt_format == "mini_gpt":
+    if chatbot_args.chatbot_type == "mini_gpt":
         context = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
         user_name = "Human"
         sep = "###"
 
-    elif chatbot_args.prompt_format == "llava":
+    elif chatbot_args.chatbot_type == "llava":
         context = "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions."
         user_name = "USER"
         sep = " "
@@ -175,9 +175,9 @@ def main():
     input_text = chatbot_args.input_text
     if chatbot_args.task == "image_caption" and len(input_text) == 0:
         input_text = "a photography of"
-    if chatbot_args.prompt_format == "mini_gpt":
+    if chatbot_args.chatbot_type == "mini_gpt":
         context += sep + user_name + ": " + "<Img><ImageHere></Img> "
-    elif chatbot_args.prompt_format == "llava":
+    elif chatbot_args.chatbot_type == "llava":
         context += sep + user_name + ": " + "<image>\n"
 
     # this flag is for determining if we need to add the ###Human: prompt
@@ -216,9 +216,9 @@ def main():
                     # batch of image with different shape
                     raw_image = raw_image.resize(base_size)
                     image_list.append(np.array(raw_image))
-                    if chatbot_args.prompt_format == "mini_gpt":
+                    if chatbot_args.chatbot_type == "mini_gpt":
                         context += sep + user_name + ": " + "<Img><ImageHere></Img> "
-                    elif chatbot_args.prompt_format == "llava":
+                    elif chatbot_args.chatbot_type == "llava":
                         context += sep + user_name + ": " + "<image>\n"
                     else:
                         raise NotImplementedError
@@ -249,7 +249,7 @@ def main():
                 "instances": [{"images": np.stack(image_list),
                                "text":  context,}]
             })
-            if chatbot_args.prompt_format in ["mini_gpt", "llava"]:
+            if chatbot_args.chatbot_type in ["mini_gpt", "llava"]:
                 remove_image_flag = True
             else:
                 remove_image_flag = False
@@ -260,7 +260,7 @@ def main():
                     model,
                     input_dataset,
                     remove_image_flag=remove_image_flag,
-                    prompt_format=chatbot_args.prompt_format,)
+                    chatbot_type=chatbot_args.chatbot_type,)
                 response = output_dataset.backend_dataset['text']
                 print(response[0])
                 print("\n", end="")

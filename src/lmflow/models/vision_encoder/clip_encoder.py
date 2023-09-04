@@ -4,7 +4,11 @@ import torch.nn as nn
 
 from transformers import CLIPVisionModel, CLIPImageProcessor, CLIPVisionConfig
 
-from lmflow.datasets.llava_constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+from lmflow.utils.constants import (IGNORE_INDEX,
+                                    IMAGE_TOKEN_INDEX,
+                                    DEFAULT_IMAGE_PATCH_TOKEN,
+                                    DEFAULT_IM_START_TOKEN,
+                                    DEFAULT_IM_END_TOKEN)
 
 def build_vision_tower(vision_tower_cfg, **kwargs):
     vision_tower = getattr(vision_tower_cfg, 'image_encoder_name_or_path', "openai/clip-vit-large-patch14")
@@ -107,7 +111,10 @@ class CLIPVisionTower(nn.Module):
         # commonly used in model.generate (past_key_values is not None)
         # to avoid forward the image multiple time
         if vision_tower is None or images is None or input_ids.shape[1] == 1:
-            if past_key_values is not None and vision_tower is not None and images is not None and input_ids.shape[1] == 1:
+            if (past_key_values is not None and
+                vision_tower is not None and
+                images is not None and
+                input_ids.shape[1] == 1):
                 attention_mask = torch.ones((
                     attention_mask.shape[0],
                     past_key_values[-1][-1].shape[-2] + 1),

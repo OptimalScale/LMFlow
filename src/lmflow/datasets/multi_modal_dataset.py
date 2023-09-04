@@ -13,9 +13,9 @@ import torch
 from torch.utils.data import Dataset
 
 from lmflow.args import DatasetArguments
-from lmflow.datasets import llava_conversation_lib as conversation_lib
+from lmflow.utils import llava_conversation_lib as conversation_lib
 
-from .llava_constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+from lmflow.utils.constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 
 class CustomMultiModalDataset(Dataset):
     """Dataset for Multi Modal data"""
@@ -150,6 +150,16 @@ def preprocess_llama_from_llava_plain(
     sources,
     tokenizer: transformers.PreTrainedTokenizer,
     has_image: bool = False):
+    """
+    This function just add the image in the front of text.
+    And don't add any prompt.
+    Args:
+        sources: The input data with text and image.
+        tokenizer: The tokenizer to process text.
+        has_image: Whether the input data has image.
+    Returns:
+        The input_ids and labels for the model.
+    """
     conversations = []
     for source in sources:
         assert len(source) == 2
@@ -170,6 +180,17 @@ def preprocess_llama_from_llava_v1(
     sources,
     tokenizer: transformers.PreTrainedTokenizer,
     has_image: bool = False):
+    """
+    This function add the prompt and then put the image after the prompt.
+    So it needs additional code to generate the target label.
+    Args:
+        sources: The input data with text and image.
+        tokenizer: The tokenizer to process text.
+        has_image: Whether the input data has image.
+    Returns:
+        The input_ids and labels for the model.
+    """
+
     conv = conversation_lib.default_conversation.copy()
     roles = {"human": conv.roles[0], "gpt": conv.roles[1]}
 
@@ -244,6 +265,7 @@ def preprocess_llama_from_llava_v1(
         input_ids=input_ids,
         labels=targets,
     )
+
 
 @dataclass
 class DataCollatorForSupervisedDataset(object):

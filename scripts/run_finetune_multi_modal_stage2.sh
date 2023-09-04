@@ -4,11 +4,12 @@
 #     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
 
 # Parses argumen
+# FIXME upload the projector into lmflow.
 model_name_or_path=Salesforce/blip2-flan-t5-xxl
-dataset_path=/home/qlianab/data1/llm/llava_instruct_80k.json
-image_folder=/home/qlianab/data1/2d_detection/coco/train2017
+dataset_path=/path/to/llava_instruct_80k.json
+image_folder=/path/tococo/train2017
 output_dir=output_models/finetune
-deepspeed_args="--master_port=12000 --include localhost:9"
+deepspeed_args="--master_port=12000"
 
 while [[ $# -ge 1 ]]; do
   key="$1"
@@ -49,7 +50,7 @@ deepspeed ${deepspeed_args} \
     --llava_loading True \
     --model_name_or_path ${model_name_or_path} \
     --image_encoder_name_or_path openai/clip-vit-large-patch14 \
-    --pretrained_language_projection_path /home/qlianab/checkpoints/llava-336px-pretrain-vicuna-7b-v1.3/mm_projector.bin \
+    --pretrained_language_projection_path /path/to/projector.bin \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --image_folder ${image_folder} \
@@ -74,4 +75,4 @@ deepspeed ${deepspeed_args} \
     --sep_style "v1" \
     --num_train_epochs 1 \
     | tee ${log_dir}/train.log \
-    2> ${log_dir}/tra
+    2> ${log_dir}/train.err

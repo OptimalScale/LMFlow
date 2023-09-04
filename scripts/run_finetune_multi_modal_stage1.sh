@@ -5,10 +5,10 @@
 
 # Parses argumen
 model_name_or_path=Salesforce/blip2-flan-t5-xxl
-dataset_path=/home/qlianab/data1/llm/CC3M-Pretrain-595K/cc3m_595k.json
-image_folder=/home/qlianab/data1/llm/CC3M-Pretrain-595K/images
+dataset_path=/path/to/cc3m_595k.json
+image_folder=/path/to/images
 output_dir=output_models/finetune
-deepspeed_args="--master_port=12000 --include localhost:9"
+deepspeed_args="--master_port=12000"
 
 while [[ $# -ge 1 ]]; do
   key="$1"

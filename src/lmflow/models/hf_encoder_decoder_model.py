@@ -52,7 +52,7 @@ from lmflow.datasets.dataset import Dataset
 from lmflow.models.encoder_decoder_model import EncoderDecoderModel
 from lmflow.models.interfaces.tunable import Tunable
 from lmflow.models.vision2seq_model import CustomAutoVision2SeqModel
-from lmflow.models.utils import update_custom_config, load_llava_pretrain_model
+from lmflow.utils.multimodal import update_custom_config, load_llava_pretrain_model
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +114,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
             raise NotImplementedError(
                 f"tune_strategy \"{tune_strategy}\" is not supported"
             )
-        elif tune_strategy == 'none' or "finetune":
+        elif tune_strategy == 'none':
             if use_accelerator:
                 raise NotImplementedError(
                     f"Currently encoder2decoder model is not supported with accelerator"
@@ -191,9 +191,6 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                         model_args.pretrained_language_projection_path,
                         map_location="cpu")
                     model.load_state_dict(state_dict, strict=False)
-                    # model.save_pretrained("/home/qlianab/data1/checkpoints/minigpt-4_robin7b/")
-                    # model = CustomAutoVision2SeqModel.from_pretrained(
-                        # "/home/qlianab/checkpoints/pretrained_weights/minigpt4-lmflow-vicuna-7b-low_resource/"
                 else:
                     config = AutoConfig.from_pretrained(
                         model_args.model_name_or_path)
@@ -205,9 +202,9 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                         )
                     else:
                         kwargs = {}
-                    if model_args.image_encoder_name_or_path is None and \
-                       model_args.qformer_name_or_path is None and \
-                       model_args.llm_model_name_or_path is None:
+                    if (model_args.image_encoder_name_or_path is None and
+                        model_args.qformer_name_or_path is None and
+                        model_args.llm_model_name_or_path is None):
                         config = AutoConfig.from_pretrained(
                             model_args.model_name_or_path)
                         model = CustomAutoVision2SeqModel.from_pretrained(
@@ -247,9 +244,10 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                         model_args.model_name_or_path, trust_remote_code=True)
                     if model_args.llm_model_name_or_path is not None:
                         # update the tokenizer from the custom llm.
-                        self.tokenizer.tokenizer = \
+                        self.tokenizer.tokenizer = (
                             AutoTokenizer.from_pretrained(
                                 model_args.llm_model_name_or_path)
+                        )
                     self.image_processor = self.tokenizer.image_processor
 
                 else:

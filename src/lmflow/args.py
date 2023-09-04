@@ -540,6 +540,12 @@ class FinetunerArguments(TrainingArguments):
         metadata={
             "help": "wheather to remove the unused columns in collate fn"}
     )
+    finetune_part: Optional[str] = field(
+        default="language_projection",
+        metadata={
+            "help": "the module to finetune."
+        }
+    )
 
 
 @dataclass
