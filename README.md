@@ -245,6 +245,7 @@ If you find this repository useful, please consider giving ⭐ and citing our [p
   journal={arXiv preprint arXiv:2306.12420},
   year={2023}
 }
+
 @article{dong2023raft,
   title={Raft: Reward ranked finetuning for generative foundation model alignment},
   author={Dong, Hanze and Xiong, Wei and Goyal, Deepanshu and Pan, Rui and Diao, Shizhe and Zhang, Jipeng and Shum, Kashun and Zhang, Tong},
