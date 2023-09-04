@@ -83,6 +83,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 Our package has been fully tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested.
 You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
+CUDA versions 10.3-11.7 are supported in our stable branch `v0.0.5`. For CUDA versions greater than 11.7, one can use our unstable branch `main` first.
 
 ```bash
 git clone -b v0.0.5 https://github.com/OptimalScale/LMFlow.git
