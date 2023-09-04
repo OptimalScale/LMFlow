@@ -1,7 +1,7 @@
 model=Salesforce/blip2-flan-t5-xxl
 checkpoint_path=/home/qlianab/checkpoints/pretrained_weights/minigpt4/prerained_minigpt4_7b_converted.pth
 llm_model_name_or_path=lmsys/vicuna-7b-v1.3
-deepspeed_args="--master_port=12000"
+deepspeed_args="--master_port=12000 --num_gpus=1"
 
 if [ ! -f output_models/pretrained_minigpt4_7b.pth ]; then
   cd output_models && ./download.sh minigpt4_7b && cd -
