@@ -4,9 +4,12 @@
 #     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
 
 # Parses argumen
+# FIXME upload the projector into lmflow.
 model_name_or_path=Salesforce/blip2-flan-t5-xxl
-dataset_path=/path/to/cc3m_595k.json
-image_folder=/path/to/images
+# Please download the coco dataset and the conversation file from
+# https://huggingface.co/datasets/liuhaotian/LLaVA-Instruct-150K/blob/main/llava_instruct_80k.json
+dataset_path=/path/to/llava_instruct_80k.json
+image_folder=/path/tococo/train2017
 output_dir=output_models/finetune
 deepspeed_args="--master_port=12000"
 
@@ -36,6 +39,11 @@ while [[ $# -ge 1 ]]; do
   shift
 done
 
+if [ ! -f output_models/llava-336px-pretrain-vicuna-7b-v1.3_language_projection.pth ]; then
+  cd output_models && ./download.sh minigpt4_7b && cd -
+fi
+
+
 # Finetune
 exp_id=finetune
 project_dir=$(cd "$(dirname $0)"/..; pwd)
@@ -49,6 +57,7 @@ deepspeed ${deepspeed_args} \
     --llava_loading True \
     --model_name_or_path ${model_name_or_path} \
     --image_encoder_name_or_path openai/clip-vit-large-patch14 \
+    --pretrained_language_projection_path output_models/llava-336px-pretrain-vicuna-7b-v1.3_language_projection.pth \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --image_folder ${image_folder} \
@@ -70,6 +79,7 @@ deepspeed ${deepspeed_args} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
+    --sep_style "v1" \
     --num_train_epochs 1 \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
