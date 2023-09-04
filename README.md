@@ -239,12 +239,16 @@ If you wish to use the codes and models included in this project for commercial 
 If you find this repository useful, please consider giving ⭐ and citing our [paper](https://arxiv.org/abs/2306.12420):
 
 ```
-@misc{lmflow,
-  author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
-  title = {LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models},
-  year = {2023},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
+@article{diao2023lmflow,
+  title={Lmflow: An extensible toolkit for finetuning and inference of large foundation models},
+  author={Diao, Shizhe and Pan, Rui and Dong, Hanze and Shum, Ka Shun and Zhang, Jipeng and Xiong, Wei and Zhang, Tong},
+  journal={arXiv preprint arXiv:2306.12420},
+  year={2023}
+}
+@article{dong2023raft,
+  title={Raft: Reward ranked finetuning for generative foundation model alignment},
+  author={Dong, Hanze and Xiong, Wei and Goyal, Deepanshu and Pan, Rui and Diao, Shizhe and Zhang, Jipeng and Shum, Kashun and Zhang, Tong},
+  journal={arXiv preprint arXiv:2304.06767},
+  year={2023}
 }
 ```
