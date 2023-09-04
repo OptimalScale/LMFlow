@@ -1,6 +1,6 @@
 # MultiModal Conversation
 ## Pretrain
-First following [LLava](!https://github.com/haotian-liu/LLaVA) to download the dataset and run the following script for pretraining:
+First following [LLava](https://github.com/haotian-liu/LLaVA) to download the dataset and run the following script for pretraining:
 ```
 bash scripts/multimodal/run_finetune_multi_modal_stage1.sh
 ``` 
