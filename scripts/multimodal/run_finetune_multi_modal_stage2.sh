@@ -40,7 +40,7 @@ while [[ $# -ge 1 ]]; do
 done
 
 if [ ! -f output_models/llava-336px-pretrain-vicuna-7b-v1.3_language_projection.pth ]; then
-  cd output_models && ./download.sh minigpt4_7b && cd -
+  cd output_models && ./download.sh llava_vicuna7b_language_projection && cd -
 fi
 
 

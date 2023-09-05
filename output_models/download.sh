@@ -115,6 +115,10 @@ function main() {
         filename='pretrained_minigpt4_13b.pth'
         wget ${public_server}/${filename}
     fi
+    if [ "$1" = "llava_vicuna7b_language_projection" -o "$1" = "all"  ]; then
+        echo "downloading llava vicuna7b language_projection"
+        filename="multimodal/llava-336px-pretrain-vicuna-7b-v1.3_language_projection.pth"
+        wget ${public_server}/${filename}
 }
 
 main "$@"
