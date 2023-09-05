@@ -21,7 +21,7 @@
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
 [![Embark](https://img.shields.io/badge/Discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/u9VJNpzhvA)
 [![slack badge](https://img.shields.io/badge/Slack-Join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1wju9nicy-woXbNtS~5MavHSAtiMxmxQ)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.ibb.co/p41t8Jg/Wechat-IMG1090.jpg)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.ibb.co/JvXwWg9/Wechat-IMG1110.jpg)
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
@@ -83,6 +83,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 Our package has been fully tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested.
 You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
+CUDA versions 10.3-11.7 are supported in our stable branch `v0.0.5`. For CUDA versions greater than 11.7, one can use our unstable branch `main` first.
 
 ```bash
 git clone -b v0.0.5 https://github.com/OptimalScale/LMFlow.git
@@ -238,12 +239,18 @@ If you wish to use the codes and models included in this project for commercial 
 If you find this repository useful, please consider giving ⭐ and citing our [paper](https://arxiv.org/abs/2306.12420):
 
 ```
-@misc{lmflow,
-  author = {Shizhe Diao and Rui Pan and Hanze Dong and KaShun Shum and Jipeng Zhang and Wei Xiong and Tong Zhang},
-  title = {LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models},
-  year = {2023},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://optimalscale.github.io/LMFlow/}},
+@article{diao2023lmflow,
+  title={Lmflow: An extensible toolkit for finetuning and inference of large foundation models},
+  author={Diao, Shizhe and Pan, Rui and Dong, Hanze and Shum, Ka Shun and Zhang, Jipeng and Xiong, Wei and Zhang, Tong},
+  journal={arXiv preprint arXiv:2306.12420},
+  year={2023}
+}
+```
+```
+@article{dong2023raft,
+  title={Raft: Reward ranked finetuning for generative foundation model alignment},
+  author={Dong, Hanze and Xiong, Wei and Goyal, Deepanshu and Pan, Rui and Diao, Shizhe and Zhang, Jipeng and Shum, Kashun and Zhang, Tong},
+  journal={arXiv preprint arXiv:2304.06767},
+  year={2023}
 }
 ```
