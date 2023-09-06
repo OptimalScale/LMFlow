@@ -28,7 +28,7 @@ deepspeed ${deepspeed_args} \
     --model_name_or_path ${model_name_or_path} \
     --image_encoder_name_or_path openai/clip-vit-large-patch14 \
     --custom_vision_model True \
-    --llm_model_name_or_path lmsys/vicuna-7b-v1.5 \
+    --llm_model_name_or_path lmsys/vicuna-13b-v1.5 \
     --llava_pretrain_model_path ${llava_pretrain_model_path}"*.bin" \
     --with_deepspeed False \
     ${@:1}
