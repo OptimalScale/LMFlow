@@ -309,8 +309,8 @@ class SpeculativeInferencer(Inferencer):
     
     @staticmethod        
     def score_to_prob(scores: torch.Tensor, 
-                        temperature: float = 1., 
-                        top_p: float = 1.,) -> torch.Tensor:
+                      temperature: float = 1.,
+                      top_p: float = 1.,) -> torch.Tensor:
         """Convert scores (NOT softmaxed tensor) to probabilities with support for temperature, top-p sampling, and argmax.
 
         Parameters
