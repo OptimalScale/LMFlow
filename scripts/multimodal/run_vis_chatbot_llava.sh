@@ -20,8 +20,8 @@ deepspeed ${deepspeed_args} \
     --deepspeed configs/ds_config_vis_chatbot.json \
     --arch_type vision_encoder_decoder \
     --task vqa \
-    --custom_model \
-    --chatbot_format llava \
+    --custom_model True \
+    --chatbot_type llava \
     --prompt_structure '{input_text} ASSISTANT:' \
     --low_resource True \
     --llava_loading True \
@@ -29,7 +29,6 @@ deepspeed ${deepspeed_args} \
     --image_encoder_name_or_path openai/clip-vit-large-patch14 \
     --custom_vision_model True \
     --llm_model_name_or_path lmsys/vicuna-7b-v1.5 \
-    --image_aspect_ratio None \
     --llava_pretrain_model_path ${llava_pretrain_model_path}"*.bin" \
     --with_deepspeed False \
     ${@:1}

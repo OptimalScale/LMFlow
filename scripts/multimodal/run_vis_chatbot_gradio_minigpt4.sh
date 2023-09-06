@@ -41,7 +41,7 @@ deepspeed --master_port=11005 examples/vis_chatbot_gradio.py \
     --arch_type vision_encoder_decoder \
     --task vqa \
     --custom_model \
-    --chatbot_format mini_gpt \
+    --chatbot_type mini_gpt \
     --prompt_structure "###Human: {input_text}###Assistant:" \
     --llm_model_name_or_path LMFlow/Full-Robin-13b-v2 \
     --pretrained_language_projection_path output_models/pretrained_minigpt4_13b_converted.pth \
