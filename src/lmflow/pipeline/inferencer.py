@@ -22,7 +22,7 @@ from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.utils.data_utils import (set_random_seed, batchlize,
                                      answer_extraction, process_image_flag)
-from lmflow.datasets.llava_constants import IMAGE_TOKEN_INDEX
+from lmflow.utils.constants import IMAGE_TOKEN_INDEX
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
 def rstrip_partial_utf8(string):
     return string.replace("\ufffd", "")
@@ -40,7 +40,7 @@ class Inferencer(BasePipeline):
     ------------
     model_args : ModelArguments object.
         Contains the arguments required to load the model.
-    
+
     data_args : DatasetArguments object.
         Contains the arguments required to load the dataset.
 
@@ -69,7 +69,7 @@ class Inferencer(BasePipeline):
             )
 
         self.config = AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
-        try: 
+        try:
             self.model_hidden_size = self.config.hidden_size
         except:
             print("Error in setting hidden size, use the default size 1024")
@@ -128,7 +128,7 @@ class Inferencer(BasePipeline):
             TunableModel to perform inference
 
         dataset : Dataset object.
-            
+
 
         Returns:
 
@@ -245,7 +245,7 @@ class Inferencer(BasePipeline):
         output_dataset = output_dataset.from_dict(output_dict)
 
         return output_dataset
-    
+
     def stream_inference(
         self,
         context,
