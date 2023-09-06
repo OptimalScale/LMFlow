@@ -22,6 +22,7 @@ from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.utils.data_utils import (set_random_seed, batchlize,
                                      answer_extraction, process_image_flag)
+from lmflow.utils.constants import IMAGE_TOKEN_INDEX
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
 def rstrip_partial_utf8(string):
     return string.replace("\ufffd", "")
@@ -39,7 +40,7 @@ class Inferencer(BasePipeline):
     ------------
     model_args : ModelArguments object.
         Contains the arguments required to load the model.
-    
+
     data_args : DatasetArguments object.
         Contains the arguments required to load the dataset.
 
@@ -68,7 +69,7 @@ class Inferencer(BasePipeline):
             )
 
         self.config = AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
-        try: 
+        try:
             self.model_hidden_size = self.config.hidden_size
         except:
             print("Error in setting hidden size, use the default size 1024")
@@ -116,6 +117,7 @@ class Inferencer(BasePipeline):
         temperature: float=0.0,
         prompt_structure: str='{input}',
         remove_image_flag: bool=False,
+        chatbot_format: str="mini_gpt",
     ):
         """
         Perform inference for a model
@@ -126,7 +128,7 @@ class Inferencer(BasePipeline):
             TunableModel to perform inference
 
         dataset : Dataset object.
-            
+
 
         Returns:
 
@@ -155,14 +157,18 @@ class Inferencer(BasePipeline):
 
             if 'images' in input and isinstance(input['images'], list):
                 input['images'] = np.array(input['images'])
-
             if remove_image_flag:
                 # remove the image flag <ImageHere> in tokenization;
-                input['text'] = input['text'].split("<ImageHere>")
+                if chatbot_format == "mini_gpt":
+                    image_split_flag = "<ImageHere>"
+                elif chatbot_format:
+                    image_split_flag = "<image>"
+                else:
+                    raise NotImplementedError
+                input['text'] = input['text'].split(image_split_flag)
                 # TODO remove this code by update the tokenizer
                 input_ids = []
                 attention_mask = []
-                pixel_values = []
                 image_token_indexes = []
                 temp_input = copy.deepcopy(input)
                 for idx in range(len(input['text'])):
@@ -170,20 +176,39 @@ class Inferencer(BasePipeline):
                     temp_inputs = model.encode(
                         temp_input,
                         return_tensors="pt",
-                        add_special_tokens=idx==0).to(device=self.local_rank)
+                        add_special_tokens=idx == 0
+                    ).to(device=self.local_rank)
                     input_ids.append(temp_inputs['input_ids'])
                     attention_mask.append(temp_inputs['attention_mask'])
-                    image_token_indexes.append(temp_inputs["input_ids"].shape[1])
+                    if chatbot_format == "llava":
+                        # add the flag for inserting the image.
+                        # TODO should merge the way of handling image flag in minigpt and llava.
+                        index_tensor = torch.tensor(
+                            [IMAGE_TOKEN_INDEX]
+                        ).to(device=self.local_rank)
+                        index_tensor = index_tensor.reshape(1, 1)
+                        input_ids.append(index_tensor)
+                        attention_mask.append(
+                            torch.ones(1,1).to(device=self.local_rank))
+                    image_token_indexes.append(
+                        temp_inputs["input_ids"].shape[1])
                 if len(image_token_indexes) > 1:
                     image_token_indexes = image_token_indexes[:-1]
+                    if chatbot_format == "llava":
+                        input_ids = input_ids[:-1]
+                        attention_mask = attention_mask[:-1]
                 inputs = temp_inputs
-                inputs["input_ids"] = torch.cat(input_ids, dim=1) 
+                inputs["input_ids"] = torch.cat(input_ids, dim=1)
                 inputs["attention_mask"] = torch.cat(attention_mask, dim=1)
             else:
                 if self.inferencer_args.device == "gpu":
-                    inputs = model.encode(input, return_tensors="pt").to(device=self.local_rank)
+                    inputs = model.encode(
+                        input, return_tensors="pt"
+                    ).to(device=self.local_rank)
                 elif self.inferencer_args.device == "cpu":
-                    inputs = model.encode(input, return_tensors="pt").to(device='cpu')
+                    inputs = model.encode(
+                        input, return_tensors="pt"
+                    ).to(device='cpu')
                 else:
                     raise NotImplementedError(
                         f"device \"{self.inferencer_args.device}\" is not supported"
@@ -220,7 +245,7 @@ class Inferencer(BasePipeline):
         output_dataset = output_dataset.from_dict(output_dict)
 
         return output_dataset
-    
+
     def stream_inference(
         self,
         context,
