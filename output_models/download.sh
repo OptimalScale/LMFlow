@@ -131,7 +131,6 @@ function main() {
             --filename ${filename} \
             --target_path ${filepath} \
             --repo_type "model"
-        cd ..
     fi
 
     if [ "$1" = "llava_vicuna13b_model_02" -o "$1" = "all" ]; then
@@ -143,7 +142,6 @@ function main() {
             --filename ${filename} \
             --target_path ${filepath} \
             --repo_type "model"
-        cd ..
     fi
 
     if [ "$1" = "llava_vicuna13b_model_03" -o "$1" = "all" ]; then
@@ -155,7 +153,6 @@ function main() {
             --filename ${filename} \
             --target_path ${filepath} \
             --repo_type "model"
-        cd ..
     fi
 }
 

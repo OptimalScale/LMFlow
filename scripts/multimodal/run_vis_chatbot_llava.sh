@@ -21,7 +21,6 @@ deepspeed ${deepspeed_args} \
     --arch_type vision_encoder_decoder \
     --task vqa \
     --custom_model \
-    --model_name_or_path ${model} \
     --chatbot_format llava \
     --prompt_structure '{input_text} ASSISTANT:' \
     --low_resource True \
