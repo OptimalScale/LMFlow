@@ -7,8 +7,8 @@
 model_name_or_path=Salesforce/blip2-flan-t5-xxl
 # please download the dataset from 
 # https://huggingface.co/datasets/liuhaotian/LLaVA-CC3M-Pretrain-595K
-dataset_path=/path/to/cc3m_595k.json
-image_folder=/path/to/images
+dataset_path=./data/llava_cc3m_pretrain_595k/chat.json
+image_folder=./data/llava_cc3m_pretrain_595k/images
 output_dir=output_models/finetune
 deepspeed_args="--master_port=12000"
 
@@ -37,6 +37,10 @@ while [[ $# -ge 1 ]]; do
   esac
   shift
 done
+
+if [ ! -d data/llava_cc3m_pretrain_595k ]; then
+  cd data && ./download.sh llava_cc3m_pretrain_595k && cd -
+fi
 
 # Finetune
 exp_id=finetune

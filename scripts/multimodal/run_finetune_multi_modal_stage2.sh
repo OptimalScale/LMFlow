@@ -8,8 +8,8 @@
 model_name_or_path=Salesforce/blip2-flan-t5-xxl
 # Please download the coco dataset and the conversation file from
 # https://huggingface.co/datasets/liuhaotian/LLaVA-Instruct-150K/blob/main/llava_instruct_80k.json
-dataset_path=/path/to/llava_instruct_80k.json
-image_folder=/path/tococo/train2017
+dataset_path=./data/llava_instruct_80k.json
+image_folder=./data/coco2017/train2017
 output_dir=output_models/finetune
 deepspeed_args="--master_port=12000"
 
@@ -43,7 +43,13 @@ if [ ! -f output_models/llava-336px-pretrain-vicuna-7b-v1.3_language_projection.
   cd output_models && ./download.sh llava_vicuna7b_language_projection && cd -
 fi
 
+if [ ! -d data/coco2017 ]; then
+  cd data && ./download.sh coco2017 && cd -
+fi
 
+if [ ! -f data/llava_instruct_80k.json ]; then
+  cd data && ./download.sh llava_instruction_finetune_80k && cd -
+fi
 # Finetune
 exp_id=finetune
 project_dir=$(cd "$(dirname $0)"/..; pwd)
