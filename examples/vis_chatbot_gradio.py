@@ -95,7 +95,7 @@ class ChatbotArguments:
             "help": "task for reasoning",
         }
     )
-    prompt_format: Optional[str] = field(
+    chatbot_format: Optional[str] = field(
         default="None",
         metadata={
             "help": "prompt format"
@@ -122,7 +122,7 @@ def upload_image(image_file, history, text_input, chat_state, image_list):
     history = history + [((image_file.name,), None)]
 
     if chat_state is None:
-        if chatbot_args.prompt_format == "mini_gpt":
+        if chatbot_args.chatbot_format == "mini_gpt":
             chat_state = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
         else:
             chat_state = ''
@@ -134,7 +134,7 @@ def upload_image(image_file, history, text_input, chat_state, image_list):
     else:
         image_list.append(image.resize(image_list[0].size))
 
-    if chatbot_args.prompt_format == "mini_gpt":
+    if chatbot_args.chatbot_format == "mini_gpt":
         chat_state += "### Human: " + "<Img><ImageHere></Img>"
     return (
         gr.update(interactive=True, placeholder='Enter text and press enter, or upload an image'),
@@ -170,7 +170,7 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
         "instances": [{"images": np.stack([np.array(i) for i in image_list]),
                         "text": chat_state}]
     })
-    remove_image_flag = chatbot_args.prompt_format=="mini_gpt"
+    remove_image_flag = chatbot_args.chatbot_format=="mini_gpt"
 
     chatbot[-1][1] = ''
 

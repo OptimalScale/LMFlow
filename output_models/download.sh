@@ -115,6 +115,45 @@ function main() {
         filename='pretrained_minigpt4_13b.pth'
         wget ${public_server}/${filename}
     fi
+    
+    if [ "$1" = "llava_vicuna7b_language_projection" -o "$1" = "all"  ]; then
+        echo "downloading llava vicuna7b language_projection"
+        filename="multimodal/llava-336px-pretrain-vicuna-7b-v1.3_language_projection.pth"
+        wget ${public_server}/${filename}
+    fi
+
+    if [ "$1" = "llava_vicuna13b_model_01" -o "$1" = "all" ]; then
+        echo "downloading llava vicunda13 b trained model 01 checkpoint "
+        filepath="llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3"
+        filename="pytorch_model-00001-of-00003.bin"
+        python ../utils/download_hf_file.py \
+            --repo_id liuhaotian/llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3 \
+            --filename ${filename} \
+            --target_path ${filepath} \
+            --repo_type "model"
+    fi
+
+    if [ "$1" = "llava_vicuna13b_model_02" -o "$1" = "all" ]; then
+        echo "downloading llava vicunda13 b trained model 01 checkpoint "
+        filepath="llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3"
+        filename="pytorch_model-00002-of-00003.bin"
+        python ../utils/download_hf_file.py \
+            --repo_id liuhaotian/llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3 \
+            --filename ${filename} \
+            --target_path ${filepath} \
+            --repo_type "model"
+    fi
+
+    if [ "$1" = "llava_vicuna13b_model_03" -o "$1" = "all" ]; then
+        echo "downloading llava vicunda13 b trained model 01 checkpoint "
+        filepath="llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3"
+        filename="pytorch_model-00003-of-00003.bin"
+        python ../utils/download_hf_file.py \
+            --repo_id liuhaotian/llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3 \
+            --filename ${filename} \
+            --target_path ${filepath} \
+            --repo_type "model"
+    fi
 }
 
 main "$@"

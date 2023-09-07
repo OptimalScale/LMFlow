@@ -183,6 +183,50 @@ function main() {
         tar zxvf ${filename}
         rm ${filename}
     fi
+
+    # multimodal
+    if [ "$1" = "coco2017" -o "$1" = "all" ]; then
+        echo "downloading coco 2017 dataset for multimodal finetuning"
+        mkdir coco2017
+        cd coco2017
+        wget "http://images.cocodataset.org/zips/train2017.zip"
+        wget "http://images.cocodataset.org/zips/val2017.zip"
+        wget "http://images.cocodataset.org/zips/test2017.zip"
+        unzip train2017.zip
+        unzip val2017.zip
+        unzip test2017.zip 
+        rm train2017.zip
+        rm val2017.zip
+        rm test2017.zip
+        cd ../
+    fi
+
+    if [ "$1" = "llava_instruction_finetune_80k" -o "$1" = "all" ]; then
+        echo "downloading llava instruction finetune dataset with 80k conversation"
+        python ../utils/download_hf_file.py \
+            --repo_id liuhaotian/LLaVA-Instruct-150K \
+            --filename llava_instruct_80k.json
+    fi
+
+    if [ "$1" = "llava_cc3m_pretrain_595k" -o "$1" = "all" ]; then
+        echo "downloading llava pretrain images "
+        filepath="llava_cc3m_pretrain_595k"
+        python ../utils/download_hf_file.py \
+            --repo_id liuhaotian/LLaVA-CC3M-Pretrain-595K \
+            --filename images.zip \
+            --target_path ${filepath}
+
+        python ../utils/download_hf_file.py \
+            --repo_id liuhaotian/LLaVA-CC3M-Pretrain-595K \
+            --filename chat.json \
+            --llava_cc3m_pretrain_595k \
+            --target_path ${filepath}
+
+        cd ${filepath}
+        unzip images.zip 
+        rm -rf images.zip
+        cd ../
+    fi
 }
 main "$@"
 

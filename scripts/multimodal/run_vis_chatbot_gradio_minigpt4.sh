@@ -18,7 +18,7 @@ model=Salesforce/blip2-flan-t5-xxl
 #     --arch_type vision_encoder_decoder \
 #     --task vqa \
 #     --custom_model \
-#     --prompt_format mini_gpt \
+#     --chatbot_format mini_gpt \
 #     --prompt_structure "###Human: {input_text}###Assistant:" \
 #     --llm_model_name_or_path LMFlow/Full-Robin-7b-v2 \
 #     --checkpoint_path output_models/pretrained_minigpt4_7b_converted.pth \
@@ -37,13 +37,13 @@ fi
 
 deepspeed --master_port=11005 examples/vis_chatbot_gradio.py \
     --model_name_or_path ${model} \
-    --deepspeed configs/ds_config_multimodal.json \
+    --deepspeed configs/ds_config_vis_chatbot.json \
     --arch_type vision_encoder_decoder \
     --task vqa \
     --custom_model \
-    --prompt_format mini_gpt \
+    --chatbot_type mini_gpt \
     --prompt_structure "###Human: {input_text}###Assistant:" \
     --llm_model_name_or_path LMFlow/Full-Robin-13b-v2 \
-    --checkpoint_path output_models/pretrained_minigpt4_13b_converted.pth \
+    --pretrained_language_projection_path output_models/pretrained_minigpt4_13b_converted.pth \
     --low_resource True \
     --max_new_tokens 1024

@@ -284,9 +284,29 @@ class VisModelArguments(ModelArguments):
         default=False,
         metadata={"help": "flag for the model from huggingface or not"}
     )
-    checkpoint_path: str = field(
+    pretrained_language_projection_path: str = field(
         default=None,
-        metadata={"help": "path for model checkpoint"}
+        metadata={"help": "path for model pretrained_language_projection_path"}
+    )
+    custom_vision_model: bool = field(
+        default=False,
+        metadata={"help": "flag for the model from huggingface or not"}
+    )
+    image_encoder_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "The name or path of the image encoder to use."
+            )
+        },
+    )
+    qformer_name_or_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "llm model in multi-modality model"
+            )
+        },
     )
     llm_model_name_or_path: Optional[str] = field(
         default=None,
@@ -304,8 +324,26 @@ class VisModelArguments(ModelArguments):
         default=None,
         metadata={"help": "Path to prompt cache."},
     )
-
-
+    llava_loading: Optional[bool] = field(
+        default=False,
+        metadata={"help": "Whether to load module by module from pretrained model."},
+    )
+    with_qformer: Optional[bool] = field(
+        default=False,
+        metadata={"help": "Whether to use qformer."},
+    )
+    vision_select_layer: Optional[int] = field(
+        default=-2,
+        metadata={"help": "Which layer to select in vision model."},
+    )
+    llava_pretrain_model_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to llava pretrained model."},
+    )
+    save_pretrain_model_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to pretrained model."},
+    )
 
 @dataclass
 class DatasetArguments:
@@ -470,12 +508,43 @@ class DatasetArguments:
 
 
 @dataclass
+class MultiModalDatasetArguments(DatasetArguments):
+    image_folder: Optional[str] = field(
+        default=None, metadata={"help": "The folder of the image file."}
+    )
+    image_aspect_ratio: Optional[str] = field(
+        default="pad", metadata={"help": "The ratio type"}
+    )
+    is_multimodal: Optional[bool] = field(
+        default=True, metadata={"help": "Flag for the modality type."}
+    )
+    use_image_start_end: Optional[bool] = field(
+        default=True, metadata={"help": "Flag for the modality type."}
+    )
+    sep_style: Optional[str] = field(
+        default="plain", metadata={"help": "Sep style in multi_modality dataset."}
+    )
+
+
+
+@dataclass
 class FinetunerArguments(TrainingArguments):
     """
     Adapt transformers.TrainingArguments
     """
     eval_dataset_path: Optional[str] = field(
         default=None, metadata={"help": "The path of the eval dataset to use."}
+    )
+    remove_unused_columns: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "wheather to remove the unused columns in collate fn"}
+    )
+    finetune_part: Optional[str] = field(
+        default="language_projection",
+        metadata={
+            "help": "the module to finetune."
+        }
     )
 
 
