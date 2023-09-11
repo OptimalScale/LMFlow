@@ -46,6 +46,7 @@ if __name__ == '__main__':
                                             max_new_tokens=params.max_new_tokens, 
                                             temperature=params.temperature)
             print(specinf_res)
+            print('\n\n')
 
         except EOFError:
             break
