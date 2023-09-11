@@ -10,6 +10,26 @@ python ./examples/speculative_inference.py \
   --max_new_tokens   # your_max_new_tokens
   --gpu              # your_gpu_id
 ```
+For example, 
+```bash
+python ./examples/speculative_inference.py \ 
+  --model gpt2-xl 
+  --draft_model gpt2 
+  --temperature 0.3 
+  --gamma 5
+  --max_new_tokens 512
+  --gpu 0
+```
+Another example,
+```bash
+python ./examples/speculative_inference.py \ 
+  --model /home/eric/Documents/models/gpt2-xl 
+  --draft_model /home/eric/Documents/models/gpt2 
+  --temperature 0 
+  --gamma 3
+  --max_new_tokens 1024
+  --gpu 7
+```
 ## Parameter Instruction
 `model`, `draft_model`
 - Huggingface model name or locally cached model path.
@@ -46,4 +66,4 @@ We tested the speculative inference using the first 100 inputs from alpaca test 
 |9|4.05x|8.33x|
 |10|4.14x|9.00x|
 
-Note that the speedup may be overestimated. When temperature=0, `gpt2-xl` and `gpt2` tend to generate duplicated tokens as the number of tokens generated increases, thus making the target model more likely to accept the draft model's output.
+Note that the speedup may be overestimated. When `temperature=0`, `gpt2-xl` and `gpt2` tend to generate duplicated tokens as the number of tokens generated increases, thus making the target model more likely to accept the draft model's output.
