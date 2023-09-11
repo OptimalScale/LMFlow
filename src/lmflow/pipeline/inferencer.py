@@ -334,8 +334,8 @@ class SpeculativeInferencer(Inferencer):
     
     @staticmethod        
     def score_to_prob(scores: torch.Tensor, 
-                        temperature: float = 1., 
-                        top_p: float = 1.,) -> torch.Tensor:
+                      temperature: float = 0.,
+                      top_p: float = 1.,) -> torch.Tensor:
         """Convert scores (NOT softmaxed tensor) to probabilities with support for temperature, top-p sampling, and argmax.
 
         Parameters
@@ -344,7 +344,7 @@ class SpeculativeInferencer(Inferencer):
             Input scores.
         temperature : float, optional
             Temperature parameter for controlling randomness. Higher values make the distribution more uniform, 
-            lower values make it peakier. When temperature <= 1e-6, argmax is used. by default 1.0
+            lower values make it peakier. When temperature <= 1e-6, argmax is used. by default 0.0
         top_p : float, optional
             Top-p sampling parameter for controlling the cumulative probability threshold, by default 1.0 (no threshold)
 
@@ -401,7 +401,11 @@ class SpeculativeInferencer(Inferencer):
         return output
     
     
-    def autoregressive_sampling(self, input_ids: torch.Tensor, model, num_new_tokens: int = 5) -> Dict:
+    def autoregressive_sampling(self, 
+                                input_ids: torch.Tensor, 
+                                model: HFDecoderModel, 
+                                temperature: float = 0., 
+                                num_new_tokens: int = 5) -> Dict:
         """Ref: [arXiv:2211.17192v2](https://arxiv.org/abs/2211.17192) Section 2.2
         """
         sequence = input_ids
@@ -409,7 +413,7 @@ class SpeculativeInferencer(Inferencer):
         
         for _ in range(num_new_tokens):
             pred = self.predict_next_token(model=model, input_ids=sequence, num_new_tokens=1) # predict next one token
-            prob = self.score_to_prob(pred.scores[0])
+            prob = self.score_to_prob(pred.scores[0], temperature=temperature)
             sampled = self.sample(prob=prob, num_samples=1)
             new_tokens.append(sampled)
             sequence = torch.cat([sequence, sampled['sampled_token']], dim=1)
@@ -422,6 +426,7 @@ class SpeculativeInferencer(Inferencer):
         model: HFDecoderModel,
         draft_model: HFDecoderModel,
         input: str,
+        temperature: float = 0.,
         gamma: int = 5,
         max_new_tokens: int = 100,
     ):
@@ -465,7 +470,8 @@ class SpeculativeInferencer(Inferencer):
 
         def speculative_sampling(input_ids: torch.Tensor,
                                  model: HFDecoderModel,
-                                 draft_model: HFDecoderModel) -> torch.Tensor:
+                                 draft_model: HFDecoderModel,
+                                 temperature: float = 0.) -> torch.Tensor:
             """Ref: [arXiv:2211.17192v2](https://arxiv.org/abs/2211.17192)
 
             Parameters
@@ -498,7 +504,7 @@ class SpeculativeInferencer(Inferencer):
             for i in range(gamma):
                 draft_sampled_token_id = output_draft['new_tokens'][i]['sampled_token']
                 draft_sampled_token_prob = output_draft['new_tokens'][i]['sampled_prob']
-                token_prob = self.score_to_prob(output.logits[:,len_input_ids+i-1,:])[0, draft_sampled_token_id]
+                token_prob = self.score_to_prob(output.logits[:,len_input_ids+i-1,:], temperature=temperature)[0, draft_sampled_token_id]
 
                 # reject the sample with probability 1 - p(x)/q(x)
                 if torch.rand_like(token_prob) > token_prob/draft_sampled_token_prob:
@@ -511,12 +517,12 @@ class SpeculativeInferencer(Inferencer):
 
             # STEP 4: Adjust the distribution from Mp if needed
             if not all(accepted):
-                all_prob = self.score_to_prob(output.logits[:,len_input_ids+i-1,:])
+                all_prob = self.score_to_prob(output.logits[:,len_input_ids+i-1,:], temperature=temperature)
                 draft_all_prob = output_draft['new_tokens'][i]['all_prob']
                 adjusted_prob = torch.max(torch.zeros_like(all_prob), all_prob - draft_all_prob)
                 prob = adjusted_prob / adjusted_prob.sum(dim=1, keepdim=True)
             else:
-                prob = self.score_to_prob(output.logits[:,-1,:])
+                prob = self.score_to_prob(output.logits[:,-1,:], temperature=temperature)
 
 
             # STEP 5: Return n tokens from Mq, and one token from Mp
@@ -533,7 +539,8 @@ class SpeculativeInferencer(Inferencer):
             logger.debug(f"input_ids: {inputs}")
             sampling_result = speculative_sampling(input_ids=inputs,
                                                    model=model,
-                                                   draft_model=draft_model)
+                                                   draft_model=draft_model,
+                                                   temperature=temperature)
             logger.debug(f'sampling result: {sampling_result}')
             logger.debug(f'sampling result decoded: {model.decode(sampling_result[0])}')
             num_generated_new_tokens += len(sampling_result[0]) - len(inputs[0])
