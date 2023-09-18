@@ -26,16 +26,28 @@ def forward(
     past_key_value: Optional[Tuple[torch.Tensor]] = None,
     output_attentions: bool = False,
     use_cache: bool = False,
-) -> Tuple[torch.Tensor, Optional[torch.Tensor],Optional[Tuple[torch.Tensor]]]:
+) -> Tuple[torch.Tensor, Optional[torch.Tensor], Optional[Tuple[torch.Tensor]]]:
     """Input shape: Batch x Time x Channel
 
     attention_mask: [bsz, q_len]
     """
     bsz, q_len, _ = hidden_states.size()
 
-    query_states = self.q_proj(hidden_states).view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
-    key_states = self.k_proj(hidden_states).view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
-    value_states = self.v_proj(hidden_states).view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
+    query_states = (
+        self.q_proj(hidden_states)
+        .view(bsz, q_len, self.num_heads, self.head_dim)
+        .transpose(1, 2)
+    )
+    key_states = (
+        self.k_proj(hidden_states)
+        .view(bsz, q_len, self.num_heads, self.head_dim)
+        .transpose(1, 2)
+    )
+    value_states = (
+        self.v_proj(hidden_states)
+        .view(bsz, q_len, self.num_heads, self.head_dim)
+        .transpose(1, 2)
+    )
     # [bsz, q_len, nh, hd]
     # [bsz, nh, q_len, hd]
 
@@ -45,7 +57,9 @@ def forward(
         kv_seq_len += past_key_value[0].shape[-2]
 
     cos, sin = self.rotary_emb(value_states, seq_len=kv_seq_len)
-    query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin, position_ids)
+    query_states, key_states = apply_rotary_pos_emb(
+        query_states, key_states, cos, sin, position_ids
+    )
     # [bsz, nh, t, hd]
     # assert not output_attentions, "output_attentions is not supported"
     # assert not use_cache, "use_cache is not supported"
@@ -108,30 +122,33 @@ def forward(
     key_padding_mask = attention_mask
 
     if key_padding_mask is None:
-        qkv = rearrange(qkv, 'b s ... -> (b s) ...')
+        qkv = rearrange(qkv, "b s ... -> (b s) ...")
         max_s = q_len
-        cu_q_lens = torch.arange(0, (bsz + 1) * q_len, step=q_len, dtype=torch.int32,
-                                 device=qkv.device)
-        output = flash_attn_varlen_qkvpacked_func(
-            qkv, cu_q_lens, max_s, 0.0,
-            softmax_scale=None, causal=True
+        cu_q_lens = torch.arange(
+            0, (bsz + 1) * q_len, step=q_len, dtype=torch.int32, device=qkv.device
         )
-        output = rearrange(output, '(b s) ... -> b s ...', b=bsz)
+        output = flash_attn_varlen_qkvpacked_func(
+            qkv, cu_q_lens, max_s, 0.0, softmax_scale=None, causal=True
+        )
+        output = rearrange(output, "(b s) ... -> b s ...", b=bsz)
     else:
         nheads = qkv.shape[-2]
-        x = rearrange(qkv, 'b s three h d -> b s (three h d)')
+        x = rearrange(qkv, "b s three h d -> b s (three h d)")
         x_unpad, indices, cu_q_lens, max_s = unpad_input(x, key_padding_mask)
-        x_unpad = rearrange(x_unpad, 'nnz (three h d) -> nnz three h d', three=3, h=nheads)
-        output_unpad = flash_attn_varlen_qkvpacked_func(
-            x_unpad, cu_q_lens, max_s, 0.0,
-            softmax_scale=None, causal=True
+        x_unpad = rearrange(
+            x_unpad, "nnz (three h d) -> nnz three h d", three=3, h=nheads
         )
-        output = rearrange(pad_input(rearrange(output_unpad, 'nnz h d -> nnz (h d)'),
-                                     indices, bsz, q_len),
-                           'b s (h d) -> b s h d', h=nheads)
-    attn_output = self.o_proj(rearrange(output, 'b s h d -> b s (h d)'))
-
-    return attn_output, None, past_key_value
+        output_unpad = flash_attn_varlen_qkvpacked_func(
+            x_unpad, cu_q_lens, max_s, 0.0, softmax_scale=None, causal=True
+        )
+        output = rearrange(
+            pad_input(
+                rearrange(output_unpad, "nnz h d -> nnz (h d)"), indices, bsz, q_len
+            ),
+            "b s (h d) -> b s h d",
+            h=nheads,
+        )
+    return self.o_proj(rearrange(output, 'b s h d -> b s (h d)')), None, past_key_value
 
 
 # Disable the transformation of the attention mask in LlamaModel as the flash attention
