@@ -5,7 +5,7 @@ from torch import nn
 import math
 
 import transformers
-from transformers.models.llama.modeling_llama import apply_rotary_pos_emb
+from transformers.models.llama.modeling_llama import apply_rotary_pos_emb,_make_causal_mask,_expand_mask
 
 from einops import rearrange
 
@@ -19,15 +19,14 @@ from flash_attn.bert_padding import unpad_input, pad_input
 
 
 def forward(
-        self,
-        hidden_states: torch.Tensor,
-        attention_mask: Optional[torch.Tensor] = None,
-        position_ids: Optional[torch.Tensor] = None,
-        past_key_value: Optional[Tuple[torch.Tensor]] = None,
-        output_attentions: bool = False,
-        use_cache: bool = False,
-) -> Tuple[torch.Tensor, Optional[torch.Tensor],
-           Optional[Tuple[torch.Tensor]]]:
+    self,
+    hidden_states: torch.Tensor,
+    attention_mask: Optional[torch.Tensor] = None,
+    position_ids: Optional[torch.Tensor] = None,
+    past_key_value: Optional[Tuple[torch.Tensor]] = None,
+    output_attentions: bool = False,
+    use_cache: bool = False,
+) -> Tuple[torch.Tensor, Optional[torch.Tensor],Optional[Tuple[torch.Tensor]]]:
     """Input shape: Batch x Time x Channel
 
     attention_mask: [bsz, q_len]
@@ -142,10 +141,27 @@ def _prepare_decoder_attention_mask(self, attention_mask, input_shape,
     # [bsz, seq_len]
     if input_shape[-1] > 1 and past_key_values_length == 0:  # encode
         return attention_mask
-    return transformers.models.bart.modeling_bart.BartDecoder._prepare_decoder_attention_mask(self, attention_mask,
-                                                                                              input_shape,
-                                                                                              inputs_embeds,
-                                                                                              past_key_values_length)
+    # create causal mask
+    # [bsz, seq_len] -> [bsz, 1, tgt_seq_len, src_seq_len]
+    combined_attention_mask = None
+    if input_shape[-1] > 1:
+        combined_attention_mask = _make_causal_mask(
+            input_shape,
+            inputs_embeds.dtype,
+            device=inputs_embeds.device,
+            past_key_values_length=past_key_values_length,
+        )
+
+    if attention_mask is not None:
+        # [bsz, seq_len] -> [bsz, 1, tgt_seq_len, src_seq_len]
+        expanded_attn_mask = _expand_mask(attention_mask, inputs_embeds.dtype, tgt_len=input_shape[-1]).to(
+            inputs_embeds.device
+        )
+        combined_attention_mask = (
+            expanded_attn_mask if combined_attention_mask is None else expanded_attn_mask + combined_attention_mask
+        )
+
+    return combined_attention_mask
 
 
 def replace_llama_attn_with_flash_attn():
