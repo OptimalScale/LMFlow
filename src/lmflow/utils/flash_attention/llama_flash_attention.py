@@ -115,7 +115,10 @@ def forward(
 
         return attn_output, attn_weights, past_key_value
 
-    qkv = torch.stack([query_states, key_states, value_states], dim=2)  # [bsz, nh, 3, q_len, hd]
+    # transform the data into the format required by flash attention
+    qkv = torch.stack(
+        [query_states, key_states, value_states], dim=2
+    )  # [bsz, nh, 3, q_len, hd]
     qkv = qkv.transpose(1, 3)  # [bsz, q_len, 3, nh, hd]
     # We have disabled _prepare_decoder_attention_mask in LlamaModel
     # the attention_mask should be the same as the key_padding_mask
@@ -148,13 +151,14 @@ def forward(
             "b s (h d) -> b s h d",
             h=nheads,
         )
-    return self.o_proj(rearrange(output, 'b s h d -> b s (h d)')), None, past_key_value
+    return self.o_proj(rearrange(output, "b s h d -> b s (h d)")), None, past_key_value
 
 
 # Disable the transformation of the attention mask in LlamaModel as the flash attention
 # requires the attention mask to be the same as the key_padding_mask
-def _prepare_decoder_attention_mask(self, attention_mask, input_shape,
-                                    inputs_embeds, past_key_values_length):
+def _prepare_decoder_attention_mask(
+    self, attention_mask, input_shape, inputs_embeds, past_key_values_length
+):
     # [bsz, seq_len]
     if input_shape[-1] > 1 and past_key_values_length == 0:  # encode
         return attention_mask
