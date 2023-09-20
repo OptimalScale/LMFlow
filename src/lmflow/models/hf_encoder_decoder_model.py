@@ -198,10 +198,10 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                         kwargs = dict(
                             torch_dtype=torch.float16,
                             load_in_8bit=True,
-                            device_map="auto"
+                            device_map="auto",
                         )
                     else:
-                        kwargs = {}
+                        kwargs = dict(torch_dtype=torch.float16)
                     if (model_args.image_encoder_name_or_path is None and
                         model_args.qformer_name_or_path is None and
                         model_args.llm_model_name_or_path is None):

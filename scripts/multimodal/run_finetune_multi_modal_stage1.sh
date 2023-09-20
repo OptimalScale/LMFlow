@@ -77,5 +77,6 @@ deepspeed ${deepspeed_args} \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
     --num_train_epochs 1 \
+    --save_language_projection True \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
