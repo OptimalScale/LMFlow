@@ -22,6 +22,7 @@ from transformers import (
     PreTrainedModel,
 )
 from transformers.modeling_outputs import CausalLMOutputWithPast
+from transformers.deepspeed import is_deepspeed_zero3_enabled
 
 from lmflow.models.base_model import BaseModel
 from lmflow.models.vision_encoder import build_vision_tower
@@ -86,7 +87,8 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                     device_map="auto",
                     low_cpu_mem_usage=True)
             else:
-                kwargs = dict(device_map="auto",
+                if not is_deepspeed_zero3_enabled:
+                    kwargs = dict(device_map="auto",
                             torch_dtype=torch.float16)
             language_model = AutoModelForCausalLM.from_pretrained(
                 language_model_name_or_path, **kwargs)

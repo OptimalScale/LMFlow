@@ -8,9 +8,9 @@
 model_name_or_path=Salesforce/blip2-flan-t5-xxl
 # Please download the coco dataset and the conversation file from
 # https://huggingface.co/datasets/liuhaotian/LLaVA-Instruct-150K/blob/main/llava_instruct_80k.json
-dataset_path=./data/llava_instruct_80k.json
+dataset_path=./data/llava_instruct_80k_truncated.json
 image_folder=./data/coco2017/train2017
-output_dir=output_models/finetune_llava-336px-vicuna-7b-v1.3
+output_dir=output_models/finetune_llava-336px-vicuna-7b-v1.3_stage2
 deepspeed_args="--master_port=12000"
 
 while [[ $# -ge 1 ]]; do
@@ -72,8 +72,8 @@ deepspeed ${deepspeed_args} \
     --llm_model_name_or_path lmsys/vicuna-7b-v1.3 \
     --image_aspect_ratio None \
     --fp16 True \
-    --learning_rate 1e-5 \
-    --gradient_accumulation_steps 16 \
+    --learning_rate 2e-5 \
+    --gradient_accumulation_steps 8 \
     --per_device_train_batch_size 1 \
     --per_device_eval_batch_size 4 \
     --weight_decay 0. \

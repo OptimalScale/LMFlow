@@ -62,7 +62,8 @@ def main():
     model = AutoModel.get_model(model_args, tune_strategy='none',
                                 ds_config=pipeline_args.deepspeed,
                                 custom_model=True,
-                                with_deepspeed=False)
+                                with_deepspeed=False,
+                                pipeline_args=pipeline_args)
     # FIXME check if need to move this part to hf_encoder_decoder.py
     for param in model.backend_model.parameters():
         param.requires_grad = False

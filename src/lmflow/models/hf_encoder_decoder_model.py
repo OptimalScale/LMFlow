@@ -33,7 +33,7 @@ from peft import (
 )
 
 import torch
-from transformers.deepspeed import HfDeepSpeedConfig
+from transformers.deepspeed import HfDeepSpeedConfig, HfTrainerDeepSpeedConfig
 
 from transformers.testing_utils import CaptureLogger
 
@@ -89,6 +89,7 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
         use_accelerator=False,
         custom_model=False,
         with_deepspeed=True,
+        pipeline_args=None,
         *args,
         **kwargs
     ):
@@ -119,7 +120,10 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                 raise NotImplementedError(
                     f"Currently encoder2decoder model is not supported with accelerator"
                 )
-            dschf = HfDeepSpeedConfig(ds_config)
+            # dschf = HfDeepSpeedConfig(ds_config)
+            dschf = HfTrainerDeepSpeedConfig(ds_config)
+            if pipeline_args is not None:
+                dschf.trainer_config_process(pipeline_args)
             peft_model_id = model_args.lora_model_path
             # NOTE: Currently offload is not supported by llama
             if "llama" in model_args.model_name_or_path and model_args.use_ram_optimized_load:
@@ -201,7 +205,8 @@ class HFEncoderDecoderModel(EncoderDecoderModel, Tunable):
                             device_map="auto",
                         )
                     else:
-                        kwargs = dict(torch_dtype=torch.float16)
+                        # kwargs = dict(torch_dtype=torch.float16)
+                        kwargs = dict(device_map="auto")
                     if (model_args.image_encoder_name_or_path is None and
                         model_args.qformer_name_or_path is None and
                         model_args.llm_model_name_or_path is None):

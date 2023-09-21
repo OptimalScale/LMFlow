@@ -163,9 +163,7 @@ class CLIPVisionTower(nn.Module):
                         cur_new_labels.append(cur_labels[image_token_start:image_token_start+1])
                         cur_labels = cur_labels[image_token_start+2:]
                 else:
-                    # print(cur_input_ids[:image_token_start].device, language_model.embed_tokens.weight.device, "1111")
-                    # TODO remove this code by fixing the ddp training issue
-                    cur_input_ids = cur_input_ids.to(device=language_model.embed_tokens.weight.device)
+                    cur_input_ids = cur_input_ids.to(device=language_model.device)
                     cur_new_input_embeds.append(language_model.embed_tokens(cur_input_ids[:image_token_start]))
                     cur_new_input_embeds.append(cur_image_features)
                     if labels is not None:
