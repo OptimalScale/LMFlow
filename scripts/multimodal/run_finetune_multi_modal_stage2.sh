@@ -50,6 +50,13 @@ fi
 if [ ! -f data/llava_instruct_80k.json ]; then
   cd data && ./download.sh llava_instruction_finetune_80k && cd -
 fi
+
+if [ ! -f data/llava_instruct_80k_truncated.json ]; then
+  python utils/preprocess_multimodal_data.py \
+      --data_path data/llava_instruct_80k.json \
+      --save_path data/llava_instruct_80k_truncated.json
+fi
+
 # Finetune
 exp_id=finetune
 project_dir=$(cd "$(dirname $0)"/..; pwd)

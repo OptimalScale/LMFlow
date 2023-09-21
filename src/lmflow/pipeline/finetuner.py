@@ -315,7 +315,9 @@ class Finetuner(BaseTuner):
             if self.finetuner_args.save_language_projection:
                 language_projection_state = trainer.model.language_projection.state_dict()
                 torch.save(
-                    osp.join(self.finetuner_args, "language_projection.pth"),
+                    osp.join(
+                        self.finetuner_args.output_dir,
+                        "language_projection.pth"),
                     language_projection_state)
             metrics = train_result.metrics
 
