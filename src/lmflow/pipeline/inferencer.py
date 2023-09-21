@@ -123,7 +123,7 @@ class Inferencer(BasePipeline):
         temperature: float=0.0,
         prompt_structure: str='{input}',
         remove_image_flag: bool=False,
-        chatbot_format: str="mini_gpt",
+        chatbot_type: str="mini_gpt",
     ):
         """
         Perform inference for a model
@@ -165,9 +165,9 @@ class Inferencer(BasePipeline):
                 input['images'] = np.array(input['images'])
             if remove_image_flag:
                 # remove the image flag <ImageHere> in tokenization;
-                if chatbot_format == "mini_gpt":
+                if chatbot_type == "mini_gpt":
                     image_split_flag = "<ImageHere>"
-                elif chatbot_format:
+                elif chatbot_type:
                     image_split_flag = "<image>"
                 else:
                     raise NotImplementedError
@@ -186,7 +186,7 @@ class Inferencer(BasePipeline):
                     ).to(device=self.local_rank)
                     input_ids.append(temp_inputs['input_ids'])
                     attention_mask.append(temp_inputs['attention_mask'])
-                    if chatbot_format == "llava":
+                    if chatbot_type == "llava":
                         # add the flag for inserting the image.
                         # TODO should merge the way of handling image flag in minigpt and llava.
                         index_tensor = torch.tensor(
@@ -200,7 +200,7 @@ class Inferencer(BasePipeline):
                         temp_inputs["input_ids"].shape[1])
                 if len(image_token_indexes) > 1:
                     image_token_indexes = image_token_indexes[:-1]
-                    if chatbot_format == "llava":
+                    if chatbot_type == "llava":
                         input_ids = input_ids[:-1]
                         attention_mask = attention_mask[:-1]
                 inputs = temp_inputs
@@ -219,7 +219,6 @@ class Inferencer(BasePipeline):
                     raise NotImplementedError(
                         f"device \"{self.inferencer_args.device}\" is not supported"
                     )
-
             if remove_image_flag:
                 inputs["image_token_indexes"] = image_token_indexes
                 inputs["one_sample_multiple_images"] = True

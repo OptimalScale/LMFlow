@@ -538,12 +538,18 @@ class FinetunerArguments(TrainingArguments):
     remove_unused_columns: Optional[bool] = field(
         default=False,
         metadata={
-            "help": "wheather to remove the unused columns in collate fn"}
+            "help": "whether to remove the unused columns in collate fn"}
     )
     finetune_part: Optional[str] = field(
         default="language_projection",
         metadata={
             "help": "the module to finetune."
+        }
+    )
+    save_language_projection: Optional[str] = field(
+        default=False,
+        metadata={
+            "help": "whether to save language projection layer in multi-modal models."
         }
     )
 

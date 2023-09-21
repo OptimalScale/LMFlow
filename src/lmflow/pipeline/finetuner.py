@@ -296,7 +296,6 @@ class Finetuner(BaseTuner):
             callbacks=trainer_callbacks
         )
         # Training
-        # import pdb; pdb.set_trace()
         if training_args.do_train:
             checkpoint = None
             last_checkpoint = self.last_checkpoint
@@ -312,7 +311,14 @@ class Finetuner(BaseTuner):
                 if model_args.save_aggregated_lora:
                     model.merge_lora_weights()
                 model.save(finetuner_args.output_dir,model_args.save_aggregated_lora)
-
+            # save language_projection for multi-modal model;
+            if self.finetuner_args.save_language_projection:
+                language_projection_state = trainer.model.language_projection.state_dict()
+                torch.save(
+                    osp.join(
+                        self.finetuner_args.output_dir,
+                        "language_projection.pth"),
+                    language_projection_state)
             metrics = train_result.metrics
 
             max_train_samples = (

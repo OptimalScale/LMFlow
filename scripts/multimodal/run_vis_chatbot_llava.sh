@@ -1,3 +1,4 @@
+# only work for gpu mem > 25G; fail to do 4 bit and 8 bit inference.
 model_name_or_path=Salesforce/blip2-flan-t5-xxl
 llava_pretrain_model_path="output_models/llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3/"
 deepspeed_args="--master_port=12000"
@@ -23,13 +24,13 @@ deepspeed ${deepspeed_args} \
     --custom_model True \
     --chatbot_type llava \
     --prompt_structure '{input_text} ASSISTANT:' \
-    --low_resource True \
     --llava_loading True \
     --model_name_or_path ${model_name_or_path} \
-    --image_encoder_name_or_path openai/clip-vit-large-patch14 \
+    --image_encoder_name_or_path openai/clip-vit-large-patch14-336 \
     --custom_vision_model True \
     --llm_model_name_or_path lmsys/vicuna-13b-v1.5 \
     --llava_pretrain_model_path ${llava_pretrain_model_path}"*.bin" \
     --with_deepspeed False \
+    --save_pretrain_model_path "output_models/lmflow_llava-v1-0719-336px-lora-merge-vicuna-13b-v1.3" \
     ${@:1}
 

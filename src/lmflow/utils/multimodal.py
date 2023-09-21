@@ -42,10 +42,9 @@ def adapt_llava_model_to_lmflow_type(state_dict):
         key = key.replace("model.embed_tokens",
                           "language_model.model.embed_tokens")
         key = key.replace("model.mm_projector", "language_projection")
-        key = key.replace("lm_head", "model.language_model.lm_head")
-        key = key.replace("model.norm", "language_model.model.layers")
+        key = key.replace("lm_head", "language_model.lm_head")
+        key = key.replace("model.norm", "language_model.model.norm")
         if "vision_tower" in key:
             continue
         new_state_dict[key] = item
     return new_state_dict
-        

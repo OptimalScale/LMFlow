@@ -128,7 +128,6 @@ class CLIPVisionTower(nn.Module):
             image_features = [x.flatten(0, 1) for x in image_features]
         else:
             image_features = self.encode_images(images, language_projection)
-
         new_input_embeds = []
         new_labels = [] if labels is not None else None
         cur_image_idx = 0
@@ -164,6 +163,7 @@ class CLIPVisionTower(nn.Module):
                         cur_new_labels.append(cur_labels[image_token_start:image_token_start+1])
                         cur_labels = cur_labels[image_token_start+2:]
                 else:
+                    cur_input_ids = cur_input_ids.to(device=language_model.device)
                     cur_new_input_embeds.append(language_model.embed_tokens(cur_input_ids[:image_token_start]))
                     cur_new_input_embeds.append(cur_image_features)
                     if labels is not None:

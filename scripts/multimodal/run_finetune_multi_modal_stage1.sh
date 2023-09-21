@@ -9,7 +9,8 @@ model_name_or_path=Salesforce/blip2-flan-t5-xxl
 # https://huggingface.co/datasets/liuhaotian/LLaVA-CC3M-Pretrain-595K
 dataset_path=./data/llava_cc3m_pretrain_595k/chat.json
 image_folder=./data/llava_cc3m_pretrain_595k/images
-output_dir=output_models/finetune
+output_dir=output_models/finetune_llava-336px-vicuna-7b-v1.3_stage1
+
 deepspeed_args="--master_port=12000"
 
 while [[ $# -ge 1 ]]; do
@@ -62,9 +63,8 @@ deepspeed ${deepspeed_args} \
     --llm_model_name_or_path lmsys/vicuna-7b-v1.5 \
     --image_aspect_ratio None \
     --fp16 True \
-    --learning_rate 2e-5 \
-    --gradient_accumulation_steps 1 \
-    --per_device_train_batch_size 2 \
+    --gradient_accumulation_steps 4 \
+    --per_device_train_batch_size 8 \
     --learning_rate 2e-3 \
     --weight_decay 0. \
     --warmup_ratio 0.03 \
@@ -77,5 +77,6 @@ deepspeed ${deepspeed_args} \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
     --num_train_epochs 1 \
+    --save_language_projection True \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err

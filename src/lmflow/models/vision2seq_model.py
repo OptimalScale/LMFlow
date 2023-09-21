@@ -22,6 +22,7 @@ from transformers import (
     PreTrainedModel,
 )
 from transformers.modeling_outputs import CausalLMOutputWithPast
+from transformers.deepspeed import is_deepspeed_zero3_enabled
 
 from lmflow.models.base_model import BaseModel
 from lmflow.models.vision_encoder import build_vision_tower
@@ -77,15 +78,18 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                     torch.zeros(1, config.num_query_tokens,
                                 config.qformer_config.hidden_size))
                 self.qformer = Blip2QFormerModel(config.qformer_config)
-        if low_resource:
-            kwargs = dict(
-                torch_dtype=torch.float16,
-                load_in_8bit=True,
-                device_map="auto"
-            )
-        else:
-            kwargs = {}
+        kwargs = dict()
         if language_model_name_or_path is not None:
+            if low_resource:
+                kwargs = dict(
+                    torch_dtype=torch.float16,
+                    load_in_8bit=True,
+                    device_map="auto",
+                    low_cpu_mem_usage=True)
+            else:
+                if not is_deepspeed_zero3_enabled:
+                    kwargs = dict(device_map="auto",
+                            torch_dtype=torch.float16)
             language_model = AutoModelForCausalLM.from_pretrained(
                 language_model_name_or_path, **kwargs)
             config.text_config = language_model.config
@@ -97,7 +101,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                 language_model = AutoModelForSeq2SeqLM.from_config(
                     config.text_config, **kwargs)
         # Update _tied_weights_keys using the base model used.
-        if language_model._tied_weights_keys is not None:
+        if getattr(language_model, "_tied_weights_keys", None) is not None:
             self._tied_weights_keys = [f"language_model.{k}" for k in language_model._tied_weights_keys]
 
         self.language_model = language_model
@@ -237,7 +241,6 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             batch_size = pixel_values.shape[0]
         else:
             batch_size = 1
-
         output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
         output_hidden_states = (
             output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
@@ -298,6 +301,9 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         # if inputs_embeds is not None:
         #     print("input_embeds", inputs_embeds.shape)
         # attention_mask.shape, inputs_embeds.shape)
+        # TODO remove this code by fixing the ddp training issue
+        inputs_embeds = inputs_embeds.to(
+            self.language_model.lm_head.weight.dtype)
         outputs = self.language_model(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -356,7 +362,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
 
         # concatenate query embeddings with prompt embeddings
         inputs_embeds = self.get_input_embeddings()(input_ids)
-        inputs_embeds = inputs_embeds.to(language_model_inputs.device)
+        inputs_embeds = inputs_embeds.to(device=language_model_inputs.device)
         # concatenate the text embeddings with image embeddings
         inputs_embeds_with_images = []
         attention_mask_with_images = []
@@ -426,7 +432,6 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
             batch_size = pixel_values.shape[0]
         else:
             batch_size = 1
-
         if not self.custom_vision_model:
             # do the processing as blip2 and mini gpt-4;
             image_embeds = self.vision_model(
@@ -473,6 +478,8 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
                     self.language_model.model)
         # convert the dtype.
         # FIXME check when need to do this
+        inputs_embeds = inputs_embeds.to(
+            device=self.language_model.lm_head.weight.device)
         inputs_embeds = inputs_embeds.to(
             self.language_model.lm_head.weight.dtype)
         outputs = self.language_model.generate(
