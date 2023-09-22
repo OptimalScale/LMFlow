@@ -180,6 +180,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         config_kwargs = {
             "cache_dir": model_args.cache_dir,
             "revision": model_args.model_revision,
+            "trust_remote_code": True,
             "use_auth_token": True if model_args.use_auth_token else None,
         }
         if model_args.config_name:
@@ -203,11 +204,11 @@ class HFDecoderModel(DecoderModel, Tunable):
                 replace_llama_with_condense(model_args.rope_pi_ratio, model_args.rope_ntk_ratio)
                 
         # Whether use flash attention
-        supported_gpu_device = None
-        for gpu in GPU_SUPPORT_FLASH_ATTENTION:
-            if gpu in torch.cuda.get_device_name():
-                supported_gpu_device = gpu
         if model_args.use_flash_attention:
+            supported_gpu_device = None
+            for gpu in GPU_SUPPORT_FLASH_ATTENTION:
+                if gpu in torch.cuda.get_device_name():
+                    supported_gpu_device = gpu
             if not any(model_supported in config.architectures
                        for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
                 logger.warning(
@@ -261,6 +262,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     revision=model_args.model_revision,
                     use_auth_token=True if model_args.use_auth_token else None,
                     torch_dtype=torch_dtype,
+                    trust_remote_code=True,
                 )
             else:
                 model = AutoModelForCausalLM.from_config(config)
