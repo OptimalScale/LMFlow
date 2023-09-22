@@ -211,11 +211,11 @@ class HFDecoderModel(DecoderModel, Tunable):
                 replace_llama_with_condense(model_args.rope_pi_ratio, model_args.rope_ntk_ratio)
                 
         # Whether use flash attention
-        supported_gpu_device = None
-        for gpu in GPU_SUPPORT_FLASH_ATTENTION:
-            if gpu in torch.cuda.get_device_name():
-                supported_gpu_device = gpu
         if model_args.use_flash_attention:
+            supported_gpu_device = None
+            for gpu in GPU_SUPPORT_FLASH_ATTENTION:
+                if gpu in torch.cuda.get_device_name():
+                    supported_gpu_device = gpu
             if not any(model_supported in config.architectures
                        for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
                 logger.warning(
