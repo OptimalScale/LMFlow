@@ -493,6 +493,16 @@ class HFDecoderModel(DecoderModel, Tunable):
         # logger loading before tokenize_function
         tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
 
+        data_args = raw_datasets.get_data_args()
+
+        # Whether to truncate long sequences to fit into max_length
+        use_truncation = False
+        if model_args.use_lora or data_args.disable_group_texts:
+            use_truncation = True
+
+        # Whether to pad short sequences to max_length
+        padding = "max_length" if data_args.disable_group_texts else False
+
         def tokenize_function(examples):
             num_example = len(examples[column_names[0]])
             token_dict = {
@@ -505,7 +515,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                     encoding = self.tokenizer(
                         examples[column_name],
                         add_special_tokens=add_special_tokens,
-                        truncation=True if model_args.use_lora else None,
+                        truncation=use_truncation,
+                        padding=padding,
                     )
 
                     if column_name in label_columns:
@@ -533,11 +544,14 @@ class HFDecoderModel(DecoderModel, Tunable):
                 )
             return token_dict
 
-        data_args = raw_datasets.get_data_args()
         if not data_args.streaming:
             fingerprint = raw_datasets.get_fingerprint()
             new_fingerprint = hashlib.md5(
-                (fingerprint + str(self.tokenizer)).encode("utf-8")
+                (
+                    fingerprint
+                    + str(self.tokenizer)
+                    + f'###disable_group_texts={data_args.disable_group_texts}'
+                ).encode("utf-8")
             ).hexdigest()
 
             tokenized_datasets = raw_datasets.map(
