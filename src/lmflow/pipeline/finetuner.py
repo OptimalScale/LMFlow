@@ -230,12 +230,16 @@ class Finetuner(BaseTuner):
         else:
             with finetuner_args.main_process_first(desc="dataset map tokenization"):
                 tokenized_dataset = model.tokenize(dataset)
-                lm_dataset = self.group_text(
-                    tokenized_dataset,
-                    model_max_length=model.get_max_length(),
-                )
+                if data_args.disable_group_texts:
+                    lm_dataset = tokenized_dataset
+                else:
+                    lm_dataset = self.group_text(
+                        tokenized_dataset,
+                        model_max_length=model.get_max_length(),
+                    )
 
         train_dataset = lm_dataset.get_backend_dataset()
+        logger.info(f"Number of train samples: {len(train_dataset)}")
 
         if finetuner_args.do_eval:
             eval_dataset_args = deepcopy(data_args)
@@ -243,11 +247,15 @@ class Finetuner(BaseTuner):
             eval_dataset = Dataset(eval_dataset_args)
             with finetuner_args.main_process_first(desc="dataset map tokenization"):
                 tokenized_dataset = model.tokenize(eval_dataset)
-                lm_dataset = self.group_text(
-                    tokenized_dataset,
-                    model_max_length=model.get_max_length(),
-                )
+                if data_args.disable_group_texts:
+                    lm_dataset = tokenized_dataset
+                else:
+                    lm_dataset = self.group_text(
+                        tokenized_dataset,
+                        model_max_length=model.get_max_length(),
+                    )
             eval_dataset = lm_dataset.get_backend_dataset()
+            logger.info(f"Number of eval samples: {len(train_dataset)}")
 
 
             def preprocess_logits_for_metrics(logits, labels):
