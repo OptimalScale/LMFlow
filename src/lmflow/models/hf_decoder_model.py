@@ -308,7 +308,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                         offload_folder="offload",
                         offload_state_dict=True,
                         torch_dtype=torch_dtype,
-                        load_in_8bit = model_args.use_int8
+                        load_in_8bit = model_args.use_int8,
+                        trust_remote_code=True,
                     )
                 if peft_model_id is not None:
                     self.backend_model = PeftModel.from_pretrained(
@@ -337,6 +338,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                             offload_folder="offload",
                             offload_state_dict=True,
                             torch_dtype=torch_dtype,
+                            trust_remote_code=True,
                         )
                     except:
                         logger.warning(
@@ -348,6 +350,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                             model_args.model_name_or_path,
                             config=config,
                             torch_dtype=torch_dtype,
+                            trust_remote_code=True,
                         )
                 else:
                     if peft_model_id is not None:
@@ -359,6 +362,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         model_args.model_name_or_path,
                         config=config,
                         torch_dtype=torch_dtype,
+                        trust_remote_code=True,
                     )
 
                 self.backend_model_full = self.backend_model
