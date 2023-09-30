@@ -16,37 +16,54 @@ if __name__ == '__main__':
                         help='maximum number of tokens that the speculative inference will generate')
     parser.add_argument('--temperature', type=float, default=0.3,
                         help='temperature for sampling')
-    
+    parser.add_argument('--interactive', type=int, default=1,
+                        help='whether use interactive mode')
+    parser.add_argument('--user_input', type=str, default='',
+                        help='input from the user in non-interactive mode')
+
     params = parser.parse_args()
-    
+
     os.environ["CUDA_VISIBLE_DEVICES"] = params.gpu
     from lmflow.args import InferencerArguments
     from lmflow.args import ModelArguments
     from lmflow.args import DatasetArguments
     from lmflow.models import hf_decoder_model
     from lmflow.pipeline.inferencer import SpeculativeInferencer
-    
-    
+
+
     model_args = ModelArguments(model_name_or_path=params.model)
     model = hf_decoder_model.HFDecoderModel(model_args)
     draft_model_args = ModelArguments(model_name_or_path=params.draft_model)
     draft_model = hf_decoder_model.HFDecoderModel(draft_model_args)
     inferencer_args = InferencerArguments()
     data_args = DatasetArguments()
-    
-    specinf = SpeculativeInferencer(model_args, draft_model_args, data_args, inferencer_args)
-    
-    while True:
-        try:
-            text = input("Speculative Inference: ")
-            specinf_res = specinf.inference(model, 
-                                            draft_model, 
-                                            text, 
-                                            gamma=params.gamma, 
-                                            max_new_tokens=params.max_new_tokens, 
-                                            temperature=params.temperature)
-            print(specinf_res)
-            print('\n\n')
 
-        except EOFError:
-            break
+    specinf = SpeculativeInferencer(model_args, draft_model_args, data_args, inferencer_args)
+
+    if params.interactive:
+        while True:
+            try:
+                text = input("Speculative Inference: ")
+                specinf_res = specinf.inference(
+                    model, 
+                    draft_model, 
+                    text, 
+                    gamma=params.gamma, 
+                    max_new_tokens=params.max_new_tokens, 
+                    temperature=params.temperature
+                )
+                print(specinf_res)
+                print('\n\n')
+            except EOFError:
+                break
+    else:
+        text = params.user_input
+        specinf_res = specinf.inference(
+            model, 
+            draft_model, 
+            text, 
+            gamma=params.gamma, 
+            max_new_tokens=params.max_new_tokens, 
+            temperature=params.temperature
+        )
+        print(specinf_res)
