@@ -13,6 +13,7 @@ except:
 from flash_attn.bert_padding import unpad_input, pad_input
 
 def _attn(self, query, key, value, attention_mask=None, head_mask=None):
+    assert head_mask is None, "head_mask is not supported"
     # (batch, head, seq_length, head_features)
     query = query.to(torch.bfloat16)
     key = key.to(torch.bfloat16)
@@ -24,7 +25,6 @@ def _attn(self, query, key, value, attention_mask=None, head_mask=None):
     bsz = qkv.shape[0]
     q_len = qkv.shape[1]
     
-    attention_mask = torch.where(attention_mask == -0.0, True, False)
     key_padding_mask = rearrange(attention_mask, "b () () s -> b s") if attention_mask is not None else None
     if key_padding_mask is None:
         qkv = rearrange(qkv, "b s ... -> (b s) ...")
