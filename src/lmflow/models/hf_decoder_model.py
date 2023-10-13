@@ -65,21 +65,22 @@ logger = logging.getLogger(__name__)
 MODELS_SUPPORT_FLASH_ATTENTION = [
     "LlamaForCausalLM",
     "GPTNeoForCausalLM",
-    "GPT2ForCausalLM",
+    "GPT2LMHeadModel",
+    "GPT2DoubleHeadsModel",
     "BloomForCausalLM"
 ]
 
 GPU_SUPPORT_FLASH_ATTENTION = {
-    "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
-    "A40": ["GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
+    "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2LMHeadModel","GPT2DoubleHeadsModel", "BloomForCausalLM"],
+    "A40": ["GPTNeoForCausalLM", "GPT2LMHeadModel","GPT2DoubleHeadsModel", "BloomForCausalLM"]
 }
 
 try:
     import flash_attn
     if int(flash_attn.__version__.split(".")[0]) == 2:
         GPU_SUPPORT_FLASH_ATTENTION = {
-            "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
-            "A40": ["LlamaForCausalLM","GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
+            "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2LMHeadModel","GPT2DoubleHeadsModel", "BloomForCausalLM"],
+            "A40": ["LlamaForCausalLM","GPTNeoForCausalLM","GPT2LMHeadModel","GPT2DoubleHeadsModel", "BloomForCausalLM"]
         }
 except:
     pass
@@ -232,7 +233,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                 
                 supported_models = GPU_SUPPORT_FLASH_ATTENTION[supported_gpu_device]
                 
-                config.use_cache = False
                 if "LlamaForCausalLM" in config.architectures and "LlamaForCausalLM" in supported_models:
                     from lmflow.utils.flash_attention.llama_flash_attention import (
                         replace_llama_attn_with_flash_attn,
@@ -243,7 +243,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                         replace_gpt_neo_attn_with_flash_attn,
                     )
                     replace_gpt_neo_attn_with_flash_attn()
-                elif "GPT2ForCausalLM" in config.architectures and "GPT2ForCausalLM" in supported_models:
+                elif "GPT2LMHeadModel"in config.architectures and "GPT2LMHeadModel" in supported_models:
+                    from lmflow.utils.flash_attention.gpt2_flash_attention import (
+                        replace_gpt2_attn_with_flash_attn,
+                    )
+                    replace_gpt2_attn_with_flash_attn()
+                elif "GPT2DoubleHeadsModel" in config.architectures and "GPT2DoubleHeadsModel" in supported_models:
                     from lmflow.utils.flash_attention.gpt2_flash_attention import (
                         replace_gpt2_attn_with_flash_attn,
                     )
@@ -252,6 +257,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     from lmflow.utils.flash_attention.bloom_flash_attention import (
                         replace_bloom_attn_with_flash_attn
                     )
+                    config.use_cache = False
                     replace_bloom_attn_with_flash_attn()
                 else:
                     raise ValueError(
