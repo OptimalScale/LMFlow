@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 import torch
 from torch import nn
 import math
-
+import logger
 import transformers
 from transformers.models.llama.modeling_llama import apply_rotary_pos_emb,_make_causal_mask,_expand_mask
 
@@ -50,6 +50,23 @@ def forward(
     )
     # [bsz, q_len, nh, hd]
     # [bsz, nh, q_len, hd]
+    
+    # In PEFT, usually we cast the layer norms in float32 for training stability reasons
+    # therefore the input hidden states gets silently casted in float32. Hence, we need
+    # cast them back in float16 just to be sure everything works as expected.
+    # This might slowdown training & inference so it is recommended to not cast the LayerNorms
+    # in fp32. (LlamaRMSNorm handles it correctly)
+    input_dtype = query_states.dtype
+    if input_dtype == torch.float32:
+        logger.warning_once(
+            "The input hidden states seems to be silently casted in float32, this might be related to"
+            " the fact you have upcasted embedding or layer norm layers in float32. We will cast back the input in"
+            " float16."
+        )
+
+        query_states = query_states.to(torch.float16)
+        key_states = key_states.to(torch.float16)
+        value_states = value_states.to(torch.float16)
 
     kv_seq_len = key_states.shape[-2]
     # assert past_key_value is None, "past_key_value is not supported"
