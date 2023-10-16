@@ -3,7 +3,8 @@ from typing import List, Optional, Tuple
 import torch
 from torch import nn
 import math
-import logger
+import logging
+
 import transformers
 from transformers.models.llama.modeling_llama import apply_rotary_pos_emb,_make_causal_mask,_expand_mask
 
@@ -17,6 +18,7 @@ except:
 
 from flash_attn.bert_padding import unpad_input, pad_input
 
+logger = logging.getLogger(__name__)
 
 def forward(
     self,
