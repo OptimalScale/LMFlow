@@ -20,6 +20,7 @@ def _attn(self, query, key, value, attention_mask=None, head_mask=None):
     assert head_mask is None, "head_mask is not supported"
     query = query.to(torch.bfloat16)
     key = key.to(torch.bfloat16)
+    value = value.to(torch.bfloat16)
     qkv = torch.stack(
         [query, key, value], dim=2
     )# [bsz, nh, 3, t, hd]

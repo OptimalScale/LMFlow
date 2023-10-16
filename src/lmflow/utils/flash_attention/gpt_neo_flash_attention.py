@@ -17,6 +17,7 @@ def _attn(self, query, key, value, attention_mask=None, head_mask=None):
     # (batch, head, seq_length, head_features)
     query = query.to(torch.bfloat16)
     key = key.to(torch.bfloat16)
+    value = value.to(torch.bfloat16)
     query = query * torch.sqrt(torch.tensor(self.head_dim))
     qkv = torch.stack(
         [query, key, value], dim=2
