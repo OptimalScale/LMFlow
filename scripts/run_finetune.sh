@@ -7,6 +7,8 @@
 model_name_or_path=gpt2
 dataset_path=data/alpaca/train
 output_dir=output_models/finetune
+num_train_epochs=0.01
+per_device_train_batch_size=1
 deepspeed_args="--master_port=11000"
 
 while [[ $# -ge 1 ]]; do
@@ -22,6 +24,14 @@ while [[ $# -ge 1 ]]; do
       ;;
     -o|--output_model_path)
       output_dir="$2"
+      shift
+      ;;
+    -n|--num_train_epochs)
+      num_train_epochs=$2
+      shift
+      ;;
+    -b|--per_device_train_batch_size)
+      per_device_train_batch_size=$2
       shift
       ;;
     --deepspeed_args)
@@ -46,10 +56,10 @@ deepspeed ${deepspeed_args} \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 0.01 \
+    --num_train_epochs ${num_train_epochs} \
     --learning_rate 2e-5 \
     --block_size 512 \
-    --per_device_train_batch_size 1 \
+    --per_device_train_batch_size ${per_device_train_batch_size} \
     --deepspeed configs/ds_config_zero3.json \
     --fp16 \
     --run_name finetune \
