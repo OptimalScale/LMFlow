@@ -236,7 +236,7 @@ class RaftAligner(BaseAligner):
 
         def tokenize(sample):
             sample["input_ids"] = tokenizer.encode(sample["text"])
-            sample['input'] = tokenizer.decode(sample["input_ids"])
+            sample['input'] = sample["text"] #tokenizer.decode(sample["input_ids"])
             return sample
 
         ds = ds.map(tokenize, batched=False)
