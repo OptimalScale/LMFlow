@@ -1,5 +1,5 @@
 numpy==1.24.2
-datasets==2.10.1
+datasets==2.14.6
 tokenizers==0.13.3
 peft==0.4.0
 torch>=2.0.1
