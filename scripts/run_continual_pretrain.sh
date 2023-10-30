@@ -12,6 +12,9 @@ num_train_epochs=0.01
 per_device_train_batch_size=1
 save_steps=1000
 deepspeed_args="--master_port=11000"
+learning_rate=2e-5
+resume_from_checkpoint=None
+exp_id=continual-pretrain
 
 while [[ $# -ge 1 ]]; do
   key="$1"
@@ -44,8 +47,20 @@ while [[ $# -ge 1 ]]; do
       save_steps=$2
       shift
       ;;
+    -r|--resume_from_checkpoint)
+      resume_from_checkpoint=$2
+      shift
+      ;;
+    --lr|--learning_rate)
+      learning_rate=$2
+      shift
+      ;;
     --deepspeed_args)
       deepspeed_args="$2"
+      shift
+      ;;
+    --exp_id)
+      exp_id=$2
       shift
       ;;
     *)
@@ -55,18 +70,19 @@ while [[ $# -ge 1 ]]; do
   shift
 done
 
-exp_id=continual-pretrain
 project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
 
+    # --evaluation_strategy steps \
 deepspeed ${deepspeed_args} \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
+    --resume_from_checkpoint ${resume_from_checkpoint} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --num_train_epochs ${num_train_epochs} \
-    --learning_rate 2e-5 \
+    --learning_rate ${learning_rate} \
     --block_size 2048 \
     --per_device_train_batch_size ${per_device_train_batch_size} \
     --per_device_eval_batch_size 1 \
@@ -77,8 +93,7 @@ deepspeed ${deepspeed_args} \
     --validation_split_percentage 0 \
     --logging_steps 1 \
     --do_train \
-    --do_eval \
-    --evaluation_strategy steps \
+    --evaluation_strategy no \
     --eval_steps ${save_steps} \
     --eval_dataset_path ${eval_dataset_path} \
     --ddp_timeout 72000 \
