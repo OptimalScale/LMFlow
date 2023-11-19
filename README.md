@@ -230,7 +230,7 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 ## Support
 
-If you need any help, please submit a Github issue.
+If you need any help, please submit a GitHub issue.
 
 ## License
 The code included in this project is licensed under the [Apache 2.0 license](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE).
