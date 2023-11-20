@@ -1,4 +1,7 @@
 {
+    "checkpoint": {
+        "use_node_local_storage": true
+    },
     "fp16": {
         "enabled": "auto",
         "loss_scale": 0,
