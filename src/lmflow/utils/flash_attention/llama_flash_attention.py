@@ -9,11 +9,7 @@ from transformers.models.llama.modeling_llama import apply_rotary_pos_emb,_make_
 
 from einops import rearrange
 
-#try to import flash_attn 2.x.x, if not, import flash_attn 1.x.x
-try:
-    from flash_attn.flash_attn_interface import flash_attn_func
-except:
-    from flash_attn.flash_attn_interface import flash_attn_unpadded_qkvpacked_func as flash_attn_func
+from flash_attn.flash_attn_interface import flash_attn_func,flash_attn_varlen_func
 
 from flash_attn.bert_padding import unpad_input, pad_input
 
@@ -70,8 +66,34 @@ def forward(
         key_states = key_states.to(target_dtype)
         value_states = value_states.to(target_dtype)
 
-    # below output will have shape (batch_size, seqlen, nheads, headdim)
-    attn_output = flash_attn_func(query_states, key_states, value_states, causal=True)
+    dropout = 0.0 if not self.training else self.attention_dropout
+    
+    # Contains at least one padding token in the sequence
+    if attention_mask is not None:
+        batch_size = query_states.shape[0]
+        query_states, key_states, value_states, indices_q, cu_seq_lens, max_seq_lens = self._upad_input(
+            query_states, key_states, value_states, attention_mask, q_len
+        )
+
+        cu_seqlens_q, cu_seqlens_k = cu_seq_lens
+        max_seqlen_in_batch_q, max_seqlen_in_batch_k = max_seq_lens
+
+        attn_output_unpad = flash_attn_varlen_func(
+            query_states,
+            key_states,
+            value_states,
+            cu_seqlens_q=cu_seqlens_q,
+            cu_seqlens_k=cu_seqlens_k,
+            max_seqlen_q=max_seqlen_in_batch_q,
+            max_seqlen_k=max_seqlen_in_batch_k,
+            dropout_p=dropout,
+            causal=self.is_causal,
+        )
+        attn_output = pad_input(attn_output_unpad, indices_q, batch_size, q_len)
+        
+    else:
+        # below output will have shape (batch_size, seqlen, nheads, headdim)
+        attn_output = flash_attn_func(query_states, key_states, value_states, causal=True)
 
     if attn_output.size() != (bsz, q_len, self.num_heads, self.head_dim):
         raise ValueError(
