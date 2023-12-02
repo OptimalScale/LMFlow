@@ -625,11 +625,11 @@ class ToolInferencer(Inferencer):
 
         # 检查执行结果
         if result.returncode == 0:
-            print("执行成功，输出如下:")
+            print("Successfully Executed, the result is:")
             print(result.stdout)
             return result.stdout
         else:
-            print("执行失败，错误信息如下:")
+            print("Error:")
             print(result.stderr)
             return result
             

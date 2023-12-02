@@ -14,7 +14,7 @@ NameError: name 'a' is not defined
 """
 
 class ToolInferencerTest(unittest.TestCase):
-    def setUp(self):
+    def set_up(self):
         model_args = ModelArguments(model_name_or_path="codellama/CodeLlama-7b-instruct-hf")
         model = hf_decoder_model.HFDecoderModel(model_args)
         inferencer_args = InferencerArguments()
@@ -22,6 +22,7 @@ class ToolInferencerTest(unittest.TestCase):
         self.toolinf = ToolInferencer(model_args, data_args, inferencer_args)
         
     def test_code_exec_1(self,code=CODE_1, expected_output=RES_1):
+        
         toolinf_res = self.toolinf.code_exec(code)
         self.assertEqual(toolinf_res, expected_output)
         
