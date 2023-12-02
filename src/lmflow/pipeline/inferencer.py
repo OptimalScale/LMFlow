@@ -620,10 +620,10 @@ class ToolInferencer(Inferencer):
         return output
     
     def code_exec(self, code):
-        # 使用 Python 解释器执行代码字符串
+        # Execute the code
         result = subprocess.run(["python", "-c", code], capture_output=True, text=True)
 
-        # 检查执行结果
+        # Print the result
         if result.returncode == 0:
             print("Successfully Executed, the result is:")
             print(result.stdout)
