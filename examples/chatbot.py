@@ -61,6 +61,7 @@ def main():
         tune_strategy='none',
         ds_config=ds_config,
         device=pipeline_args.device,
+        use_accelerator=True,
     )
 
     # We don't need input data, we will read interactively from stdin
@@ -120,7 +121,7 @@ def main():
         print("Bot: ", end="")
         print_index = 0
 
-        token_per_step = 4
+        token_per_step = 100
 
         for response, flag_break in inferencer.stream_inference(
             context=context,

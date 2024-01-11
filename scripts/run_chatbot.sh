@@ -9,8 +9,13 @@ if [ $# -ge 2 ]; then
   lora_args="--lora_model_path $2"
 fi
 
-CUDA_VISIBLE_DEVICES=0 \
-  deepspeed examples/chatbot.py \
-      --deepspeed configs/ds_config_chatbot.json \
-      --model_name_or_path ${model} \
-      ${lora_args}
+    # --temperature 0.7 \
+accelerate launch --config_file configs/accelerator_multigpu_config.yaml \
+  examples/chatbot.py \
+    --deepspeed configs/ds_config_chatbot.json \
+    --model_name_or_path ${model} \
+    --use_accelerator True \
+    --max_new_tokens 256 \
+    --temperature 1.0 \
+    --end_string "#" \
+    ${lora_args}
