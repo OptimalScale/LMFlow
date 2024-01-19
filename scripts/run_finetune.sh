@@ -46,12 +46,12 @@ deepspeed ${deepspeed_args} \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 0.01 \
+    --num_train_epochs 100 \
     --learning_rate 2e-5 \
-    --block_size 512 \
-    --per_device_train_batch_size 1 \
+    --block_size 2048 \
+    --per_device_train_batch_size 16 \
     --deepspeed configs/ds_config_zero3.json \
-    --fp16 \
+    --bf16 \
     --run_name finetune \
     --validation_split_percentage 0 \
     --logging_steps 20 \
@@ -59,5 +59,7 @@ deepspeed ${deepspeed_args} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
+    --gradient_checkpointing True \
+    --use_flash_attention True \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err

@@ -59,7 +59,7 @@ class Evaluator(BasePipeline):
         else:
             deepspeed.init_distributed()
 
-        self.config = AutoConfig.from_pretrained(model_args.model_name_or_path)
+        self.config = AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True)
         try: 
             self.model_hidden_size = self.config.hidden_size
         except:
@@ -149,6 +149,14 @@ class Evaluator(BasePipeline):
             nll = self._evaluate_nll(model, dataset, verbose=verbose)
             print(f"Evaluating final negative log likelihood: {nll}")
             return nll
+        elif metric in ["ent", "entropy"]:
+            entropy = self._evaluate_ent(model, dataset, verbose=verbose)
+            print(f"Evaluating final entropy: {entropy}")
+            return entropy
+        elif metric in ["ndcg"]:
+            ndcg = self._evaluate_ndcg(model, dataset, verbose=verbose)
+            print(f"Evaluating final ndcg: {ndcg}")
+            return ndcg
         else:
             raise NotImplementedError(f"metric {metric} is not supported")
 
@@ -491,3 +499,431 @@ class Evaluator(BasePipeline):
 
         mean_nll = torch.stack(nlls).sum() / num_samples
         return mean_nll
+
+    def _evaluate_ent(
+        self,
+        model,
+        dataset: Dataset,
+        verbose=True,
+    ):
+        """
+        Evaluates entropy of the model over a dataset.
+
+        Entropy = -1/N sum_{i=1}^N sum_{j=1}^|w_i| ln(p(w_{i,j}|context_window)),
+
+        where N is the number of data samples, w_{i,j} is the j-th token in
+        i-th sample. Here "context_window" = p(w_{i,start}, w_{i,start+1}, ...,
+        p_{i,j-1} with start = max(0, j - window_length + 1). "window_length"
+        is normally the maximum length accepted by the model.
+
+        Returns:
+            A float which represents the entropy.
+        """
+        data_dict = dataset.to_dict()
+
+        # Handles prompt structure
+        if dataset.get_type() == "text2text":
+            prompt = self.evaluator_args.prompt_structure
+            data_dict["instances"] = [
+                {
+                    "input": prompt.format(input=instance["input"]),
+                    "output": instance["output"]
+                }
+                for instance in data_dict["instances"]
+            ]
+
+        dataset = dataset.from_dict(data_dict)
+        tokenized_dataset = model.tokenize(dataset, add_special_tokens=False)
+        tokenized_dataset = tokenized_dataset.get_backend_dataset()
+        encoding_list = [
+            {
+                "input_ids": torch.tensor([input_ids]),
+                "labels": torch.tensor([labels]),
+            }
+            for input_ids, labels in zip(tokenized_dataset["input_ids"],
+                                         tokenized_dataset["labels"])
+        ]
+
+        # Gets context window length
+        try:
+            max_length = min(model.get_backend_model().config.n_positions,
+                             model.get_max_length())
+        except:
+            max_length = min(1024, model.get_max_length())
+
+        entropys = []
+        full_entropys = []
+        num_samples = len(encoding_list)
+        for sample_idx, encodings in enumerate(encoding_list):
+            seq_len = encodings["input_ids"].size(1)
+            # print("seq_len")
+            # print(seq_len)
+            # print("encodings[input_ids]")
+            # print(encodings["input_ids"].size())
+            
+
+            prev_end_loc = 0
+            for begin_loc in range(0, seq_len, self.block_size):
+                end_loc = min(begin_loc + max_length, seq_len)
+
+                # may be different from block_size on last loop
+                trg_len = end_loc - prev_end_loc
+                input_ids = encodings["input_ids"][:, begin_loc:end_loc]
+                input_ids = input_ids.to(device=self.local_rank)
+                # print('trg_len')
+                # print(trg_len)
+                # print('begin_loc')
+                # print(begin_loc)
+                # print('end_loc')
+                # print(end_loc)
+                # print('input_ids')
+                # print(input_ids.size())
+                # print(input_ids)
+                
+
+                labels = encodings["labels"][:, begin_loc:end_loc]
+                target_ids = labels.clone()
+                full_target_ids = input_ids.clone()
+
+                def calculate_entropy(logits, binary_mask):
+                    # Apply softmax to convert logits to probabilities
+                    probs = torch.nn.functional.softmax(logits, dim=-1)
+                    
+                    # Calculate entropy for each time step
+                    # -p * log(p), where p is the probability distribution
+                    entropy = -torch.sum(probs * torch.log(probs), dim=-1)
+                    entropy[torch.isnan(entropy)] = 0
+                    # print("entropy")
+                    # print(entropy.size())
+                    # print(entropy)
+                    # print(entropy.isnan())
+                    # print(entropy.isnan().size())
+                    entropy_mask = torch.dot(entropy, binary_mask)
+                    # print("entropy_mask")
+                    # print(binary_mask.size())
+                    # print(binary_mask)
+                    entropy_mask_sum = torch.sum(entropy_mask)
+                    # print("entropy_mask_sum")
+                    # print(entropy_mask_sum)
+                    # Average the entropy over the entire sequence
+                    #average_entropy = torch.mean(entropy)
+                    
+                    # print("Average Entropy:", average_entropy.item())
+                    # return entropy.detach().cpu().numpy()
+                    return entropy_mask_sum
+
+                def convert_to_binary(tensor):
+                    binary_tensor = torch.ones_like(tensor)
+                    binary_tensor[tensor == -100] = 0
+                    return binary_tensor.view(-1)
+
+                def get_entropy(label_ids, entropy_list):
+                    label_ids[:, :-trg_len] = -100
+                    label_ids = label_ids.to(device=self.local_rank)
+                    
+
+                    # Valid labels are from 0 to `vocab_size`
+                    num_valid_labels = torch.count_nonzero(label_ids >= 0)
+                    if label_ids[0, 0] != -100:
+                        num_valid_labels -= 1
+
+                    if not torch.all(label_ids == -100):
+                        with torch.no_grad():
+                            outputs = model.get_backend_model()(
+                                input_ids, labels=label_ids
+                            )
+                            # print('outputs')
+                            # print(outputs)
+                            # print("outputs['logits']")
+                            # print(outputs['logits'].size())
+                            # print('label_ids')
+                            # print(label_ids.size())
+                            # print(label_ids[0])
+                            logits = outputs['logits'][-1]
+                            logits_reshaped = logits.view(-1, logits.size(-1))
+                            # print('logits')
+                            # print(logits.size())
+                            binary_mask = convert_to_binary(label_ids).to(device=self.local_rank,dtype=logits.dtype)
+                            # print('binary_mask')
+                            # print(binary_mask.size())
+                            # print(binary_mask)
+                            entropy = calculate_entropy(logits_reshaped,binary_mask)
+                            # exit()
+                            # print('entropy')
+                            # print(entropy)
+                            # exit()
+                            # loss is calculated using CrossEntropyLoss which
+                            # sums over valid labels N.B. the model only
+                            # calculates loss over trg_len - 1 labels, because
+                            # it internally shifts the labels to the left by 1.
+                            # neg_log_likelihood = outputs.loss * num_valid_labels
+                            # print("outputs.loss")
+                            # print(outputs.loss)
+                            # print("neg_log_likelihood")
+                            # print(neg_log_likelihood)
+                            # exit()
+                    else:
+                        # neg_log_likelihood = torch.zeros([]).to(
+                        #     device=self.local_rank
+                        # )
+                        entropy = torch.zeros([]).to(
+                            device=self.local_rank
+                        )
+
+                    entropy_list.append(entropy)
+
+                get_entropy(target_ids, entropys)
+                get_entropy(full_target_ids, full_entropys)
+
+                current_output_entropy = torch.stack(entropys).sum() / (sample_idx + 1)
+                current_full_entropy = torch.stack(full_entropys).sum() / (sample_idx + 1)
+
+                prev_end_loc = end_loc
+                if verbose:
+                    if dataset.get_type() == "text_only":
+                        print(
+                            f"Evaluating negative log likelihood:"
+                            f" {sample_idx + 1} / {num_samples} Complete,"
+                            f" current entropy: {current_full_entropy}"
+                        )
+                    elif dataset.get_type() == "text2text":
+                        print(
+                            f"Evaluating negative log likelihood:"
+                            f" {sample_idx + 1} / {num_samples} Complete,"
+                            f" current full entropy / input entropy / output entropy:"
+                            f" {current_full_entropy} /"
+                            f" {current_full_entropy - current_output_entropy} /"
+                            f" {current_output_entropy}"
+                        )
+                    else:
+                        raise NotImplementedError(
+                            "f{dataset.get_type()} typed datasets are not"
+                            " supported"
+                        )
+
+                if end_loc == seq_len:
+                    break
+
+        mean_entropy = torch.stack(entropys).sum() / num_samples
+        return mean_entropy
+    
+    def _evaluate_ndcg(
+        self,
+        model,
+        dataset: Dataset,
+        verbose=True,
+    ):
+        """
+        Evaluates ndcg of the model over a dataset.
+
+        NDCG = -1/N sum_{i=1}^N sum_{j=1}^|w_i| ln(p(w_{i,j}|context_window)),
+
+        where N is the number of data samples, w_{i,j} is the j-th token in
+        i-th sample. Here "context_window" = p(w_{i,start}, w_{i,start+1}, ...,
+        p_{i,j-1} with start = max(0, j - window_length + 1). "window_length"
+        is normally the maximum length accepted by the model.
+
+        Returns:
+            A float which represents the ndcg.
+        """
+        data_dict = dataset.to_dict()
+
+        # Handles prompt structure
+        if dataset.get_type() == "text2text":
+            prompt = self.evaluator_args.prompt_structure
+            data_dict["instances"] = [
+                {
+                    "input": prompt.format(input=instance["input"]),
+                    "output": instance["output"]
+                }
+                for instance in data_dict["instances"]
+            ]
+
+        dataset = dataset.from_dict(data_dict)
+        tokenized_dataset = model.tokenize(dataset, add_special_tokens=False)
+        tokenized_dataset = tokenized_dataset.get_backend_dataset()
+        encoding_list = [
+            {
+                "input_ids": torch.tensor([input_ids]),
+                "labels": torch.tensor([labels]),
+            }
+            for input_ids, labels in zip(tokenized_dataset["input_ids"],
+                                         tokenized_dataset["labels"])
+        ]
+
+        # Gets context window length
+        try:
+            max_length = min(model.get_backend_model().config.n_positions,
+                             model.get_max_length())
+        except:
+            max_length = min(1024, model.get_max_length())
+
+        ndcgs = []
+        full_ndcgs = []
+        num_samples = len(encoding_list)
+        for sample_idx, encodings in enumerate(encoding_list):
+            seq_len = encodings["input_ids"].size(1)
+            # print("seq_len")
+            # print(seq_len)
+            # print("encodings[input_ids]")
+            # print(encodings["input_ids"].size())
+            
+            prev_end_loc = 0
+            for begin_loc in range(0, seq_len, self.block_size):
+                end_loc = min(begin_loc + max_length, seq_len)
+
+                # may be different from block_size on last loop
+                trg_len = end_loc - prev_end_loc
+                input_ids = encodings["input_ids"][:, begin_loc:end_loc]
+                input_ids = input_ids.to(device=self.local_rank)
+                # print('trg_len')
+                # print(trg_len)
+                # print('begin_loc')
+                # print(begin_loc)
+                # print('end_loc')
+                # print(end_loc)
+                # print('input_ids')
+                # print(input_ids.size())
+                # print(input_ids)
+                
+
+                labels = encodings["labels"][:, begin_loc:end_loc]
+                target_ids = labels.clone()
+                full_target_ids = input_ids.clone()
+
+                def calculate_ndcg(ndcg_list, binary_mask):
+                    ndcg_mask = torch.dot(ndcg_list, binary_mask)
+                    ndcg_mask_sum = torch.mean(ndcg_mask)
+                    return ndcg_mask_sum
+
+                def convert_to_binary(tensor):
+                    binary_tensor = torch.ones_like(tensor)
+                    binary_tensor[tensor == -100] = 0
+                    return binary_tensor.view(-1)
+                
+                def get_prob_gold(tensor,vocab_size):
+                    prob_gold = torch.eye(vocab_size, device=self.local_rank)[tensor.clamp(min=0)]
+                    return prob_gold.view(-1, prob_gold.size(-1))
+                
+                def obtain_ndcg_list(prob_ref, prob_gold):
+                    ndcg_list = []
+                    idcg_list = []
+                    dcg_list = []
+                    v_idcg_list = []
+                    v_dcg_list = []
+                    vocab_size = prob_gold.size(-1)
+                    seq_len = prob_gold.size(0)
+                    invlog =  torch.FloatTensor([1/np.log2(i+1) for i in range(1,vocab_size+1)])
+                    for i in range(0, seq_len):
+                        v_idcg = torch.sort(prob_gold[i], descending=True)[0]    
+                        pos_dcg = torch.sort(prob_ref[i], descending=True)[1]
+                        v_dcg = prob_gold[i][pos_dcg.to(device=self.local_rank)]
+
+                        idcg = torch.dot(v_idcg, invlog.to(device=self.local_rank))
+                        dcg = torch.dot(v_dcg, invlog.to(device=self.local_rank))
+
+                        ndcg_list.append((dcg / idcg).item())
+                        idcg_list.append(idcg.item())
+                        dcg_list.append(dcg.item())
+                        v_idcg_list.append(v_idcg)
+                        v_dcg_list.append(v_dcg)
+                    return ndcg_list, idcg_list, dcg_list, v_idcg_list, v_dcg_list
+
+                def get_ndcg(label_ids, ndcg_fina_list):
+                    label_ids[:, :-trg_len] = -100
+                    label_ids = label_ids.to(device=self.local_rank)
+                    
+
+                    # Valid labels are from 0 to `vocab_size`
+                    num_valid_labels = torch.count_nonzero(label_ids >= 0)
+                    if label_ids[0, 0] != -100:
+                        num_valid_labels -= 1
+
+                    if not torch.all(label_ids == -100):
+                        with torch.no_grad():
+                            outputs = model.get_backend_model()(
+                                input_ids, labels=label_ids
+                            )
+                            # print('outputs')
+                            # print(outputs)
+                            # print("outputs['logits']")
+                            # print(outputs['logits'].size())
+                            # print('label_ids')
+                            # print(label_ids.size())
+                            # print(label_ids[0])
+                            logits = outputs['logits'][-1]
+                            logits_reshaped = logits.view(-1, logits.size(-1))
+                            # print('logits')
+                            # print(logits.size())
+                            binary_mask = convert_to_binary(label_ids).to(device=self.local_rank,dtype=logits.dtype)
+                            prob_gold = get_prob_gold(label_ids,torch.tensor(logits.size(-1)).to(device=self.local_rank))
+                            # print('prob_gold')
+                            # print(prob_gold.size())
+                            # print(prob_gold)
+                            ndcg_list,_,_,_,_ = obtain_ndcg_list(logits_reshaped, prob_gold)
+                            # print('ndcg_list')
+                            # print(len(ndcg_list))
+                            # print(ndcg_list)
+                            # exit()
+                            # print('binary_mask')
+                            # print(binary_mask.size())
+                            # print(binary_mask)
+                            ndcg = calculate_ndcg(torch.tensor(ndcg_list).to(device=self.local_rank,dtype=logits.dtype),binary_mask)
+                            # exit()
+                            # print('entropy')
+                            # print(entropy)
+                            # exit()
+                            # loss is calculated using CrossEntropyLoss which
+                            # sums over valid labels N.B. the model only
+                            # calculates loss over trg_len - 1 labels, because
+                            # it internally shifts the labels to the left by 1.
+                            # neg_log_likelihood = outputs.loss * num_valid_labels
+                            # print("outputs.loss")
+                            # print(outputs.loss)
+                            # print("neg_log_likelihood")
+                            # print(neg_log_likelihood)
+                            # exit()
+                    else:
+                        # neg_log_likelihood = torch.zeros([]).to(
+                        #     device=self.local_rank
+                        # )
+                        ndcg = torch.zeros([]).to(
+                            device=self.local_rank
+                        )
+
+                    ndcg_fina_list.append(ndcg)
+
+                get_ndcg(target_ids, ndcgs)
+                get_ndcg(full_target_ids, full_ndcgs)
+
+                current_output_ndcg = torch.stack(ndcgs).sum() / (sample_idx + 1)
+                current_full_ndcg = torch.stack(full_ndcgs).sum() / (sample_idx + 1)
+
+                prev_end_loc = end_loc
+                if verbose:
+                    if dataset.get_type() == "text_only":
+                        print(
+                            f"Evaluating negative log likelihood:"
+                            f" {sample_idx + 1} / {num_samples} Complete,"
+                            f" current ndcg: {current_full_ndcg}"
+                        )
+                    elif dataset.get_type() == "text2text":
+                        print(
+                            f"Evaluating negative log likelihood:"
+                            f" {sample_idx + 1} / {num_samples} Complete,"
+                            f" current full ndcg / input ndcg / output ndcg:"
+                            f" {current_full_ndcg} /"
+                            f" {current_full_ndcg - current_output_ndcg} /"
+                            f" {current_output_ndcg}"
+                        )
+                    else:
+                        raise NotImplementedError(
+                            "f{dataset.get_type()} typed datasets are not"
+                            " supported"
+                        )
+
+                if end_loc == seq_len:
+                    break
+
+        mean_ndcg = torch.stack(ndcgs).sum() / num_samples
+        return mean_ndcg

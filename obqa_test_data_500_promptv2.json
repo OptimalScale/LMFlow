@@ -1,0 +1,2005 @@
+{
+    "type": "text2text",
+    "instances": [
+        {
+            "input": "Given the question: +A person wants to start saving money so that they can afford a nice vacation at the end of the year. After looking over their budget and expenses, they decide the best way to save money is to. Generate explanation for each choice: \\[##(a) make more phone calls ##(b) quit eating lunch out ##(c) buy less with monopoly money ##(d) have lunch with friends\\]\n",
+            "output": "##(a) make more phone calls ##(b) quit eating lunch out ##(c) buy less with monopoly money ##(d) have lunch with friends"
+        },
+        {
+            "input": "Given the question: +There is most likely going to be fog around:. Generate explanation for each choice: \\[##(a) a marsh ##(b) a tundra ##(c) the plains ##(d) a desert\\]\n",
+            "output": "##(a) a marsh ##(b) a tundra ##(c) the plains ##(d) a desert"
+        },
+        {
+            "input": "Given the question: +Predators eat. Generate explanation for each choice: \\[##(a) lions ##(b) humans ##(c) bunnies ##(d) grass\\]\n",
+            "output": "##(a) lions ##(b) humans ##(c) bunnies ##(d) grass"
+        },
+        {
+            "input": "Given the question: +Oak tree seeds are planted and a sidewalk is paved right next to that spot, until eventually, the tree is tall and the roots must extend past the sidewalk, which means. Generate explanation for each choice: \\[##(a) roots may be split ##(b) roots may begin to die ##(c) parts may break the concrete ##(d) roots may fall apart\\]\n",
+            "output": "##(a) roots may be split ##(b) roots may begin to die ##(c) parts may break the concrete ##(d) roots may fall apart"
+        },
+        {
+            "input": "Given the question: +An electric car runs on electricity via. Generate explanation for each choice: \\[##(a) gasoline ##(b) a power station ##(c) electrical conductors ##(d) fuel\\]\n",
+            "output": "##(a) gasoline ##(b) a power station ##(c) electrical conductors ##(d) fuel"
+        },
+        {
+            "input": "Given the question: +As the rain forest is deforested the atmosphere will increase with. Generate explanation for each choice: \\[##(a) oxygen ##(b) nitrogen ##(c) carbon ##(d) rain\\]\n",
+            "output": "##(a) oxygen ##(b) nitrogen ##(c) carbon ##(d) rain"
+        },
+        {
+            "input": "Given the question: +an electric car contains a motor that runs on. Generate explanation for each choice: \\[##(a) gas ##(b) hydrogen ##(c) ions ##(d) plutonium\\]\n",
+            "output": "##(a) gas ##(b) hydrogen ##(c) ions ##(d) plutonium"
+        },
+        {
+            "input": "Given the question: +The middle of the day usually involves the bright star nearest to the earth to be straight overhead why?. Generate explanation for each choice: \\[##(a) moons gravity ##(b) human planet rotation ##(c) global warming ##(d) moon rotation\\]\n",
+            "output": "##(a) moons gravity ##(b) human planet rotation ##(c) global warming ##(d) moon rotation"
+        },
+        {
+            "input": "Given the question: +The summer solstice in the northern hemisphere is four months before. Generate explanation for each choice: \\[##(a) May ##(b) July ##(c) April ##(d) October\\]\n",
+            "output": "##(a) May ##(b) July ##(c) April ##(d) October"
+        },
+        {
+            "input": "Given the question: +The main component in dirt is. Generate explanation for each choice: \\[##(a) microorganisms ##(b) broken stones ##(c) pollution ##(d) bacteria\\]\n",
+            "output": "##(a) microorganisms ##(b) broken stones ##(c) pollution ##(d) bacteria"
+        },
+        {
+            "input": "Given the question: +It's easier for human's to survive in:. Generate explanation for each choice: \\[##(a) a cave ##(b) the ocean. ##(c) a town ##(d) alone\\]\n",
+            "output": "##(a) a cave ##(b) the ocean. ##(c) a town ##(d) alone"
+        },
+        {
+            "input": "Given the question: +A cactus stem is used to store. Generate explanation for each choice: \\[##(a) fruit ##(b) liquid ##(c) food ##(d) spines\\]\n",
+            "output": "##(a) fruit ##(b) liquid ##(c) food ##(d) spines"
+        },
+        {
+            "input": "Given the question: +A red-tailed hawk is searching for prey. It is most likely to swoop down on. Generate explanation for each choice: \\[##(a) an eagle ##(b) a cow ##(c) a gecko ##(d) a deer\\]\n",
+            "output": "##(a) an eagle ##(b) a cow ##(c) a gecko ##(d) a deer"
+        },
+        {
+            "input": "Given the question: +The chance of wildfires is increased by. Generate explanation for each choice: \\[##(a) parched foliage ##(b) torrential rain ##(c) lush foliage ##(d) careful fire maintenance\\]\n",
+            "output": "##(a) parched foliage ##(b) torrential rain ##(c) lush foliage ##(d) careful fire maintenance"
+        },
+        {
+            "input": "Given the question: +A positive effect of burning biofuel is. Generate explanation for each choice: \\[##(a) shortage of crops for the food supply ##(b) an increase in air pollution ##(c) powering the lights in a home ##(d) deforestation in the amazon to make room for crops\\]\n",
+            "output": "##(a) shortage of crops for the food supply ##(b) an increase in air pollution ##(c) powering the lights in a home ##(d) deforestation in the amazon to make room for crops"
+        },
+        {
+            "input": "Given the question: +As gasoline costs rise, alternative fuels are being used, which means that. Generate explanation for each choice: \\[##(a) wind power will be expensive ##(b) gas costs will rise ##(c) oil costs will be maintained ##(d) gasoline will be needed less\\]\n",
+            "output": "##(a) wind power will be expensive ##(b) gas costs will rise ##(c) oil costs will be maintained ##(d) gasoline will be needed less"
+        },
+        {
+            "input": "Given the question: +A person wants to be able to have more natural power in their home. They choose to cease using a traditional electric company to source this electricity, and so decide to install. Generate explanation for each choice: \\[##(a) sun grafts ##(b) sunlight shields ##(c) panels collecting sunlight ##(d) solar bees\\]\n",
+            "output": "##(a) sun grafts ##(b) sunlight shields ##(c) panels collecting sunlight ##(d) solar bees"
+        },
+        {
+            "input": "Given the question: +A Mola Mola might live where?. Generate explanation for each choice: \\[##(a) Lake Michigan ##(b) The Mississippi River ##(c) Bay of Bengal ##(d) Lake Eerie\\]\n",
+            "output": "##(a) Lake Michigan ##(b) The Mississippi River ##(c) Bay of Bengal ##(d) Lake Eerie"
+        },
+        {
+            "input": "Given the question: +Which requires energy to move?. Generate explanation for each choice: \\[##(a) weasel ##(b) willow ##(c) mango ##(d) poison ivy\\]\n",
+            "output": "##(a) weasel ##(b) willow ##(c) mango ##(d) poison ivy"
+        },
+        {
+            "input": "Given the question: +An animal that only eats plants is a. Generate explanation for each choice: \\[##(a) rat ##(b) moth ##(c) chimpanzee ##(d) pig\\]\n",
+            "output": "##(a) rat ##(b) moth ##(c) chimpanzee ##(d) pig"
+        },
+        {
+            "input": "Given the question: +There was a lot more water vapor in the air when we went on a trip to. Generate explanation for each choice: \\[##(a) Hanoi ##(b) Athens ##(c) Baghdad ##(d) Phoenix\\]\n",
+            "output": "##(a) Hanoi ##(b) Athens ##(c) Baghdad ##(d) Phoenix"
+        },
+        {
+            "input": "Given the question: +An example of conservation is avoiding the use of. Generate explanation for each choice: \\[##(a) gasoline ##(b) air ##(c) snow ##(d) clothes\\]\n",
+            "output": "##(a) gasoline ##(b) air ##(c) snow ##(d) clothes"
+        },
+        {
+            "input": "Given the question: +What can feathers on Spheniscidae be used for?. Generate explanation for each choice: \\[##(a) keeping warm ##(b) flying ##(c) sleeping ##(d) eating\\]\n",
+            "output": "##(a) keeping warm ##(b) flying ##(c) sleeping ##(d) eating"
+        },
+        {
+            "input": "Given the question: +Overpopulation can cause. Generate explanation for each choice: \\[##(a) More fresh water for people to drink ##(b) Lower Life Expectancy in Countries ##(c) More food for more people ##(d) More space for places to people to live\\]\n",
+            "output": "##(a) More fresh water for people to drink ##(b) Lower Life Expectancy in Countries ##(c) More food for more people ##(d) More space for places to people to live"
+        },
+        {
+            "input": "Given the question: +Shining a light through a diamond can. Generate explanation for each choice: \\[##(a) make a lot of bright lights shine ##(b) summon a brilliant wave of color ##(c) heat up a room ##(d) make a lot of money\\]\n",
+            "output": "##(a) make a lot of bright lights shine ##(b) summon a brilliant wave of color ##(c) heat up a room ##(d) make a lot of money"
+        },
+        {
+            "input": "Given the question: +If you were attacked by a shark and had to punch it sharply where it pulls in air from, you'd use your hand to make contact with. Generate explanation for each choice: \\[##(a) its snout ##(b) its gills ##(c) its nose ##(d) its belly\\]\n",
+            "output": "##(a) its snout ##(b) its gills ##(c) its nose ##(d) its belly"
+        },
+        {
+            "input": "Given the question: +which of these would stop a car quicker?. Generate explanation for each choice: \\[##(a) a wheel with wet brake pads ##(b) a wheel without brake pads ##(c) a wheel with worn brake pads ##(d) a wheel with dry brake pads\\]\n",
+            "output": "##(a) a wheel with wet brake pads ##(b) a wheel without brake pads ##(c) a wheel with worn brake pads ##(d) a wheel with dry brake pads"
+        },
+        {
+            "input": "Given the question: +what system is needed for a body to get its needed supply of the gas humans breathe in?. Generate explanation for each choice: \\[##(a) the circulatory system ##(b) the digestive system ##(c) the school system ##(d) central nervous system\\]\n",
+            "output": "##(a) the circulatory system ##(b) the digestive system ##(c) the school system ##(d) central nervous system"
+        },
+        {
+            "input": "Given the question: +Every evening a child can look into the night sky and see that the moon is. Generate explanation for each choice: \\[##(a) gone ##(b) breaking ##(c) falling ##(d) moving upwards\\]\n",
+            "output": "##(a) gone ##(b) breaking ##(c) falling ##(d) moving upwards"
+        },
+        {
+            "input": "Given the question: +When it's flying, a plane has no friction with the. Generate explanation for each choice: \\[##(a) wings ##(b) ground ##(c) air ##(d) clouds\\]\n",
+            "output": "##(a) wings ##(b) ground ##(c) air ##(d) clouds"
+        },
+        {
+            "input": "Given the question: +To grow plants require. Generate explanation for each choice: \\[##(a) acid rain ##(b) pesticides ##(c) shafts of sunlight ##(d) moonbeam rays\\]\n",
+            "output": "##(a) acid rain ##(b) pesticides ##(c) shafts of sunlight ##(d) moonbeam rays"
+        },
+        {
+            "input": "Given the question: +What is the best way to guess a babies eye color?. Generate explanation for each choice: \\[##(a) The surroundings they are born in. ##(b) Their parents usual diet. ##(c) Just take a random guess. ##(d) The genealogy records of their family.\\]\n",
+            "output": "##(a) The surroundings they are born in. ##(b) Their parents usual diet. ##(c) Just take a random guess. ##(d) The genealogy records of their family."
+        },
+        {
+            "input": "Given the question: +What animal eats plants?. Generate explanation for each choice: \\[##(a) eagles ##(b) robins ##(c) owls ##(d) leopards\\]\n",
+            "output": "##(a) eagles ##(b) robins ##(c) owls ##(d) leopards"
+        },
+        {
+            "input": "Given the question: +Which of these is a hypothesis?. Generate explanation for each choice: \\[##(a) The ice caps will completely melt if global warming continues ##(b) The earth is round ##(c) The earth revolves around the sun ##(d) Gravity causes objects to fall\\]\n",
+            "output": "##(a) The ice caps will completely melt if global warming continues ##(b) The earth is round ##(c) The earth revolves around the sun ##(d) Gravity causes objects to fall"
+        },
+        {
+            "input": "Given the question: +What explains the characteristic lunar formations?. Generate explanation for each choice: \\[##(a) remains of ancient ponds ##(b) many collisions that have occured ##(c) volcanic explosions over millions of years ##(d) sink holes due to the moons porous nature\\]\n",
+            "output": "##(a) remains of ancient ponds ##(b) many collisions that have occured ##(c) volcanic explosions over millions of years ##(d) sink holes due to the moons porous nature"
+        },
+        {
+            "input": "Given the question: +Tadpoles start their lives as. Generate explanation for each choice: \\[##(a) Water animals ##(b) Frogs ##(c) Ants ##(d) College Students\\]\n",
+            "output": "##(a) Water animals ##(b) Frogs ##(c) Ants ##(d) College Students"
+        },
+        {
+            "input": "Given the question: +If a person puts out four apples around their home on the same day, the molecules in which apple would be moving the most rapidly?. Generate explanation for each choice: \\[##(a) the apple sitting on a sunny sidewalk ##(b) the apple in the freezer ##(c) the apple sitting on the shaded stoop ##(d) the apple in a closet\\]\n",
+            "output": "##(a) the apple sitting on a sunny sidewalk ##(b) the apple in the freezer ##(c) the apple sitting on the shaded stoop ##(d) the apple in a closet"
+        },
+        {
+            "input": "Given the question: +What is used for sensing visual things?. Generate explanation for each choice: \\[##(a) nerves ##(b) tibia ##(c) nostril ##(d) cornea\\]\n",
+            "output": "##(a) nerves ##(b) tibia ##(c) nostril ##(d) cornea"
+        },
+        {
+            "input": "Given the question: +They studied the soil by using. Generate explanation for each choice: \\[##(a) plants ##(b) a telescope ##(c) roots ##(d) a microscope\\]\n",
+            "output": "##(a) plants ##(b) a telescope ##(c) roots ##(d) a microscope"
+        },
+        {
+            "input": "Given the question: +Bill's arm got cold when he put it inside the. Generate explanation for each choice: \\[##(a) refrigerator ##(b) room ##(c) jacket ##(d) oven\\]\n",
+            "output": "##(a) refrigerator ##(b) room ##(c) jacket ##(d) oven"
+        },
+        {
+            "input": "Given the question: +A recyclable material can be. Generate explanation for each choice: \\[##(a) transformed ##(b) traded ##(c) thrown away ##(d) used more times\\]\n",
+            "output": "##(a) transformed ##(b) traded ##(c) thrown away ##(d) used more times"
+        },
+        {
+            "input": "Given the question: +What is different about birth in humans and chickens?. Generate explanation for each choice: \\[##(a) Mother ##(b) Fertilization ##(c) Father ##(d) the hard shell\\]\n",
+            "output": "##(a) Mother ##(b) Fertilization ##(c) Father ##(d) the hard shell"
+        },
+        {
+            "input": "Given the question: +Which of these situations is an example of pollutants?. Generate explanation for each choice: \\[##(a) plastic bags floating in the ocean ##(b) mallard ducks floating on a lake ##(c) cottonwood seeds floating in the air ##(d) cirrus clouds floating in the sky\\]\n",
+            "output": "##(a) plastic bags floating in the ocean ##(b) mallard ducks floating on a lake ##(c) cottonwood seeds floating in the air ##(d) cirrus clouds floating in the sky"
+        },
+        {
+            "input": "Given the question: +Human reproduction requires. Generate explanation for each choice: \\[##(a) eggs with shells ##(b) nest incubation ##(c) a nest ##(d) a womb\\]\n",
+            "output": "##(a) eggs with shells ##(b) nest incubation ##(c) a nest ##(d) a womb"
+        },
+        {
+            "input": "Given the question: +Thermometers. Generate explanation for each choice: \\[##(a) can help you monitor a fever ##(b) indicate levels of mercury in the blood ##(c) read exactly at 98.6 degrees ##(d) are used only for babies\\]\n",
+            "output": "##(a) can help you monitor a fever ##(b) indicate levels of mercury in the blood ##(c) read exactly at 98.6 degrees ##(d) are used only for babies"
+        },
+        {
+            "input": "Given the question: +if the earth was a living room, what can be done to melt the glaciers?. Generate explanation for each choice: \\[##(a) someone would turn up the room heater ##(b) someone would turn up the air conditioner ##(c) someone would turn up the music ##(d) someone would turn on the light\\]\n",
+            "output": "##(a) someone would turn up the room heater ##(b) someone would turn up the air conditioner ##(c) someone would turn up the music ##(d) someone would turn on the light"
+        },
+        {
+            "input": "Given the question: +What would happen when balloons heat up?. Generate explanation for each choice: \\[##(a) they get bigger ##(b) they get smaller ##(c) nothing happens ##(d) they fall down\\]\n",
+            "output": "##(a) they get bigger ##(b) they get smaller ##(c) nothing happens ##(d) they fall down"
+        },
+        {
+            "input": "Given the question: +A balloon is filled with helium for a party. After the party, the balloons are left in the living room, where a fireplace is heating the room. The balloons. Generate explanation for each choice: \\[##(a) expand ##(b) melt ##(c) shrink ##(d) fall\\]\n",
+            "output": "##(a) expand ##(b) melt ##(c) shrink ##(d) fall"
+        },
+        {
+            "input": "Given the question: +Seals are most likely to be found in what type of environment?. Generate explanation for each choice: \\[##(a) desert ##(b) arctic ##(c) Mediterranean ##(d) tropical\\]\n",
+            "output": "##(a) desert ##(b) arctic ##(c) Mediterranean ##(d) tropical"
+        },
+        {
+            "input": "Given the question: +When the eggs hatch, the offspring are. Generate explanation for each choice: \\[##(a) killed ##(b) hurt ##(c) born ##(d) cold\\]\n",
+            "output": "##(a) killed ##(b) hurt ##(c) born ##(d) cold"
+        },
+        {
+            "input": "Given the question: +Some berries may be eaten by. Generate explanation for each choice: \\[##(a) a bear or person ##(b) a bear or shark ##(c) a bear or lion ##(d) a bear or wolf\\]\n",
+            "output": "##(a) a bear or person ##(b) a bear or shark ##(c) a bear or lion ##(d) a bear or wolf"
+        },
+        {
+            "input": "Given the question: +A person has a chance to experience an equinox. Generate explanation for each choice: \\[##(a) weekly ##(b) monthly ##(c) annually ##(d) biannually\\]\n",
+            "output": "##(a) weekly ##(b) monthly ##(c) annually ##(d) biannually"
+        },
+        {
+            "input": "Given the question: +Overpopulation of an organism can. Generate explanation for each choice: \\[##(a) strain the resources of an ecosystem ##(b) cause boundless growth of resources ##(c) lead to extinction of the organism ##(d) cause the ecosystem to flourish\\]\n",
+            "output": "##(a) strain the resources of an ecosystem ##(b) cause boundless growth of resources ##(c) lead to extinction of the organism ##(d) cause the ecosystem to flourish"
+        },
+        {
+            "input": "Given the question: +To improve health, what is a good strategy?. Generate explanation for each choice: \\[##(a) high risk lifestyle ##(b) restaurant food ##(c) business trip ##(d) a spa trip\\]\n",
+            "output": "##(a) high risk lifestyle ##(b) restaurant food ##(c) business trip ##(d) a spa trip"
+        },
+        {
+            "input": "Given the question: +A girl and her mom have the same. Generate explanation for each choice: \\[##(a) date of birth ##(b) shirt ##(c) number of toenails ##(d) hair length\\]\n",
+            "output": "##(a) date of birth ##(b) shirt ##(c) number of toenails ##(d) hair length"
+        },
+        {
+            "input": "Given the question: +The transportation with the most mass is likely a. Generate explanation for each choice: \\[##(a) commercial plane ##(b) private plane ##(c) bus ##(d) private car\\]\n",
+            "output": "##(a) commercial plane ##(b) private plane ##(c) bus ##(d) private car"
+        },
+        {
+            "input": "Given the question: +A rabbit may enjoy. Generate explanation for each choice: \\[##(a) meat ##(b) compost ##(c) peas ##(d) pebbles\\]\n",
+            "output": "##(a) meat ##(b) compost ##(c) peas ##(d) pebbles"
+        },
+        {
+            "input": "Given the question: +A construction group wants to put a shopping center in town, but the only place available is a small nature park with a trail. Deer and other wildlife frequent the park, since it is the only place in the city where trees and fresh water are available for them. The construction group decides to build the shopping center, which means that. Generate explanation for each choice: \\[##(a) the deer are moved to a zoo ##(b) the trail is expanded ##(c) the mall has a nature park in it ##(d) the wildlife environment is destroyed\\]\n",
+            "output": "##(a) the deer are moved to a zoo ##(b) the trail is expanded ##(c) the mall has a nature park in it ##(d) the wildlife environment is destroyed"
+        },
+        {
+            "input": "Given the question: +Owls are likely to hunt at. Generate explanation for each choice: \\[##(a) 3pm ##(b) 2am ##(c) 6pm ##(d) 7am\\]\n",
+            "output": "##(a) 3pm ##(b) 2am ##(c) 6pm ##(d) 7am"
+        },
+        {
+            "input": "Given the question: +What could be a positive aspect of a tree being cut down?. Generate explanation for each choice: \\[##(a) the plants that were under the tree will have access to more light ##(b) the squirrels that were in that tree will have an easier time getting to their home ##(c) Plants under the tree will get cooled off by the shade ##(d) The sun will shine brighter than before\\]\n",
+            "output": "##(a) the plants that were under the tree will have access to more light ##(b) the squirrels that were in that tree will have an easier time getting to their home ##(c) Plants under the tree will get cooled off by the shade ##(d) The sun will shine brighter than before"
+        },
+        {
+            "input": "Given the question: +Birds carrying away fruit helps the tree. Generate explanation for each choice: \\[##(a) grow ##(b) fertilize ##(c) reproduce ##(d) conquer\\]\n",
+            "output": "##(a) grow ##(b) fertilize ##(c) reproduce ##(d) conquer"
+        },
+        {
+            "input": "Given the question: +If a UFO is flying overhead and looks small, then large, then. Generate explanation for each choice: \\[##(a) the UFO is calling ##(b) the UFO had been close ##(c) the UFO is approaching ##(d) the UFO is leaving\\]\n",
+            "output": "##(a) the UFO is calling ##(b) the UFO had been close ##(c) the UFO is approaching ##(d) the UFO is leaving"
+        },
+        {
+            "input": "Given the question: +Inherited behavior is exhibited when. Generate explanation for each choice: \\[##(a) bears take a long winter sleep ##(b) dogs sit on command ##(c) seals clap for their trainers ##(d) rats navigate thru a maze\\]\n",
+            "output": "##(a) bears take a long winter sleep ##(b) dogs sit on command ##(c) seals clap for their trainers ##(d) rats navigate thru a maze"
+        },
+        {
+            "input": "Given the question: +What likely explains deforestation?. Generate explanation for each choice: \\[##(a) Increased insect populations ##(b) Clearing for farming ##(c) reduction in rainfall ##(d) More carbon dioxide\\]\n",
+            "output": "##(a) Increased insect populations ##(b) Clearing for farming ##(c) reduction in rainfall ##(d) More carbon dioxide"
+        },
+        {
+            "input": "Given the question: +Mosquitoes enjoy all the people at a BBQ in the summer for what reason?. Generate explanation for each choice: \\[##(a) steak ##(b) blood ##(c) nice weather ##(d) taking food\\]\n",
+            "output": "##(a) steak ##(b) blood ##(c) nice weather ##(d) taking food"
+        },
+        {
+            "input": "Given the question: +The surface of the moon contains. Generate explanation for each choice: \\[##(a) dogs ##(b) water ##(c) high peaks ##(d) humans\\]\n",
+            "output": "##(a) dogs ##(b) water ##(c) high peaks ##(d) humans"
+        },
+        {
+            "input": "Given the question: +A tool used to identify the percent chance of a trait being passed down has at least. Generate explanation for each choice: \\[##(a) four boxes ##(b) eight boxes ##(c) two boxes ##(d) six boxes\\]\n",
+            "output": "##(a) four boxes ##(b) eight boxes ##(c) two boxes ##(d) six boxes"
+        },
+        {
+            "input": "Given the question: +A prisoner is kept in a stone room, unable to see the sun. The prisoner knows that he needs vitamin D to survive, so he. Generate explanation for each choice: \\[##(a) asks for milk ##(b) asks for television ##(c) asks for water ##(d) asks for sleep\\]\n",
+            "output": "##(a) asks for milk ##(b) asks for television ##(c) asks for water ##(d) asks for sleep"
+        },
+        {
+            "input": "Given the question: +When trying to pull a rose out of the ground why do you encounter resistance?. Generate explanation for each choice: \\[##(a) roots ##(b) tensile strength ##(c) plant temperature ##(d) plant color\\]\n",
+            "output": "##(a) roots ##(b) tensile strength ##(c) plant temperature ##(d) plant color"
+        },
+        {
+            "input": "Given the question: +A bat flew through the sky without hitting anything due to which of these?. Generate explanation for each choice: \\[##(a) rainy sky to fly in ##(b) fast truck to drive ##(c) a car with gasoline ##(d) surfaces to reflect sound off\\]\n",
+            "output": "##(a) rainy sky to fly in ##(b) fast truck to drive ##(c) a car with gasoline ##(d) surfaces to reflect sound off"
+        },
+        {
+            "input": "Given the question: +How can we see that the coloration of fur is an inherited characteristic?. Generate explanation for each choice: \\[##(a) puppies have soft fur ##(b) kittens look like their parents ##(c) all mammals are born with fur ##(d) baby rats are mostly bald\\]\n",
+            "output": "##(a) puppies have soft fur ##(b) kittens look like their parents ##(c) all mammals are born with fur ##(d) baby rats are mostly bald"
+        },
+        {
+            "input": "Given the question: +Decaying vegetation is part of the process that. Generate explanation for each choice: \\[##(a) enables nuclear power to function ##(b) enables to emitting of light beams ##(c) enables gas powered motors to operate ##(d) enables windmills to power electric grids\\]\n",
+            "output": "##(a) enables nuclear power to function ##(b) enables to emitting of light beams ##(c) enables gas powered motors to operate ##(d) enables windmills to power electric grids"
+        },
+        {
+            "input": "Given the question: +After a torrential downpour over a week, a man notices that the pond in his backyard is. Generate explanation for each choice: \\[##(a) melted ##(b) dehydrated ##(c) bloated ##(d) salted\\]\n",
+            "output": "##(a) melted ##(b) dehydrated ##(c) bloated ##(d) salted"
+        },
+        {
+            "input": "Given the question: +The amount of friction and the speed of an object have what kind of relationship?. Generate explanation for each choice: \\[##(a) inverse ##(b) reverse ##(c) direct ##(d) equal\\]\n",
+            "output": "##(a) inverse ##(b) reverse ##(c) direct ##(d) equal"
+        },
+        {
+            "input": "Given the question: +A fallen leaf. Generate explanation for each choice: \\[##(a) will turn into a tree ##(b) will become bright green ##(c) will begin to recycle the nutrients that made up its structure ##(d) is likely to continue to grow\\]\n",
+            "output": "##(a) will turn into a tree ##(b) will become bright green ##(c) will begin to recycle the nutrients that made up its structure ##(d) is likely to continue to grow"
+        },
+        {
+            "input": "Given the question: +Over a period of time the weather can change. Generate explanation for each choice: \\[##(a) The color of my hair ##(b) The way I walk ##(c) The size of a statue ##(d) The sound a computer makes\\]\n",
+            "output": "##(a) The color of my hair ##(b) The way I walk ##(c) The size of a statue ##(d) The sound a computer makes"
+        },
+        {
+            "input": "Given the question: +Plant growth may cause. Generate explanation for each choice: \\[##(a) an uptick in the number of leaves ##(b) a surge in leaf disease ##(c) a gradual decrease in leaves ##(d) a rapid decline of the leaves\\]\n",
+            "output": "##(a) an uptick in the number of leaves ##(b) a surge in leaf disease ##(c) a gradual decrease in leaves ##(d) a rapid decline of the leaves"
+        },
+        {
+            "input": "Given the question: +The man's heart skipped a beat and he felt pain after touching which of these?. Generate explanation for each choice: \\[##(a) ice cube ##(b) water ##(c) electrical transformer ##(d) grass\\]\n",
+            "output": "##(a) ice cube ##(b) water ##(c) electrical transformer ##(d) grass"
+        },
+        {
+            "input": "Given the question: +Which substance is capable of dripping?. Generate explanation for each choice: \\[##(a) Oxygen ##(b) Juice ##(c) Wood ##(d) Lightning\\]\n",
+            "output": "##(a) Oxygen ##(b) Juice ##(c) Wood ##(d) Lightning"
+        },
+        {
+            "input": "Given the question: +If bacon is left too long on a hot stove top. Generate explanation for each choice: \\[##(a) it will be cooked perfectly ##(b) it will be bacteria laden ##(c) it will become blackened ##(d) it will be left raw\\]\n",
+            "output": "##(a) it will be cooked perfectly ##(b) it will be bacteria laden ##(c) it will become blackened ##(d) it will be left raw"
+        },
+        {
+            "input": "Given the question: +the dashboard reading in a jaguar would likely be set to which of these?. Generate explanation for each choice: \\[##(a) set to calories ##(b) set to volume ##(c) set to kilometers ##(d) set to width\\]\n",
+            "output": "##(a) set to calories ##(b) set to volume ##(c) set to kilometers ##(d) set to width"
+        },
+        {
+            "input": "Given the question: +are explosions safe?. Generate explanation for each choice: \\[##(a) they could harm living things ##(b) they are very safe ##(c) they cause nothing serious ##(d) none of these\\]\n",
+            "output": "##(a) they could harm living things ##(b) they are very safe ##(c) they cause nothing serious ##(d) none of these"
+        },
+        {
+            "input": "Given the question: +The lowest temperature on the trip was at. Generate explanation for each choice: \\[##(a) the mountain pass ##(b) the plain ##(c) the large hill ##(d) the canyon\\]\n",
+            "output": "##(a) the mountain pass ##(b) the plain ##(c) the large hill ##(d) the canyon"
+        },
+        {
+            "input": "Given the question: +What is the benefit to using a frosted window film over a non treated windows?. Generate explanation for each choice: \\[##(a) they are easier to make ##(b) they let in less light ##(c) they are cheaper to produce ##(d) they are much stronger\\]\n",
+            "output": "##(a) they are easier to make ##(b) they let in less light ##(c) they are cheaper to produce ##(d) they are much stronger"
+        },
+        {
+            "input": "Given the question: +Ocean water contains. Generate explanation for each choice: \\[##(a) copious amounts of seltzer ##(b) scant amounts of sodium chloride ##(c) scant amounts of carbonation ##(d) copious amounts of the combination of Na and Cl\\]\n",
+            "output": "##(a) copious amounts of seltzer ##(b) scant amounts of sodium chloride ##(c) scant amounts of carbonation ##(d) copious amounts of the combination of Na and Cl"
+        },
+        {
+            "input": "Given the question: +A cheetah that runs all day will find it has lost a lot of. Generate explanation for each choice: \\[##(a) blood ##(b) water ##(c) prey ##(d) spots\\]\n",
+            "output": "##(a) blood ##(b) water ##(c) prey ##(d) spots"
+        },
+        {
+            "input": "Given the question: +Beak shape can influence a bird's ability. Generate explanation for each choice: \\[##(a) to give birth to live young ##(b) to mate with it's partner ##(c) to fly to warmer climates ##(d) to chew up certain worms\\]\n",
+            "output": "##(a) to give birth to live young ##(b) to mate with it's partner ##(c) to fly to warmer climates ##(d) to chew up certain worms"
+        },
+        {
+            "input": "Given the question: +Some blind people have demonstrated bat-like skills by:. Generate explanation for each choice: \\[##(a) sensing shapes by light and shadows ##(b) having a unusually strong sense of smell ##(c) sensing nearby objects by temperature change ##(d) using sound to 'see'\\]\n",
+            "output": "##(a) sensing shapes by light and shadows ##(b) having a unusually strong sense of smell ##(c) sensing nearby objects by temperature change ##(d) using sound to 'see'"
+        },
+        {
+            "input": "Given the question: +December 21st through March 20 is a three month period which is an example of what?. Generate explanation for each choice: \\[##(a) A session ##(b) A Match ##(c) A Season ##(d) Autumn\\]\n",
+            "output": "##(a) A session ##(b) A Match ##(c) A Season ##(d) Autumn"
+        },
+        {
+            "input": "Given the question: +Seeds provide new plants with. Generate explanation for each choice: \\[##(a) life sustaining elements ##(b) essentials for photosynthesis ##(c) water and hydrogen ##(d) storage for roots\\]\n",
+            "output": "##(a) life sustaining elements ##(b) essentials for photosynthesis ##(c) water and hydrogen ##(d) storage for roots"
+        },
+        {
+            "input": "Given the question: +What is a more comfortable color to have for your automobile upholstery if living in a desert?. Generate explanation for each choice: \\[##(a) ecru ##(b) red ##(c) black ##(d) navy\\]\n",
+            "output": "##(a) ecru ##(b) red ##(c) black ##(d) navy"
+        },
+        {
+            "input": "Given the question: +The salamander could eat a large amounts of what?. Generate explanation for each choice: \\[##(a) fettuccine if left around ##(b) waxy leaves from certain plants ##(c) dead carcass meat from livestock ##(d) six legged winged organisms\\]\n",
+            "output": "##(a) fettuccine if left around ##(b) waxy leaves from certain plants ##(c) dead carcass meat from livestock ##(d) six legged winged organisms"
+        },
+        {
+            "input": "Given the question: +A person can see. Generate explanation for each choice: \\[##(a) a radio recording ##(b) an emotion ##(c) a written message ##(d) an abstract idea\\]\n",
+            "output": "##(a) a radio recording ##(b) an emotion ##(c) a written message ##(d) an abstract idea"
+        },
+        {
+            "input": "Given the question: +When looking for good soil for plants, typically what is optimal?. Generate explanation for each choice: \\[##(a) malleable and nutritious ##(b) dry and sandy ##(c) grainy and bitter ##(d) compact and hard\\]\n",
+            "output": "##(a) malleable and nutritious ##(b) dry and sandy ##(c) grainy and bitter ##(d) compact and hard"
+        },
+        {
+            "input": "Given the question: +Animals are drawn to. Generate explanation for each choice: \\[##(a) gold ##(b) houses ##(c) feeders ##(d) Carbon Dioxide\\]\n",
+            "output": "##(a) gold ##(b) houses ##(c) feeders ##(d) Carbon Dioxide"
+        },
+        {
+            "input": "Given the question: +Squirrels spend their fall. Generate explanation for each choice: \\[##(a) looking for pretty leaves to collect ##(b) stockpiling rocks for fighting in the winter ##(c) stockpiling pecans for the frigid months ##(d) collecting twigs to keep warm\\]\n",
+            "output": "##(a) looking for pretty leaves to collect ##(b) stockpiling rocks for fighting in the winter ##(c) stockpiling pecans for the frigid months ##(d) collecting twigs to keep warm"
+        },
+        {
+            "input": "Given the question: +Rainbows are always found after what?. Generate explanation for each choice: \\[##(a) A fire ##(b) A tornado ##(c) Rainfall ##(d) Cereal\\]\n",
+            "output": "##(a) A fire ##(b) A tornado ##(c) Rainfall ##(d) Cereal"
+        },
+        {
+            "input": "Given the question: +Crop rotation has a positive impact on what?. Generate explanation for each choice: \\[##(a) government mentality ##(b) dirt quality ##(c) town economies ##(d) crop watering\\]\n",
+            "output": "##(a) government mentality ##(b) dirt quality ##(c) town economies ##(d) crop watering"
+        },
+        {
+            "input": "Given the question: +the best method for detecting texture is. Generate explanation for each choice: \\[##(a) rubbing it ##(b) seeing it ##(c) hearing it ##(d) tasting it\\]\n",
+            "output": "##(a) rubbing it ##(b) seeing it ##(c) hearing it ##(d) tasting it"
+        },
+        {
+            "input": "Given the question: +Cold-blooded animals are often. Generate explanation for each choice: \\[##(a) fast ##(b) large ##(c) hairless ##(d) slow\\]\n",
+            "output": "##(a) fast ##(b) large ##(c) hairless ##(d) slow"
+        },
+        {
+            "input": "Given the question: +Grey clouds can bring. Generate explanation for each choice: \\[##(a) sunlight ##(b) falling water molecules ##(c) blooming flowers ##(d) drought conditions\\]\n",
+            "output": "##(a) sunlight ##(b) falling water molecules ##(c) blooming flowers ##(d) drought conditions"
+        },
+        {
+            "input": "Given the question: +Which animal is considered a predator?. Generate explanation for each choice: \\[##(a) ant ##(b) snake ##(c) elephant ##(d) giraffe\\]\n",
+            "output": "##(a) ant ##(b) snake ##(c) elephant ##(d) giraffe"
+        },
+        {
+            "input": "Given the question: +Pollinators. Generate explanation for each choice: \\[##(a) enable plants to continue flourishing ##(b) play an unimportant role in the reproduction process ##(c) are useless to plants ##(d) are considered unwanted pests\\]\n",
+            "output": "##(a) enable plants to continue flourishing ##(b) play an unimportant role in the reproduction process ##(c) are useless to plants ##(d) are considered unwanted pests"
+        },
+        {
+            "input": "Given the question: +A farmer harvests seeds from some plants, such as tomatoes, in order to plant them later on. These seeds, once planted. Generate explanation for each choice: \\[##(a) have their own dirt ##(b) have their own sunlight ##(c) have a lot of sand ##(d) contain their necessary nutrition\\]\n",
+            "output": "##(a) have their own dirt ##(b) have their own sunlight ##(c) have a lot of sand ##(d) contain their necessary nutrition"
+        },
+        {
+            "input": "Given the question: +What type of characteristics are people not born with?. Generate explanation for each choice: \\[##(a) genetics ##(b) skills ##(c) physical attributes ##(d) height\\]\n",
+            "output": "##(a) genetics ##(b) skills ##(c) physical attributes ##(d) height"
+        },
+        {
+            "input": "Given the question: +A spinning object is used to make. Generate explanation for each choice: \\[##(a) steam ##(b) heat ##(c) water ##(d) electricity\\]\n",
+            "output": "##(a) steam ##(b) heat ##(c) water ##(d) electricity"
+        },
+        {
+            "input": "Given the question: +One of the negative consequences of offshore oil platforms is. Generate explanation for each choice: \\[##(a) evaporation of the surrounding water ##(b) discharge of liquid petroleum in the surrounding sea ##(c) improvement in the conditions of sea life ##(d) increase in the birthrate of sea birds\\]\n",
+            "output": "##(a) evaporation of the surrounding water ##(b) discharge of liquid petroleum in the surrounding sea ##(c) improvement in the conditions of sea life ##(d) increase in the birthrate of sea birds"
+        },
+        {
+            "input": "Given the question: +The unit of measure derived from French word millilitre is a unit used for measuring volume generally used for values between 1 and. Generate explanation for each choice: \\[##(a) 1000 ##(b) 250 ##(c) 5000 ##(d) 300\\]\n",
+            "output": "##(a) 1000 ##(b) 250 ##(c) 5000 ##(d) 300"
+        },
+        {
+            "input": "Given the question: +A man's child runs through the yard in the sprinklers, getting mud all over their feet. The child then runs around on the porch, tracking mud everywhere. While the mud is still wet, the man decides to clean off the porch by. Generate explanation for each choice: \\[##(a) getting a new child ##(b) yelling at the mud ##(c) asking the child to stop ##(d) turning on the hose\\]\n",
+            "output": "##(a) getting a new child ##(b) yelling at the mud ##(c) asking the child to stop ##(d) turning on the hose"
+        },
+        {
+            "input": "Given the question: +Earthquakes. Generate explanation for each choice: \\[##(a) only happen in California ##(b) cause solar and lunar eclipses ##(c) will break your vases ##(d) make bridges much safer\\]\n",
+            "output": "##(a) only happen in California ##(b) cause solar and lunar eclipses ##(c) will break your vases ##(d) make bridges much safer"
+        },
+        {
+            "input": "Given the question: +A seismograph can accurately describe. Generate explanation for each choice: \\[##(a) how rough the footing will be ##(b) how bad the weather will be ##(c) how stable the ground will be ##(d) how shaky the horse will be\\]\n",
+            "output": "##(a) how rough the footing will be ##(b) how bad the weather will be ##(c) how stable the ground will be ##(d) how shaky the horse will be"
+        },
+        {
+            "input": "Given the question: +Light from further away may appear to be less bright than other, closer sources, such as in which instance?. Generate explanation for each choice: \\[##(a) the sun is always bright ##(b) the moon is brighter than stars ##(c) the moon is brighter than a floodlight ##(d) the sun is darker than the moon\\]\n",
+            "output": "##(a) the sun is always bright ##(b) the moon is brighter than stars ##(c) the moon is brighter than a floodlight ##(d) the sun is darker than the moon"
+        },
+        {
+            "input": "Given the question: +A plant needs a specific climate to grow and. Generate explanation for each choice: \\[##(a) wither ##(b) persist ##(c) die ##(d) decay\\]\n",
+            "output": "##(a) wither ##(b) persist ##(c) die ##(d) decay"
+        },
+        {
+            "input": "Given the question: +Banging on a drum causes. Generate explanation for each choice: \\[##(a) music to be loud ##(b) music to be appealing ##(c) reverberations to strike the eardrum ##(d) concerts to sell out\\]\n",
+            "output": "##(a) music to be loud ##(b) music to be appealing ##(c) reverberations to strike the eardrum ##(d) concerts to sell out"
+        },
+        {
+            "input": "Given the question: +What may have been formed by a volcano?. Generate explanation for each choice: \\[##(a) Mt. McKinley ##(b) Lake Pontchartrain ##(c) The great lakes ##(d) Niagara Falls\\]\n",
+            "output": "##(a) Mt. McKinley ##(b) Lake Pontchartrain ##(c) The great lakes ##(d) Niagara Falls"
+        },
+        {
+            "input": "Given the question: +Humans, cats, dogs, and elephants are known as mammals because their kids are born alive. Non-mammalian babies are born. Generate explanation for each choice: \\[##(a) old ##(b) dead ##(c) in an egg ##(d) big\\]\n",
+            "output": "##(a) old ##(b) dead ##(c) in an egg ##(d) big"
+        },
+        {
+            "input": "Given the question: +Wind can cause. Generate explanation for each choice: \\[##(a) basements to flood due to weather ##(b) small birds to kill large birds ##(c) waterfalls to flow backwards ##(d) stones to weather down to pebbles\\]\n",
+            "output": "##(a) basements to flood due to weather ##(b) small birds to kill large birds ##(c) waterfalls to flow backwards ##(d) stones to weather down to pebbles"
+        },
+        {
+            "input": "Given the question: +Inherited characteristics. Generate explanation for each choice: \\[##(a) include mice being able to navigate a maze ##(b) include learning to sit on command ##(c) include dolphins doing tricks for their trainers ##(d) include spots on a ladybug\\]\n",
+            "output": "##(a) include mice being able to navigate a maze ##(b) include learning to sit on command ##(c) include dolphins doing tricks for their trainers ##(d) include spots on a ladybug"
+        },
+        {
+            "input": "Given the question: +How could we determine approximately how far a bird is from the ground?. Generate explanation for each choice: \\[##(a) Measure the altitude of the bird using a reference point, such as a tall building. ##(b) Identify the species of bird ##(c) Ask the bird how high it was when it returns back to earth ##(d) Measure the bird's mass\\]\n",
+            "output": "##(a) Measure the altitude of the bird using a reference point, such as a tall building. ##(b) Identify the species of bird ##(c) Ask the bird how high it was when it returns back to earth ##(d) Measure the bird's mass"
+        },
+        {
+            "input": "Given the question: +Endangered pandas are sometimes. Generate explanation for each choice: \\[##(a) accidentally dropped into volcanoes ##(b) confined to enclosures to be viewed by the public ##(c) found eating corn in the middle of North America ##(d) made into delicious rare steaks\\]\n",
+            "output": "##(a) accidentally dropped into volcanoes ##(b) confined to enclosures to be viewed by the public ##(c) found eating corn in the middle of North America ##(d) made into delicious rare steaks"
+        },
+        {
+            "input": "Given the question: +Algae can be found in. Generate explanation for each choice: \\[##(a) reservoir ##(b) meat ##(c) street ##(d) tree\\]\n",
+            "output": "##(a) reservoir ##(b) meat ##(c) street ##(d) tree"
+        },
+        {
+            "input": "Given the question: +A toaster converts electrical energy into heat energy for toasting much like. Generate explanation for each choice: \\[##(a) a campfire toasts bread ##(b) a microwave heats soup ##(c) a fire burns paper ##(d) a small oven works\\]\n",
+            "output": "##(a) a campfire toasts bread ##(b) a microwave heats soup ##(c) a fire burns paper ##(d) a small oven works"
+        },
+        {
+            "input": "Given the question: +An octopus, when in danger and unable to swim to safety, may find itself. Generate explanation for each choice: \\[##(a) mimicking other things ##(b) melting into sand ##(c) creating new homes ##(d) mocking other fish\\]\n",
+            "output": "##(a) mimicking other things ##(b) melting into sand ##(c) creating new homes ##(d) mocking other fish"
+        },
+        {
+            "input": "Given the question: +What does someone do when creating music?. Generate explanation for each choice: \\[##(a) hit a toy baseball with a bat ##(b) shake a baby rattle with your hand ##(c) bang the wall with your fist ##(d) pluck the strings of a fingerboard with your fingers\\]\n",
+            "output": "##(a) hit a toy baseball with a bat ##(b) shake a baby rattle with your hand ##(c) bang the wall with your fist ##(d) pluck the strings of a fingerboard with your fingers"
+        },
+        {
+            "input": "Given the question: +The pull the human planet space rock orbiter has on certain bodies of dihydrogen monooxide results in?. Generate explanation for each choice: \\[##(a) telescope views ##(b) water level fluctuations ##(c) animal ##(d) plant harvesting\\]\n",
+            "output": "##(a) telescope views ##(b) water level fluctuations ##(c) animal ##(d) plant harvesting"
+        },
+        {
+            "input": "Given the question: +Since density = mass / volume, denser liquids such as water sink more than. Generate explanation for each choice: \\[##(a) baby oil ##(b) corn syrup or ##(c) milk ##(d) honey\\]\n",
+            "output": "##(a) baby oil ##(b) corn syrup or ##(c) milk ##(d) honey"
+        },
+        {
+            "input": "Given the question: +Photosynthesis can be performed by. Generate explanation for each choice: \\[##(a) a cabbage cell ##(b) a bee cell ##(c) a bear cell ##(d) a cat cell\\]\n",
+            "output": "##(a) a cabbage cell ##(b) a bee cell ##(c) a bear cell ##(d) a cat cell"
+        },
+        {
+            "input": "Given the question: +The force exerted on an object and distance traveled have what kind of relationship?. Generate explanation for each choice: \\[##(a) reverse ##(b) inverse ##(c) equal ##(d) direct\\]\n",
+            "output": "##(a) reverse ##(b) inverse ##(c) equal ##(d) direct"
+        },
+        {
+            "input": "Given the question: +all cells use cellular respiration to. Generate explanation for each choice: \\[##(a) photosynthesize ##(b) release waste ##(c) perform meiosis ##(d) release energy\\]\n",
+            "output": "##(a) photosynthesize ##(b) release waste ##(c) perform meiosis ##(d) release energy"
+        },
+        {
+            "input": "Given the question: +The viewing oriented sensor of a prairie creature are for what?. Generate explanation for each choice: \\[##(a) reproductive purposes ##(b) viewing sounds ##(c) sensing views ##(d) sensing tastes\\]\n",
+            "output": "##(a) reproductive purposes ##(b) viewing sounds ##(c) sensing views ##(d) sensing tastes"
+        },
+        {
+            "input": "Given the question: +A dog is going to have to corral sheep for the afternoon, so it needs to prepare its body for the enormous workload ahead of it. The dog is. Generate explanation for each choice: \\[##(a) breaks for birds on the road ##(b) given a large breakfast ##(c) eats a few corn cobs ##(d) given two apples to watch\\]\n",
+            "output": "##(a) breaks for birds on the road ##(b) given a large breakfast ##(c) eats a few corn cobs ##(d) given two apples to watch"
+        },
+        {
+            "input": "Given the question: +A woman sells bracelets that she makes. The bracelets gain popularity, and the woman makes incredibly large amounts of money from the sales. After a while, very few people are still buying the bracelets, so. Generate explanation for each choice: \\[##(a) the woman makes more money ##(b) the woman makes the same amount of money ##(c) the woman spends more money ##(d) the woman makes less money\\]\n",
+            "output": "##(a) the woman makes more money ##(b) the woman makes the same amount of money ##(c) the woman spends more money ##(d) the woman makes less money"
+        },
+        {
+            "input": "Given the question: +A desert environment is. Generate explanation for each choice: \\[##(a) dry, grass covered, and humid ##(b) lush, green, and tropical ##(c) arid, parched, and sun-baked ##(d) dry, damp, and lush\\]\n",
+            "output": "##(a) dry, grass covered, and humid ##(b) lush, green, and tropical ##(c) arid, parched, and sun-baked ##(d) dry, damp, and lush"
+        },
+        {
+            "input": "Given the question: +Seasons are caused by what rotating on its axis?. Generate explanation for each choice: \\[##(a) Our Planet ##(b) The Atmosphere ##(c) The Equator ##(d) The Sun\\]\n",
+            "output": "##(a) Our Planet ##(b) The Atmosphere ##(c) The Equator ##(d) The Sun"
+        },
+        {
+            "input": "Given the question: +Which is best an letting electricity pass through?. Generate explanation for each choice: \\[##(a) tile flooring ##(b) human flesh ##(c) hockey stick ##(d) a steak knife\\]\n",
+            "output": "##(a) tile flooring ##(b) human flesh ##(c) hockey stick ##(d) a steak knife"
+        },
+        {
+            "input": "Given the question: +Asteroids crashing on planets can leave behind. Generate explanation for each choice: \\[##(a) large, bowl-shaped cavities in the ground ##(b) aliens and foreign foods ##(c) small dents in the planet's core ##(d) lakes filled with salty water\\]\n",
+            "output": "##(a) large, bowl-shaped cavities in the ground ##(b) aliens and foreign foods ##(c) small dents in the planet's core ##(d) lakes filled with salty water"
+        },
+        {
+            "input": "Given the question: +What is the formula of the substance which best helps plants grow. Generate explanation for each choice: \\[##(a) NH4 ##(b) C4H4 ##(c) CO2 ##(d) H2O\\]\n",
+            "output": "##(a) NH4 ##(b) C4H4 ##(c) CO2 ##(d) H2O"
+        },
+        {
+            "input": "Given the question: +You can experience a change of pressure when. Generate explanation for each choice: \\[##(a) Yelling really loud ##(b) Soaring the skies ##(c) Going walking ##(d) riding a bike\\]\n",
+            "output": "##(a) Yelling really loud ##(b) Soaring the skies ##(c) Going walking ##(d) riding a bike"
+        },
+        {
+            "input": "Given the question: +A small creek absorbing heat energy can result in. Generate explanation for each choice: \\[##(a) the creek water getting colder ##(b) a parched creek bed ##(c) tributaries branching off from the creek ##(d) a runoff of extra water\\]\n",
+            "output": "##(a) the creek water getting colder ##(b) a parched creek bed ##(c) tributaries branching off from the creek ##(d) a runoff of extra water"
+        },
+        {
+            "input": "Given the question: +Summertime  happens during June in all but which location?. Generate explanation for each choice: \\[##(a) Australia ##(b) in Canada ##(c) United States ##(d) Europe\\]\n",
+            "output": "##(a) Australia ##(b) in Canada ##(c) United States ##(d) Europe"
+        },
+        {
+            "input": "Given the question: +It takes more water to fill a bathtub than a. Generate explanation for each choice: \\[##(a) lake ##(b) pool ##(c) stomach ##(d) holding tank\\]\n",
+            "output": "##(a) lake ##(b) pool ##(c) stomach ##(d) holding tank"
+        },
+        {
+            "input": "Given the question: +The eighth month of the year is winter in. Generate explanation for each choice: \\[##(a) Brazil ##(b) Indiana ##(c) London ##(d) Canada\\]\n",
+            "output": "##(a) Brazil ##(b) Indiana ##(c) London ##(d) Canada"
+        },
+        {
+            "input": "Given the question: +birds use their peckers to catch. Generate explanation for each choice: \\[##(a) dogs ##(b) a tan ##(c) a ball ##(d) bees\\]\n",
+            "output": "##(a) dogs ##(b) a tan ##(c) a ball ##(d) bees"
+        },
+        {
+            "input": "Given the question: +transplanting seedling oaks has a positive impact on. Generate explanation for each choice: \\[##(a) fuel costs ##(b) the economy ##(c) housing value ##(d) the environment\\]\n",
+            "output": "##(a) fuel costs ##(b) the economy ##(c) housing value ##(d) the environment"
+        },
+        {
+            "input": "Given the question: +What is an example of hunting?. Generate explanation for each choice: \\[##(a) humans throwing a spear through an animal ##(b) humans chewing on boiled animal muscles ##(c) humans gathering animals in a gate ##(d) humans plucking fruit from a tree\\]\n",
+            "output": "##(a) humans throwing a spear through an animal ##(b) humans chewing on boiled animal muscles ##(c) humans gathering animals in a gate ##(d) humans plucking fruit from a tree"
+        },
+        {
+            "input": "Given the question: +Which of these has shape that changes depending on the container which it resides within?. Generate explanation for each choice: \\[##(a) paper ##(b) wood ##(c) stone ##(d) orange juice\\]\n",
+            "output": "##(a) paper ##(b) wood ##(c) stone ##(d) orange juice"
+        },
+        {
+            "input": "Given the question: +What would be the flavor if you ate the item that fell and is thought to have hit Sir Issac Newton's head. Generate explanation for each choice: \\[##(a) Sweet ##(b) Salty ##(c) bitter ##(d) sour\\]\n",
+            "output": "##(a) Sweet ##(b) Salty ##(c) bitter ##(d) sour"
+        },
+        {
+            "input": "Given the question: +Earth's four layers are comprised mainly of. Generate explanation for each choice: \\[##(a) stone ##(b) bacteria ##(c) water ##(d) air\\]\n",
+            "output": "##(a) stone ##(b) bacteria ##(c) water ##(d) air"
+        },
+        {
+            "input": "Given the question: +if coffee sits in the fridge and loses its liquid form, what is that point known as?. Generate explanation for each choice: \\[##(a) the freezing point ##(b) the prime point ##(c) the boiling point ##(d) the melting point\\]\n",
+            "output": "##(a) the freezing point ##(b) the prime point ##(c) the boiling point ##(d) the melting point"
+        },
+        {
+            "input": "Given the question: +Mammals give birth to live. Generate explanation for each choice: \\[##(a) children ##(b) birds ##(c) fish ##(d) insects\\]\n",
+            "output": "##(a) children ##(b) birds ##(c) fish ##(d) insects"
+        },
+        {
+            "input": "Given the question: +If a battery in an electromagnet is active, then what will happen to a nail in that electromagnet?. Generate explanation for each choice: \\[##(a) it loses its magnetization ##(b) it loses its charge ##(c) it may become magnetized ##(d) it gains a charge\\]\n",
+            "output": "##(a) it loses its magnetization ##(b) it loses its charge ##(c) it may become magnetized ##(d) it gains a charge"
+        },
+        {
+            "input": "Given the question: +Which of these is a factor in the shape of a fern's seed?. Generate explanation for each choice: \\[##(a) luck ##(b) humans ##(c) gold ##(d) inheritance\\]\n",
+            "output": "##(a) luck ##(b) humans ##(c) gold ##(d) inheritance"
+        },
+        {
+            "input": "Given the question: +Which is recyclable?. Generate explanation for each choice: \\[##(a) An Elephant ##(b) A school notebook ##(c) A boat ##(d) A lake\\]\n",
+            "output": "##(a) An Elephant ##(b) A school notebook ##(c) A boat ##(d) A lake"
+        },
+        {
+            "input": "Given the question: +if the population in a habitat is on a steady decline, what condition is the habitat?. Generate explanation for each choice: \\[##(a) it is a place to emigrate from ##(b) it is an ideal habitat ##(c) it is an unsustainable habitat ##(d) it is a thriving abode\\]\n",
+            "output": "##(a) it is a place to emigrate from ##(b) it is an ideal habitat ##(c) it is an unsustainable habitat ##(d) it is a thriving abode"
+        },
+        {
+            "input": "Given the question: +A teacher wants to show how to combine two substances together. The two things that he can use in order to mix them completely are. Generate explanation for each choice: \\[##(a) water and soda ##(b) water and oil ##(c) sand and rocks ##(d) salt and bark\\]\n",
+            "output": "##(a) water and soda ##(b) water and oil ##(c) sand and rocks ##(d) salt and bark"
+        },
+        {
+            "input": "Given the question: +Medicine is used to cure but can cause people to have allergic reactions such as. Generate explanation for each choice: \\[##(a) spider bites ##(b) vomiting ##(c) placebo effect ##(d) dance fever\\]\n",
+            "output": "##(a) spider bites ##(b) vomiting ##(c) placebo effect ##(d) dance fever"
+        },
+        {
+            "input": "Given the question: +Lightning may lead to. Generate explanation for each choice: \\[##(a) damage to local foliage ##(b) rainbows across the sky ##(c) growth of local flora ##(d) firefighters getting the night off\\]\n",
+            "output": "##(a) damage to local foliage ##(b) rainbows across the sky ##(c) growth of local flora ##(d) firefighters getting the night off"
+        },
+        {
+            "input": "Given the question: +When would a nocturnal predator most likely hunt?. Generate explanation for each choice: \\[##(a) 5 p.m. ##(b) 12 p.m. ##(c) 3 a.m. ##(d) 10 a.m.\\]\n",
+            "output": "##(a) 5 p.m. ##(b) 12 p.m. ##(c) 3 a.m. ##(d) 10 a.m."
+        },
+        {
+            "input": "Given the question: +Where water be located in its gas form?. Generate explanation for each choice: \\[##(a) inside a disc golf driver ##(b) inside of a brass pipe ##(c) a mile up in the sky ##(d) inside a leather baseball\\]\n",
+            "output": "##(a) inside a disc golf driver ##(b) inside of a brass pipe ##(c) a mile up in the sky ##(d) inside a leather baseball"
+        },
+        {
+            "input": "Given the question: +Green parts of a life form absorb. Generate explanation for each choice: \\[##(a) carbon dioxide ##(b) light ##(c) oxygen ##(d) water\\]\n",
+            "output": "##(a) carbon dioxide ##(b) light ##(c) oxygen ##(d) water"
+        },
+        {
+            "input": "Given the question: +If a new species of predator joins a community. Generate explanation for each choice: \\[##(a) the new species will become herbivores ##(b) prey will experience an increase in population ##(c) prey will experience a drop in population ##(d) the old species will die out\\]\n",
+            "output": "##(a) the new species will become herbivores ##(b) prey will experience an increase in population ##(c) prey will experience a drop in population ##(d) the old species will die out"
+        },
+        {
+            "input": "Given the question: +Why would a perennial plant with an elongated stem a frequently used for lumber fall to the ground?. Generate explanation for each choice: \\[##(a) It's dead ##(b) For water ##(c) For food ##(d) For sun\\]\n",
+            "output": "##(a) It's dead ##(b) For water ##(c) For food ##(d) For sun"
+        },
+        {
+            "input": "Given the question: +I'm an animal with a white fur and a large fluffy tail that lives in arctic regions; what am I?. Generate explanation for each choice: \\[##(a) weasel ##(b) snow fox ##(c) wolf ##(d) polar bear\\]\n",
+            "output": "##(a) weasel ##(b) snow fox ##(c) wolf ##(d) polar bear"
+        },
+        {
+            "input": "Given the question: +Dairy is a source of. Generate explanation for each choice: \\[##(a) a vitamin that prevents blood loss ##(b) a vitamin that treats amino acid deficiency ##(c) a group of fat-soluble secosteroids ##(d) a vitamin that helps treat liver problems\\]\n",
+            "output": "##(a) a vitamin that prevents blood loss ##(b) a vitamin that treats amino acid deficiency ##(c) a group of fat-soluble secosteroids ##(d) a vitamin that helps treat liver problems"
+        },
+        {
+            "input": "Given the question: +Atomic 26 is drawn to a device, it could be. Generate explanation for each choice: \\[##(a) magnetized ##(b) Na ##(c) compass ##(d) K\\]\n",
+            "output": "##(a) magnetized ##(b) Na ##(c) compass ##(d) K"
+        },
+        {
+            "input": "Given the question: +why do tadpoles change into frogs?. Generate explanation for each choice: \\[##(a) tadpoles change to different animals ##(b) tadpoles are really just fish ##(c) they are young frogs still growing ##(d) none of these\\]\n",
+            "output": "##(a) tadpoles change to different animals ##(b) tadpoles are really just fish ##(c) they are young frogs still growing ##(d) none of these"
+        },
+        {
+            "input": "Given the question: +What do cows eat?. Generate explanation for each choice: \\[##(a) Chickpeas ##(b) Chocolate ##(c) Steak ##(d) Poultry\\]\n",
+            "output": "##(a) Chickpeas ##(b) Chocolate ##(c) Steak ##(d) Poultry"
+        },
+        {
+            "input": "Given the question: +Which object conducts electricity?. Generate explanation for each choice: \\[##(a) Window ##(b) Rubik's Cube ##(c) Ship Anchor ##(d) Boulder\\]\n",
+            "output": "##(a) Window ##(b) Rubik's Cube ##(c) Ship Anchor ##(d) Boulder"
+        },
+        {
+            "input": "Given the question: +Glucose travels. Generate explanation for each choice: \\[##(a) from roots to leaves of a daffodil ##(b) from a rose's leaves to the atmosphere ##(c) from a daisy's leaves into it's underground support system ##(d) from the sun to a sunflower's buds\\]\n",
+            "output": "##(a) from roots to leaves of a daffodil ##(b) from a rose's leaves to the atmosphere ##(c) from a daisy's leaves into it's underground support system ##(d) from the sun to a sunflower's buds"
+        },
+        {
+            "input": "Given the question: +Evaporation. Generate explanation for each choice: \\[##(a) only happens in the summer ##(b) is like nature's disappearing water trick ##(c) is caused by snow ##(d) involves the disappearance of sunlight\\]\n",
+            "output": "##(a) only happens in the summer ##(b) is like nature's disappearing water trick ##(c) is caused by snow ##(d) involves the disappearance of sunlight"
+        },
+        {
+            "input": "Given the question: +In order for crops to grow food safely, pesticides are used on them. When it floods, this causes t he what to be poisonous?. Generate explanation for each choice: \\[##(a) air ##(b) Corn ##(c) Runoff ##(d) farmers\\]\n",
+            "output": "##(a) air ##(b) Corn ##(c) Runoff ##(d) farmers"
+        },
+        {
+            "input": "Given the question: +The boy was able to warm the fireplace without a lighter thanks to what?. Generate explanation for each choice: \\[##(a) friction ##(b) metal ##(c) wishing ##(d) magic\\]\n",
+            "output": "##(a) friction ##(b) metal ##(c) wishing ##(d) magic"
+        },
+        {
+            "input": "Given the question: +Where would a duck like to live?. Generate explanation for each choice: \\[##(a) the Sahara ##(b) Antarctica ##(c) the Appalachian mountains ##(d) Death Valley\\]\n",
+            "output": "##(a) the Sahara ##(b) Antarctica ##(c) the Appalachian mountains ##(d) Death Valley"
+        },
+        {
+            "input": "Given the question: +What do tuna eat?. Generate explanation for each choice: \\[##(a) Atlantic menhaden ##(b) Swedish fish ##(c) gummy fish ##(d) laminariales\\]\n",
+            "output": "##(a) Atlantic menhaden ##(b) Swedish fish ##(c) gummy fish ##(d) laminariales"
+        },
+        {
+            "input": "Given the question: +A woman notices that she is depressed every autumn, and wonders why. A friend suggests to her that perhaps certain changes that take place as seasons move from warm to cold may be having an effect on her. When pressed for an example of these changes, the friend cites. Generate explanation for each choice: \\[##(a) flowers blooming ##(b) grass turning brown ##(c) trees growing ##(d) blossoms blooming\\]\n",
+            "output": "##(a) flowers blooming ##(b) grass turning brown ##(c) trees growing ##(d) blossoms blooming"
+        },
+        {
+            "input": "Given the question: +is it normal for an adult animal to lay eggs?. Generate explanation for each choice: \\[##(a) it has never happened ##(b) yes it is standard ##(c) it is abnormal and weird ##(d) all of these\\]\n",
+            "output": "##(a) it has never happened ##(b) yes it is standard ##(c) it is abnormal and weird ##(d) all of these"
+        },
+        {
+            "input": "Given the question: +If your dog is overweight. Generate explanation for each choice: \\[##(a) add more fat to their diet ##(b) cut back their caloric intake ##(c) let them sleep more ##(d) increase their caloric intake\\]\n",
+            "output": "##(a) add more fat to their diet ##(b) cut back their caloric intake ##(c) let them sleep more ##(d) increase their caloric intake"
+        },
+        {
+            "input": "Given the question: +Eyes allow humans. Generate explanation for each choice: \\[##(a) to detect when a traffic light changes ##(b) detect sour flavors in candy ##(c) hear music at concerts ##(d) detect acrid odors in the air\\]\n",
+            "output": "##(a) to detect when a traffic light changes ##(b) detect sour flavors in candy ##(c) hear music at concerts ##(d) detect acrid odors in the air"
+        },
+        {
+            "input": "Given the question: +Organisms covered by layers of sediment. Generate explanation for each choice: \\[##(a) become fossils over night ##(b) may end up reanimated over time ##(c) develop characteristics for survival ##(d) may end up fueling a car\\]\n",
+            "output": "##(a) become fossils over night ##(b) may end up reanimated over time ##(c) develop characteristics for survival ##(d) may end up fueling a car"
+        },
+        {
+            "input": "Given the question: +The winter solstice is on December 21st in the. Generate explanation for each choice: \\[##(a) counties ##(b) north of equator ##(c) states ##(d) southern hemisphere\\]\n",
+            "output": "##(a) counties ##(b) north of equator ##(c) states ##(d) southern hemisphere"
+        },
+        {
+            "input": "Given the question: +A lake environment is a good setup for what to happen to organic remains?. Generate explanation for each choice: \\[##(a) bleaching ##(b) burning ##(c) fossilization ##(d) drying\\]\n",
+            "output": "##(a) bleaching ##(b) burning ##(c) fossilization ##(d) drying"
+        },
+        {
+            "input": "Given the question: +were there fossil fuels in the ground when humans evolved?. Generate explanation for each choice: \\[##(a) this was only created by humans ##(b) humans predate fossil fuel formation ##(c) significant supplies accumulated prior ##(d) none of these\\]\n",
+            "output": "##(a) this was only created by humans ##(b) humans predate fossil fuel formation ##(c) significant supplies accumulated prior ##(d) none of these"
+        },
+        {
+            "input": "Given the question: +The Grand Canyon is massive, with large, high peaks and very deep lows, which was formed when. Generate explanation for each choice: \\[##(a) some water is around it ##(b) water rained on it ##(c) natural waters weathered it ##(d) a pool was opened\\]\n",
+            "output": "##(a) some water is around it ##(b) water rained on it ##(c) natural waters weathered it ##(d) a pool was opened"
+        },
+        {
+            "input": "Given the question: +What type of useful product can be made from the moving winds?. Generate explanation for each choice: \\[##(a) wood ##(b) bananas ##(c) electricity ##(d) metal\\]\n",
+            "output": "##(a) wood ##(b) bananas ##(c) electricity ##(d) metal"
+        },
+        {
+            "input": "Given the question: +The sides of the canyon are. Generate explanation for each choice: \\[##(a) metal ##(b) water ##(c) rivers ##(d) stone\\]\n",
+            "output": "##(a) metal ##(b) water ##(c) rivers ##(d) stone"
+        },
+        {
+            "input": "Given the question: +which of these people would have the worst air quality at their residence?. Generate explanation for each choice: \\[##(a) a man who lives next to a landfill ##(b) a man who lives in a city with the best air quality ##(c) none of these ##(d) a man who lives in a great suburb\\]\n",
+            "output": "##(a) a man who lives next to a landfill ##(b) a man who lives in a city with the best air quality ##(c) none of these ##(d) a man who lives in a great suburb"
+        },
+        {
+            "input": "Given the question: +What is a stopwatch used for?. Generate explanation for each choice: \\[##(a) to rewind 5 minutes ##(b) to tell what will happen 5 minutes from now ##(c) to voice the time ##(d) to measure minutes and hours\\]\n",
+            "output": "##(a) to rewind 5 minutes ##(b) to tell what will happen 5 minutes from now ##(c) to voice the time ##(d) to measure minutes and hours"
+        },
+        {
+            "input": "Given the question: +As a drought worsens the level at an aquifer will. Generate explanation for each choice: \\[##(a) stay the same ##(b) fluctuate wildly ##(c) decrease ##(d) increase\\]\n",
+            "output": "##(a) stay the same ##(b) fluctuate wildly ##(c) decrease ##(d) increase"
+        },
+        {
+            "input": "Given the question: +Wind frequently helps transport from one place to another. Generate explanation for each choice: \\[##(a) marble statues ##(b) molten magma ##(c) subterranean termites ##(d) exposed topsoil\\]\n",
+            "output": "##(a) marble statues ##(b) molten magma ##(c) subterranean termites ##(d) exposed topsoil"
+        },
+        {
+            "input": "Given the question: +When a kid slams on the brakes on their bike what is caused?. Generate explanation for each choice: \\[##(a) bike helmet ##(b) avoiding accidents ##(c) friction ##(d) gearing\\]\n",
+            "output": "##(a) bike helmet ##(b) avoiding accidents ##(c) friction ##(d) gearing"
+        },
+        {
+            "input": "Given the question: +Sources of spices have. Generate explanation for each choice: \\[##(a) crystals ##(b) feathers ##(c) cell walls ##(d) craters\\]\n",
+            "output": "##(a) crystals ##(b) feathers ##(c) cell walls ##(d) craters"
+        },
+        {
+            "input": "Given the question: +Conservation. Generate explanation for each choice: \\[##(a) leads to longer drought of resources ##(b) leads to longer availability of resources ##(c) leads to more consumption ##(d) leads to short supply of resources\\]\n",
+            "output": "##(a) leads to longer drought of resources ##(b) leads to longer availability of resources ##(c) leads to more consumption ##(d) leads to short supply of resources"
+        },
+        {
+            "input": "Given the question: +A tree is not the habitat of a. Generate explanation for each choice: \\[##(a) squirrel ##(b) woodpecker ##(c) monkey ##(d) lion\\]\n",
+            "output": "##(a) squirrel ##(b) woodpecker ##(c) monkey ##(d) lion"
+        },
+        {
+            "input": "Given the question: +Erosion could lead to. Generate explanation for each choice: \\[##(a) a change in the direction of a stream ##(b) a change in ocean temperatures ##(c) an increase in rainy weather ##(d) an increase in plants and animals\\]\n",
+            "output": "##(a) a change in the direction of a stream ##(b) a change in ocean temperatures ##(c) an increase in rainy weather ##(d) an increase in plants and animals"
+        },
+        {
+            "input": "Given the question: +A hemisphere experiences summer when. Generate explanation for each choice: \\[##(a) it's tilted towards Jupiter ##(b) it's angled towards the moon ##(c) it's angled towards the largest star in the solar system ##(d) it spins counter clockwise on Earth's axis\\]\n",
+            "output": "##(a) it's tilted towards Jupiter ##(b) it's angled towards the moon ##(c) it's angled towards the largest star in the solar system ##(d) it spins counter clockwise on Earth's axis"
+        },
+        {
+            "input": "Given the question: +What date is the amount of daylight minimized. Generate explanation for each choice: \\[##(a) Jul 4th ##(b) Feb 29th ##(c) May 3rd ##(d) Sep 1st\\]\n",
+            "output": "##(a) Jul 4th ##(b) Feb 29th ##(c) May 3rd ##(d) Sep 1st"
+        },
+        {
+            "input": "Given the question: +Which term is involved with protection by skin?. Generate explanation for each choice: \\[##(a) Eucerin pH5 range ##(b) Sagittal plane ##(c) pyogenic vibrio ##(d) popliteus\\]\n",
+            "output": "##(a) Eucerin pH5 range ##(b) Sagittal plane ##(c) pyogenic vibrio ##(d) popliteus"
+        },
+        {
+            "input": "Given the question: +The reason Earth is so sturdy is because. Generate explanation for each choice: \\[##(a) It is made from rock ##(b) It eats three meals a day ##(c) It has a loving family ##(d) It is made from metal\\]\n",
+            "output": "##(a) It is made from rock ##(b) It eats three meals a day ##(c) It has a loving family ##(d) It is made from metal"
+        },
+        {
+            "input": "Given the question: +A plant left in the dark. Generate explanation for each choice: \\[##(a) produces fruit ##(b) grows faster ##(c) fails to grow ##(d) gets greener\\]\n",
+            "output": "##(a) produces fruit ##(b) grows faster ##(c) fails to grow ##(d) gets greener"
+        },
+        {
+            "input": "Given the question: +A boy wants to use his Walkman so that he can listen to some music. When he tries to turn it on, it us unable to, and the boy realizes that he will need. Generate explanation for each choice: \\[##(a) heat ##(b) metal ##(c) lithium-ion ##(d) plastic\\]\n",
+            "output": "##(a) heat ##(b) metal ##(c) lithium-ion ##(d) plastic"
+        },
+        {
+            "input": "Given the question: +Nuclear activity is the cause of what celestial occurrence?. Generate explanation for each choice: \\[##(a) axial planetary rotation ##(b) comets ##(c) planetary formation ##(d) the sun's rays\\]\n",
+            "output": "##(a) axial planetary rotation ##(b) comets ##(c) planetary formation ##(d) the sun's rays"
+        },
+        {
+            "input": "Given the question: +Which source provides the safest water?. Generate explanation for each choice: \\[##(a) River ##(b) Sea ##(c) Ocean ##(d) Rain\\]\n",
+            "output": "##(a) River ##(b) Sea ##(c) Ocean ##(d) Rain"
+        },
+        {
+            "input": "Given the question: +A rabbit has a litter of bunnies! Most of the babies are white, just like the mother rabbit, but one baby has brown spots, like the father rabbit. The father rabbit. Generate explanation for each choice: \\[##(a) spread out some fur ##(b) has black on his ears ##(c) passed down inherited characteristics ##(d) is the same size as the mother\\]\n",
+            "output": "##(a) spread out some fur ##(b) has black on his ears ##(c) passed down inherited characteristics ##(d) is the same size as the mother"
+        },
+        {
+            "input": "Given the question: +Photosynthesis means plants are unable to. Generate explanation for each choice: \\[##(a) convert sunlight to sand ##(b) provide food sources for others ##(c) be producers in an ecosystem ##(d) make their own food\\]\n",
+            "output": "##(a) convert sunlight to sand ##(b) provide food sources for others ##(c) be producers in an ecosystem ##(d) make their own food"
+        },
+        {
+            "input": "Given the question: +Through DNA, a rabbit will have long ears if. Generate explanation for each choice: \\[##(a) rabbits are born with ears ##(b) there was a lot of food ##(c) genetic contributors had long ears ##(d) parents were also rabbits\\]\n",
+            "output": "##(a) rabbits are born with ears ##(b) there was a lot of food ##(c) genetic contributors had long ears ##(d) parents were also rabbits"
+        },
+        {
+            "input": "Given the question: +There are various creatures that live in forests, such as. Generate explanation for each choice: \\[##(a) giant fish ##(b) enormous crabs ##(c) whitetails ##(d) desert jackals\\]\n",
+            "output": "##(a) giant fish ##(b) enormous crabs ##(c) whitetails ##(d) desert jackals"
+        },
+        {
+            "input": "Given the question: +An octopus protects itself with. Generate explanation for each choice: \\[##(a) water splashing ##(b) running fast ##(c) long hands ##(d) pigment squirting\\]\n",
+            "output": "##(a) water splashing ##(b) running fast ##(c) long hands ##(d) pigment squirting"
+        },
+        {
+            "input": "Given the question: +Resources decreasing in an environment. Generate explanation for each choice: \\[##(a) induces organisms to use more of their resources ##(b) causes an increase in use of resources ##(c) causes an uptick in birthrate ##(d) induces organisms to be more economical with resources\\]\n",
+            "output": "##(a) induces organisms to use more of their resources ##(b) causes an increase in use of resources ##(c) causes an uptick in birthrate ##(d) induces organisms to be more economical with resources"
+        },
+        {
+            "input": "Given the question: +The sidewalk next to a house having a crack in it and having vegetation growing from it is considered?. Generate explanation for each choice: \\[##(a) insects ##(b) weathering ##(c) lava ##(d) erosion\\]\n",
+            "output": "##(a) insects ##(b) weathering ##(c) lava ##(d) erosion"
+        },
+        {
+            "input": "Given the question: +If you wanted to make a necklace, how long would you have to wait for the materials to appear inside the Earth?. Generate explanation for each choice: \\[##(a) millions of years ##(b) 1 day ##(c) 10 days ##(d) 100 days\\]\n",
+            "output": "##(a) millions of years ##(b) 1 day ##(c) 10 days ##(d) 100 days"
+        },
+        {
+            "input": "Given the question: +Moon phases. Generate explanation for each choice: \\[##(a) change the moon into cheese ##(b) alter the way the moon's facade looks ##(c) change moon lakes into vapor ##(d) cause lunar eclipse every day\\]\n",
+            "output": "##(a) change the moon into cheese ##(b) alter the way the moon's facade looks ##(c) change moon lakes into vapor ##(d) cause lunar eclipse every day"
+        },
+        {
+            "input": "Given the question: +If hot water were poured on an arm, what would happen to internal organs?. Generate explanation for each choice: \\[##(a) they would be scalded ##(b) organs would remain uneffected ##(c) they would begin to decay ##(d) they would experience pain\\]\n",
+            "output": "##(a) they would be scalded ##(b) organs would remain uneffected ##(c) they would begin to decay ##(d) they would experience pain"
+        },
+        {
+            "input": "Given the question: +Barnyard bovines. Generate explanation for each choice: \\[##(a) eat organic chicken ##(b) eat eggs ##(c) eat beef ##(d) eat alfalfa hay\\]\n",
+            "output": "##(a) eat organic chicken ##(b) eat eggs ##(c) eat beef ##(d) eat alfalfa hay"
+        },
+        {
+            "input": "Given the question: +Desert environments features. Generate explanation for each choice: \\[##(a) tropical plants ##(b) tons of sun ##(c) massive rain totals ##(d) icy precipitation\\]\n",
+            "output": "##(a) tropical plants ##(b) tons of sun ##(c) massive rain totals ##(d) icy precipitation"
+        },
+        {
+            "input": "Given the question: +a large cluster of humans, dogs, apple trees, atmosphere and more can be called. Generate explanation for each choice: \\[##(a) army of ants ##(b) a community ##(c) a toy store ##(d) a shopping mall\\]\n",
+            "output": "##(a) army of ants ##(b) a community ##(c) a toy store ##(d) a shopping mall"
+        },
+        {
+            "input": "Given the question: +A person is considering various organs, and is looking at which ones will be most muscular. A contender for most muscular is. Generate explanation for each choice: \\[##(a) the lungs ##(b) the kidney ##(c) the heart ##(d) the liver\\]\n",
+            "output": "##(a) the lungs ##(b) the kidney ##(c) the heart ##(d) the liver"
+        },
+        {
+            "input": "Given the question: +Which pair don't reproduce the same way?. Generate explanation for each choice: \\[##(a) rabbit and hare ##(b) mule and hinny ##(c) cat and catfish ##(d) caterpillar and butterfly\\]\n",
+            "output": "##(a) rabbit and hare ##(b) mule and hinny ##(c) cat and catfish ##(d) caterpillar and butterfly"
+        },
+        {
+            "input": "Given the question: +Which of the following is warm blooded?. Generate explanation for each choice: \\[##(a) toad ##(b) snake ##(c) turtle ##(d) skunk\\]\n",
+            "output": "##(a) toad ##(b) snake ##(c) turtle ##(d) skunk"
+        },
+        {
+            "input": "Given the question: +A male bird spots a female of his species and begins a fancy dance, flashing his bright feathers around in the air, showing off. This male is attempting to procure. Generate explanation for each choice: \\[##(a) a manager ##(b) an agent ##(c) a meal ##(d) a reproductive companion\\]\n",
+            "output": "##(a) a manager ##(b) an agent ##(c) a meal ##(d) a reproductive companion"
+        },
+        {
+            "input": "Given the question: +Vast quantities of metal can be obtained from. Generate explanation for each choice: \\[##(a) a quarry ##(b) concerts ##(c) forests ##(d) salt\\]\n",
+            "output": "##(a) a quarry ##(b) concerts ##(c) forests ##(d) salt"
+        },
+        {
+            "input": "Given the question: +Roasting a turkey requires adding what type of energy. Generate explanation for each choice: \\[##(a) Heat ##(b) Kinetic ##(c) Magnetic ##(d) Chemical\\]\n",
+            "output": "##(a) Heat ##(b) Kinetic ##(c) Magnetic ##(d) Chemical"
+        },
+        {
+            "input": "Given the question: +Dry environments often. Generate explanation for each choice: \\[##(a) liberally use water for everything ##(b) allow plants to flourish ##(c) require people to move ##(d) institute rules about water usage\\]\n",
+            "output": "##(a) liberally use water for everything ##(b) allow plants to flourish ##(c) require people to move ##(d) institute rules about water usage"
+        },
+        {
+            "input": "Given the question: +Phloem moves things around a plant similar to how. Generate explanation for each choice: \\[##(a) blood moves in a body ##(b) leaves move in the wind ##(c) water moves in a system ##(d) cars move on a street\\]\n",
+            "output": "##(a) blood moves in a body ##(b) leaves move in the wind ##(c) water moves in a system ##(d) cars move on a street"
+        },
+        {
+            "input": "Given the question: +Where would a polar bear be most comfortable?. Generate explanation for each choice: \\[##(a) Arizona ##(b) Georgia ##(c) Florida ##(d) Nebraska\\]\n",
+            "output": "##(a) Arizona ##(b) Georgia ##(c) Florida ##(d) Nebraska"
+        },
+        {
+            "input": "Given the question: +When a plane is in the sky and is several miles away, the light seen is barely visible, but when it is drawing near. Generate explanation for each choice: \\[##(a) light is far away ##(b) light is more easily seen ##(c) light is more distant ##(d) light is further away\\]\n",
+            "output": "##(a) light is far away ##(b) light is more easily seen ##(c) light is more distant ##(d) light is further away"
+        },
+        {
+            "input": "Given the question: +Members of rock bands often perform with. Generate explanation for each choice: \\[##(a) flutes ##(b) sandals ##(c) earplugs ##(d) gloves\\]\n",
+            "output": "##(a) flutes ##(b) sandals ##(c) earplugs ##(d) gloves"
+        },
+        {
+            "input": "Given the question: +Muscles move bones to produce movement like when. Generate explanation for each choice: \\[##(a) arms are resting ##(b) hair is growing ##(c) smiles are invisible ##(d) toes are wiggled\\]\n",
+            "output": "##(a) arms are resting ##(b) hair is growing ##(c) smiles are invisible ##(d) toes are wiggled"
+        },
+        {
+            "input": "Given the question: +How is electricity produced from the ocean?. Generate explanation for each choice: \\[##(a) decaying organic material from sealife ##(b) energy is accessed underwater from tides ##(c) drills to access oil supplies ##(d) chemical reactions produced from the salt in the water\\]\n",
+            "output": "##(a) decaying organic material from sealife ##(b) energy is accessed underwater from tides ##(c) drills to access oil supplies ##(d) chemical reactions produced from the salt in the water"
+        },
+        {
+            "input": "Given the question: +small reptile's diet consists mostly of. Generate explanation for each choice: \\[##(a) invertebrates ##(b) insects ##(c) mammals ##(d) fish\\]\n",
+            "output": "##(a) invertebrates ##(b) insects ##(c) mammals ##(d) fish"
+        },
+        {
+            "input": "Given the question: +The life work of a flower is to. Generate explanation for each choice: \\[##(a) provide nice scents ##(b) be successfully fertilized ##(c) grow very tall ##(d) look pretty\\]\n",
+            "output": "##(a) provide nice scents ##(b) be successfully fertilized ##(c) grow very tall ##(d) look pretty"
+        },
+        {
+            "input": "Given the question: +Which of these would create the most sound if struck with a metal spoon?. Generate explanation for each choice: \\[##(a) the plastic water bottle ##(b) the backside of a person ##(c) the hair on a doll ##(d) the chassis of a car\\]\n",
+            "output": "##(a) the plastic water bottle ##(b) the backside of a person ##(c) the hair on a doll ##(d) the chassis of a car"
+        },
+        {
+            "input": "Given the question: +During landslides there is often a lot of. Generate explanation for each choice: \\[##(a) air ##(b) mud ##(c) snow ##(d) wind\\]\n",
+            "output": "##(a) air ##(b) mud ##(c) snow ##(d) wind"
+        },
+        {
+            "input": "Given the question: +An example of a chemical reaction would be. Generate explanation for each choice: \\[##(a) A rusty fence ##(b) Sleeping ##(c) Drinking water ##(d) Rain\\]\n",
+            "output": "##(a) A rusty fence ##(b) Sleeping ##(c) Drinking water ##(d) Rain"
+        },
+        {
+            "input": "Given the question: +The size of an object and the ability to see it more easily have what kind of relationship?. Generate explanation for each choice: \\[##(a) equal ##(b) inverse ##(c) direct ##(d) reverse\\]\n",
+            "output": "##(a) equal ##(b) inverse ##(c) direct ##(d) reverse"
+        },
+        {
+            "input": "Given the question: +Tuna primarily eat. Generate explanation for each choice: \\[##(a) parasites, soybeans and flaxseeds ##(b) sea turtles, sharks and coral reefs ##(c) spineless marine organisms, cartilaginous and gelatinous organisms ##(d) sea vegetables like kelp, Irish moss and Arame\\]\n",
+            "output": "##(a) parasites, soybeans and flaxseeds ##(b) sea turtles, sharks and coral reefs ##(c) spineless marine organisms, cartilaginous and gelatinous organisms ##(d) sea vegetables like kelp, Irish moss and Arame"
+        },
+        {
+            "input": "Given the question: +Evaporation of water can lead to. Generate explanation for each choice: \\[##(a) waterfalls ##(b) blizzards ##(c) earthquakes ##(d) hot springs\\]\n",
+            "output": "##(a) waterfalls ##(b) blizzards ##(c) earthquakes ##(d) hot springs"
+        },
+        {
+            "input": "Given the question: +What is an electrical energy conductor?. Generate explanation for each choice: \\[##(a) horseshoe ##(b) tire ##(c) cotton shirt ##(d) maple branch\\]\n",
+            "output": "##(a) horseshoe ##(b) tire ##(c) cotton shirt ##(d) maple branch"
+        },
+        {
+            "input": "Given the question: +What kind of substance will cool when it touches a cold object?. Generate explanation for each choice: \\[##(a) warm ##(b) frozen ##(c) chilly ##(d) cold\\]\n",
+            "output": "##(a) warm ##(b) frozen ##(c) chilly ##(d) cold"
+        },
+        {
+            "input": "Given the question: +Scraping an object. Generate explanation for each choice: \\[##(a) may cause the object to grow in size ##(b) may cause the object to fall ##(c) may cause pieces to flake off the object ##(d) may cause the object to snap in half\\]\n",
+            "output": "##(a) may cause the object to grow in size ##(b) may cause the object to fall ##(c) may cause pieces to flake off the object ##(d) may cause the object to snap in half"
+        },
+        {
+            "input": "Given the question: +A pulley is used to lift a flag on a flagpole by. Generate explanation for each choice: \\[##(a) moving a rope sideways ##(b) putting something in the air ##(c) moving things with wheels ##(d) yanking string up a wheel\\]\n",
+            "output": "##(a) moving a rope sideways ##(b) putting something in the air ##(c) moving things with wheels ##(d) yanking string up a wheel"
+        },
+        {
+            "input": "Given the question: +Which animal lays eggs. Generate explanation for each choice: \\[##(a) emus ##(b) dogs ##(c) squirrels ##(d) giraffes\\]\n",
+            "output": "##(a) emus ##(b) dogs ##(c) squirrels ##(d) giraffes"
+        },
+        {
+            "input": "Given the question: +Dunes can be made out of the same thing as. Generate explanation for each choice: \\[##(a) clothes ##(b) food ##(c) forests ##(d) castles\\]\n",
+            "output": "##(a) clothes ##(b) food ##(c) forests ##(d) castles"
+        },
+        {
+            "input": "Given the question: +A learned behavior is exhibited when. Generate explanation for each choice: \\[##(a) squinting in bright light ##(b) inhaling and exhaling during sleep ##(c) blinking and gulping air ##(d) nailing up a picture frame\\]\n",
+            "output": "##(a) squinting in bright light ##(b) inhaling and exhaling during sleep ##(c) blinking and gulping air ##(d) nailing up a picture frame"
+        },
+        {
+            "input": "Given the question: +Wax can be used similarly to. Generate explanation for each choice: \\[##(a) wood ##(b) rubber ##(c) water ##(d) metal\\]\n",
+            "output": "##(a) wood ##(b) rubber ##(c) water ##(d) metal"
+        },
+        {
+            "input": "Given the question: +Bill planted rapeseed in his field one year and soybeans the next in order to. Generate explanation for each choice: \\[##(a) get bigger yields ##(b) make things boring ##(c) keep things random ##(d) get smaller yields\\]\n",
+            "output": "##(a) get bigger yields ##(b) make things boring ##(c) keep things random ##(d) get smaller yields"
+        },
+        {
+            "input": "Given the question: +What is the primary reason my duck feather filled jacket works well against the snow. Generate explanation for each choice: \\[##(a) feathers slows heat transfer ##(b) the natural duck wax ##(c) a synthetic thick liner ##(d) small flexible solar panels\\]\n",
+            "output": "##(a) feathers slows heat transfer ##(b) the natural duck wax ##(c) a synthetic thick liner ##(d) small flexible solar panels"
+        },
+        {
+            "input": "Given the question: +Turbines churning seawater can be used to produce what?. Generate explanation for each choice: \\[##(a) a charge for appliances ##(b) large quantities of soup ##(c) large schools of fish ##(d) creating some sharp cheese\\]\n",
+            "output": "##(a) a charge for appliances ##(b) large quantities of soup ##(c) large schools of fish ##(d) creating some sharp cheese"
+        },
+        {
+            "input": "Given the question: +What will increase when a substance absorbs solar energy?. Generate explanation for each choice: \\[##(a) weight ##(b) height ##(c) hotness ##(d) nutrition\\]\n",
+            "output": "##(a) weight ##(b) height ##(c) hotness ##(d) nutrition"
+        },
+        {
+            "input": "Given the question: +Which of these travels through the air?. Generate explanation for each choice: \\[##(a) planets ##(b) thoughts ##(c) automobile ##(d) music\\]\n",
+            "output": "##(a) planets ##(b) thoughts ##(c) automobile ##(d) music"
+        },
+        {
+            "input": "Given the question: +A company makes notebooks for college courses, so their main material is. Generate explanation for each choice: \\[##(a) chips ##(b) water ##(c) grass ##(d) trees\\]\n",
+            "output": "##(a) chips ##(b) water ##(c) grass ##(d) trees"
+        },
+        {
+            "input": "Given the question: +Rain is usually guaranteed when all are present but. Generate explanation for each choice: \\[##(a) cirrus clouds ##(b) cumulus clouds ##(c) hail stones ##(d) direct sunshine\\]\n",
+            "output": "##(a) cirrus clouds ##(b) cumulus clouds ##(c) hail stones ##(d) direct sunshine"
+        },
+        {
+            "input": "Given the question: +Sources of air pollution are. Generate explanation for each choice: \\[##(a) Walking ##(b) Landfills ##(c) Water ##(d) Chips\\]\n",
+            "output": "##(a) Walking ##(b) Landfills ##(c) Water ##(d) Chips"
+        },
+        {
+            "input": "Given the question: +What are iron nails made out of?. Generate explanation for each choice: \\[##(a) wood ##(b) plastic ##(c) metal ##(d) glass\\]\n",
+            "output": "##(a) wood ##(b) plastic ##(c) metal ##(d) glass"
+        },
+        {
+            "input": "Given the question: +Putting one kind of soda into the same cup as another kind of soda is doing what to the substances?. Generate explanation for each choice: \\[##(a) combining ##(b) drinking ##(c) Subtracting ##(d) throwing\\]\n",
+            "output": "##(a) combining ##(b) drinking ##(c) Subtracting ##(d) throwing"
+        },
+        {
+            "input": "Given the question: +A moth leaving it's cocoon is the final step in a. Generate explanation for each choice: \\[##(a) life cycle ##(b) transformation ##(c) recycling process ##(d) chemical reaction\\]\n",
+            "output": "##(a) life cycle ##(b) transformation ##(c) recycling process ##(d) chemical reaction"
+        },
+        {
+            "input": "Given the question: +Which of these combinations would be desired if someone wanted to make a cutting implement that lasts a long time?. Generate explanation for each choice: \\[##(a) ice and snow ##(b) sticks and stones ##(c) snow and water ##(d) iron and carbon\\]\n",
+            "output": "##(a) ice and snow ##(b) sticks and stones ##(c) snow and water ##(d) iron and carbon"
+        },
+        {
+            "input": "Given the question: +Which of the following is powered the same way an electric car is?. Generate explanation for each choice: \\[##(a) a bicycle ##(b) a motorcycle ##(c) a propane grill ##(d) a blender\\]\n",
+            "output": "##(a) a bicycle ##(b) a motorcycle ##(c) a propane grill ##(d) a blender"
+        },
+        {
+            "input": "Given the question: +Aluminum is what?. Generate explanation for each choice: \\[##(a) reprocessable ##(b) plastic ##(c) liquid ##(d) absorbent\\]\n",
+            "output": "##(a) reprocessable ##(b) plastic ##(c) liquid ##(d) absorbent"
+        },
+        {
+            "input": "Given the question: +To get warm frogs can. Generate explanation for each choice: \\[##(a) wear a Christmas sweater ##(b) Drink a hot chocolate ##(c) Go for a run ##(d) sit under a lamp\\]\n",
+            "output": "##(a) wear a Christmas sweater ##(b) Drink a hot chocolate ##(c) Go for a run ##(d) sit under a lamp"
+        },
+        {
+            "input": "Given the question: +if you put wine from a jug into a thin bottle, how come it conforms?. Generate explanation for each choice: \\[##(a) it exhibits absolute rigidity ##(b) it is a solid mass ##(c) all of these ##(d) it is a variable substance\\]\n",
+            "output": "##(a) it exhibits absolute rigidity ##(b) it is a solid mass ##(c) all of these ##(d) it is a variable substance"
+        },
+        {
+            "input": "Given the question: +Earthworms create tunnels in. Generate explanation for each choice: \\[##(a) ice ##(b) dirt ##(c) water ##(d) concrete\\]\n",
+            "output": "##(a) ice ##(b) dirt ##(c) water ##(d) concrete"
+        },
+        {
+            "input": "Given the question: +when worms return nutrients from dead organisms to the soil by eating them it is known as. Generate explanation for each choice: \\[##(a) regurgitation ##(b) decomposition ##(c) recycling ##(d) burial\\]\n",
+            "output": "##(a) regurgitation ##(b) decomposition ##(c) recycling ##(d) burial"
+        },
+        {
+            "input": "Given the question: +The aluminum cans were much hotter than the. Generate explanation for each choice: \\[##(a) gold jewelry ##(b) wooden fence ##(c) brass doorknob ##(d) steel pole\\]\n",
+            "output": "##(a) gold jewelry ##(b) wooden fence ##(c) brass doorknob ##(d) steel pole"
+        },
+        {
+            "input": "Given the question: +Which of the following is not an input in photosynthesis?. Generate explanation for each choice: \\[##(a) sunlight ##(b) oxygen ##(c) water ##(d) carbon dioxide\\]\n",
+            "output": "##(a) sunlight ##(b) oxygen ##(c) water ##(d) carbon dioxide"
+        },
+        {
+            "input": "Given the question: +which of these are you most likely to find in a desert?. Generate explanation for each choice: \\[##(a) a hammer head shark ##(b) a big tilapia fish ##(c) a prickly horned male lizard ##(d) none of these\\]\n",
+            "output": "##(a) a hammer head shark ##(b) a big tilapia fish ##(c) a prickly horned male lizard ##(d) none of these"
+        },
+        {
+            "input": "Given the question: +If your dog sits in an oxygen deficient chamber, what happens?. Generate explanation for each choice: \\[##(a) it will be fine ##(b) it will be happy ##(c) it will be comfortable ##(d) It will pass out\\]\n",
+            "output": "##(a) it will be fine ##(b) it will be happy ##(c) it will be comfortable ##(d) It will pass out"
+        },
+        {
+            "input": "Given the question: +Which of the following can be used to turn on an electrical device?. Generate explanation for each choice: \\[##(a) solar-rechargeable battery ##(b) a wedge ##(c) a magnet ##(d) pressure gauge\\]\n",
+            "output": "##(a) solar-rechargeable battery ##(b) a wedge ##(c) a magnet ##(d) pressure gauge"
+        },
+        {
+            "input": "Given the question: +Which of the following contains large amounts of salt water?. Generate explanation for each choice: \\[##(a) The Amazon ##(b) The Nile ##(c) The Indian ##(d) The Mississippi\\]\n",
+            "output": "##(a) The Amazon ##(b) The Nile ##(c) The Indian ##(d) The Mississippi"
+        },
+        {
+            "input": "Given the question: +The nimbleness of this animal is a key adaption that allows it to escape attacks from predators:. Generate explanation for each choice: \\[##(a) the butterfly ##(b) the sloth ##(c) the praying mantis ##(d) the antelope\\]\n",
+            "output": "##(a) the butterfly ##(b) the sloth ##(c) the praying mantis ##(d) the antelope"
+        },
+        {
+            "input": "Given the question: +A person speaks English as her first language because. Generate explanation for each choice: \\[##(a) media is mainly in English ##(b) school is in English ##(c) she was genetically predisposed ##(d) she watched her parents speak\\]\n",
+            "output": "##(a) media is mainly in English ##(b) school is in English ##(c) she was genetically predisposed ##(d) she watched her parents speak"
+        },
+        {
+            "input": "Given the question: +what are eaten by honey producing insects?. Generate explanation for each choice: \\[##(a) they consume plants ##(b) they eat cows ##(c) plant reproduction parts ##(d) they eat flowers\\]\n",
+            "output": "##(a) they consume plants ##(b) they eat cows ##(c) plant reproduction parts ##(d) they eat flowers"
+        },
+        {
+            "input": "Given the question: +The Earth's closest heat source is. Generate explanation for each choice: \\[##(a) our celestial fireball ##(b) solar flares ##(c) gamma rays ##(d) big bang\\]\n",
+            "output": "##(a) our celestial fireball ##(b) solar flares ##(c) gamma rays ##(d) big bang"
+        },
+        {
+            "input": "Given the question: +How can we see how wind effects sand?. Generate explanation for each choice: \\[##(a) sand is always moving ##(b) sandstorms create ripples in sand ##(c) sand is easy to move through ##(d) beaches often have waves in the sand\\]\n",
+            "output": "##(a) sand is always moving ##(b) sandstorms create ripples in sand ##(c) sand is easy to move through ##(d) beaches often have waves in the sand"
+        },
+        {
+            "input": "Given the question: +Fruit comes from what source. Generate explanation for each choice: \\[##(a) an organism that releases carbon dioxide ##(b) an organism that absorbs water through it's branches ##(c) an organism that absorbs oxygen ##(d) an organism that absorbs water through it's roots\\]\n",
+            "output": "##(a) an organism that releases carbon dioxide ##(b) an organism that absorbs water through it's branches ##(c) an organism that absorbs oxygen ##(d) an organism that absorbs water through it's roots"
+        },
+        {
+            "input": "Given the question: +In which location would a groundhog hide from a wolf?. Generate explanation for each choice: \\[##(a) beside a tree ##(b) in the grass ##(c) on a stump ##(d) under the ground\\]\n",
+            "output": "##(a) beside a tree ##(b) in the grass ##(c) on a stump ##(d) under the ground"
+        },
+        {
+            "input": "Given the question: +Cutting down trees in a forest. Generate explanation for each choice: \\[##(a) leads to more habitats for animals ##(b) decreases the chance of erosion ##(c) increases the number of trees in the forest ##(d) leads to less habitats for animals\\]\n",
+            "output": "##(a) leads to more habitats for animals ##(b) decreases the chance of erosion ##(c) increases the number of trees in the forest ##(d) leads to less habitats for animals"
+        },
+        {
+            "input": "Given the question: +I chipped away at a toy doll and the surface became really rough, when I rub it against a piece of wood that will create an increase in. Generate explanation for each choice: \\[##(a) animals ##(b) resistance ##(c) water ##(d) sunshine\\]\n",
+            "output": "##(a) animals ##(b) resistance ##(c) water ##(d) sunshine"
+        },
+        {
+            "input": "Given the question: +The arctic is white in coloring. Generate explanation for each choice: \\[##(a) because it's overpopulated with polar bears ##(b) because it's covered in white lilies ##(c) because it's blanketed in crystalline ice water ##(d) because it's gets so little sunlight\\]\n",
+            "output": "##(a) because it's overpopulated with polar bears ##(b) because it's covered in white lilies ##(c) because it's blanketed in crystalline ice water ##(d) because it's gets so little sunlight"
+        },
+        {
+            "input": "Given the question: +What would help to ensure that your dog remains free from hypothermia in January in Alaska?. Generate explanation for each choice: \\[##(a) Lots of meat ##(b) Lots of love ##(c) Vitamin supplements ##(d) An insulated room\\]\n",
+            "output": "##(a) Lots of meat ##(b) Lots of love ##(c) Vitamin supplements ##(d) An insulated room"
+        },
+        {
+            "input": "Given the question: +The majority of a lizard's diet consists of. Generate explanation for each choice: \\[##(a) fleas ##(b) crawlies ##(c) gummy worms ##(d) berries\\]\n",
+            "output": "##(a) fleas ##(b) crawlies ##(c) gummy worms ##(d) berries"
+        },
+        {
+            "input": "Given the question: +What food production happens in a leaf?. Generate explanation for each choice: \\[##(a) nutrient making process ##(b) the breathing ##(c) the respiration ##(d) the digestion\\]\n",
+            "output": "##(a) nutrient making process ##(b) the breathing ##(c) the respiration ##(d) the digestion"
+        },
+        {
+            "input": "Given the question: +Plants are unable to grow if they have zero access to. Generate explanation for each choice: \\[##(a) a nice cool breeze ##(b) fresh soil with manure ##(c) a regular source of saltwater ##(d) needs required for creating chlorophyll\\]\n",
+            "output": "##(a) a nice cool breeze ##(b) fresh soil with manure ##(c) a regular source of saltwater ##(d) needs required for creating chlorophyll"
+        },
+        {
+            "input": "Given the question: +Which characteristic did a person inherit?. Generate explanation for each choice: \\[##(a) length of hair ##(b) number of friends ##(c) number of nails ##(d) length of shirt\\]\n",
+            "output": "##(a) length of hair ##(b) number of friends ##(c) number of nails ##(d) length of shirt"
+        },
+        {
+            "input": "Given the question: +Selective deforestation has a negative impact on. Generate explanation for each choice: \\[##(a) rain clouds and ozone layer ##(b) lakes, ponds and shellfish ##(c) greenhouse gases and algae ##(d) living organisms in ecosystem\\]\n",
+            "output": "##(a) rain clouds and ozone layer ##(b) lakes, ponds and shellfish ##(c) greenhouse gases and algae ##(d) living organisms in ecosystem"
+        },
+        {
+            "input": "Given the question: +Where would you find a mine?. Generate explanation for each choice: \\[##(a) in a tree ##(b) under a mountain ##(c) in the air ##(d) in the water\\]\n",
+            "output": "##(a) in a tree ##(b) under a mountain ##(c) in the air ##(d) in the water"
+        },
+        {
+            "input": "Given the question: +What can cause people to crash their car?. Generate explanation for each choice: \\[##(a) Seeing a solar eclipse ##(b) Using their turn signals ##(c) Driving the speed limit ##(d) Keeping their eyes on the road\\]\n",
+            "output": "##(a) Seeing a solar eclipse ##(b) Using their turn signals ##(c) Driving the speed limit ##(d) Keeping their eyes on the road"
+        },
+        {
+            "input": "Given the question: +Coral grows in. Generate explanation for each choice: \\[##(a) frigid waters ##(b) tepid seas ##(c) glacial environments ##(d) jungle forests\\]\n",
+            "output": "##(a) frigid waters ##(b) tepid seas ##(c) glacial environments ##(d) jungle forests"
+        },
+        {
+            "input": "Given the question: +A Punnett square is used to identify the percent chance of a trait being passed down from a parent to its offspring, so. Generate explanation for each choice: \\[##(a) certain things may be featured ##(b) certain features may be predicted ##(c) certain traits may be given ##(d) certain features may be guaranteed\\]\n",
+            "output": "##(a) certain things may be featured ##(b) certain features may be predicted ##(c) certain traits may be given ##(d) certain features may be guaranteed"
+        },
+        {
+            "input": "Given the question: +A deer is eating in a field, and wants more food. Regardless of how hard the deer tries, the deer is unable to produce. Generate explanation for each choice: \\[##(a) longer antlers ##(b) food for itself ##(c) baby deer ##(d) urine\\]\n",
+            "output": "##(a) longer antlers ##(b) food for itself ##(c) baby deer ##(d) urine"
+        },
+        {
+            "input": "Given the question: +Building new areas to dispose of refuse may lead to. Generate explanation for each choice: \\[##(a) community concerns over environmental impact ##(b) better air and soil quality ##(c) higher value on land parcels ##(d) improvement in water supply\\]\n",
+            "output": "##(a) community concerns over environmental impact ##(b) better air and soil quality ##(c) higher value on land parcels ##(d) improvement in water supply"
+        },
+        {
+            "input": "Given the question: +Evaporation. Generate explanation for each choice: \\[##(a) causes puddles to become dried out mud ##(b) causes fields of crops to grow faster ##(c) causes flowers to bloom abundantly ##(d) fills up irrigation ponds\\]\n",
+            "output": "##(a) causes puddles to become dried out mud ##(b) causes fields of crops to grow faster ##(c) causes flowers to bloom abundantly ##(d) fills up irrigation ponds"
+        },
+        {
+            "input": "Given the question: +A field begins to bloom and blossom and plants need to be pollinated. In order to spread seeds, plants will most rely on. Generate explanation for each choice: \\[##(a) pythons ##(b) salmon ##(c) robins ##(d) craters\\]\n",
+            "output": "##(a) pythons ##(b) salmon ##(c) robins ##(d) craters"
+        },
+        {
+            "input": "Given the question: +Which item urinates?. Generate explanation for each choice: \\[##(a) airplane ##(b) car ##(c) mammal ##(d) boat\\]\n",
+            "output": "##(a) airplane ##(b) car ##(c) mammal ##(d) boat"
+        },
+        {
+            "input": "Given the question: +All of the following are examples of evaporation apart from. Generate explanation for each choice: \\[##(a) Warm breath fogging up a mirror ##(b) Morning dew drying on the grass ##(c) The water level in a glass decreasing ##(d) Sweat drying on skin\\]\n",
+            "output": "##(a) Warm breath fogging up a mirror ##(b) Morning dew drying on the grass ##(c) The water level in a glass decreasing ##(d) Sweat drying on skin"
+        },
+        {
+            "input": "Given the question: +The lunar cycle also changes. Generate explanation for each choice: \\[##(a) water ##(b) colors ##(c) the sun ##(d) planets\\]\n",
+            "output": "##(a) water ##(b) colors ##(c) the sun ##(d) planets"
+        },
+        {
+            "input": "Given the question: +An organism that makes food for itself. Generate explanation for each choice: \\[##(a) is nutritionally self sustaining ##(b) will die faster than other organisms ##(c) will need help sustaining strength ##(d) is reliant on other organisms for assistance\\]\n",
+            "output": "##(a) is nutritionally self sustaining ##(b) will die faster than other organisms ##(c) will need help sustaining strength ##(d) is reliant on other organisms for assistance"
+        },
+        {
+            "input": "Given the question: +What does the respiratory system transfer to the circulatory system?. Generate explanation for each choice: \\[##(a) food ##(b) water ##(c) nutrients ##(d) O\\]\n",
+            "output": "##(a) food ##(b) water ##(c) nutrients ##(d) O"
+        },
+        {
+            "input": "Given the question: +In a closed circuit, electricity will. Generate explanation for each choice: \\[##(a) burn out ##(b) charge itself ##(c) loop endlessly ##(d) resist flow\\]\n",
+            "output": "##(a) burn out ##(b) charge itself ##(c) loop endlessly ##(d) resist flow"
+        },
+        {
+            "input": "Given the question: +A Punnett square can be used to calculate the chance of a trait being passed to someone's. Generate explanation for each choice: \\[##(a) mother ##(b) grandfather ##(c) daughter ##(d) father\\]\n",
+            "output": "##(a) mother ##(b) grandfather ##(c) daughter ##(d) father"
+        },
+        {
+            "input": "Given the question: +They looked where the log decayed to garden as it would leave the earth. Generate explanation for each choice: \\[##(a) richer ##(b) dryer ##(c) sandy ##(d) harder\\]\n",
+            "output": "##(a) richer ##(b) dryer ##(c) sandy ##(d) harder"
+        },
+        {
+            "input": "Given the question: +what kind of temperature causes fur shedding?. Generate explanation for each choice: \\[##(a) in freezing cold ##(b) a high temperature ##(c) in any temperature ##(d) a low temperature\\]\n",
+            "output": "##(a) in freezing cold ##(b) a high temperature ##(c) in any temperature ##(d) a low temperature"
+        },
+        {
+            "input": "Given the question: +exposure to fire could result in. Generate explanation for each choice: \\[##(a) wet items ##(b) cold items ##(c) none of these ##(d) combusted items\\]\n",
+            "output": "##(a) wet items ##(b) cold items ##(c) none of these ##(d) combusted items"
+        },
+        {
+            "input": "Given the question: +What is an example of clear weather meaning sunny weather?. Generate explanation for each choice: \\[##(a) more stars are visible on clear nights ##(b) cloud cover protects from sunburn ##(c) clear days will be warmer ##(d) fewer clouds allow for more sunlight\\]\n",
+            "output": "##(a) more stars are visible on clear nights ##(b) cloud cover protects from sunburn ##(c) clear days will be warmer ##(d) fewer clouds allow for more sunlight"
+        },
+        {
+            "input": "Given the question: +The special tissues in plants that transport minerals throughout the plant are similar to. Generate explanation for each choice: \\[##(a) a wick ##(b) a funnel ##(c) a knife ##(d) a whisk\\]\n",
+            "output": "##(a) a wick ##(b) a funnel ##(c) a knife ##(d) a whisk"
+        },
+        {
+            "input": "Given the question: +a compass is a kind of tool for determining direction by pointing. Generate explanation for each choice: \\[##(a) to western Canada shoreline ##(b) to the lower pole ##(c) to the upper pole ##(d) directly to the equator\\]\n",
+            "output": "##(a) to western Canada shoreline ##(b) to the lower pole ##(c) to the upper pole ##(d) directly to the equator"
+        },
+        {
+            "input": "Given the question: +Which of these saws will last longer?. Generate explanation for each choice: \\[##(a) iron saw ##(b) aluminium saw ##(c) plastic saw ##(d) wooden saw\\]\n",
+            "output": "##(a) iron saw ##(b) aluminium saw ##(c) plastic saw ##(d) wooden saw"
+        },
+        {
+            "input": "Given the question: +although there are many stars visible in the night sky, which is most visible in the day?. Generate explanation for each choice: \\[##(a) the single moon close to us ##(b) the orion star cluster ##(c) the sun that shines all day ##(d) all of these\\]\n",
+            "output": "##(a) the single moon close to us ##(b) the orion star cluster ##(c) the sun that shines all day ##(d) all of these"
+        },
+        {
+            "input": "Given the question: +The moon is known for having what feature?. Generate explanation for each choice: \\[##(a) frozen streams of water ##(b) large bowl shaped cavities ##(c) caves formed by solar winds ##(d) groups of large trees\\]\n",
+            "output": "##(a) frozen streams of water ##(b) large bowl shaped cavities ##(c) caves formed by solar winds ##(d) groups of large trees"
+        },
+        {
+            "input": "Given the question: +Cellular respiration's trash is. Generate explanation for each choice: \\[##(a) a bug's treasure ##(b) a cow's treasure ##(c) a plant's treasure ##(d) everyone's trash\\]\n",
+            "output": "##(a) a bug's treasure ##(b) a cow's treasure ##(c) a plant's treasure ##(d) everyone's trash"
+        },
+        {
+            "input": "Given the question: +Which of the following human activities can lead to a change in the local ecosystem?. Generate explanation for each choice: \\[##(a) swimming in a lake ##(b) building a new subdivision ##(c) dancing in a field ##(d) going for a hike\\]\n",
+            "output": "##(a) swimming in a lake ##(b) building a new subdivision ##(c) dancing in a field ##(d) going for a hike"
+        },
+        {
+            "input": "Given the question: +A bird that takes off flying is. Generate explanation for each choice: \\[##(a) using heat to produce motion ##(b) using calories to produce motion ##(c) using wings to produce heat ##(d) using calories to produce energy\\]\n",
+            "output": "##(a) using heat to produce motion ##(b) using calories to produce motion ##(c) using wings to produce heat ##(d) using calories to produce energy"
+        },
+        {
+            "input": "Given the question: +The leading cause of soil and rock erosion is. Generate explanation for each choice: \\[##(a) H2O ##(b) CO2 ##(c) NaCl ##(d) Fe\\]\n",
+            "output": "##(a) H2O ##(b) CO2 ##(c) NaCl ##(d) Fe"
+        },
+        {
+            "input": "Given the question: +Which of these foods might have a negative impact on humans?. Generate explanation for each choice: \\[##(a) Organic corn ##(b) Conventional corn ##(c) Organic potato ##(d) Organic Apples\\]\n",
+            "output": "##(a) Organic corn ##(b) Conventional corn ##(c) Organic potato ##(d) Organic Apples"
+        },
+        {
+            "input": "Given the question: +What kind of implement is a compass?. Generate explanation for each choice: \\[##(a) to test heat ##(b) for wind speed ##(c) it measures distance ##(d) it shows direction\\]\n",
+            "output": "##(a) to test heat ##(b) for wind speed ##(c) it measures distance ##(d) it shows direction"
+        },
+        {
+            "input": "Given the question: +Nectar is taken to. Generate explanation for each choice: \\[##(a) flowers ##(b) a hive ##(c) a stream ##(d) a nest\\]\n",
+            "output": "##(a) flowers ##(b) a hive ##(c) a stream ##(d) a nest"
+        },
+        {
+            "input": "Given the question: +what is the closest source of plasma to our planet?. Generate explanation for each choice: \\[##(a) all of these ##(b) the cloud in the sky ##(c) the nearest star sulfur burning heavenly body ##(d) the bare moon surface\\]\n",
+            "output": "##(a) all of these ##(b) the cloud in the sky ##(c) the nearest star sulfur burning heavenly body ##(d) the bare moon surface"
+        },
+        {
+            "input": "Given the question: +A sailor needs to navigate to the shore, and does this by. Generate explanation for each choice: \\[##(a) closing the sails quickly ##(b) setting out to sea ##(c) making an adjustment to the rudder ##(d) taking the afternoon off\\]\n",
+            "output": "##(a) closing the sails quickly ##(b) setting out to sea ##(c) making an adjustment to the rudder ##(d) taking the afternoon off"
+        },
+        {
+            "input": "Given the question: +A bat starts its life similarly to a. Generate explanation for each choice: \\[##(a) chicken ##(b) pig ##(c) butterfly ##(d) duck\\]\n",
+            "output": "##(a) chicken ##(b) pig ##(c) butterfly ##(d) duck"
+        },
+        {
+            "input": "Given the question: +In order to catch a rabbit, a predator must be. Generate explanation for each choice: \\[##(a) big ##(b) quick ##(c) slow ##(d) small\\]\n",
+            "output": "##(a) big ##(b) quick ##(c) slow ##(d) small"
+        },
+        {
+            "input": "Given the question: +If a bird is a carnivore, then it is likely a(n). Generate explanation for each choice: \\[##(a) prey ##(b) predator ##(c) herbivore ##(d) canary\\]\n",
+            "output": "##(a) prey ##(b) predator ##(c) herbivore ##(d) canary"
+        },
+        {
+            "input": "Given the question: +A warm-weather organism can be found in. Generate explanation for each choice: \\[##(a) the Sahara ##(b) the mountains ##(c) the ocean ##(d) the sewers\\]\n",
+            "output": "##(a) the Sahara ##(b) the mountains ##(c) the ocean ##(d) the sewers"
+        },
+        {
+            "input": "Given the question: +When approaching an elephant from a great distance,. Generate explanation for each choice: \\[##(a) it stays large ##(b) it grows larger ##(c) it gets bigger ##(d) it looks bigger\\]\n",
+            "output": "##(a) it stays large ##(b) it grows larger ##(c) it gets bigger ##(d) it looks bigger"
+        },
+        {
+            "input": "Given the question: +What would cause a human to grow?. Generate explanation for each choice: \\[##(a) light waves ##(b) eating wheat ##(c) photosynthesis ##(d) marching\\]\n",
+            "output": "##(a) light waves ##(b) eating wheat ##(c) photosynthesis ##(d) marching"
+        },
+        {
+            "input": "Given the question: +A saguaro has adaptations for an environment with. Generate explanation for each choice: \\[##(a) lots of snow ##(b) many people ##(c) less water ##(d) more water\\]\n",
+            "output": "##(a) lots of snow ##(b) many people ##(c) less water ##(d) more water"
+        },
+        {
+            "input": "Given the question: +There are less hummingbirds by this house than before because of. Generate explanation for each choice: \\[##(a) a feeder at this house ##(b) the birds no longer like feeders ##(c) the size of the feeder ##(d) a feeder at another house\\]\n",
+            "output": "##(a) a feeder at this house ##(b) the birds no longer like feeders ##(c) the size of the feeder ##(d) a feeder at another house"
+        },
+        {
+            "input": "Given the question: +the  oceans are full of. Generate explanation for each choice: \\[##(a) water lilies ##(b) guppies ##(c) sea life ##(d) fresh water\\]\n",
+            "output": "##(a) water lilies ##(b) guppies ##(c) sea life ##(d) fresh water"
+        },
+        {
+            "input": "Given the question: +A light was off because the cord was. Generate explanation for each choice: \\[##(a) sitting on the table ##(b) attached to the wall ##(c) attached to an extension cord ##(d) attached to a battery pack\\]\n",
+            "output": "##(a) sitting on the table ##(b) attached to the wall ##(c) attached to an extension cord ##(d) attached to a battery pack"
+        },
+        {
+            "input": "Given the question: +In the hottest months in the hottest desert, creatures such as birds may find water to drink. Generate explanation for each choice: \\[##(a) in sticks ##(b) in pebbles ##(c) in sand ##(d) in spiked plants\\]\n",
+            "output": "##(a) in sticks ##(b) in pebbles ##(c) in sand ##(d) in spiked plants"
+        },
+        {
+            "input": "Given the question: +Why might a polar bear grow white hair?. Generate explanation for each choice: \\[##(a) look fancy ##(b) random ##(c) blend in ##(d) stand out\\]\n",
+            "output": "##(a) look fancy ##(b) random ##(c) blend in ##(d) stand out"
+        },
+        {
+            "input": "Given the question: +Xylem. Generate explanation for each choice: \\[##(a) discourages pests from landing on leaves ##(b) allows plants to move carbon dioxide from root to stems ##(c) carries seedlings from roots to leaves ##(d) allows plants to move rain thru their systems\\]\n",
+            "output": "##(a) discourages pests from landing on leaves ##(b) allows plants to move carbon dioxide from root to stems ##(c) carries seedlings from roots to leaves ##(d) allows plants to move rain thru their systems"
+        },
+        {
+            "input": "Given the question: +A food that is a source of heat is. Generate explanation for each choice: \\[##(a) ramen ##(b) salad ##(c) ice cream ##(d) sushi\\]\n",
+            "output": "##(a) ramen ##(b) salad ##(c) ice cream ##(d) sushi"
+        },
+        {
+            "input": "Given the question: +When heat is added to something. Generate explanation for each choice: \\[##(a) contaminates may be destroyed ##(b) bacterial can grow more rapidly ##(c) viruses may be picked up ##(d) the thing loses energy\\]\n",
+            "output": "##(a) contaminates may be destroyed ##(b) bacterial can grow more rapidly ##(c) viruses may be picked up ##(d) the thing loses energy"
+        },
+        {
+            "input": "Given the question: +The heart is an example of. Generate explanation for each choice: \\[##(a) a part of the nervous system ##(b) an organ that filters toxins ##(c) a self-healing protector from germs ##(d) something protected by the skeletal system\\]\n",
+            "output": "##(a) a part of the nervous system ##(b) an organ that filters toxins ##(c) a self-healing protector from germs ##(d) something protected by the skeletal system"
+        },
+        {
+            "input": "Given the question: +Prey are eaten by. Generate explanation for each choice: \\[##(a) an animal herded by sheep dogs ##(b) the animal with a starring role in Bambi ##(c) animals known for their memory ##(d) the fastest mammal with four legs\\]\n",
+            "output": "##(a) an animal herded by sheep dogs ##(b) the animal with a starring role in Bambi ##(c) animals known for their memory ##(d) the fastest mammal with four legs"
+        },
+        {
+            "input": "Given the question: +A dog is warm-blooded just like. Generate explanation for each choice: \\[##(a) a snake ##(b) a cardinal ##(c) a spider ##(d) a scorpion\\]\n",
+            "output": "##(a) a snake ##(b) a cardinal ##(c) a spider ##(d) a scorpion"
+        },
+        {
+            "input": "Given the question: +A flashlight will need this in order to radiate photons:. Generate explanation for each choice: \\[##(a) radiation ##(b) acoustic energy ##(c) vibrations ##(d) electron flow\\]\n",
+            "output": "##(a) radiation ##(b) acoustic energy ##(c) vibrations ##(d) electron flow"
+        },
+        {
+            "input": "Given the question: +to find out how fast you are going you first need to know. Generate explanation for each choice: \\[##(a) where you're going ##(b) distance traveled ##(c) distance to travel ##(d) home location\\]\n",
+            "output": "##(a) where you're going ##(b) distance traveled ##(c) distance to travel ##(d) home location"
+        },
+        {
+            "input": "Given the question: +A small lamb, two days old, is walking with its mother. The mother feels ill, so refuses food, which dries up her milk production. The lack of lactation causes the lamb to. Generate explanation for each choice: \\[##(a) weaken ##(b) strengthen ##(c) coexist ##(d) thrive\\]\n",
+            "output": "##(a) weaken ##(b) strengthen ##(c) coexist ##(d) thrive"
+        },
+        {
+            "input": "Given the question: +When trying to find fresh clams for dinner, a hungry person would don. Generate explanation for each choice: \\[##(a) a dinner jacket ##(b) a diving suit ##(c) a warm coat ##(d) a dress suit\\]\n",
+            "output": "##(a) a dinner jacket ##(b) a diving suit ##(c) a warm coat ##(d) a dress suit"
+        },
+        {
+            "input": "Given the question: +How do polar bears survive the cold?. Generate explanation for each choice: \\[##(a) B and D ##(b) Double Fur Coats ##(c) Cold blooded ##(d) Compact ears\\]\n",
+            "output": "##(a) B and D ##(b) Double Fur Coats ##(c) Cold blooded ##(d) Compact ears"
+        },
+        {
+            "input": "Given the question: +A solid is likely to form in extreme. Generate explanation for each choice: \\[##(a) floods ##(b) wind ##(c) chill ##(d) rain\\]\n",
+            "output": "##(a) floods ##(b) wind ##(c) chill ##(d) rain"
+        },
+        {
+            "input": "Given the question: +What are the feet of Dendrocygna autumnalis designed for?. Generate explanation for each choice: \\[##(a) catching prey ##(b) aquatic speed ##(c) flying ##(d) walking\\]\n",
+            "output": "##(a) catching prey ##(b) aquatic speed ##(c) flying ##(d) walking"
+        },
+        {
+            "input": "Given the question: +What is an example of fire giving off light?. Generate explanation for each choice: \\[##(a) an oven is preheated and the pilot light is lit ##(b) a match is lit to light a cigarette ##(c) a lit candle in a window signalling to someone ##(d) a fire that was put out to send smoke signals\\]\n",
+            "output": "##(a) an oven is preheated and the pilot light is lit ##(b) a match is lit to light a cigarette ##(c) a lit candle in a window signalling to someone ##(d) a fire that was put out to send smoke signals"
+        },
+        {
+            "input": "Given the question: +The respiratory system works by. Generate explanation for each choice: \\[##(a) directing oxygen from lungs to other organs ##(b) pushing air through lungs ##(c) moving air in a room ##(d) making air quality better\\]\n",
+            "output": "##(a) directing oxygen from lungs to other organs ##(b) pushing air through lungs ##(c) moving air in a room ##(d) making air quality better"
+        },
+        {
+            "input": "Given the question: +Animals have more fat. Generate explanation for each choice: \\[##(a) in the ocean ##(b) in human homes ##(c) in landfills ##(d) in polar areas\\]\n",
+            "output": "##(a) in the ocean ##(b) in human homes ##(c) in landfills ##(d) in polar areas"
+        },
+        {
+            "input": "Given the question: +A stick bug uses what to protect itself from predators?. Generate explanation for each choice: \\[##(a) poison ##(b) its appearance ##(c) speed ##(d) hearing\\]\n",
+            "output": "##(a) poison ##(b) its appearance ##(c) speed ##(d) hearing"
+        },
+        {
+            "input": "Given the question: +Corn is sometimes used to make. Generate explanation for each choice: \\[##(a) a simple alcohol ##(b) water ##(c) glass ##(d) milk\\]\n",
+            "output": "##(a) a simple alcohol ##(b) water ##(c) glass ##(d) milk"
+        },
+        {
+            "input": "Given the question: +The inside of the Thanksgiving turkey is white instead of pink because of. Generate explanation for each choice: \\[##(a) heat energy ##(b) light energy ##(c) color energy ##(d) color transfusion\\]\n",
+            "output": "##(a) heat energy ##(b) light energy ##(c) color energy ##(d) color transfusion"
+        },
+        {
+            "input": "Given the question: +Little puppies are a result of:. Generate explanation for each choice: \\[##(a) reproduction ? ##(b) pet store sale ##(c) a begging child ##(d) evolution\\]\n",
+            "output": "##(a) reproduction ? ##(b) pet store sale ##(c) a begging child ##(d) evolution"
+        },
+        {
+            "input": "Given the question: +What would a Jersey most likely be fed?. Generate explanation for each choice: \\[##(a) hamburger ##(b) moles ##(c) alfalfa ##(d) cow\\]\n",
+            "output": "##(a) hamburger ##(b) moles ##(c) alfalfa ##(d) cow"
+        },
+        {
+            "input": "Given the question: +Which of these energy sources generates the least amount of pollution?. Generate explanation for each choice: \\[##(a) coal ##(b) windmill ##(c) lithium batteries ##(d) gasoline\\]\n",
+            "output": "##(a) coal ##(b) windmill ##(c) lithium batteries ##(d) gasoline"
+        },
+        {
+            "input": "Given the question: +Grass snakes live in what?. Generate explanation for each choice: \\[##(a) trees ##(b) mountains ##(c) lakes ##(d) turf\\]\n",
+            "output": "##(a) trees ##(b) mountains ##(c) lakes ##(d) turf"
+        },
+        {
+            "input": "Given the question: +Cephalopod ink is by octopuses to. Generate explanation for each choice: \\[##(a) mate ##(b) feed ##(c) hide ##(d) play\\]\n",
+            "output": "##(a) mate ##(b) feed ##(c) hide ##(d) play"
+        },
+        {
+            "input": "Given the question: +Tapping a drumstick to a drum will. Generate explanation for each choice: \\[##(a) reverberate when touched together ##(b) vibrate when next to each other ##(c) shake around when near ##(d) put each other down\\]\n",
+            "output": "##(a) reverberate when touched together ##(b) vibrate when next to each other ##(c) shake around when near ##(d) put each other down"
+        },
+        {
+            "input": "Given the question: +Snow is more likely to fall two months before. Generate explanation for each choice: \\[##(a) June ##(b) March ##(c) September ##(d) December\\]\n",
+            "output": "##(a) June ##(b) March ##(c) September ##(d) December"
+        },
+        {
+            "input": "Given the question: +If I want to avoid being dinner for some type of frog what should I reincarnate as?. Generate explanation for each choice: \\[##(a) Scorpion ##(b) House Fly ##(c) Cricket ##(d) Moth\\]\n",
+            "output": "##(a) Scorpion ##(b) House Fly ##(c) Cricket ##(d) Moth"
+        },
+        {
+            "input": "Given the question: +Dead plants are easier to find in. Generate explanation for each choice: \\[##(a) January ##(b) July ##(c) May ##(d) September\\]\n",
+            "output": "##(a) January ##(b) July ##(c) May ##(d) September"
+        },
+        {
+            "input": "Given the question: +The harder a child pushes a toy car. Generate explanation for each choice: \\[##(a) decreases the distance it will travel ##(b) the further it will roll across the floor ##(c) the quicker the child will want to play with another toy ##(d) determines how long the child with play with it\\]\n",
+            "output": "##(a) decreases the distance it will travel ##(b) the further it will roll across the floor ##(c) the quicker the child will want to play with another toy ##(d) determines how long the child with play with it"
+        },
+        {
+            "input": "Given the question: +Fossil fuels. Generate explanation for each choice: \\[##(a) come from old age ##(b) come from expired life ##(c) take two years to create ##(d) are created in a year\\]\n",
+            "output": "##(a) come from old age ##(b) come from expired life ##(c) take two years to create ##(d) are created in a year"
+        },
+        {
+            "input": "Given the question: +A star, burning far, far away, has enormous pressure and temperature. This allows for. Generate explanation for each choice: \\[##(a) a room to have overhead lights ##(b) night on Earth to be dimly lit ##(c) plastic stars to decorate a ceiling ##(d) a person to be the star of a show\\]\n",
+            "output": "##(a) a room to have overhead lights ##(b) night on Earth to be dimly lit ##(c) plastic stars to decorate a ceiling ##(d) a person to be the star of a show"
+        },
+        {
+            "input": "Given the question: +Erosion is caused by different kinds of. Generate explanation for each choice: \\[##(a) soil ##(b) fish ##(c) rocks ##(d) weather\\]\n",
+            "output": "##(a) soil ##(b) fish ##(c) rocks ##(d) weather"
+        },
+        {
+            "input": "Given the question: +Respiration is a. Generate explanation for each choice: \\[##(a) happens for some species ##(b) happens for only land dwelling mammals ##(c) occurs for only sea creatures ##(d) commonality among all animals\\]\n",
+            "output": "##(a) happens for some species ##(b) happens for only land dwelling mammals ##(c) occurs for only sea creatures ##(d) commonality among all animals"
+        },
+        {
+            "input": "Given the question: +In order for your computer to operate, it must have an electrical path that is what?. Generate explanation for each choice: \\[##(a) magical ##(b) closed ##(c) broken ##(d) open\\]\n",
+            "output": "##(a) magical ##(b) closed ##(c) broken ##(d) open"
+        },
+        {
+            "input": "Given the question: +Polar bears live in. Generate explanation for each choice: \\[##(a) frosty environments ##(b) tepid environments ##(c) warm environments ##(d) tropical environments\\]\n",
+            "output": "##(a) frosty environments ##(b) tepid environments ##(c) warm environments ##(d) tropical environments"
+        },
+        {
+            "input": "Given the question: +What would be more likely to attract a magnet?. Generate explanation for each choice: \\[##(a) a plastic zipper ##(b) flowing water ##(c) a car engine ##(d) A wooden desk\\]\n",
+            "output": "##(a) a plastic zipper ##(b) flowing water ##(c) a car engine ##(d) A wooden desk"
+        },
+        {
+            "input": "Given the question: +What constitutes a frog's diet?. Generate explanation for each choice: \\[##(a) it eats all plants ##(b) it will eat dogs ##(c) it only eats burgers ##(d) it chomps on insects\\]\n",
+            "output": "##(a) it eats all plants ##(b) it will eat dogs ##(c) it only eats burgers ##(d) it chomps on insects"
+        },
+        {
+            "input": "Given the question: +What is an example of the digestive system digesting food for the body?. Generate explanation for each choice: \\[##(a) a man eating nachos then getting food poisoning ##(b) a baby drinking formula then needing a diaper change ##(c) a cat eating food then throwing it up ##(d) a horse licking a salt lick\\]\n",
+            "output": "##(a) a man eating nachos then getting food poisoning ##(b) a baby drinking formula then needing a diaper change ##(c) a cat eating food then throwing it up ##(d) a horse licking a salt lick"
+        },
+        {
+            "input": "Given the question: +The body is negatively impacted by. Generate explanation for each choice: \\[##(a) white blood cells ##(b) vitamins ##(c) rotavirus ##(d) nasal decongestants\\]\n",
+            "output": "##(a) white blood cells ##(b) vitamins ##(c) rotavirus ##(d) nasal decongestants"
+        },
+        {
+            "input": "Given the question: +Someone wants their electromagnets to work, but is having difficulty powering them. In order to make them work, they need to. Generate explanation for each choice: \\[##(a) run wire through currants ##(b) run a continuous current ##(c) run around the wire ##(d) currently run wire through\\]\n",
+            "output": "##(a) run wire through currants ##(b) run a continuous current ##(c) run around the wire ##(d) currently run wire through"
+        },
+        {
+            "input": "Given the question: +if a place has experienced flooding, what could be responsible?. Generate explanation for each choice: \\[##(a) all of these ##(b) there has been excess condensed water vapor ##(c) the water lacks oxygen ##(d) the local deities are angry\\]\n",
+            "output": "##(a) all of these ##(b) there has been excess condensed water vapor ##(c) the water lacks oxygen ##(d) the local deities are angry"
+        },
+        {
+            "input": "Given the question: +What is an example of reproduction?. Generate explanation for each choice: \\[##(a) farming ##(b) egg depositing ##(c) flying ##(d) walking\\]\n",
+            "output": "##(a) farming ##(b) egg depositing ##(c) flying ##(d) walking"
+        },
+        {
+            "input": "Given the question: +A place that is snowy has a large amount of. Generate explanation for each choice: \\[##(a) wind ##(b) storms ##(c) frozen water ##(d) rain\\]\n",
+            "output": "##(a) wind ##(b) storms ##(c) frozen water ##(d) rain"
+        },
+        {
+            "input": "Given the question: +An ideal abode for crickets is. Generate explanation for each choice: \\[##(a) a small potted plant in a house ##(b) a green and lush tree and plant packed area ##(c) a briny and warm body of water ##(d) a area surrounded by spider webs\\]\n",
+            "output": "##(a) a small potted plant in a house ##(b) a green and lush tree and plant packed area ##(c) a briny and warm body of water ##(d) a area surrounded by spider webs"
+        },
+        {
+            "input": "Given the question: +Carbon steel is always what?. Generate explanation for each choice: \\[##(a) attractive to various objects that contain iron ##(b) pleasant with a magnetic personality ##(c) made up of iron and pieces of magnets ##(d) hard as a magnetizing rod\\]\n",
+            "output": "##(a) attractive to various objects that contain iron ##(b) pleasant with a magnetic personality ##(c) made up of iron and pieces of magnets ##(d) hard as a magnetizing rod"
+        },
+        {
+            "input": "Given the question: +if a bat delivers a live offspring, what does this tell us?. Generate explanation for each choice: \\[##(a) it is a mammal ##(b) calling it a bird is wrong ##(c) all of these ##(d) it is capable of reproducing\\]\n",
+            "output": "##(a) it is a mammal ##(b) calling it a bird is wrong ##(c) all of these ##(d) it is capable of reproducing"
+        },
+        {
+            "input": "Given the question: +If you find something smooth and hard on the ground, it is probably made of what?. Generate explanation for each choice: \\[##(a) minerals ##(b) mist ##(c) clouds ##(d) water\\]\n",
+            "output": "##(a) minerals ##(b) mist ##(c) clouds ##(d) water"
+        },
+        {
+            "input": "Given the question: +as you get closer to something it begins to. Generate explanation for each choice: \\[##(a) shrinks down to nothing ##(b) grow in size visually ##(c) show a large shadow ##(d) rotate in a clockwise direction\\]\n",
+            "output": "##(a) shrinks down to nothing ##(b) grow in size visually ##(c) show a large shadow ##(d) rotate in a clockwise direction"
+        },
+        {
+            "input": "Given the question: +After a storm. Generate explanation for each choice: \\[##(a) ponds may dry out ##(b) flowers will wilt and wither ##(c) creek beds may be spilling over ##(d) drinking water will be in short supply\\]\n",
+            "output": "##(a) ponds may dry out ##(b) flowers will wilt and wither ##(c) creek beds may be spilling over ##(d) drinking water will be in short supply"
+        },
+        {
+            "input": "Given the question: +What could I use as biofuel. Generate explanation for each choice: \\[##(a) Gold ##(b) Car ##(c) Diamonds ##(d) Pine Needles\\]\n",
+            "output": "##(a) Gold ##(b) Car ##(c) Diamonds ##(d) Pine Needles"
+        },
+        {
+            "input": "Given the question: +Which animal is hiding from a predator?. Generate explanation for each choice: \\[##(a) a tadpole losing its tail as it grows ##(b) an angler fish using its Esca to lure another fish ##(c) an octopus mimicking the color and texture of a rocky outcrop ##(d) a great white shark breaching the water's surface\\]\n",
+            "output": "##(a) a tadpole losing its tail as it grows ##(b) an angler fish using its Esca to lure another fish ##(c) an octopus mimicking the color and texture of a rocky outcrop ##(d) a great white shark breaching the water's surface"
+        },
+        {
+            "input": "Given the question: +Which best demonstrates the concept of force causing an increase in speed?. Generate explanation for each choice: \\[##(a) skating on a rough surface ##(b) a full bag swung in circles ##(c) a computer powering on ##(d) a baker stirring batter\\]\n",
+            "output": "##(a) skating on a rough surface ##(b) a full bag swung in circles ##(c) a computer powering on ##(d) a baker stirring batter"
+        },
+        {
+            "input": "Given the question: +the night sky shows very far away what. Generate explanation for each choice: \\[##(a) clumps of flaming gas ##(b) tidal waves washing over beaches ##(c) aircraft falling towards collision ##(d) party balloons tied to houses\\]\n",
+            "output": "##(a) clumps of flaming gas ##(b) tidal waves washing over beaches ##(c) aircraft falling towards collision ##(d) party balloons tied to houses"
+        },
+        {
+            "input": "Given the question: +Which would you likely find inside a beach ball?. Generate explanation for each choice: \\[##(a) cheese ##(b) steam ##(c) water ##(d) air\\]\n",
+            "output": "##(a) cheese ##(b) steam ##(c) water ##(d) air"
+        },
+        {
+            "input": "Given the question: +Two fridge decorations when touched back to back. Generate explanation for each choice: \\[##(a) shove each other away ##(b) are attracted to each other ##(c) have very little reaction ##(d) are reflective when together\\]\n",
+            "output": "##(a) shove each other away ##(b) are attracted to each other ##(c) have very little reaction ##(d) are reflective when together"
+        },
+        {
+            "input": "Given the question: +Runoff happens because of. Generate explanation for each choice: \\[##(a) birds ##(b) cattails ##(c) people ##(d) fish\\]\n",
+            "output": "##(a) birds ##(b) cattails ##(c) people ##(d) fish"
+        },
+        {
+            "input": "Given the question: +Desert environments are generally. Generate explanation for each choice: \\[##(a) sweltering ##(b) arctic like ##(c) lush ##(d) frigid\\]\n",
+            "output": "##(a) sweltering ##(b) arctic like ##(c) lush ##(d) frigid"
+        },
+        {
+            "input": "Given the question: +Are deserts characterized by high sunshine?. Generate explanation for each choice: \\[##(a) they get low sunlight ##(b) deserts get surplus sun ##(c) deserts get little sun ##(d) deserts are always cloudy\\]\n",
+            "output": "##(a) they get low sunlight ##(b) deserts get surplus sun ##(c) deserts get little sun ##(d) deserts are always cloudy"
+        },
+        {
+            "input": "Given the question: +Water conservation could be a survival tactic in. Generate explanation for each choice: \\[##(a) The Appalachian Mountains ##(b) New York City ##(c) The Amazon ##(d) The Gobi Desert\\]\n",
+            "output": "##(a) The Appalachian Mountains ##(b) New York City ##(c) The Amazon ##(d) The Gobi Desert"
+        },
+        {
+            "input": "Given the question: +Objects used to hold sheets of paper together are often. Generate explanation for each choice: \\[##(a) large ##(b) wooden ##(c) ferromagnetic ##(d) electronic\\]\n",
+            "output": "##(a) large ##(b) wooden ##(c) ferromagnetic ##(d) electronic"
+        },
+        {
+            "input": "Given the question: +In order for plants and animals to grow, they need to consume food and water for. Generate explanation for each choice: \\[##(a) energy ##(b) fun ##(c) taste ##(d) soil\\]\n",
+            "output": "##(a) energy ##(b) fun ##(c) taste ##(d) soil"
+        },
+        {
+            "input": "Given the question: +A bear cub learns to stay away from unknown bears because. Generate explanation for each choice: \\[##(a) they are much bigger than the cub ##(b) the other bears look like its mother ##(c) their mother teaches them to keep their distance ##(d) the unknown bears look harmless\\]\n",
+            "output": "##(a) they are much bigger than the cub ##(b) the other bears look like its mother ##(c) their mother teaches them to keep their distance ##(d) the unknown bears look harmless"
+        },
+        {
+            "input": "Given the question: +a person driving to work in which of these is most likely to lose control?. Generate explanation for each choice: \\[##(a) a dry cobblestone road ##(b) a sleet covered highway ##(c) a dry paved road ##(d) a dry gravel road\\]\n",
+            "output": "##(a) a dry cobblestone road ##(b) a sleet covered highway ##(c) a dry paved road ##(d) a dry gravel road"
+        },
+        {
+            "input": "Given the question: +The only creature with offspring that is hatched, of these, is the. Generate explanation for each choice: \\[##(a) squirrel ##(b) swallow ##(c) mink ##(d) bat\\]\n",
+            "output": "##(a) squirrel ##(b) swallow ##(c) mink ##(d) bat"
+        },
+        {
+            "input": "Given the question: +What element is prevalent in a plateau?. Generate explanation for each choice: \\[##(a) helium ##(b) krypton ##(c) silicon ##(d) neon\\]\n",
+            "output": "##(a) helium ##(b) krypton ##(c) silicon ##(d) neon"
+        },
+        {
+            "input": "Given the question: +When a city tears down a park in a city, the park. Generate explanation for each choice: \\[##(a) is removed ##(b) is renewed ##(c) is retrieved ##(d) is restored\\]\n",
+            "output": "##(a) is removed ##(b) is renewed ##(c) is retrieved ##(d) is restored"
+        },
+        {
+            "input": "Given the question: +Seeds. Generate explanation for each choice: \\[##(a) are useless shells that need to be discarded ##(b) store extra bits of chlorophyll ##(c) need to be mashed to grow ##(d) aid in feeding what grows from them\\]\n",
+            "output": "##(a) are useless shells that need to be discarded ##(b) store extra bits of chlorophyll ##(c) need to be mashed to grow ##(d) aid in feeding what grows from them"
+        },
+        {
+            "input": "Given the question: +If a grizzly bear eats a salmon, what is the grizzly bear demonstrating?. Generate explanation for each choice: \\[##(a) consumption ##(b) cinematography ##(c) direction ##(d) production\\]\n",
+            "output": "##(a) consumption ##(b) cinematography ##(c) direction ##(d) production"
+        },
+        {
+            "input": "Given the question: +The spring season brings. Generate explanation for each choice: \\[##(a) Bees ##(b) Snow ##(c) More Oxygen ##(d) Dust\\]\n",
+            "output": "##(a) Bees ##(b) Snow ##(c) More Oxygen ##(d) Dust"
+        },
+        {
+            "input": "Given the question: +Kinetic energy can be found in objects that move, such as. Generate explanation for each choice: \\[##(a) flower pots on a wagon ##(b) cars that are in a lot ##(c) kids that are sleeping soundly ##(d) skateboards that are ridden all day\\]\n",
+            "output": "##(a) flower pots on a wagon ##(b) cars that are in a lot ##(c) kids that are sleeping soundly ##(d) skateboards that are ridden all day"
+        },
+        {
+            "input": "Given the question: +which of these is the quickest to go visiting from our world?. Generate explanation for each choice: \\[##(a) none of these ##(b) a trip to mars ##(c) a trip to the moon ##(d) a trip to the northern star\\]\n",
+            "output": "##(a) none of these ##(b) a trip to mars ##(c) a trip to the moon ##(d) a trip to the northern star"
+        },
+        {
+            "input": "Given the question: +Animals died after the removal of a. Generate explanation for each choice: \\[##(a) bush ##(b) street ##(c) house ##(d) city\\]\n",
+            "output": "##(a) bush ##(b) street ##(c) house ##(d) city"
+        },
+        {
+            "input": "Given the question: +If I want to go running at night, what can I use as a reflector?. Generate explanation for each choice: \\[##(a) A black shirt ##(b) Kitchen foil ##(c) Sunglasses ##(d) A megaphone\\]\n",
+            "output": "##(a) A black shirt ##(b) Kitchen foil ##(c) Sunglasses ##(d) A megaphone"
+        },
+        {
+            "input": "Given the question: +the closest star to our planet delivers solar energy to the planet. Generate explanation for each choice: \\[##(a) maybe ##(b) all of these ##(c) this is sure ##(d) this is uncertain\\]\n",
+            "output": "##(a) maybe ##(b) all of these ##(c) this is sure ##(d) this is uncertain"
+        },
+        {
+            "input": "Given the question: +Coal-fire power stations heat coal to incredible temps in order to. Generate explanation for each choice: \\[##(a) produce energy ##(b) use heat energy ##(c) burn energy ##(d) fuel the world\\]\n",
+            "output": "##(a) produce energy ##(b) use heat energy ##(c) burn energy ##(d) fuel the world"
+        },
+        {
+            "input": "Given the question: +Creatures sometimes have barbs on their backs that they use to sting, all of these do, outside of the. Generate explanation for each choice: \\[##(a) wasp ##(b) bee ##(c) scorpion ##(d) butterfly\\]\n",
+            "output": "##(a) wasp ##(b) bee ##(c) scorpion ##(d) butterfly"
+        },
+        {
+            "input": "Given the question: +A renewable resource is. Generate explanation for each choice: \\[##(a) fossil fuel ##(b) turbine produced electricity ##(c) copper ##(d) coal lumps\\]\n",
+            "output": "##(a) fossil fuel ##(b) turbine produced electricity ##(c) copper ##(d) coal lumps"
+        },
+        {
+            "input": "Given the question: +In a hypothetical world, black bears decrease in numbers until there are zero black bears left on this world. The black bear species. Generate explanation for each choice: \\[##(a) would cease existing ##(b) would be troubled ##(c) would be thriving ##(d) would be endangered\\]\n",
+            "output": "##(a) would cease existing ##(b) would be troubled ##(c) would be thriving ##(d) would be endangered"
+        },
+        {
+            "input": "Given the question: +Acid can be used to make a new. Generate explanation for each choice: \\[##(a) light ##(b) substance ##(c) electricity ##(d) sound\\]\n",
+            "output": "##(a) light ##(b) substance ##(c) electricity ##(d) sound"
+        },
+        {
+            "input": "Given the question: +Global warming is lowering the world's amount of. Generate explanation for each choice: \\[##(a) hurricanes ##(b) ocean levels ##(c) carbon dioxide ##(d) ice\\]\n",
+            "output": "##(a) hurricanes ##(b) ocean levels ##(c) carbon dioxide ##(d) ice"
+        },
+        {
+            "input": "Given the question: +Echolocation can't detect an object's. Generate explanation for each choice: \\[##(a) distance ##(b) shape ##(c) size ##(d) temperature\\]\n",
+            "output": "##(a) distance ##(b) shape ##(c) size ##(d) temperature"
+        },
+        {
+            "input": "Given the question: +What material has already broken down?. Generate explanation for each choice: \\[##(a) wood ##(b) glass ##(c) boulders ##(d) sand\\]\n",
+            "output": "##(a) wood ##(b) glass ##(c) boulders ##(d) sand"
+        },
+        {
+            "input": "Given the question: +Which beverage would dissolve solids the best?. Generate explanation for each choice: \\[##(a) A glass of ice-cold water ##(b) A boiling hot mug of tea ##(c) A cup of warm milk ##(d) A room temperature glass of water\\]\n",
+            "output": "##(a) A glass of ice-cold water ##(b) A boiling hot mug of tea ##(c) A cup of warm milk ##(d) A room temperature glass of water"
+        },
+        {
+            "input": "Given the question: +Which animal has live births?. Generate explanation for each choice: \\[##(a) poodle ##(b) hummingbird ##(c) crocodile ##(d) trout\\]\n",
+            "output": "##(a) poodle ##(b) hummingbird ##(c) crocodile ##(d) trout"
+        },
+        {
+            "input": "Given the question: +Quartz crystals are made up of. Generate explanation for each choice: \\[##(a) majic ##(b) hexagons ##(c) octogons ##(d) water\\]\n",
+            "output": "##(a) majic ##(b) hexagons ##(c) octogons ##(d) water"
+        },
+        {
+            "input": "Given the question: +cellular respiration is when energy is produced in a cell by consumption of. Generate explanation for each choice: \\[##(a) water ##(b) nutrients ##(c) mitochondria ##(d) gas\\]\n",
+            "output": "##(a) water ##(b) nutrients ##(c) mitochondria ##(d) gas"
+        },
+        {
+            "input": "Given the question: +Did pasteurization get invented by Thomas Edison?. Generate explanation for each choice: \\[##(a) negative ##(b) positive ##(c) all of these ##(d) maybe it was\\]\n",
+            "output": "##(a) negative ##(b) positive ##(c) all of these ##(d) maybe it was"
+        },
+        {
+            "input": "Given the question: +A glass of water can undergo a chemical change by adding. Generate explanation for each choice: \\[##(a) a cup of salt ##(b) a cup of dirt ##(c) a cup of water ##(d) a cup of ice\\]\n",
+            "output": "##(a) a cup of salt ##(b) a cup of dirt ##(c) a cup of water ##(d) a cup of ice"
+        },
+        {
+            "input": "Given the question: +Water levels may decrease on cloudless days because. Generate explanation for each choice: \\[##(a) water is warmer than the air ##(b) air is warmer than water ##(c) moisture is pulled upwards ##(d) moisture always tries to rise\\]\n",
+            "output": "##(a) water is warmer than the air ##(b) air is warmer than water ##(c) moisture is pulled upwards ##(d) moisture always tries to rise"
+        },
+        {
+            "input": "Given the question: +To change an object's shape. Generate explanation for each choice: \\[##(a) rip off a corner portion ##(b) lay it flat on a table ##(c) color the edges of it ##(d) add a piece of tape to it\\]\n",
+            "output": "##(a) rip off a corner portion ##(b) lay it flat on a table ##(c) color the edges of it ##(d) add a piece of tape to it"
+        },
+        {
+            "input": "Given the question: +Steve was driving on the highway when he rear-ended another car because he didn't see it until he was just a foot away. This could have happened because of. Generate explanation for each choice: \\[##(a) reports of tornadoes in the area ##(b) a dog running across the highway behind Steve's car ##(c) a sudden fog moving into the area ##(d) ice forming on the road\\]\n",
+            "output": "##(a) reports of tornadoes in the area ##(b) a dog running across the highway behind Steve's car ##(c) a sudden fog moving into the area ##(d) ice forming on the road"
+        },
+        {
+            "input": "Given the question: +DNA is a vehicle for passing. Generate explanation for each choice: \\[##(a) clothes types ##(b) school grades ##(c) elbow size ##(d) language and dialect\\]\n",
+            "output": "##(a) clothes types ##(b) school grades ##(c) elbow size ##(d) language and dialect"
+        },
+        {
+            "input": "Given the question: +A beach ball goes from flat to round once you put what inside of it?. Generate explanation for each choice: \\[##(a) food ##(b) sunlight ##(c) gas ##(d) salt\\]\n",
+            "output": "##(a) food ##(b) sunlight ##(c) gas ##(d) salt"
+        },
+        {
+            "input": "Given the question: +In general, how many times per month is there a full moon?. Generate explanation for each choice: \\[##(a) twice ##(b) three times ##(c) once ##(d) four times\\]\n",
+            "output": "##(a) twice ##(b) three times ##(c) once ##(d) four times"
+        },
+        {
+            "input": "Given the question: +What kind of object does light bounce off of?. Generate explanation for each choice: \\[##(a) tadpole ##(b) any object ##(c) item that reflects ##(d) black hole\\]\n",
+            "output": "##(a) tadpole ##(b) any object ##(c) item that reflects ##(d) black hole"
+        },
+        {
+            "input": "Given the question: +The amount of brush in a park has been decreasing. What could be a cause?. Generate explanation for each choice: \\[##(a) the season has been quite dry ##(b) There has been a lot of rain ##(c) snakes shelter under the brush ##(d) People have been walking by the brush on the trails\\]\n",
+            "output": "##(a) the season has been quite dry ##(b) There has been a lot of rain ##(c) snakes shelter under the brush ##(d) People have been walking by the brush on the trails"
+        },
+        {
+            "input": "Given the question: +if a pot on the stove is described as hot, what does this mean?. Generate explanation for each choice: \\[##(a) the body of the pot is of high temperature ##(b) the body of the pot is cold ##(c) all of these ##(d) the body of the pot is wet\\]\n",
+            "output": "##(a) the body of the pot is of high temperature ##(b) the body of the pot is cold ##(c) all of these ##(d) the body of the pot is wet"
+        },
+        {
+            "input": "Given the question: +What animal is more difficult for predators to see in water?. Generate explanation for each choice: \\[##(a) a fish ##(b) a duck ##(c) an octopus ##(d) a crab\\]\n",
+            "output": "##(a) a fish ##(b) a duck ##(c) an octopus ##(d) a crab"
+        },
+        {
+            "input": "Given the question: +A wedge requires. Generate explanation for each choice: \\[##(a) electrical energy ##(b) chemical energy ##(c) mechanical energy ##(d) heat energy\\]\n",
+            "output": "##(a) electrical energy ##(b) chemical energy ##(c) mechanical energy ##(d) heat energy"
+        },
+        {
+            "input": "Given the question: +In solid phase matter has a/an. Generate explanation for each choice: \\[##(a) concrete configuration ##(b) ambiguous form ##(c) shapeless form ##(d) radioactive glow\\]\n",
+            "output": "##(a) concrete configuration ##(b) ambiguous form ##(c) shapeless form ##(d) radioactive glow"
+        },
+        {
+            "input": "Given the question: +A school trip is going to study the coral reef for a class. They want to see how strong coral is, and what species of life live in and around it. Therefore, the class. Generate explanation for each choice: \\[##(a) takes a trip to the desert ##(b) climbs a tall mountain ##(c) travels to the seaside ##(d) visits a remote jungle\\]\n",
+            "output": "##(a) takes a trip to the desert ##(b) climbs a tall mountain ##(c) travels to the seaside ##(d) visits a remote jungle"
+        },
+        {
+            "input": "Given the question: +When ice buildup is on a sidewalk, the ice may be reduced by. Generate explanation for each choice: \\[##(a) adding salt ##(b) adding litter ##(c) adding sand ##(d) adding water\\]\n",
+            "output": "##(a) adding salt ##(b) adding litter ##(c) adding sand ##(d) adding water"
+        },
+        {
+            "input": "Given the question: +The appropriate place to put this item is the recycling bin. Generate explanation for each choice: \\[##(a) used motor oil ##(b) used soda can ##(c) used Styrofoam plates ##(d) left over medicine\\]\n",
+            "output": "##(a) used motor oil ##(b) used soda can ##(c) used Styrofoam plates ##(d) left over medicine"
+        },
+        {
+            "input": "Given the question: +How many times would someone change the page of a calendar in a year?. Generate explanation for each choice: \\[##(a) 13 ##(b) 12 ##(c) 15 ##(d) 14\\]\n",
+            "output": "##(a) 13 ##(b) 12 ##(c) 15 ##(d) 14"
+        },
+        {
+            "input": "Given the question: +A car has the least speed if it. Generate explanation for each choice: \\[##(a) is heavy ##(b) is large ##(c) is turned off ##(d) is small\\]\n",
+            "output": "##(a) is heavy ##(b) is large ##(c) is turned off ##(d) is small"
+        },
+        {
+            "input": "Given the question: +Which musical instrument is the same type as a guitar?. Generate explanation for each choice: \\[##(a) flute ##(b) cello ##(c) drum ##(d) trumpet\\]\n",
+            "output": "##(a) flute ##(b) cello ##(c) drum ##(d) trumpet"
+        },
+        {
+            "input": "Given the question: +The balance result will be number of. Generate explanation for each choice: \\[##(a) kilowatts ##(b) kilobytes ##(c) kilograms ##(d) kilometers\\]\n",
+            "output": "##(a) kilowatts ##(b) kilobytes ##(c) kilograms ##(d) kilometers"
+        },
+        {
+            "input": "Given the question: +Which of these is a place where a human might live?. Generate explanation for each choice: \\[##(a) igloo ##(b) cloud ##(c) Mars ##(d) the Moon\\]\n",
+            "output": "##(a) igloo ##(b) cloud ##(c) Mars ##(d) the Moon"
+        },
+        {
+            "input": "Given the question: +Camouflage is when an organism does what?. Generate explanation for each choice: \\[##(a) reconfigure appearance to blend in ##(b) hides its young to avoid prey ##(c) changes its shape to appear larger ##(d) buries itself to disappear momentarily\\]\n",
+            "output": "##(a) reconfigure appearance to blend in ##(b) hides its young to avoid prey ##(c) changes its shape to appear larger ##(d) buries itself to disappear momentarily"
+        },
+        {
+            "input": "Given the question: +Which of these is required for a plant to enjoy the product of a rain storm?. Generate explanation for each choice: \\[##(a) xylem ##(b) luck ##(c) magic ##(d) dirt\\]\n",
+            "output": "##(a) xylem ##(b) luck ##(c) magic ##(d) dirt"
+        },
+        {
+            "input": "Given the question: +How does a microscope make small things appear?. Generate explanation for each choice: \\[##(a) humongous ##(b) transparent ##(c) discolored ##(d) distorted\\]\n",
+            "output": "##(a) humongous ##(b) transparent ##(c) discolored ##(d) distorted"
+        },
+        {
+            "input": "Given the question: +Water can turn to vapor. Generate explanation for each choice: \\[##(a) when a pot of water is placed on an off stove burner ##(b) when placing water in a freezer ##(c) when boiling eggs on a stove top ##(d) when placed in a room temperature setting\\]\n",
+            "output": "##(a) when a pot of water is placed on an off stove burner ##(b) when placing water in a freezer ##(c) when boiling eggs on a stove top ##(d) when placed in a room temperature setting"
+        },
+        {
+            "input": "Given the question: +An incandescent bulb's filament produces similar light as an LED bulb, but more. Generate explanation for each choice: \\[##(a) white light ##(b) conversion ##(c) heat ##(d) sound\\]\n",
+            "output": "##(a) white light ##(b) conversion ##(c) heat ##(d) sound"
+        },
+        {
+            "input": "Given the question: +A boy at school is waiting desperately for the school day to be over so that he can go home and play video games. He watches the time count down on the clock at the head of the class, counting the. Generate explanation for each choice: \\[##(a) seconds ##(b) days ##(c) weeks ##(d) years\\]\n",
+            "output": "##(a) seconds ##(b) days ##(c) weeks ##(d) years"
+        },
+        {
+            "input": "Given the question: +Camouflage can be used by animals for hunting. Generate explanation for each choice: \\[##(a) water ##(b) trees ##(c) air ##(d) meals\\]\n",
+            "output": "##(a) water ##(b) trees ##(c) air ##(d) meals"
+        },
+        {
+            "input": "Given the question: +Carbohydrates are made of sugar, which means that a diabetic would need to exhibit care in consuming. Generate explanation for each choice: \\[##(a) broccoli ##(b) meat ##(c) celery ##(d) toast\\]\n",
+            "output": "##(a) broccoli ##(b) meat ##(c) celery ##(d) toast"
+        },
+        {
+            "input": "Given the question: +Hand dryers can also be used to. Generate explanation for each choice: \\[##(a) keep cold drinks cool ##(b) dry out clothes after coming in from the rain ##(c) hydrate your face and hands ##(d) make a damp rag damper\\]\n",
+            "output": "##(a) keep cold drinks cool ##(b) dry out clothes after coming in from the rain ##(c) hydrate your face and hands ##(d) make a damp rag damper"
+        },
+        {
+            "input": "Given the question: +Polar bears require. Generate explanation for each choice: \\[##(a) a tropical environment ##(b) a frigid environment ##(c) a tepid environment ##(d) a warm environment\\]\n",
+            "output": "##(a) a tropical environment ##(b) a frigid environment ##(c) a tepid environment ##(d) a warm environment"
+        },
+        {
+            "input": "Given the question: +A measurement of time that is less than a minute is a. Generate explanation for each choice: \\[##(a) day ##(b) minute ##(c) hour ##(d) second\\]\n",
+            "output": "##(a) day ##(b) minute ##(c) hour ##(d) second"
+        },
+        {
+            "input": "Given the question: +What will be more available in an area when rainfall increases?. Generate explanation for each choice: \\[##(a) fire ##(b) air ##(c) dirt ##(d) H2O\\]\n",
+            "output": "##(a) fire ##(b) air ##(c) dirt ##(d) H2O"
+        },
+        {
+            "input": "Given the question: +When does the first quarter phase of the moon occur?. Generate explanation for each choice: \\[##(a) when you cannot see the moon in the sky at night ##(b) after the first phase of the lunar month ##(c) after a blue moon ##(d) during the full moon\\]\n",
+            "output": "##(a) when you cannot see the moon in the sky at night ##(b) after the first phase of the lunar month ##(c) after a blue moon ##(d) during the full moon"
+        },
+        {
+            "input": "Given the question: +An ice cube placed in sunlight will. Generate explanation for each choice: \\[##(a) shrink ##(b) change color ##(c) grow ##(d) freeze\\]\n",
+            "output": "##(a) shrink ##(b) change color ##(c) grow ##(d) freeze"
+        },
+        {
+            "input": "Given the question: +If a person loses his job and is low on money, he will have to start cutting back on how much food he consumes or he'd run out, otherwise known as. Generate explanation for each choice: \\[##(a) destroying ##(b) conserving ##(c) losing ##(d) squandering\\]\n",
+            "output": "##(a) destroying ##(b) conserving ##(c) losing ##(d) squandering"
+        },
+        {
+            "input": "Given the question: +The skeletal system protects which of these?. Generate explanation for each choice: \\[##(a) liver ##(b) eyelashes ##(c) finger nails ##(d) blood vessels\\]\n",
+            "output": "##(a) liver ##(b) eyelashes ##(c) finger nails ##(d) blood vessels"
+        },
+        {
+            "input": "Given the question: +What has more gravity force than Earth but less than the sun?. Generate explanation for each choice: \\[##(a) Jupiter ##(b) the moon ##(c) a space station ##(d) a comet\\]\n",
+            "output": "##(a) Jupiter ##(b) the moon ##(c) a space station ##(d) a comet"
+        },
+        {
+            "input": "Given the question: +The dam was put under much more stress after the. Generate explanation for each choice: \\[##(a) party ##(b) huge rain storm ##(c) drought ##(d) breakup.\\]\n",
+            "output": "##(a) party ##(b) huge rain storm ##(c) drought ##(d) breakup."
+        },
+        {
+            "input": "Given the question: +If photosynthesis was a recipe it would require these ingredients. Generate explanation for each choice: \\[##(a) CO2, water, and argon ##(b) sunlight, oxygen, and fertilizer ##(c) CO2, H20, and cloudy skies ##(d) CO2, H20, and sun rays\\]\n",
+            "output": "##(a) CO2, water, and argon ##(b) sunlight, oxygen, and fertilizer ##(c) CO2, H20, and cloudy skies ##(d) CO2, H20, and sun rays"
+        },
+        {
+            "input": "Given the question: +If a nail is Fe, that nail is. Generate explanation for each choice: \\[##(a) foreign ##(b) atomic 26 ##(c) nickel ##(d) atomic 12\\]\n",
+            "output": "##(a) foreign ##(b) atomic 26 ##(c) nickel ##(d) atomic 12"
+        },
+        {
+            "input": "Given the question: +when a circle is torn it is. Generate explanation for each choice: \\[##(a) doubled ##(b) changed ##(c) a smaller circle ##(d) a square\\]\n",
+            "output": "##(a) doubled ##(b) changed ##(c) a smaller circle ##(d) a square"
+        },
+        {
+            "input": "Given the question: +Wind can cause. Generate explanation for each choice: \\[##(a) leaves to remain on branches ##(b) trees to stand perfectly still ##(c) dunes at the beach to be depleted ##(d) still waters on the ocean\\]\n",
+            "output": "##(a) leaves to remain on branches ##(b) trees to stand perfectly still ##(c) dunes at the beach to be depleted ##(d) still waters on the ocean"
+        },
+        {
+            "input": "Given the question: +What happens as water levels rise?. Generate explanation for each choice: \\[##(a) fish swim more ##(b) homes are built ##(c) land is taller ##(d) beaches shrink\\]\n",
+            "output": "##(a) fish swim more ##(b) homes are built ##(c) land is taller ##(d) beaches shrink"
+        },
+        {
+            "input": "Given the question: +An increase in an object's temperature occurs when. Generate explanation for each choice: \\[##(a) an orange is placed in a refrigerator ##(b) a steak is removed from the freezer to defrost ##(c) a glass of water is moved from counter top to dinner table ##(d) an ice tray is placed in a freezer\\]\n",
+            "output": "##(a) an orange is placed in a refrigerator ##(b) a steak is removed from the freezer to defrost ##(c) a glass of water is moved from counter top to dinner table ##(d) an ice tray is placed in a freezer"
+        },
+        {
+            "input": "Given the question: +A sousaphone. Generate explanation for each choice: \\[##(a) is ancient ##(b) is a frog ##(c) makes deep noises ##(d) is a smartphone\\]\n",
+            "output": "##(a) is ancient ##(b) is a frog ##(c) makes deep noises ##(d) is a smartphone"
+        },
+        {
+            "input": "Given the question: +A cooked lobster is. Generate explanation for each choice: \\[##(a) inedible ##(b) cold ##(c) dead ##(d) green\\]\n",
+            "output": "##(a) inedible ##(b) cold ##(c) dead ##(d) green"
+        },
+        {
+            "input": "Given the question: +An animal might pant. Generate explanation for each choice: \\[##(a) on a sunny day ##(b) during a rain storm ##(c) when it is snowing ##(d) during the night time\\]\n",
+            "output": "##(a) on a sunny day ##(b) during a rain storm ##(c) when it is snowing ##(d) during the night time"
+        },
+        {
+            "input": "Given the question: +Carnivores. Generate explanation for each choice: \\[##(a) eat foliage and vegetables exclusively ##(b) are the bottom of the food chain ##(c) require prey to survive ##(d) require carbon dioxide to survive\\]\n",
+            "output": "##(a) eat foliage and vegetables exclusively ##(b) are the bottom of the food chain ##(c) require prey to survive ##(d) require carbon dioxide to survive"
+        },
+        {
+            "input": "Given the question: +The light that appears dimmest is. Generate explanation for each choice: \\[##(a) the light in the hall ##(b) a light in the room ##(c) a star outside the window ##(d) a streetlight outside the window\\]\n",
+            "output": "##(a) the light in the hall ##(b) a light in the room ##(c) a star outside the window ##(d) a streetlight outside the window"
+        },
+        {
+            "input": "Given the question: +A plant will grow strong if it has. Generate explanation for each choice: \\[##(a) love ##(b) heat ##(c) earth ##(d) sand\\]\n",
+            "output": "##(a) love ##(b) heat ##(c) earth ##(d) sand"
+        },
+        {
+            "input": "Given the question: +loose soil can be caused by one of these. Generate explanation for each choice: \\[##(a) a koala sitting on a tree ##(b) none of these ##(c) a worm burrowing through the earth ##(d) a bird flying through the air\\]\n",
+            "output": "##(a) a koala sitting on a tree ##(b) none of these ##(c) a worm burrowing through the earth ##(d) a bird flying through the air"
+        },
+        {
+            "input": "Given the question: +An instinctual behavior is. Generate explanation for each choice: \\[##(a) dogs rolling over on command ##(b) frogs returning to the ponds were they hatched to lay eggs ##(c) birds mimicking human speech ##(d) seals clapping for treats from trainers\\]\n",
+            "output": "##(a) dogs rolling over on command ##(b) frogs returning to the ponds were they hatched to lay eggs ##(c) birds mimicking human speech ##(d) seals clapping for treats from trainers"
+        },
+        {
+            "input": "Given the question: +How do plants reproduce?. Generate explanation for each choice: \\[##(a) seeds ##(b) stem ##(c) flowers ##(d) leaves\\]\n",
+            "output": "##(a) seeds ##(b) stem ##(c) flowers ##(d) leaves"
+        },
+        {
+            "input": "Given the question: +What produce pollen and seeds?. Generate explanation for each choice: \\[##(a) lakes that are frozen over ##(b) things you give a loved one in a bouquet ##(c) various types of animals ##(d) a person that is healthy\\]\n",
+            "output": "##(a) lakes that are frozen over ##(b) things you give a loved one in a bouquet ##(c) various types of animals ##(d) a person that is healthy"
+        },
+        {
+            "input": "Given the question: +which of these would be most ideal for plant root growth?. Generate explanation for each choice: \\[##(a) a sticky clay soil ##(b) soil with worms burrowing around ##(c) an arid soil with little looseness ##(d) all of these\\]\n",
+            "output": "##(a) a sticky clay soil ##(b) soil with worms burrowing around ##(c) an arid soil with little looseness ##(d) all of these"
+        },
+        {
+            "input": "Given the question: +Having a sense of touch means. Generate explanation for each choice: \\[##(a) I am the water ##(b) I am a tree ##(c) I am an Ant ##(d) I am the Air\\]\n",
+            "output": "##(a) I am the water ##(b) I am a tree ##(c) I am an Ant ##(d) I am the Air"
+        },
+        {
+            "input": "Given the question: +Live birth is exemplified in. Generate explanation for each choice: \\[##(a) snakes slithering out of eggs ##(b) a calf emerging from a mother giraffe ##(c) owlets pecking out of their encasement ##(d) sea turtles emerging from their shells\\]\n",
+            "output": "##(a) snakes slithering out of eggs ##(b) a calf emerging from a mother giraffe ##(c) owlets pecking out of their encasement ##(d) sea turtles emerging from their shells"
+        },
+        {
+            "input": "Given the question: +Cooking peas requires. Generate explanation for each choice: \\[##(a) fresh briny sea water ##(b) an unheated stove top ##(c) salt and cayenne pepper ##(d) turning on a stove top\\]\n",
+            "output": "##(a) fresh briny sea water ##(b) an unheated stove top ##(c) salt and cayenne pepper ##(d) turning on a stove top"
+        },
+        {
+            "input": "Given the question: +Earth revolves around. Generate explanation for each choice: \\[##(a) the moon ##(b) outer space ##(c) another planet ##(d) an energy source\\]\n",
+            "output": "##(a) the moon ##(b) outer space ##(c) another planet ##(d) an energy source"
+        },
+        {
+            "input": "Given the question: +A satellite orbits a. Generate explanation for each choice: \\[##(a) empty space ##(b) ocean ##(c) terrestrial body ##(d) air pocket\\]\n",
+            "output": "##(a) empty space ##(b) ocean ##(c) terrestrial body ##(d) air pocket"
+        },
+        {
+            "input": "Given the question: +Will happen to the number of islands if the planet's temperature rises?. Generate explanation for each choice: \\[##(a) they will increase ##(b) nothing will happen ##(c) they will shrink ##(d) they will double\\]\n",
+            "output": "##(a) they will increase ##(b) nothing will happen ##(c) they will shrink ##(d) they will double"
+        },
+        {
+            "input": "Given the question: +There is a heightened threat of landslide in. Generate explanation for each choice: \\[##(a) the desert ##(b) The Andes ##(c) the ocean ##(d) Indiana\\]\n",
+            "output": "##(a) the desert ##(b) The Andes ##(c) the ocean ##(d) Indiana"
+        },
+        {
+            "input": "Given the question: +An example of water being an electrical conductor would be what?. Generate explanation for each choice: \\[##(a) lightening hitting water and organisms inside dying ##(b) standing in a puddle and avoiding being struck by lightening ##(c) standing in a field and getting struck by lightening ##(d) grabbing a fence and being shocked\\]\n",
+            "output": "##(a) lightening hitting water and organisms inside dying ##(b) standing in a puddle and avoiding being struck by lightening ##(c) standing in a field and getting struck by lightening ##(d) grabbing a fence and being shocked"
+        },
+        {
+            "input": "Given the question: +What would Occur once between January 1st and December 31st. Generate explanation for each choice: \\[##(a) The moons orbit around the year ##(b) One rotation on mercury ##(c) The distance between earth and Jupiter when traveling at light speed ##(d) A Solar Year on earth\\]\n",
+            "output": "##(a) The moons orbit around the year ##(b) One rotation on mercury ##(c) The distance between earth and Jupiter when traveling at light speed ##(d) A Solar Year on earth"
+        },
+        {
+            "input": "Given the question: +Burning something that reproduces usually will:. Generate explanation for each choice: \\[##(a) impair its well being in some way ##(b) weed out weaker members of the species ##(c) speed up its biological functions ##(d) increase its population growth\\]\n",
+            "output": "##(a) impair its well being in some way ##(b) weed out weaker members of the species ##(c) speed up its biological functions ##(d) increase its population growth"
+        },
+        {
+            "input": "Given the question: +what does a chipmunk do with acorns. Generate explanation for each choice: \\[##(a) throw them at other chipmunks ##(b) leave them where they're found ##(c) use them to build shelter ##(d) transfer them to the stomach\\]\n",
+            "output": "##(a) throw them at other chipmunks ##(b) leave them where they're found ##(c) use them to build shelter ##(d) transfer them to the stomach"
+        },
+        {
+            "input": "Given the question: +A pot of pasta is boiling on the stove, and the lid on top of the pot is shaking as the water boils more rapidly. A person goes to the stove and removes the pot, releasing steam into the air above, and so the steam is. Generate explanation for each choice: \\[##(a) cold air ##(b) water vapor ##(c) very dry ##(d) boiling water\\]\n",
+            "output": "##(a) cold air ##(b) water vapor ##(c) very dry ##(d) boiling water"
+        },
+        {
+            "input": "Given the question: +A plant that gets extra minerals such as zinc are probably. Generate explanation for each choice: \\[##(a) planted in zinc pills ##(b) plated in the sea ##(c) placed in good soil ##(d) made out of soil\\]\n",
+            "output": "##(a) planted in zinc pills ##(b) plated in the sea ##(c) placed in good soil ##(d) made out of soil"
+        },
+        {
+            "input": "Given the question: +Which item has a higher altitude?. Generate explanation for each choice: \\[##(a) Tile Floor ##(b) Cars ##(c) A 6'' Man ##(d) A Picture Book\\]\n",
+            "output": "##(a) Tile Floor ##(b) Cars ##(c) A 6'' Man ##(d) A Picture Book"
+        },
+        {
+            "input": "Given the question: +if a student wants an orange, he would have to get it from which of these?. Generate explanation for each choice: \\[##(a) from a live cow ##(b) from a live plant ##(c) from a volcano cave ##(d) from a wild dog\\]\n",
+            "output": "##(a) from a live cow ##(b) from a live plant ##(c) from a volcano cave ##(d) from a wild dog"
+        },
+        {
+            "input": "Given the question: +What could have covered an organism in order to create a trilobite?. Generate explanation for each choice: \\[##(a) Grass ##(b) Water ##(c) Snow ##(d) Sand\\]\n",
+            "output": "##(a) Grass ##(b) Water ##(c) Snow ##(d) Sand"
+        },
+        {
+            "input": "Given the question: +A dog is more likely to shiver at. Generate explanation for each choice: \\[##(a) 1 pm ##(b) 5 am ##(c) 9 am ##(d) 6 pm\\]\n",
+            "output": "##(a) 1 pm ##(b) 5 am ##(c) 9 am ##(d) 6 pm"
+        },
+        {
+            "input": "Given the question: +Photosynthesis does what by converting carbon dioxide, water, and sunlight into carbohydrates?. Generate explanation for each choice: \\[##(a) nourishes small protein bits that need to eat with tiny shakes ##(b) providing nourishment which enables some growth to vegetation ##(c) mixes carbs into soluble plant matter ##(d) makes good vegetable protein\\]\n",
+            "output": "##(a) nourishes small protein bits that need to eat with tiny shakes ##(b) providing nourishment which enables some growth to vegetation ##(c) mixes carbs into soluble plant matter ##(d) makes good vegetable protein"
+        },
+        {
+            "input": "Given the question: +where might a bunny live?. Generate explanation for each choice: \\[##(a) a thicket ##(b) atop palm trees ##(c) a sewer system ##(d) a deserted island\\]\n",
+            "output": "##(a) a thicket ##(b) atop palm trees ##(c) a sewer system ##(d) a deserted island"
+        },
+        {
+            "input": "Given the question: +A shark will be unable to survive on eating algae and moss, because. Generate explanation for each choice: \\[##(a) it is a predator ##(b) it is a vegetarian ##(c) it is a freshwater fish ##(d) it is a producer\\]\n",
+            "output": "##(a) it is a predator ##(b) it is a vegetarian ##(c) it is a freshwater fish ##(d) it is a producer"
+        },
+        {
+            "input": "Given the question: +A meadow vole just gave birth, and needs to feed herself so that she can produce milk for her babies. She searches for food in a field, and happily munches down on some. Generate explanation for each choice: \\[##(a) oil ##(b) deer ##(c) bugs ##(d) recycled plastic fruit\\]\n",
+            "output": "##(a) oil ##(b) deer ##(c) bugs ##(d) recycled plastic fruit"
+        },
+        {
+            "input": "Given the question: +The Grand Canyon was formed by. Generate explanation for each choice: \\[##(a) a volcano erupting in 1782 ##(b) a river named after the 20th state to join the union flowing over time ##(c) a river named after the 38th state to join the union flowing over time ##(d) the Great Lakes drying up\\]\n",
+            "output": "##(a) a volcano erupting in 1782 ##(b) a river named after the 20th state to join the union flowing over time ##(c) a river named after the 38th state to join the union flowing over time ##(d) the Great Lakes drying up"
+        },
+        {
+            "input": "Given the question: +A woman, with a pale complexion, wants to spend the bright, sunny day at the beach. She makes sure that she stops at the store to pick up some sunblock before she begins to enjoy her day filled with sand and surf. She applies the sunblock carefully and thoroughly, because she knows that. Generate explanation for each choice: \\[##(a) UV rays are harmful ##(b) sunlight will be fun ##(c) the sun is close ##(d) the sun is in space\\]\n",
+            "output": "##(a) UV rays are harmful ##(b) sunlight will be fun ##(c) the sun is close ##(d) the sun is in space"
+        },
+        {
+            "input": "Given the question: +A person is heating water in order to cook pasta. He spills the pot of water on his leg and finds that the water. Generate explanation for each choice: \\[##(a) scalds ##(b) cools ##(c) toasts ##(d) freezes\\]\n",
+            "output": "##(a) scalds ##(b) cools ##(c) toasts ##(d) freezes"
+        },
+        {
+            "input": "Given the question: +Pasta may be cooked in water when. Generate explanation for each choice: \\[##(a) the water is warm ##(b) the water is on the stove ##(c) water is bubbling from applied warmth ##(d) the pasta is very fresh\\]\n",
+            "output": "##(a) the water is warm ##(b) the water is on the stove ##(c) water is bubbling from applied warmth ##(d) the pasta is very fresh"
+        },
+        {
+            "input": "Given the question: +A decrease in diseases. Generate explanation for each choice: \\[##(a) has no impact on a population ##(b) leads to more sick people ##(c) leads to less sick people ##(d) leads to an uptick in emergency room visits\\]\n",
+            "output": "##(a) has no impact on a population ##(b) leads to more sick people ##(c) leads to less sick people ##(d) leads to an uptick in emergency room visits"
+        },
+        {
+            "input": "Given the question: +When soil is viewed in a scientific way, what is seen and viewed is actually. Generate explanation for each choice: \\[##(a) insects like big beetles ##(b) tiny lifeforms in dirt ##(c) small mammals living there ##(d) a lot of tiny pebbles\\]\n",
+            "output": "##(a) insects like big beetles ##(b) tiny lifeforms in dirt ##(c) small mammals living there ##(d) a lot of tiny pebbles"
+        },
+        {
+            "input": "Given the question: +Some animals use a liquid coming from their skin to adjust to. Generate explanation for each choice: \\[##(a) cold ##(b) water ##(c) heat ##(d) humidity\\]\n",
+            "output": "##(a) cold ##(b) water ##(c) heat ##(d) humidity"
+        }
+    ]
+}

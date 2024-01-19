@@ -582,7 +582,7 @@ class EvaluatorArguments:
         default="accuracy",
         metadata={
             "help": "the metric the model will be evaluated on",
-            "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood"],
+            "choices": ["ppl", "perplexity", "acc", "accuracy", "nll", "neg_log_likelihood", "ent", "entropy", "ndcg"],
         },
     )
     inference_batch_size_per_device: Optional[int] = field(
@@ -636,6 +636,9 @@ class InferencerArguments:
         
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
+
+    output_result_path: str
+        Output path for the inferenced text generation results
     """
     device: str = field(
         default="gpu",
@@ -697,6 +700,18 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
+    output_result_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Output saving path for the inferenced text generation results"
+            )
+        },
+    )
+    use_accelerator_for_evaluator: bool = field(
+        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
+    )
+
 
 @dataclass
 class RaftAlignerArguments(TrainingArguments):

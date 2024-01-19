@@ -28,6 +28,7 @@ def rstrip_partial_utf8(string):
 
 supported_dataset_type = [
     "text_only",
+    "text2text",
     "image_text",
 ]
 
@@ -89,6 +90,9 @@ class Inferencer(BasePipeline):
         if dataset.get_type() == "text_only":
             data_dict = dataset.to_dict()
             inputs = [instance["text"] for instance in data_dict["instances"] ]
+        elif dataset.get_type() == "text2text":
+            data_dict = dataset.to_dict()
+            inputs = [instance["input"] for instance in data_dict["instances"] ]
         elif dataset.get_type() == "image_text":
             inputs = dataset.to_list()
 
@@ -116,6 +120,7 @@ class Inferencer(BasePipeline):
         temperature: float=0.0,
         prompt_structure: str='{input}',
         remove_image_flag: bool=False,
+        verbose: bool=True,
     ):
         """
         Perform inference for a model
@@ -139,12 +144,19 @@ class Inferencer(BasePipeline):
         dataloader, data_size = self.create_dataloader(dataset)
 
         # The output dataset
-        output_dict = {
-            "type": "text_only",
-            "instances": [
-            ]
-        }
-
+        if dataset.get_type() == "text_only":
+            output_dict = {
+                "type": "text_only",
+                "instances": [
+                ]
+            }
+        elif dataset.get_type() == "text2text":
+            output_dict = {
+                "type": "text2text",
+                "instances": [
+                ]
+            }
+        num_samples = len(dataloader)
         for batch_index, batch in enumerate(dataloader):
             current_batch = batch[0]        # batch size is 1
             if isinstance(current_batch['input'], str):
@@ -152,8 +164,9 @@ class Inferencer(BasePipeline):
             else:
                 input = current_batch['input']
                 input['text'] = prompt_structure.format(input=input['text'])
-
-            if 'images' in input and isinstance(input['images'], list):
+            # print("input")
+            # print(input)
+            if remove_image_flag and 'images' in input and isinstance(input['images'], list):
                 input['images'] = np.array(input['images'])
 
             if remove_image_flag:
@@ -195,6 +208,7 @@ class Inferencer(BasePipeline):
 
             outputs = model.inference(
                 inputs,
+                use_accelerator=self.inferencer_args.use_accelerator_for_evaluator,
                 max_new_tokens=max_new_tokens,
                 temperature=self.inferencer_args.temperature,
                 repetition_penalty=self.inferencer_args.repetition_penalty,
@@ -214,12 +228,22 @@ class Inferencer(BasePipeline):
                 prompt_length = len(model.decode(input_text, skip_special_tokens=True,))
                 text_out = text_out[prompt_length:]
 
-            output_dict["instances"].append({ "text": text_out })
+            if dataset.get_type() == "text_only":
+                output_dict["instances"].append({ "text": text_out })
+            elif dataset.get_type() == "text2text":
+                text_in = current_batch['input']
+                output_dict["instances"].append({ "input":text_in,"output": text_out })
+
+            if verbose:
+                print(
+                    f"Generating text response:"
+                    f" {batch_index + 1} / {num_samples} Complete,"
+                )
 
         output_dataset = Dataset(DatasetArguments(dataset_path = None))
         output_dataset = output_dataset.from_dict(output_dict)
 
-        return output_dataset
+        return output_dataset, output_dict
     
     def stream_inference(
         self,

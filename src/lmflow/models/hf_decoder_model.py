@@ -138,9 +138,9 @@ class HFDecoderModel(DecoderModel, Tunable):
         
         try:
             if model_args.tokenizer_name:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs)
+                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name,  trust_remote_code=True, **tokenizer_kwargs)
             elif model_args.model_name_or_path:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, **tokenizer_kwargs)
+                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, trust_remote_code=True, **tokenizer_kwargs)
             else:
                 raise ValueError(
                     "You are instantiating a new tokenizer from scratch. This is"
@@ -155,11 +155,13 @@ class HFDecoderModel(DecoderModel, Tunable):
                 tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, unk_token="<unk>",
                                                     bos_token="<s>",
                                                     eos_token="</s>",
+                                                    trust_remote_code=True, 
                                                     **tokenizer_kwargs)
             elif model_args.model_name_or_path:
                 tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, unk_token="<unk>",
                                                     bos_token="<s>",
                                                     eos_token="</s>",
+                                                    trust_remote_code=True, 
                                                     **tokenizer_kwargs)
             else:
                 raise ValueError(
@@ -183,9 +185,9 @@ class HFDecoderModel(DecoderModel, Tunable):
             "use_auth_token": True if model_args.use_auth_token else None,
         }
         if model_args.config_name:
-            config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
+            config = AutoConfig.from_pretrained(model_args.config_name, trust_remote_code=True, **config_kwargs)
         elif model_args.model_name_or_path:
-            config = AutoConfig.from_pretrained(model_args.model_name_or_path, **config_kwargs)
+            config = AutoConfig.from_pretrained(model_args.model_name_or_path, trust_remote_code=True, **config_kwargs)
         else:
             config = CONFIG_MAPPING[model_args.model_type]()
             logger.warning("You are instantiating a new config instance from scratch.")
@@ -261,6 +263,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     revision=model_args.model_revision,
                     use_auth_token=True if model_args.use_auth_token else None,
                     torch_dtype=torch_dtype,
+                    trust_remote_code=True, 
                 )
             else:
                 model = AutoModelForCausalLM.from_config(config)
@@ -306,6 +309,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         offload_folder="offload",
                         offload_state_dict=True,
                         torch_dtype=torch_dtype,
+                        trust_remote_code=True, 
                         load_in_8bit = model_args.use_int8
                     )
                 if peft_model_id is not None:
@@ -335,6 +339,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                             offload_folder="offload",
                             offload_state_dict=True,
                             torch_dtype=torch_dtype,
+                            trust_remote_code=True, 
                         )
                     except:
                         logger.warning(
@@ -346,6 +351,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                             model_args.model_name_or_path,
                             config=config,
                             torch_dtype=torch_dtype,
+                            trust_remote_code=True, 
                         )
                 else:
                     if peft_model_id is not None:
@@ -357,6 +363,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         model_args.model_name_or_path,
                         config=config,
                         torch_dtype=torch_dtype,
+                        trust_remote_code=True, 
                     )
 
                 self.backend_model_full = self.backend_model

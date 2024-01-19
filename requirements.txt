@@ -6,14 +6,14 @@ wandb==0.14.0
 deepspeed==0.8.3
 trl @ git+https://github.com/lvwerra/trl.git#egg=trl-0.4.1
 sentencepiece
-transformers @ git+https://github.com/huggingface/transformers@c612628045822f909020f7eb6784c79700813eda
+# transformers @ git+https://github.com/huggingface/transformers@c612628045822f909020f7eb6784c79700813eda
 flask
 flask_cors
 icetk
 cpm_kernels==1.0.11
 evaluate==0.4.0
 scikit-learn==1.2.2
-lm-eval @ git+https://github.com/EleutherAI/lm-evaluation-harness.git@e47e01beea79cfe87421e2dac49e64d499c240b4
+# lm-eval @ git+https://github.com/EleutherAI/lm-evaluation-harness.git@e47e01beea79cfe87421e2dac49e64d499c240b4
 dill<0.3.5
 bitsandbytes==0.38.1
 pydantic<=1.10.9

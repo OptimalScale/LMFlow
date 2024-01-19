@@ -53,12 +53,58 @@ LOCAL_DATSET_MAP ={
     "lmflow_chat_cn_dialog_multiturn_single_nll_text2text":"data/lmflow_chat_cn_dialog_multiturn_single_nll_text2text",
     "lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp":"data/lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp",
     "lmflow_chat_en_dialog_multiturn_single_nll_text2text":"data/lmflow_chat_en_dialog_multiturn_single_nll_text2text",
+    "arc_c_prompt_text2text":"data/commonsense_eval/arc_c_prompt_text2text",
+    "arc_c_prompt_text2text_":"data/commonsense_eval/arc_c_prompt_text2text_",
+    "arc_c_prompt_text_only":"data/commonsense_eval/arc_c_prompt_text_only",
+    "arc_e_prompt_text2text":"data/commonsense_eval/arc_e_prompt_text2text",
+    "arc_e_prompt_text2text_":"data/commonsense_eval/arc_e_prompt_text2text_",
+    "arc_e_prompt_text_only":"data/commonsense_eval/arc_e_prompt_text_only",
+    "piqa_prompt_text2text":"data/commonsense_eval/piqa_prompt_text2text",
+    "piqa_prompt_text2text_":"data/commonsense_eval/piqa_prompt_text2text_",
+    "piqa_prompt_text_only":"data/commonsense_eval/piqa_prompt_text_only",
+    "hellaswag_prompt_text2text":"data/commonsense_eval/hellaswag_prompt_text2text",
+    "hellaswag_prompt_text2text_":"data/commonsense_eval/hellaswag_prompt_text2text_",
+    "hellaswag_prompt_text_only":"data/commonsense_eval/hellaswag_prompt_text_only",
+    "boolq_prompt_text2text":"data/commonsense_eval/boolq_prompt_text2text",
+    "boolq_prompt_text2text_":"data/commonsense_eval/boolq_prompt_text2text_",
+    "boolq_prompt_text_only":"data/commonsense_eval/boolq_prompt_text_only",
+    "obqa_prompt_text2text":"data/commonsense_eval/obqa_prompt_text2text",
+    "obqa_prompt_text2text_":"data/commonsense_eval/obqa_prompt_text2text_",
+    "obqa_prompt_text_only":"data/commonsense_eval/obqa_prompt_text_only",
+    "winogrande_prompt_text2text":"data/commonsense_eval/winogrande_prompt_text2text",
+    "winogrande_prompt_text2text_":"data/commonsense_eval/winogrande_prompt_text2text_",
+    "winogrande_prompt_text_only":"data/commonsense_eval/winogrande_prompt_text_only",
+    "lmflow_chat_en_half_multi":"data/commonsense_eval/lmflow_chat_half_multi",
+    "lmflow_chat_en_half_single":"data/commonsense_eval/lmflow_chat_half_single",
+    "lmflow_chat_en_sample20_multi":"data/commonsense_eval/lmflow_chat_sample20_multi",
+    "lmflow_chat_en_sample20_single":"data/commonsense_eval/lmflow_chat_sample20_single",
+    "lmflow_chat_en_sample10_multi":"data/commonsense_eval/lmflow_chat_sample10_multi",
+    "lmflow_chat_en_sample10_single":"data/commonsense_eval/lmflow_chat_sample10_single",
+    'mmlu_text2text':'data/commonsense_eval/mmlu_text2text',
+    'mmlu_textonly':'data/commonsense_eval/mmlu_textonly',
+    'crows_pairs_textonly':'data/commonsense_eval/crows_pairs_textonly',
+    "headqa_prompt_text2text":"data/commonsense_eval/headqa_prompt_text2text",
+    "logiqa_prompt_text2text":"data/commonsense_eval/logiqa_prompt_text2text",
+    "race_prompt_text2text":"data/commonsense_eval/race_prompt_text2text",
+    "sciq_prompt_text2text":"data/commonsense_eval/sciq_prompt_text2text",
+    "webqs_prompt_text2text":"data/commonsense_eval/webqs_prompt_text2text",
+    "coqa_prompt_text2text":"data/commonsense_eval/coqa_prompt_text2text",
+    "drop_prompt_text2text":"data/commonsense_eval/drop_prompt_text2text",
+    "mctaco_prompt_text2text":"data/commonsense_eval/mctaco_prompt_text2text",
 }
 
 LM_EVAL_DATASET_MAP={
     "commonsense_qa_eval":"openbookqa,arc_easy,winogrande,hellaswag,arc_challenge,piqa,boolq",
+    "commonsense_qa_eval_5":"openbookqa,arc_easy,arc_challenge,piqa,boolq",
     "math_eval":"gsm8k",
     'boolq':"boolq",
+    'mmlu':"helm_hendrycksTest-*",
+    'truthfulqa':"truthfulqa_mc",
+    'crows_pairs':"crows_pairs_english",
+    'mmlu_crows':"helm_hendrycksTest-*,crows_pairs_english",
+    "add_cs":"sciq,race,webqs,logiqa,headqa",
+    "emnlp_cs":"drop,mc_taco,coqa",
+    "mmlu-anatomy":"hendrycksTest-anatomy"
 }
 
 
@@ -66,6 +112,17 @@ LOCAL_DATSET_GROUP_MAP={
     "commonsense_nll_eval":"common_sense_eval_arc_c,common_sense_eval_arc_e,common_sense_eval_winogrande,\
     common_sense_eval_obqa,common_sense_eval_piqa,common_sense_eval_hellaswag,common_sense_eval_siqa,\
     common_sense_eval_boolq",
+    "common_sense_prompt":"arc_c_prompt_text2text,arc_c_prompt_text_only,arc_e_prompt_text2text,arc_e_prompt_text_only,piqa_prompt_text2text,piqa_prompt_text_only",
+    "common_sense_eval_arc_c":"common_sense_eval_arc_c,common_sense_eval_arc_e",
+    "commonsense_fix":"arc_c_prompt_text2text,arc_c_prompt_text_only,arc_e_prompt_text2text,arc_e_prompt_text_only,piqa_prompt_text2text,piqa_prompt_text_only,\
+    hellaswag_prompt_text2text,hellaswag_prompt_text_only,boolq_prompt_text2text,boolq_prompt_text_only,obqa_prompt_text2text,obqa_prompt_text_only,\
+    winogrande_prompt_text2text,winogrande_prompt_text_only",
+    "commonsense_fix_abcd_prompt":"arc_c_prompt_text2text,arc_e_prompt_text2text,piqa_prompt_text2text,\
+    hellaswag_prompt_text2text,boolq_prompt_text2text,obqa_prompt_text2text,\
+    winogrande_prompt_text2text",
+    "commonsense_fix_abcd_prompt_complete":"boolq_prompt_text2text_,obqa_prompt_text2text_,\
+    winogrande_prompt_text2text_",
+    "commonsense_fix_abcd_prompt_complete_2":"piqa_prompt_text2text_,hellaswag_prompt_text2text_",
     "gpt4_en_eval":"gpt4_en_eval",
     "gpt4_zh_eval":"gpt4_zh_eval",
     "wiki_zh_eval":"wiki_zh_eval",
@@ -77,9 +134,29 @@ LOCAL_DATSET_GROUP_MAP={
     common_sense_eval_boolq,gpt4_en_eval,gpt4_zh_eval,wiki_zh_eval,wiki_en_eval,\
     lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_cn_dialog_multiturn_single_nll_text2text,\
     lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_en_dialog_multiturn_single_nll_text2text",
+    "nocs_nll_eval":"gpt4_en_eval,gpt4_zh_eval,wiki_zh_eval,wiki_en_eval,\
+    lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_cn_dialog_multiturn_single_nll_text2text,\
+    lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_en_dialog_multiturn_single_nll_text2text",
     "lmflow_chat_nll_eval":"lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_cn_dialog_multiturn_single_nll_text2text,\
     lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_en_dialog_multiturn_single_nll_text2text",
     "lmflow_chat_zh_nll_eval":"lmflow_chat_cn_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_cn_dialog_multiturn_single_nll_text2text",
+    "all_cs_nll_eval":"common_sense_eval_arc_c,common_sense_eval_arc_e,common_sense_eval_winogrande,\
+    common_sense_eval_obqa,common_sense_eval_piqa,common_sense_eval_hellaswag,common_sense_eval_siqa,common_sense_eval_boolq",\
+    "lmflow_chat_nll_eval_sample":"lmflow_chat_en_half_multi,lmflow_chat_en_half_single,lmflow_chat_en_sample20_multi,\
+    lmflow_chat_en_sample20_single,lmflow_chat_en_sample10_multi,lmflow_chat_en_sample10_single",\
+    "all_nll_eval":"common_sense_eval_arc_c,common_sense_eval_arc_e,common_sense_eval_winogrande,\
+    common_sense_eval_obqa,common_sense_eval_piqa,common_sense_eval_hellaswag,\
+    common_sense_eval_boolq,gpt4_en_eval,wiki_en_eval,\
+    lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_en_dialog_multiturn_single_nll_text2text",\
+    "test_nll_gpt4_wiki":"gpt4_en_eval,wiki_en_eval",
+    "mmlu_crows_nll":"mmlu_text2text,mmlu_textonly,crows_pairs_textonly",
+    "add_cs_nll":"headqa_prompt_text2text,logiqa_prompt_text2text,race_prompt_text2text,sciq_prompt_text2text,webqs_prompt_text2text",
+    "emnlp_cs_nll":"coqa_prompt_text2text,drop_prompt_text2text,mctaco_prompt_text2text",
+    "all_nll_eval_text2text":"arc_c_prompt_text2text,arc_e_prompt_text2text,winogrande_prompt_text2text,\
+    obqa_prompt_text2text,piqa_prompt_text2text,hellaswag_prompt_text2text,\
+    boolq_prompt_text2text,gpt4_en_eval,wiki_en_eval,\
+    lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_en_dialog_multiturn_single_nll_text2text",\
+    "lmflow_inst_dialog":"lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp,lmflow_chat_en_dialog_multiturn_single_nll_text2text,gpt4_en_eval",
 }
 
 LOCAL_DATSET_ANSWERTYPE_MAP={
@@ -104,6 +181,50 @@ LOCAL_DATSET_ANSWERTYPE_MAP={
     "lmflow_chat_cn_dialog_multiturn_single_nll_text2text":"text2text",
     "lmflow_chat_en_dialog_multiturn_nll_text2text_nosharp":"text2text",
     "lmflow_chat_en_dialog_multiturn_single_nll_text2text":"text2text",
+    "arc_c_prompt_text2text":"text2text",
+    "arc_c_prompt_text_only":"text_only",
+    "arc_e_prompt_text2text":"text2text",
+    "arc_e_prompt_text_only":"text_only",
+    "piqa_prompt_text2text":"text2text",
+    "piqa_prompt_text_only":"text_only",
+    "hellaswag_prompt_text2text":"text2text",
+    "hellaswag_prompt_text_only":"text_only",
+    "boolq_prompt_text2text":"text2text",
+    "boolq_prompt_text_only":"text_only",
+    "obqa_prompt_text2text":"text2text",
+    "obqa_prompt_text_only":"text_only",
+    "arc_c_prompt_text2text_":"text2text",
+    "arc_e_prompt_text2text_":"text2text",
+    "piqa_prompt_text2text_":"text2text",
+    "hellaswag_prompt_text2text_":"text2text",
+    "boolq_prompt_text2text_":"text2text",
+    "obqa_prompt_text2text_":"text2text",
+    "winogrande_prompt_text2text_":"text2text",
+    "winogrande_prompt_text2text":"text2text",
+    "lmflow_chat_en_half_multi":"text2text",
+    "lmflow_chat_en_half_single":"text2text",
+    "lmflow_chat_en_sample20_multi":"text2text",
+    "lmflow_chat_en_sample20_single":"text2text",
+    "lmflow_chat_en_sample10_multi":"text2text",
+    "lmflow_chat_en_sample10_single":"text2text",
+    'mmlu_text2text':'text2text',
+    'mmlu_textonly':'text_only',
+    'crows_pairs_textonly':'text_only',
+    "headqa_prompt_text2text":"text2text",
+    "logiqa_prompt_text2text":"text2text",
+    "race_prompt_text2text":"text2text",
+    "sciq_prompt_text2text":"text2text",
+    "webqs_prompt_text2text":"text2text",
+    "coqa_prompt_text2text":"text2text",
+    "drop_prompt_text2text":"text2text",
+    "mctaco_prompt_text2text":"text2text",
+}
+
+LM_EVAL_FEW_SHOT={
+    "arc_easy":25,
+    "winogrande":5,
+    "hellaswag":10,
+    "arc_challenge":25,
 }
 
     
@@ -170,7 +291,8 @@ def run_lmflow_local_benchmarking(dataset_name,pipeline_name,model_args, \
         # 1. When --metric is not specified, or "accuracy", log warning and change to
         #    the dataset_name's default metric
         # 2. If specified, use the specified metric
-        result = evaluator.evaluate(model=model, dataset=dataset, metric=local_metric,verbose=True)
+        # result = evaluator.evaluate(model=model, dataset=dataset, metric=local_metric,verbose=True,entropy_n=pipeline_args.entropy_n)
+        result = evaluator.evaluate(model=model, dataset=dataset, metric=pipeline_args.metric,verbose=True)
         reuslt_collection.append({"dataset":dataset_name_,"result":result})
     for record in reuslt_collection:
         print("-"*30)
@@ -187,10 +309,25 @@ def run_lm_evaluation_benchmarking(dataset_name,model_name):
     # "--tasks", "openbookqa,arc_easy,winogrande,hellaswag,arc_challenge,piqa,boolq"
     # "--device", "cuda:0"])
     dataset = LM_EVAL_DATASET_MAP[dataset_name]
-    subprocess.run(["python3", "utils/lm_evaluator.py", "--model", "hf-causal-experimental", 
-    "--model_args", "pretrained="+model_name,
-    "--tasks", dataset,
-    "--device", "cuda:0"])
+    num_fewshot = 0
+    new_tasks = []
+    no_few_tasks = []
+    for task in dataset.split(','):
+        if task in LM_EVAL_FEW_SHOT.keys():
+            new_tasks.append(task)
+        else:
+            no_few_tasks.append(task)
+    new_tasks.append(','.join(no_few_tasks))
+    for dataset in new_tasks:
+        if dataset in LM_EVAL_FEW_SHOT.keys():
+            num_fewshot = LM_EVAL_FEW_SHOT[dataset]
+        else:
+            num_fewshot = 0
+        subprocess.run(["python3", "utils/lm_evaluator.py", "--model", "hf-causal-experimental", 
+        "--model_args", "trust_remote_code=True,pretrained="+model_name,
+        "--tasks", dataset,
+        "--num_fewshot",str(num_fewshot),
+        "--device", "cuda:0"])
 
 def main():
     # Parses arguments (self-defined for our evaluation platform)
@@ -214,7 +351,7 @@ def main():
     dataset_name = benchmarking_args.dataset_name
     # metric = pipeline_args.metric
     if is_lmflow_local_benchmarking(dataset_name):   # TODO (@Jipeng)
-        model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config)
+        model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config, use_accelerator=pipeline_args.use_accelerator_for_evaluator)
         run_lmflow_local_benchmarking(dataset_name,pipeline_name,model_args,pipeline_args,model)  # Pass args TODO (@Jipeng)
     elif is_lm_evaluation_benchmarking(dataset_name):
         model = model_args.model_name_or_path

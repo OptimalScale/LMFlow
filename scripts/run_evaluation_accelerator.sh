@@ -4,9 +4,9 @@ if [ ! -d data/MedQA-USMLE ]; then
   cd data && ./download.sh MedQA-USMLE && cd -
 fi
 
-CUDA_VISIBLE_DEVICES=0 accelerate launch --config_file configs/accelerator_singlegpu_config.yaml examples/evaluation.py \
+CUDA_VISIBLE_DEVICES=0,1 accelerate launch --config_file configs/accelerator_multigpu_config.yaml examples/evaluation.py \
     --answer_type usmle \
-    --model_name_or_path gpt2-large \
+    --model_name_or_path pinkmanlove/llama-33b-hf \
     --dataset_path data/MedQA-USMLE/validation \
     --use_ram_optimized_load True \
     --deepspeed examples/ds_config.json \
