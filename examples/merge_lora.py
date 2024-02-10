@@ -39,7 +39,7 @@ def main():
         model_args, merge_lora_args = parser.parse_args_into_dataclasses()
 
     model_args.use_lora = True
-    model = AutoModel.get_model(model_args)
+    model = AutoModel.get_model(model_args, tune_strategy='none')
     model.merge_lora_weights()
     model.save(merge_lora_args.output_model_path, save_full_model=True)
 
