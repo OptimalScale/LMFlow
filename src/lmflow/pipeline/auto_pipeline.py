@@ -2,19 +2,31 @@
 # coding=utf-8
 """Return a pipeline automatically based on its name.
 """
+import pkg_resources
+
+def is_package_version_at_least(package_name, min_version):
+    try:
+        package_version = pkg_resources.get_distribution(package_name).version
+        if (pkg_resources.parse_version(package_version)
+                < pkg_resources.parse_version(min_version)):
+            return False
+    except pkg_resources.DistributionNotFound:
+        return False
+    return True
 
 from lmflow.pipeline.evaluator import Evaluator
 from lmflow.pipeline.finetuner import Finetuner
 from lmflow.pipeline.inferencer import Inferencer
-from lmflow.pipeline.raft_aligner import RaftAligner
-
 
 PIPELINE_MAPPING = {
     "evaluator": Evaluator,
     "finetuner": Finetuner,
     "inferencer": Inferencer,
-    "raft_aligner": RaftAligner,
 }
+
+if not is_package_version_at_least('transformers', '4.35.0'):
+    from lmflow.pipeline.raft_aligner import RaftAligner
+    PIPELINE_MAPPING['raft_aligner'] = RaftAligner
 
 
 class AutoPipeline:
