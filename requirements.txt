@@ -1,13 +1,13 @@
 numpy==1.24.2
 datasets==2.14.6
-tokenizers==0.13.3
+tokenizers>=0.13.3
 peft==0.4.0
 torch>=2.0.1
 wandb==0.14.0
 deepspeed==0.10.0
 trl==0.5.0
 sentencepiece
-transformers>=4.31.0,<4.35.0
+transformers>=4.31.0
 flask
 flask_cors
 icetk
@@ -19,6 +19,6 @@ dill<0.3.5
 bitsandbytes>=0.40.0
 pydantic<=1.10.9
 gradio
-accelerate>=0.21.0
+accelerate>=0.27.2
 einops>=0.6.1
 scikit-learn==1.2.2
