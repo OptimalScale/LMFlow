@@ -552,6 +552,24 @@ class FinetunerArguments(TrainingArguments):
             "help": "whether to save language projection layer in multi-modal models."
         }
     )
+    use_lisa: bool = field(
+        default=False,
+        metadata={
+            "help": "whether to use LISA training strategy."
+        }
+    )
+    lisa_activated_layers: int = field(
+        default=2,
+        metadata={
+            "help": "the number of activated layers in LISA."
+        }
+    )
+    lisa_step_interval: int = field(
+        default=20,
+        metadata={
+            "help": "the interval of LISA."
+        }
+    )
 
 
 @dataclass

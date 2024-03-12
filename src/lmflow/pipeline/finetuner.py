@@ -20,7 +20,12 @@ from transformers import (
 from copy import deepcopy
 from transformers.utils import send_example_telemetry
 from transformers.trainer_utils import get_last_checkpoint
-
+from transformers.trainer_callback import (
+    TrainerCallback,
+    TrainerControl,
+    TrainerState,
+)
+import numpy as np
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
@@ -291,6 +296,59 @@ class Finetuner(BaseTuner):
             trainer_callbacks = []
         if data_collator is None:
             data_collator = default_data_collator
+
+        if training_args.use_lisa:
+            class DynamicLayerActivationCallback(TrainerCallback):
+                def __init__(self, n_layers, step_interval, model):
+                    super().__init__()
+                    self.n_layers = n_layers
+                    self.step_interval = step_interval
+                    self.model = model
+                    # Determine the way to access layers based on the model type
+                    if self.model.__class__.__name__ == 'LlamaForCausalLM':
+                        self.layers_attribute = 'model.model.layers'  # Layer access path for LlamaForCausalLM
+                    else:
+                        self.layers_attribute = 'model.transformer.h'  # General access path
+                    self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
+
+                    # Freeze all layers upon initialization
+                    self.freeze_all_layers()
+                    self.active_layers_indices = []
+
+                def freeze_all_layers(self):
+                    layers = eval('self.' + self.layers_attribute)  # Dynamically execute to get layers
+                    for layer in layers:
+                        for param in layer.parameters():
+                            param.requires_grad = False
+
+                def on_step_begin(self, args, state, control, **kwargs):
+                    # Check if it's time to switch active layers, including at step 0
+                    if state.global_step % self.step_interval == 0 or state.global_step == 1:
+                        self.switch_active_layers()
+
+                def switch_active_layers(self):
+                    # First, disable gradients for all layers
+                    self.freeze_all_layers()
+
+                    # Randomly select n_layers to activate
+                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
+                    print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.")
+
+                    # Enable gradients only for the selected layers
+                    for idx in self.active_layers_indices:
+                        for param in layers[idx].parameters():
+                            param.requires_grad = True
+
+            # Instantiate the callback
+            dynamic_layer_activation_callback = DynamicLayerActivationCallback(
+                n_layers=training_args.lisa_activated_layers,                     # Number of layers to activate
+                step_interval=training_args.lisa_step_interval,               # Step interval to update active layers
+                model=model.get_backend_model()
+            )
+
+            trainer_callbacks.append(dynamic_layer_activation_callback)
+
         trainer = FinetuningTrainer(
             model=model.get_backend_model(),
             args=training_args,
