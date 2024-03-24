@@ -38,6 +38,12 @@ class ChatbotArguments:
             "help": "end string mark of the chatbot's output"
         },
     )
+    num_token_per_step: int = field(
+        default=4,
+        metadata={
+            "help": "Number of tokens per step for stream inference"
+        },
+    )
 
 def main():
     pipeline_name = "inferencer"
@@ -121,7 +127,7 @@ def main():
         print("Bot: ", end="")
         print_index = 0
 
-        token_per_step = 100
+        token_per_step = chatbot_args.num_token_per_step
 
         for response, flag_break in inferencer.stream_inference(
             context=context,
