@@ -752,7 +752,7 @@ class InferencerArguments:
     
     temperature : float
         An argument of model.generate in huggingface to control the diversity of generation.
-        length 
+        
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
     """
