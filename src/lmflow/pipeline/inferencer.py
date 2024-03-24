@@ -17,6 +17,7 @@ from typing import Dict, List
 from concurrent.futures import ThreadPoolExecutor
 import subprocess
 
+from accelerate import Accelerator
 from transformers import AutoConfig
 import torch.distributed as dist
 import torch.nn.functional as F
@@ -81,6 +82,10 @@ class Inferencer(BasePipeline):
         except:
             print("Error in setting hidden size, use the default size 1024")
             self.model_hidden_size = 1024 # gpt2 seems do not have hidden_size in config
+
+        if inferencer_args.use_accelerator:
+            self.accelerator = Accelerator()
+            self.accelerator.wait_for_everyone()
 
 
     def create_dataloader(self, dataset: Dataset):
@@ -162,7 +167,7 @@ class Inferencer(BasePipeline):
                 input = current_batch['input']
                 input['text'] = prompt_structure.format(input=input['text'])
 
-            if 'images' in input and isinstance(input['images'], list):
+            if False and 'images' in input and isinstance(input['images'], list):
                 input['images'] = np.array(input['images'])
             if remove_image_flag:
                 # remove the image flag <ImageHere> in tokenization;
@@ -220,17 +225,33 @@ class Inferencer(BasePipeline):
                     raise NotImplementedError(
                         f"device \"{self.inferencer_args.device}\" is not supported"
                     )
+
+                if self.inferencer_args.use_accelerator:
+                    inputs = inputs.to(self.accelerator.device)
+
+
             if remove_image_flag:
                 inputs["image_token_indexes"] = image_token_indexes
                 inputs["one_sample_multiple_images"] = True
 
-            outputs = model.inference(
-                inputs,
-                max_new_tokens=max_new_tokens,
-                temperature=self.inferencer_args.temperature,
-                repetition_penalty=self.inferencer_args.repetition_penalty,
-                do_sample=self.inferencer_args.do_sample,
-            )
+            if self.inferencer_args.use_accelerator:
+                with self.accelerator.autocast():
+                    outputs = model.inference(
+                        inputs,
+                        max_new_tokens=max_new_tokens,
+                        temperature=self.inferencer_args.temperature,
+                        repetition_penalty=self.inferencer_args.repetition_penalty,
+                        do_sample=self.inferencer_args.do_sample,
+                        use_accelerator=True,
+                    )
+            else:
+                outputs = model.inference(
+                    inputs,
+                    max_new_tokens=max_new_tokens,
+                    temperature=self.inferencer_args.temperature,
+                    repetition_penalty=self.inferencer_args.repetition_penalty,
+                    do_sample=self.inferencer_args.do_sample,
+                )
 
             # only return the generation, trucating the input
             if self.model_args.arch_type != "vision_encoder_decoder":

@@ -290,7 +290,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                         revision=model_args.model_revision,
                         use_auth_token=True if model_args.use_auth_token else None,
                         torch_dtype=torch_dtype,
-                        device_map=device_map,
                         trust_remote_code = model_args.trust_remote_code,
                     )
                 #for deepspeed zero3, we don't need to specify device_map

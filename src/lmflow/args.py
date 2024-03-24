@@ -752,7 +752,7 @@ class InferencerArguments:
     
     temperature : float
         An argument of model.generate in huggingface to control the diversity of generation.
-        
+        length 
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
     """
@@ -783,7 +783,7 @@ class InferencerArguments:
         default=100,
         metadata={"help": "Maximum length during inference."},
     )
-        
+
     random_seed: Optional[int] = field(
         default=1,
         metadata={
@@ -816,6 +816,10 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
+    use_accelerator: bool = field(
+        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
+    )
+
 
 @dataclass
 class RaftAlignerArguments(TrainingArguments):
