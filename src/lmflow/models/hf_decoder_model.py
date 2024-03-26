@@ -83,8 +83,13 @@ try:
             "A40": ["LlamaForCausalLM","GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
             "A6000": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
         }
-except:
-    pass
+except Exception as e:
+    if e.__class__ == ModuleNotFoundError:
+        logger.warning(
+            "flash_attn is not installed. Install flash_attn for better performance."
+        )
+    else:
+        raise e
 
 class HFDecoderModel(DecoderModel, Tunable):
     r"""
