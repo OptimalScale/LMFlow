@@ -4,7 +4,7 @@
 #     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
 
 # Parses arguments
-model_name_or_path=gpt2
+model_name_or_path=meta-llama/Llama-2-7b-hf
 dataset_path=data/alpaca/train
 output_dir=output_models/finetune
 deepspeed_args="--master_port=11000"
@@ -41,12 +41,12 @@ project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
 
-deepspeed ${deepspeed_args} \
+deepspeed --include localhost:6 --master_port 11111 ${deepspeed_args} \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 0.01 \
+    --num_train_epochs 0.001 \
     --learning_rate 2e-5 \
     --block_size 512 \
     --per_device_train_batch_size 1 \
@@ -56,6 +56,7 @@ deepspeed ${deepspeed_args} \
     --validation_split_percentage 0 \
     --logging_steps 20 \
     --do_train \
+    --use_flash_attention False \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
