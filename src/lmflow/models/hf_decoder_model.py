@@ -89,7 +89,7 @@ except Exception as e:
             "flash_attn is not installed. Install flash_attn for better performance."
         )
     else:
-        raise e
+        logger.warning(f'An error occurred when importing flash_attn, flash attention is disabled: {e}')
 
 class HFDecoderModel(DecoderModel, Tunable):
     r"""
