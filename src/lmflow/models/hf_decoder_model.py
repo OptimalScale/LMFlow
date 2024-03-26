@@ -83,8 +83,14 @@ try:
             "A40": ["LlamaForCausalLM","GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
             "A6000": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
         }
-except:
-    pass
+except Exception as e:
+    if e.__class__ == ModuleNotFoundError:
+        logger.warning(
+            "flash_attn is not installed. Install flash_attn for better performance."
+        )
+    else:
+        raise e
+
 
 class HFDecoderModel(DecoderModel, Tunable):
     r"""
@@ -235,6 +241,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                 supported_models = GPU_SUPPORT_FLASH_ATTENTION[supported_gpu_device]
                 
                 config.use_cache = False
+                print(config.architectures)
+                print(supported_models)
                 if "LlamaForCausalLM" in config.architectures and "LlamaForCausalLM" in supported_models:
                     from lmflow.utils.flash_attention.llama_flash_attention import (
                         replace_llama_attn_with_flash_attn,
