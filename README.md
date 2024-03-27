@@ -31,7 +31,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 
 ## Latest News
-* [2024-03-27] :rocket: Support [LISA](https://arxiv.org/abs/2403.17919) memory-efficient training, enabling 7B training in 24G memory without offloading :rocket:
+* [2024-03-27] :rocket: Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! :rocket:
 * [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
 * [2023-08-14] Support long context inference with position interpolation (Linear & NTK scaling ) for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 * [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
@@ -112,7 +112,7 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Finetuning (LISA)
-[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm allows tradeoff between memory and number of randomly unfreezed layers.
+[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm allows tradeoff between memory and the number of randomly unfreezed layers.
 ```sh
 cd data && ./download.sh alpaca && cd -
 
