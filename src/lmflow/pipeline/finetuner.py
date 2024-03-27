@@ -299,10 +299,10 @@ class Finetuner(BaseTuner):
 
         if training_args.use_lisa:
             class DynamicLayerActivationCallback(TrainerCallback):
-                def __init__(self, n_layers, interval_steps, model):
+                def __init__(self, n_layers, step_interval, model):
                     super().__init__()
                     self.n_layers = n_layers
-                    self.interval_steps = interval_steps
+                    self.step_interval = step_interval
                     self.model = model
                     # Determine the way to access layers based on the model type
                     if self.model.__class__.__name__ == 'LlamaForCausalLM':
@@ -312,7 +312,8 @@ class Finetuner(BaseTuner):
                     self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
 
                     # Freeze all layers upon initialization
-                    self.freeze_all_layers()
+                    # self.freeze_all_layers()
+                    self.switch_active_layers()
                     self.active_layers_indices = []
 
                 def freeze_all_layers(self):
@@ -323,7 +324,7 @@ class Finetuner(BaseTuner):
 
                 def on_step_begin(self, args, state, control, **kwargs):
                     # Check if it's time to switch active layers, including at step 0
-                    if state.global_step % self.interval_steps == 0 or state.global_step == 1:
+                    if state.global_step % self.step_interval == 0 :
                         self.switch_active_layers()
 
                 def switch_active_layers(self):
@@ -332,7 +333,8 @@ class Finetuner(BaseTuner):
 
                     # Randomly select n_layers to activate
                     layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
+                    # self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
+                    self.active_layers_indices = [20,13]
                     print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.")
 
                     # Enable gradients only for the selected layers
