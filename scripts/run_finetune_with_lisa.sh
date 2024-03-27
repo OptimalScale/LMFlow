@@ -60,7 +60,7 @@ deepspeed ${deepspeed_args} \
     --learning_rate 2e-5 \
     --block_size 512 \
     --per_device_train_batch_size 1 \
-    --deepspeed configs/ds_config_zero2_no_offload.json \
+    --deepspeed configs/ds_config_zero0_no_offload.json \
     --fp16 \
     --run_name finetune \
     --validation_split_percentage 0 \
