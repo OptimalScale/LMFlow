@@ -60,23 +60,21 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 ## Table of Contents
 
 
-* [Quick Start](#quick-start)
-  * [Setup](#setup)
-  * [Prepare Dataset](#prepare-dataset)
-  * [Finetuning](#finetuning-full)
-  * [Inference](#inference)
-  * [Deployment](#deployment)
-  * [Evaluation](#evaluation)
-* [Supported Features](#supported-features)
-  * [Finetune Acceleration & Memory Optimization](#supported-features)
-  * [Inference Acceleration](#supported-features)
-  * [Long Context](#supported-features)
-  * [Model Customization](#supported-features)
-  * [Multimodal](#supported-features)
-
-* [Support](#support)
-* [License](#license)
-* [Citation](#citation)
+- [LMFlow](#lmflow)
+  - [Latest News](#latest-news)
+  - [Table of Contents](#table-of-contents)
+  - [Quick Start](#quick-start)
+    - [Setup](#setup)
+    - [Prepare Dataset](#prepare-dataset)
+    - [Finetuning (Full)](#finetuning-full)
+    - [Finetuning (LoRA)](#finetuning-lora)
+    - [Inference](#inference)
+    - [Deployment](#deployment)
+    - [Evaluation](#evaluation)
+  - [Supported Features](#supported-features)
+  - [Support](#support)
+  - [License](#license)
+  - [Citation](#citation)
 
 ## Quick Start
 
@@ -164,6 +162,11 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 ## Supported Features
 
 <details> <summary>Finetune Acceleration & Memory Optimization</summary>
+
+* LISA: Layerwise Importance Sampling for Memory-Efficient Large Language Model Fine-Tuning
+  
+  LISA is a novel and memory-efficient training strategy for large language models that outperforms existing methods like LoRA by selectively freezing layers during optimization. Check out [LISA](https://arxiv.org/abs/2403.17919) for more details.  
+  In LMFLow, activate LISA using `--use_lisa 1` in your training command. Control the number of activation layers with `--lisa_activated_layers 2`, and adjust the freezing layers interval using `--lisa_step_interval 20`. 
 
 * LoRA
   
