@@ -331,8 +331,7 @@ class Finetuner(BaseTuner):
 
                     # Randomly select n_layers to activate
                     layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    # self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
-                    self.active_layers_indices = [20,13]
+                    self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
                     print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.")
 
                     # Enable gradients only for the selected layers
