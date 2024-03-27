@@ -31,17 +31,19 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 
 ## Latest News
-* [2023-09-11] :rocket: Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details. :rocket: 
+* [2024-03-27] :rocket: Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! :rocket:
+* [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
 * [2023-08-14] Support long context inference with position interpolation (Linear & NTK scaling ) for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 * [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 * [2023-08-02] Support [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), and [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) models.
+
+<details> <summary>More news...</summary>
+
 * [2023-07-23] [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh) is now available! Support multimodal inputs of images and texts. [Online Demo](http://multimodal.lmflow.online) is also provided (We hold the service on a single GPU, hence one may experience "queuing" or "application busy" sometimes when multiple users are accessing at the same time, please wait and attempt again later when such event happens)![image](https://github.com/OptimalScale/LMFlow/blob/rpan-vision-encoder/assets/multimodal-chatbot-demo.gif)
 * [2023-06-22]  [LMFlow paper](https://arxiv.org/abs/2306.12420) is out! Check out our implementation details at https://arxiv.org/abs/2306.12420
 * [2023-06-16] Our finetuned Robin-33B-V2 scored an impressive 64.1 on the Huggingface LLM leaderboard in our offline evaluation, outperforming major open-source LLMs! All checkpoints (7B, 13B, 33B, and 65B) are [released](https://huggingface.co/OptimalScale)! Checkout the performance [here](https://medium.com/@hkust.ml/robin-v2-launches-achieves-unparalleled-performance-on-openllm-4f6886e822c1).
 * [2023-06-07] LMFlow is now officially available on PyPI! Install it with `pip install lmflow-finetune`!
 * [2023-05-30] Release [Robin-13B-v2](https://huggingface.co/OptimalScale/robin-13b-v2-delta) and [Robin-33B-v2](https://huggingface.co/OptimalScale/robin-33b-v2-delta)!
-
-<details> <summary>More news...</summary>
 
 * [2023-05-15] Release [LMFlow-data](http://lmflow.org:5000/lmflow_data.tar.gz), the training dataset of Robin-7B-v2. A new [test data](http://lmflow.org:5000/lmflow_chat_en_dialog_multiturn_single_nll_text2text.tar.gz) is also released.
 * [2023-05-09] Release [Robin-7B-v2](http://lmflow.org:5000/robin-7b-v2-delta.tar.gz), achieving competitive performance on chitchat, commonsense reasoning and instruction-following tasks. Refer to our [comprehensive study](https://medium.com/@hkust.ml/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418).
@@ -107,6 +109,18 @@ cd data && ./download.sh alpaca && cd -
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train \
   --output_model_path output_models/finetuned_gpt2
+```
+
+### Finetuning (LISA)
+[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm allows tradeoff between memory and the number of randomly unfreezed layers.
+```sh
+cd data && ./download.sh alpaca && cd -
+
+./scripts/run_finetune_with_lisa.sh \
+  --model_name_or_path meta-llama/Llama-2-7b-hf \
+  --dataset_path data/alpaca/train \
+  --output_model_path output_models/finetuned_llama \
+  --lisa_activated_layers 1
 ```
 
 ### Finetuning (LoRA)
