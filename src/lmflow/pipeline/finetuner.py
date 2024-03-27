@@ -299,10 +299,10 @@ class Finetuner(BaseTuner):
 
         if training_args.use_lisa:
             class DynamicLayerActivationCallback(TrainerCallback):
-                def __init__(self, n_layers, step_interval, model):
+                def __init__(self, n_layers, interval_steps, model):
                     super().__init__()
                     self.n_layers = n_layers
-                    self.step_interval = step_interval
+                    self.interval_steps = interval_steps
                     self.model = model
                     # Determine the way to access layers based on the model type
                     if self.model.__class__.__name__ == 'LlamaForCausalLM':
@@ -322,7 +322,7 @@ class Finetuner(BaseTuner):
 
                 def on_step_begin(self, args, state, control, **kwargs):
                     # Check if it's time to switch active layers, including at step 0
-                    if state.global_step % self.step_interval == 0 :
+                    if state.global_step % self.interval_steps == 0 :
                         self.switch_active_layers()
 
                 def switch_active_layers(self):
