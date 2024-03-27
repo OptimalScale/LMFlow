@@ -7,6 +7,8 @@
 model_name_or_path=meta-llama/Llama-2-7b-hf
 dataset_path=data/alpaca/train
 output_dir=output_models/finetune_lisa
+lisa_activated_layers=1
+lisa_interval_steps=20
 deepspeed_args="--master_port=11000"
 
 while [[ $# -ge 1 ]]; do
@@ -26,6 +28,14 @@ while [[ $# -ge 1 ]]; do
       ;;
     --deepspeed_args)
       deepspeed_args="$2"
+      shift
+      ;;
+    --lisa_activated_layers)
+      lisa_activated_layers="$2"
+      shift
+      ;;
+    --lisa_interval_steps)
+      lisa_interval_steps="$2"
       shift
       ;;
     *)
@@ -61,7 +71,7 @@ deepspeed ${deepspeed_args} \
     --dataloader_num_workers 1 \
     --gradient_checkpointing True \
     --use_lisa 1 \
-    --lisa_activated_layers 1 \
-    --lisa_step_interval 20 \
+    --lisa_activated_layers ${lisa_activated_layers} \
+    --lisa_interval_steps ${lisa_interval_steps} \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
