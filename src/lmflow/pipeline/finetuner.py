@@ -311,8 +311,6 @@ class Finetuner(BaseTuner):
                         self.layers_attribute = 'model.transformer.h'  # General access path
                     self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
 
-                    # Freeze all layers upon initialization
-                    # self.freeze_all_layers()
                     self.switch_active_layers()
                     self.active_layers_indices = []
 
