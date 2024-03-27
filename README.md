@@ -119,7 +119,8 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
   --dataset_path data/alpaca/train \
-  --output_model_path output_models/finetuned_llama
+  --output_model_path output_models/finetuned_llama \
+  --lisa_activated_layers 1
 ```
 
 ### Finetuning (LoRA)
