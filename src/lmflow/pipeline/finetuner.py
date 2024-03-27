@@ -311,8 +311,7 @@ class Finetuner(BaseTuner):
                         self.layers_attribute = 'model.transformer.h'  # General access path
                     self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
 
-                    # Freeze all layers upon initialization
-                    self.freeze_all_layers()
+                    self.switch_active_layers()
                     self.active_layers_indices = []
 
                 def freeze_all_layers(self):
@@ -323,7 +322,7 @@ class Finetuner(BaseTuner):
 
                 def on_step_begin(self, args, state, control, **kwargs):
                     # Check if it's time to switch active layers, including at step 0
-                    if state.global_step % self.interval_steps == 0 or state.global_step == 1:
+                    if state.global_step % self.interval_steps == 0 :
                         self.switch_active_layers()
 
                 def switch_active_layers(self):
