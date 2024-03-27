@@ -112,7 +112,7 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Finetuning (LISA)
-[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm allows tradeoff between memory and the number of randomly unfreezed layers.
+[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers.
 ```sh
 cd data && ./download.sh alpaca && cd -
 
