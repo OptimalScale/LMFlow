@@ -8,6 +8,7 @@ jobs:
       - uses: actions/setup-python@v3
       - name: Install current pkg
         run: |
+          pip install setuptools
           pip install -e .
       - name: Install dependencies
         run: |
