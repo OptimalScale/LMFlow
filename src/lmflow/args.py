@@ -489,7 +489,7 @@ class DatasetArguments:
     )
     test_file: Optional[str] = field(
         default=None,
-        metadata={"help": "Evaluation File Path "},
+        metadata={"help": "Evaluation File Path"},
     )
 
     def __post_init__(self):
@@ -564,10 +564,10 @@ class FinetunerArguments(TrainingArguments):
             "help": "the number of activated layers in LISA."
         }
     )
-    lisa_interval_steps: int = field(
+    lisa_step_interval: int = field(
         default=20,
         metadata={
-            "help": "the number of steps in each freezing interval of LISA, i.e. the selected unfreezed layers are randomly switched every {lisa_interval_steps} steps."
+            "help": "the interval of LISA."
         }
     )
 
