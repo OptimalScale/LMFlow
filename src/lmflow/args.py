@@ -571,10 +571,10 @@ class FinetunerArguments(TrainingArguments):
             "help": "the number of activated layers in LISA."
         }
     )
-    lisa_step_interval: int = field(
+    lisa_interval_steps: int = field(
         default=20,
         metadata={
-            "help": "the interval of LISA."
+            "help": "the number of steps in each freezing interval of LISA, i.e. the selected unfreezed layers are randomly switched every {lisa_interval_steps} steps."
         }
     )
 

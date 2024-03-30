@@ -4,10 +4,19 @@
 #     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
 
 # Parses arguments
-model_name_or_path=gpt2
+model_name_or_path=meta-llama/Llama-2-7b-hf
 dataset_path=data/alpaca/train
-output_dir=output_models/finetune
+output_dir=output_models/finetune_lisa
+lisa_activated_layers=1
+lisa_interval_steps=20
 deepspeed_args="--master_port=11000"
+
+# Other optional arguments that can improve memory saving
+gradient_checkpointing=True
+ds_config_file="configs/ds_config_zero2_no_offload.json"
+use_flash_attention=0
+gradient_accumulation_steps=1
+block_size=512
 
 while [[ $# -ge 1 ]]; do
   key="$1"
@@ -28,6 +37,34 @@ while [[ $# -ge 1 ]]; do
       deepspeed_args="$2"
       shift
       ;;
+    --lisa_activated_layers)
+      lisa_activated_layers="$2"
+      shift
+      ;;
+    --lisa_interval_steps)
+      lisa_interval_steps="$2"
+      shift
+      ;;
+    --gradient_checkpointing)
+      gradient_checkpointing="$2"
+      shift
+      ;;
+    --deepspeed)
+      ds_config_file="$2"
+      shift
+      ;;
+    --use_flash_attention)
+      use_flash_attention="$2"
+      shift
+      ;;
+    --gradient_accumulation_steps)
+      gradient_accumulation_steps="$2"
+      shift
+      ;;
+    --block_size)
+      block_size="$2"
+      shift
+      ;;
     *)
       echo "error: unknown option \"${key}\"" 1>&2
       exit 1
@@ -46,12 +83,12 @@ deepspeed ${deepspeed_args} \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 0.01 \
+    --num_train_epochs 1 \
     --learning_rate 2e-5 \
     --disable_group_texts 1 \
-    --block_size 512 \
+    --block_size ${block_size} \
     --per_device_train_batch_size 1 \
-    --deepspeed configs/ds_config_zero3.json \
+    --deepspeed ${ds_config_file} \
     --fp16 \
     --run_name finetune \
     --validation_split_percentage 0 \
@@ -60,5 +97,11 @@ deepspeed ${deepspeed_args} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
+    --gradient_checkpointing ${gradient_checkpointing} \
+    --use_flash_attention ${use_flash_attention} \
+    --gradient_accumulation_steps ${gradient_accumulation_steps} \
+    --use_lisa 1 \
+    --lisa_activated_layers ${lisa_activated_layers} \
+    --lisa_interval_steps ${lisa_interval_steps} \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err

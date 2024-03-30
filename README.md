@@ -31,17 +31,19 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 
 ## Latest News
-* [2023-09-11] :rocket: Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details. :rocket: 
+* [2024-03-27] :rocket: Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! :rocket:
+* [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
 * [2023-08-14] Support long context inference with position interpolation (Linear & NTK scaling ) for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 * [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 * [2023-08-02] Support [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), and [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) models.
+
+<details> <summary>More news...</summary>
+
 * [2023-07-23] [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh) is now available! Support multimodal inputs of images and texts. [Online Demo](http://multimodal.lmflow.online) is also provided (We hold the service on a single GPU, hence one may experience "queuing" or "application busy" sometimes when multiple users are accessing at the same time, please wait and attempt again later when such event happens)![image](https://github.com/OptimalScale/LMFlow/blob/rpan-vision-encoder/assets/multimodal-chatbot-demo.gif)
 * [2023-06-22]  [LMFlow paper](https://arxiv.org/abs/2306.12420) is out! Check out our implementation details at https://arxiv.org/abs/2306.12420
 * [2023-06-16] Our finetuned Robin-33B-V2 scored an impressive 64.1 on the Huggingface LLM leaderboard in our offline evaluation, outperforming major open-source LLMs! All checkpoints (7B, 13B, 33B, and 65B) are [released](https://huggingface.co/OptimalScale)! Checkout the performance [here](https://medium.com/@hkust.ml/robin-v2-launches-achieves-unparalleled-performance-on-openllm-4f6886e822c1).
 * [2023-06-07] LMFlow is now officially available on PyPI! Install it with `pip install lmflow-finetune`!
 * [2023-05-30] Release [Robin-13B-v2](https://huggingface.co/OptimalScale/robin-13b-v2-delta) and [Robin-33B-v2](https://huggingface.co/OptimalScale/robin-33b-v2-delta)!
-
-<details> <summary>More news...</summary>
 
 * [2023-05-15] Release [LMFlow-data](http://lmflow.org:5000/lmflow_data.tar.gz), the training dataset of Robin-7B-v2. A new [test data](http://lmflow.org:5000/lmflow_chat_en_dialog_multiturn_single_nll_text2text.tar.gz) is also released.
 * [2023-05-09] Release [Robin-7B-v2](http://lmflow.org:5000/robin-7b-v2-delta.tar.gz), achieving competitive performance on chitchat, commonsense reasoning and instruction-following tasks. Refer to our [comprehensive study](https://medium.com/@hkust.ml/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418).
@@ -60,34 +62,32 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 ## Table of Contents
 
 
-* [Quick Start](#quick-start)
-  * [Setup](#setup)
-  * [Prepare Dataset](#prepare-dataset)
-  * [Finetuning](#finetuning-full)
-  * [Inference](#inference)
-  * [Deployment](#deployment)
-  * [Evaluation](#evaluation)
-* [Supported Features](#supported-features)
-  * [Finetune Acceleration & Memory Optimization](#supported-features)
-  * [Inference Acceleration](#supported-features)
-  * [Long Context](#supported-features)
-  * [Model Customization](#supported-features)
-  * [Multimodal](#supported-features)
 
-* [Support](#support)
-* [License](#license)
-* [Citation](#citation)
-
+- [LMFlow](#lmflow)
+  - [Latest News](#latest-news)
+  - [Table of Contents](#table-of-contents)
+  - [Quick Start](#quick-start)
+    - [Setup](#setup)
+    - [Prepare Dataset](#prepare-dataset)
+    - [Finetuning (Full)](#finetuning-full)
+    - [Finetuning (LoRA)](#finetuning-lora)
+    - [Inference](#inference)
+    - [Deployment](#deployment)
+    - [Evaluation](#evaluation)
+  - [Supported Features](#supported-features)
+  - [Support](#support)
+  - [License](#license)
+  - [Citation](#citation)
 ## Quick Start
 
 ### Setup
 
 Our package has been fully tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested.
 You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
-CUDA versions 10.3-11.7 are supported in versions `v0.0.5` or older. For CUDA versions greater than 11.7, one can use our stable branch `v0.0.6`.
+CUDA versions 10.3-11.7 are supported in versions `v0.0.5` or older. For CUDA versions greater than 11.7, one can use our stable branch `>= v0.0.6`.
 
 ```bash
-git clone -b v0.0.6 https://github.com/OptimalScale/LMFlow.git
+git clone -b v0.0.7 https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
@@ -109,6 +109,19 @@ cd data && ./download.sh alpaca && cd -
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train \
   --output_model_path output_models/finetuned_gpt2
+```
+
+### Finetuning (LISA)
+[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers.
+```sh
+cd data && ./download.sh alpaca && cd -
+
+./scripts/run_finetune_with_lisa.sh \
+  --model_name_or_path meta-llama/Llama-2-7b-hf \
+  --dataset_path data/alpaca/train \
+  --output_model_path output_models/finetuned_llama \
+  --lisa_activated_layers 1 \
+  --lisa_interval_steps 20
 ```
 
 ### Finetuning (LoRA)
@@ -164,6 +177,11 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 ## Supported Features
 
 <details> <summary>Finetune Acceleration & Memory Optimization</summary>
+
+* LISA: Layerwise Importance Sampling for Memory-Efficient Large Language Model Fine-Tuning
+  
+  LISA is a novel and memory-efficient training strategy for large language models that outperforms existing methods like LoRA by selectively freezing layers during optimization. Check out [LISA](https://arxiv.org/abs/2403.17919) for more details.  
+  In LMFLow, activate LISA using `--use_lisa 1` in your training command. Control the number of activation layers with `--lisa_activated_layers 2`, and adjust the freezing layers interval using `--lisa_step_interval 20`. 
 
 * LoRA
   
@@ -253,5 +271,13 @@ If you find this repository useful, please consider giving ⭐ and citing our [p
   author={Dong, Hanze and Xiong, Wei and Goyal, Deepanshu and Pan, Rui and Diao, Shizhe and Zhang, Jipeng and Shum, Kashun and Zhang, Tong},
   journal={arXiv preprint arXiv:2304.06767},
   year={2023}
+}
+```
+```
+@article{pan2024lisa,
+  title={LISA: Layerwise Importance Sampling for Memory-Efficient Large Language Model Fine-Tuning}, 
+  author={Pan, Rui and Liu, Xiang and Diao, Shizhe and Pi, Renjie and Zhang, Jipeng and Han, Chi and Zhang, Tong},
+  journal={arXiv preprint arXiv:2403.17919},
+  year={2024}
 }
 ```
