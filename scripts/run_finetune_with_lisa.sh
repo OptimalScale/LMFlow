@@ -85,6 +85,7 @@ deepspeed ${deepspeed_args} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --num_train_epochs 1 \
     --learning_rate 2e-5 \
+    --disable_group_texts 1 \
     --block_size ${block_size} \
     --per_device_train_batch_size 1 \
     --deepspeed ${ds_config_file} \
