@@ -120,7 +120,8 @@ cd data && ./download.sh alpaca && cd -
   --model_name_or_path meta-llama/Llama-2-7b-hf \
   --dataset_path data/alpaca/train \
   --output_model_path output_models/finetuned_llama \
-  --lisa_activated_layers 1
+  --lisa_activated_layers 1 \
+  --lisa_interval_steps 20
 ```
 
 ### Finetuning (LoRA)
