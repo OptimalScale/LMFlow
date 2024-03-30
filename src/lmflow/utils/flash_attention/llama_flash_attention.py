@@ -84,8 +84,6 @@ def forward(
     if output_attentions:
         raise NotImplementedError("`output_attentions` is not supported when `use_flash_attn` is True")
     attn_weights = None
-    
-    print('flash attn forward')
 
     return attn_output, attn_weights, past_key_value
 
@@ -124,4 +122,3 @@ def _prepare_decoder_attention_mask(
 def replace_llama_attn_with_flash_attn():
     transformers.models.llama.modeling_llama.LlamaModel._prepare_decoder_attention_mask = _prepare_decoder_attention_mask
     transformers.models.llama.modeling_llama.LlamaAttention.forward = forward
-    print('flash attn replaced')
