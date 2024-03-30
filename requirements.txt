@@ -1,3 +1,4 @@
+setuptools
 numpy==1.24.2
 datasets==2.14.6
 tokenizers>=0.13.3
