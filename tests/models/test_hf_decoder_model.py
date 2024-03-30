@@ -136,6 +136,89 @@ class HFDecoderModelTest(unittest.TestCase):
         )
 
 
+    def test_tokenize_conversation(self):
+        conversation_dataset = {
+            "type": "conversation",
+            "instances": [
+                {
+                    "conversation_id": 1,
+                    "system": "sysinfo_1",
+                    "tools": ["tool_1_desc"],
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": SAMPLE_TEXT
+                        },
+                        {
+                            "role": "assistant",
+                            "content": SAMPLE_TEXT
+                        }
+                    ]
+                },
+            ],
+        }
+        conversation_tokenized_dataset = {
+            'input_ids': [SAMPLE_TOKENS + SAMPLE_TOKENS],
+            'attention_mask': [SAMPLE_ATTENTION_MASKS + SAMPLE_ATTENTION_MASKS],
+            'labels': [ [-100] * len(SAMPLE_TOKENS) + SAMPLE_TOKENS ],
+        }
+        
+        self._test_tokenize(
+            model_name="gpt2",
+            groundtruth_dataset=conversation_dataset,
+            groundtruth_tokenized_dataset=conversation_tokenized_dataset
+        )
+        
+        
+    def test_tokenize_conversation_multiple(self):
+        conversation_dataset = {
+            "type": "conversation",
+            "instances": [
+                {
+                    "conversation_id": 1,
+                    "system": "sysinfo_1",
+                    "tools": ["tool_1_desc_1"],
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": SAMPLE_TEXT
+                        },
+                        {
+                            "role": "assistant",
+                            "content": SAMPLE_TEXT
+                        }
+                    ]
+                },
+                {
+                    "conversation_id": 2,
+                    "system": "sysinfo_2",
+                    "tools": ["tool_2_desc_1"],
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": SAMPLE_TEXT
+                        },
+                        {
+                            "role": "assistant",
+                            "content": SAMPLE_TEXT
+                        }
+                    ]
+                },
+            ],
+        }
+        conversation_tokenized_dataset = {
+            'input_ids': [SAMPLE_TOKENS + SAMPLE_TOKENS, SAMPLE_TOKENS + SAMPLE_TOKENS],
+            'attention_mask': [SAMPLE_ATTENTION_MASKS + SAMPLE_ATTENTION_MASKS, SAMPLE_ATTENTION_MASKS + SAMPLE_ATTENTION_MASKS],
+            'labels': [ [-100] * len(SAMPLE_TOKENS) + SAMPLE_TOKENS ,  [-100] * len(SAMPLE_TOKENS) + SAMPLE_TOKENS ],
+        }
+        
+        self._test_tokenize(
+            model_name="gpt2",
+            groundtruth_dataset=conversation_dataset,
+            groundtruth_tokenized_dataset=conversation_tokenized_dataset
+        )
+
+
     def test_encode(self):
         model_name = 'gpt2'
         model_args = ModelArguments(model_name_or_path=model_name)
@@ -158,6 +241,7 @@ class HFDecoderModelTest(unittest.TestCase):
         self.assertEqual(model.decode(batch_decode_input), batch_decode_output)
 
 
+    # @unittest.skip("deepspeed master_port conflict")
     def test_inference(self):
         ds_config_path = "examples/ds_config.json"
         with open (ds_config_path, "r") as f:

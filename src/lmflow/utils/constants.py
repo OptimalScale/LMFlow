@@ -166,11 +166,18 @@ DATASET_DESCRIPTION_MAP = {
 INSTANCE_FIELDS_MAP = {
     "text_only": ["text"],
     "text2text": ["input", "output"],
+    "conversation": ["conversation_id", "system", "tools", "messages"],
     "float_only": ["value"],
     "image_text": ["images", "text"],
 }
 
-
+CONVERSATION_ROLE_NAMES = {
+    "system": "system",
+    "user": "user",
+    "assistant": "assistant",
+    "function": "function",
+    "observation": "observation"
+}
 
 # LLAVA constants
 CONTROLLER_HEART_BEAT_EXPIRATION = 30
