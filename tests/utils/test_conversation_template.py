@@ -5,7 +5,7 @@ from transformers import AutoTokenizer
 
 from src.lmflow.utils.conversation_template import ConversationTemplate
 
-MODEL_PATH = '/home/yizhenjia/projs/llama/llama-2-7b-chat-hf'
+MODEL_PATH = 'meta-llama/Llama-2-7b-hf'
 
 
 conversation_singleturn_llama2 = [
