@@ -13,10 +13,17 @@ deepspeed_args="--master_port=11000"
 
 # Other optional arguments that can improve memory saving
 gradient_checkpointing=True
-ds_config_file="configs/ds_config_zero2_no_offload.json"
 use_flash_attention=0
 gradient_accumulation_steps=1
-block_size=512
+block_size=256
+
+# Enable model parallelism for multiple gpus, modify this if you prefer
+# customized deepspeed zero-redundancy optimization settings
+num_gpu=$(python -c "import torch; print(torch.cuda.device_count())")
+ds_config_file=configs/ds_config_zero0_no_offload.json
+if [ ${num_gpu} -ge 2 ]; then
+  ds_config_file=configs/ds_config_zero2_no_offload.json
+fi
 
 while [[ $# -ge 1 ]]; do
   key="$1"
