@@ -87,7 +87,7 @@ You may encounter some unexpected errors. You may try it first on a Linux machin
 CUDA versions 10.3-11.7 are supported in versions `v0.0.5` or older. For CUDA versions greater than 11.7, one can use our stable branch `>= v0.0.6`.
 
 ```bash
-git clone -b v0.0.7 https://github.com/OptimalScale/LMFlow.git
+git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
