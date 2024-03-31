@@ -218,56 +218,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         replace_llama_with_condense,
                 )
                 replace_llama_with_condense(model_args.rope_pi_ratio, model_args.rope_ntk_ratio)
-                
-        # Whether use flash attention
-        if model_args.use_flash_attention:
-            supported_gpu_device = None
-            for gpu in GPU_SUPPORT_FLASH_ATTENTION:
-                if gpu in torch.cuda.get_device_name():
-                    supported_gpu_device = gpu
-            if not any(model_supported in config.architectures
-                       for model_supported in MODELS_SUPPORT_FLASH_ATTENTION):
-                logger.warning(
-                    f"Model \"{config.architectures}\" does not support"
-                    " flash attention, use normal attention layer instead"
-                )
-            elif supported_gpu_device is None:
-                logger.warning(
-                    f"Your decice \"{torch.cuda.get_device_name()}\""
-                    " does not support flash attention, it will"
-                    " automatically use normal attention layer"
-                )
-            else:
-                
-                supported_models = GPU_SUPPORT_FLASH_ATTENTION[supported_gpu_device]
-                
-                config.use_cache = False
-                if "LlamaForCausalLM" in config.architectures and "LlamaForCausalLM" in supported_models:
-                    from lmflow.utils.flash_attention.llama_flash_attention import (
-                        replace_llama_attn_with_flash_attn,
-                    )
-                    replace_llama_attn_with_flash_attn()
-                elif "GPTNeoForCausalLM" in config.architectures and "GPTNeoForCausalLM" in supported_models:
-                    from lmflow.utils.flash_attention.gpt_neo_flash_attention import (
-                        replace_gpt_neo_attn_with_flash_attn,
-                    )
-                    replace_gpt_neo_attn_with_flash_attn()
-                elif "GPT2ForCausalLM" in config.architectures and "GPT2ForCausalLM" in supported_models:
-                    from lmflow.utils.flash_attention.gpt2_flash_attention import (
-                        replace_gpt2_attn_with_flash_attn,
-                    )
-                    replace_gpt2_attn_with_flash_attn()
-                elif "BloomForCausalLM" in config.architectures and "BloomForCausalLM" in supported_models:
-                    from lmflow.utils.flash_attention.bloom_flash_attention import (
-                        replace_bloom_attn_with_flash_attn
-                    )
-                    replace_bloom_attn_with_flash_attn()
-                else:
-                    raise ValueError(
-                        f"Model \"{config.architectures}\" with GPU {supported_gpu_device} does not support"
-                        " flash attention, use normal attention layer instead"
-                    )
-                    
+
         if tune_strategy == 'normal':
             if model_args.model_name_or_path:
                 compute_dtype = torch_dtype
@@ -298,6 +249,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         use_auth_token=True if model_args.use_auth_token else None,
                         torch_dtype=torch_dtype,
                         trust_remote_code = model_args.trust_remote_code,
+                        attn_implementation="flash_attention_2" if model_args.use_flash_attention else None,
                     )
                 #for deepspeed zero3, we don't need to specify device_map
                 except:
@@ -311,6 +263,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         use_auth_token=True if model_args.use_auth_token else None,
                         torch_dtype=torch_dtype,
                         trust_remote_code = model_args.trust_remote_code,
+                        attn_implementation="flash_attention_2" if model_args.use_flash_attention else None,
                     )
                 if model_args.use_qlora:
                     model.gradient_checkpointing_enable()
@@ -359,7 +312,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                         offload_folder="offload",
                         offload_state_dict=True,
                         torch_dtype=torch_dtype,
-                        load_in_8bit = model_args.use_int8
+                        load_in_8bit = model_args.use_int8,
+                        attn_implementation="flash_attention_2" if model_args.use_flash_attention else None,
                     )
                 if peft_model_id is not None:
                     self.backend_model = PeftModel.from_pretrained(
@@ -388,6 +342,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                             offload_folder="offload",
                             offload_state_dict=True,
                             torch_dtype=torch_dtype,
+                            attn_implementation="flash_attention_2" if model_args.use_flash_attention else None,
                         )
                     except:
                         logger.warning(
@@ -399,6 +354,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                             model_args.model_name_or_path,
                             config=config,
                             torch_dtype=torch_dtype,
+                            attn_implementation="flash_attention_2" if model_args.use_flash_attention else None,
                         )
                 else:
                     if peft_model_id is not None:
@@ -410,6 +366,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                         model_args.model_name_or_path,
                         config=config,
                         torch_dtype=torch_dtype,
+                        attn_implementation="flash_attention_2" if model_args.use_flash_attention else None,
                     )
 
                 self.backend_model_full = self.backend_model
@@ -811,6 +768,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 torch_dtype=torch_dtype,
                 device_map=device_map,
                 trust_remote_code = self.model_args.trust_remote_code,
+                attn_implementation="flash_attention_2" if model_args.use_flash_attention else None,
             )
         
             self.backend_model = PeftModel.from_pretrained(self.backend_model_full, tmpdirname)

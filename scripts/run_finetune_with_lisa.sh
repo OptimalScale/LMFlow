@@ -16,6 +16,7 @@ gradient_checkpointing=True
 use_flash_attention=0
 gradient_accumulation_steps=1
 block_size=256
+per_device_train_batch_size=1
 
 # Enable model parallelism for multiple gpus, modify this if you prefer
 # customized deepspeed zero-redundancy optimization settings
@@ -72,6 +73,10 @@ while [[ $# -ge 1 ]]; do
       block_size="$2"
       shift
       ;;
+    --per_device_train_batch_size|--batch_size)
+      per_device_train_batch_size="$2"
+      shift
+      ;;
     *)
       echo "error: unknown option \"${key}\"" 1>&2
       exit 1
@@ -94,7 +99,7 @@ deepspeed ${deepspeed_args} \
     --learning_rate 2e-5 \
     --disable_group_texts 1 \
     --block_size ${block_size} \
-    --per_device_train_batch_size 1 \
+    --per_device_train_batch_size ${per_device_train_batch_size} \
     --deepspeed ${ds_config_file} \
     --fp16 \
     --run_name finetune \
