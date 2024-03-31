@@ -307,6 +307,12 @@ class Finetuner(BaseTuner):
                     # Determine the way to access layers based on the model type
                     if self.model.__class__.__name__ == 'LlamaForCausalLM':
                         self.layers_attribute = 'model.model.layers'  # Layer access path for LlamaForCausalLM
+                    elif self.model.__class__.__name__ == 'Qwen2ForCausalLM':
+                        self.layers_attribute = 'model.model.layers'  # Layer access path for Qwen model
+                    elif self.model.__class__.__name__ == 'MistralForCausalLM':
+                        self.layers_attribute = 'model.model.layers'
+                    elif self.model.__class__.__name__ == 'GemmaForCausalLM':
+                        self.layers_attribute = 'model.model.layers'
                     else:
                         self.layers_attribute = 'model.transformer.h'  # General access path
                     self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
