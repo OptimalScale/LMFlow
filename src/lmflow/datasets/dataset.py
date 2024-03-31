@@ -145,6 +145,7 @@ class Dataset:
         data_type = data_dict[KEY_TYPE]
         fields = self.get_backend_dataset().features
         correct_fields = INSTANCE_FIELDS_MAP[data_type]
+        # TODO: this can not guarantee every instance has correct fields.
         if set(fields) != set(correct_fields):
             raise ValueError(
                 f'Data instance fields incorrect'

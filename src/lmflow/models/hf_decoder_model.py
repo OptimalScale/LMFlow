@@ -58,6 +58,8 @@ from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
 )
+from lmflow.utils.conversation_template import ConversationTemplate
+from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
 
 
 logger = logging.getLogger(__name__)
@@ -482,6 +484,9 @@ class HFDecoderModel(DecoderModel, Tunable):
             tokenized_column_order = ["input", "output"]
             label_columns = ["output"]
             add_special_tokens = False
+        elif dataset_type == "conversation":
+            conversation_template: ConversationTemplate = kwargs.get("conversation_template", ConversationTemplate())
+            logger.info(f"Conversation template: {conversation_template}")
         else:
             raise NotImplementedError(
                 f"dataset type \"{dataset_type}\" is not supported, currently"
@@ -505,7 +510,7 @@ class HFDecoderModel(DecoderModel, Tunable):
         use_truncation = False
         if model_args.use_lora or data_args.disable_group_texts:
             use_truncation = True
-
+                           
         def tokenize_function(examples):
             num_example = len(examples[column_names[0]])
             token_dict = {
@@ -514,29 +519,68 @@ class HFDecoderModel(DecoderModel, Tunable):
                 "labels": [[] for _ in range(num_example)],
             }
             with CaptureLogger(tok_logger) as cl:
-                for column_name in tokenized_column_order:
-                    encoding = self.tokenizer(
-                        examples[column_name],
-                        add_special_tokens=add_special_tokens,
-                        truncation=use_truncation,
-                    )
+                if dataset_type == "conversation":
+                    for i in range(len(examples["messages"])):
+                        messages = examples["messages"][i]
+                        if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
+                            tok_logger.warning(
+                                "Invalid instance encountered. Either the conversation has less than "
+                                "one round or the first message is not from the user."
+                            )
+                            continue
+                    
+                        if len(messages) % 2 != 0:
+                            logger.warning(
+                                "The number of messages is not even, the last message will be ignored."
+                            )
+                            messages = messages[:-1]
 
-                    if column_name in label_columns:
-                        labels = encoding["input_ids"].copy()
-                    else:
-                        labels = [
-                            [-100] * len(encoding["input_ids"][i])
-                             for i in range(num_example)
-                        ]
+                        encoded_conversation = conversation_template.encode_conversation(
+                            tokenizer=self.tokenizer,
+                            messages=messages,
+                            system=examples["system"][i],
+                            tools=examples["tools"][i],
+                            disable_conversation_bos_token=data_args.disable_conversation_bos_token,
+                            disable_conversation_eos_token=data_args.disable_conversation_eos_token
+                        )
 
-                    for i in range(num_example):
-                        token_dict["input_ids"][i].extend(
-                            encoding["input_ids"][i]
+                        input_ids, labels = [], []
+                        for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
+                            input_ids += user_input + assistant_result
+                            
+                            if data_args.train_on_prompt:
+                                labels += user_input + assistant_result
+                            else:
+                                labels += [-100] * len(user_input) + assistant_result
+                            
+                        token_dict["input_ids"][i].extend(input_ids)
+                        token_dict["attention_mask"][i].extend([1] * len(input_ids))
+                        token_dict["labels"][i].extend(labels)
+
+                else:
+                    for column_name in tokenized_column_order:
+                        encoding = self.tokenizer(
+                            examples[column_name],
+                            add_special_tokens=add_special_tokens,
+                            truncation=use_truncation,
                         )
-                        token_dict["attention_mask"][i].extend(
-                            encoding["attention_mask"][i]
-                        )
-                        token_dict["labels"][i].extend(labels[i])
+
+                        if column_name in label_columns:
+                            labels = encoding["input_ids"].copy()
+                        else:
+                            labels = [
+                                [-100] * len(encoding["input_ids"][i])
+                                for i in range(num_example)
+                            ]
+
+                        for i in range(num_example):
+                            token_dict["input_ids"][i].extend(
+                                encoding["input_ids"][i]
+                            )
+                            token_dict["attention_mask"][i].extend(
+                                encoding["attention_mask"][i]
+                            )
+                            token_dict["labels"][i].extend(labels[i])
 
             if data_args.disable_group_texts:
                 for i in range(num_example):

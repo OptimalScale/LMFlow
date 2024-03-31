@@ -387,6 +387,15 @@ class DatasetArguments:
     block_size: int
         an integer indicating the optional input sequence length after tokenization. The training dataset will be 
         truncated in blocks of this size for training.
+        
+    train_on_prompt: bool
+        a boolean indicating whether to train on prompt for conversation datasets such as ShareGPT.
+        
+    disable_conversation_bos_token: bool
+        a boolean indicating whether to disable the bos token for conversation datasets.
+        
+    disable_conversation_eos_token: bool
+        a boolean indicating whether to disable the eos token for conversation datasets.
 
     The class also includes some additional parameters that can be used to configure the dataset further, such as `overwrite_cache`,
     `validation_split_percentage`, `preprocessing_num_workers`, `disable_group_texts`, `demo_example_in_prompt`, `explanation_in_prompt`,
@@ -490,6 +499,18 @@ class DatasetArguments:
     test_file: Optional[str] = field(
         default=None,
         metadata={"help": "Evaluation File Path"},
+    )
+    train_on_prompt: bool = field(
+        default=False,
+        metadata={"help": "Whether to train on prompt for conversation datasets such as ShareGPT."}
+    )
+    disable_conversation_bos_token: bool = field(
+        default=False,
+        metadata={"help": "Whether to disable the bos token for conversation datasets."}
+    )
+    disable_conversation_eos_token: bool = field(
+        default=False,
+        metadata={"help": "Whether to disable the eos token for conversation datasets."}
     )
 
     def __post_init__(self):
