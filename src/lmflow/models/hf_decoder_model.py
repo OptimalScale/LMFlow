@@ -540,7 +540,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                             messages=messages,
                             system=examples["system"][i],
                             tools=examples["tools"][i],
-                            single_turn=True if len(messages) == 2 else False
+                            disable_conversation_bos_token=data_args.disable_conversation_bos_token,
+                            disable_conversation_eos_token=data_args.disable_conversation_eos_token
                         )
 
                         input_ids, labels = [], []

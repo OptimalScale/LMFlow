@@ -20,10 +20,14 @@ class ConversationTemplate:
         **kwargs
     ) -> Sequence[Tuple[List[int], List[int]]]:
         r'''
+        Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+        TODO: Support for different models.
+        Data example: 
+        ```json
         {
             "conversation_id": 2,
             "system": "sysinfo1",
-            "tools": "tool_1_desc",
+            "tools": ["tool_1_desc"],
             "messages": [
                 {
                     "role": "human",
@@ -35,8 +39,7 @@ class ConversationTemplate:
                 }
             ]
         }
-        Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
-        TODO: Support for different models.
+        ```
         '''        
         encoded_pairs = self.__encode(tokenizer, messages, system, tools, **kwargs)
         
@@ -52,8 +55,8 @@ class ConversationTemplate:
     ) -> Sequence[Tuple[List[int], List[int]]]:
         # TODO: truncation according to model max length
         # TODO: make sure the last few tokens are "learnable", not masked with token_id = -100.
-        bos = [] if kwargs.get("single_turn", False) else [tokenizer.bos_token_id] # HACK
-        eos = [] if kwargs.get("single_turn", False) else [tokenizer.eos_token_id] # HACK
+        bos = [] if kwargs.get("disable_conversation_bos_token", False) else [tokenizer.bos_token_id]
+        eos = [] if kwargs.get("disable_conversation_eos_token", False) else [tokenizer.eos_token_id]
         res_all = []
         
         for i in range(0, len(messages), 2):
