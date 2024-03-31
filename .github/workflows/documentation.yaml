@@ -6,6 +6,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
+      - name: Install setuptools
+        run: |
+          pip install setuptools
       - name: Install current pkg
         run: |
           pip install -e .
