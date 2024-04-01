@@ -97,6 +97,7 @@ python examples/finetune.py \
     --bf16 \
     --torch_dtype bfloat16 \
     --run_name finetune \
+    --optim paged_adamw_32bit \
     --validation_split_percentage 0 \
     --logging_steps 20 \
     --do_train \

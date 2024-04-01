@@ -317,7 +317,6 @@ class Finetuner(BaseTuner):
                         self.layers_attribute = 'model.transformer.h'  # General access path
                     self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
 
-                    # self.switch_active_layers()
                     self.active_layers_indices = []
 
                 def freeze_all_layers(self):
@@ -338,7 +337,7 @@ class Finetuner(BaseTuner):
                     # Randomly select n_layers to activate
                     layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
                     self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
-                    print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.")
+                    print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.", flush=True)
 
                     # Enable gradients only for the selected layers
                     for idx in self.active_layers_indices:
