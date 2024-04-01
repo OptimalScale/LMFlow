@@ -242,7 +242,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                     model = AutoModelForCausalLM.from_pretrained(
                         model_args.model_name_or_path,
                         from_tf=bool(".ckpt" in model_args.model_name_or_path),
-                        config=config,
                         quantization_config=quant_config if model_args.use_qlora else None,
                         cache_dir=model_args.cache_dir,
                         revision=model_args.model_revision,

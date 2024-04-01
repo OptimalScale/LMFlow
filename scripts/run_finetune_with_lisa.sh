@@ -9,7 +9,6 @@ dataset_path=data/alpaca/train
 output_dir=output_models/finetune_lisa
 lisa_activated_layers=1
 lisa_interval_steps=20
-deepspeed_args="--master_port=11000"
 
 # Other optional arguments that can improve memory saving
 gradient_checkpointing=True
@@ -39,10 +38,6 @@ while [[ $# -ge 1 ]]; do
       ;;
     -o|--output_model_path)
       output_dir="$2"
-      shift
-      ;;
-    --deepspeed_args)
-      deepspeed_args="$2"
       shift
       ;;
     --lisa_activated_layers)
@@ -90,8 +85,7 @@ project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
 
-deepspeed ${deepspeed_args} \
-  examples/finetune.py \
+python examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
@@ -100,8 +94,8 @@ deepspeed ${deepspeed_args} \
     --disable_group_texts 1 \
     --block_size ${block_size} \
     --per_device_train_batch_size ${per_device_train_batch_size} \
-    --deepspeed ${ds_config_file} \
-    --fp16 \
+    --bf16 \
+    --torch_dtype bfloat16 \
     --run_name finetune \
     --validation_split_percentage 0 \
     --logging_steps 20 \
