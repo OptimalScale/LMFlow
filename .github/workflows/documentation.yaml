@@ -5,13 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - name: Install setuptools
-        run: |
-          pip install setuptools
-      - name: Install current pkg
-        run: |
-          pip install -e .
+      - name: python environment setup
+        uses: actions/setup-python@v5.1.0
+        with: 
+          python-version: "3.11"
       - name: Install dependencies
         run: |
           pip install -r ./docs/requirements.txt
