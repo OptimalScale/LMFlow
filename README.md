@@ -70,6 +70,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
     - [Setup](#setup)
     - [Prepare Dataset](#prepare-dataset)
     - [Finetuning (Full)](#finetuning-full)
+    - [Finetuning (LISA)](#finetuning-lisa)
     - [Finetuning (LoRA)](#finetuning-lora)
     - [Inference](#inference)
     - [Deployment](#deployment)
@@ -97,7 +98,7 @@ bash install.sh
 
 ### Prepare Dataset
 
-Please refer to our [doc](https://github.com/OptimalScale/LMFlow/blob/main/docs/dataset.md).
+Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
 ### Finetuning (Full)
 Full training updates all the parameters to finetune a language model.
