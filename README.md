@@ -95,8 +95,6 @@ conda install mpi4py
 bash install.sh
 ```
 
-You may try `pip install packaging torch` before `bash install.sh` if the installation process freezed due to limited RAM.
-
 ### Prepare Dataset
 
 Please refer to our [doc](https://github.com/OptimalScale/LMFlow/blob/main/docs/dataset.md).
