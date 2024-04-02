@@ -110,3 +110,116 @@ inferences. Its format is as follows (three instances for example),
 ```
 
 For example, `data/example_dataset/test/test_13.json` has the aboved format.
+
+### Conversation
+
+```{admonition} **Work in Progress**
+:class: info
+
+We are rapidly working on this data format.  
+```
+
+Conversational data are commonly used in sft process. We currently support conversational data in ShareGPT format:
+```json
+{
+  "type": "conversation",
+  "instances": [
+    {
+      "conversation_id": "CONVERSATION_ID",
+      "system": "SYSTEM_PROPMT",
+      "tools": ["TOOL_DESCRIPTION_1","TOOL_DESCRIPTION_2","TOOL_DESCRIPTION_X"],
+      "messages": [
+        {
+            "role": "user",
+            "content": "USER_INPUT_1"
+        },
+        {
+            "role": "assistant",
+            "content": "ASSISTANT_RESPONSE_1"
+        },
+        {
+            "role": "user",
+            "content": "USER_INPUT_2"
+        },
+        {
+            "role": "assistant",
+            "content": "ASSISTANT_RESPONSE_2"
+        }
+      ]
+    },
+    {
+      "conversation_id": "CONVERSATION_ID",
+      "system": "SYSTEM_PROPMT",
+      "tools": ["TOOL_DESCRIPTION_1"],
+      "messages": [
+        {
+            "role": "user",
+            "content": "USER_INPUT_1"
+        },
+        {
+            "role": "assistant",
+            "content": "ASSISTANT_RESPONSE_1"
+        }
+      ]
+    }
+  ]
+}
+```
+Tips:
+- [Please see the section below] <del>Users don't have to apply any model-specific input formatting such as system prompt, tool description, and instruction template, as the pipeline will handle the conversion automatically based on different models. If the dataset is already formatted in user-assistant pairs with system prompt and model-specific instruction format, one can convert that dataset into correct lmflow conversation json format, leaving `system` and `tools` empty. </del> 
+- `conversation_id` is only for convience of tracking the conversation and will not be used in the pipeline. Users can set it to any value.
+- `system` and `tools` are not required. Setting them to empty string `""` and empty list `[""]` respectively when not applicable.
+- Please make sure the messages are:
+  1. Start with an user message.
+  2. In the correct order. The pipeline will not check the order of the messages.
+  3. In pairs of user and assistant (i.e., the length of the messages should be even). If the conversation ends with the user, the pipeline will trim the last user message.
+
+```{admonition} Auto Formatting
+:class: warning
+
+Auto formatting are not up currently. In other word, users need to include their system prompt and tool prompt into the first message, and apply the instruction template to user inputs manually. For example, for Llama-2-Chat:
+```json
+{
+  "type": "conversation",
+  "instances": [
+    {
+      "conversation_id": 1,
+      "system": "",
+      "tools": [""],
+      "messages": [
+        {
+            "role": "user",
+            "content": "[INST] <<SYS>>\nYou are a helpful assistant.\n<</SYS>>\n\nHello! [/INST]"
+        },
+        {
+            "role": "assistant",
+            "content": "Hi, how are you?"
+        },
+        {
+            "role": "user",
+            "content": "[INST] Good. [/INST]"
+        },
+        {
+            "role": "assistant",
+            "content": "Glad to hear that."
+        }
+      ]
+    },
+    {
+      "conversation_id": 2,
+      "system": "",
+      "tools": [""],
+      "messages": [
+        {
+            "role": "user",
+            "content": "[INST] <<SYS>>\nYou are a helpful assistant.\n<</SYS>>\n\nWhat's the weather like now? [/INST]"
+        },
+        {
+            "role": "assistant",
+            "content": "I'm sorry for any confusion, but as an AI, I don't have access to real-time data such as current weather conditions."
+        }
+      ]
+    }
+  ]
+}
+```

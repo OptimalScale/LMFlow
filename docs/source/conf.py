@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'LMFlow'
-copyright = 'LMFlow 2023'
+copyright = 'LMFlow 2024'
 author = 'The LMFlow Team'
 
 import sys
@@ -18,7 +18,6 @@ sys.path.insert(0,os.path.abspath('../..'))
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -48,7 +47,26 @@ autosummary_generate = True
 autoapi_type = 'python'
 autoapi_dirs = ['../../src']
 
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
+
+
+# -- Options for HTML output -------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+
+html_theme = "pydata_sphinx_theme"
+html_static_path = ['_static']
+html_css_files = ['custom.css',]
+html_logo = "_static/logo.png"
 html_theme_options = {
+    "announcement": "We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!",
+    "back_to_top_button": False,
+    "navbar_start": ["navbar-logo"],
+    "navbar_center": ["navbar-nav"],
+    "navbar_end": ["navbar-icon-links"],
+    "navbar_persistent": ["search-button"],
     "header_links_before_dropdown": 4,
     "icon_links": [
         {
@@ -66,9 +84,3 @@ html_theme_options = {
     },
    }
 
-
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
-html_theme = 'pydata_sphinx_theme'
-html_static_path = ['_static']
