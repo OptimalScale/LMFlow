@@ -99,7 +99,7 @@ You may try `pip install packaging torch` before `bash install.sh` if the instal
 
 ### Prepare Dataset
 
-Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
+Please refer to our [doc](https://github.com/OptimalScale/LMFlow/blob/main/docs/dataset.md).
 
 ### Finetuning (Full)
 Full training updates all the parameters to finetune a language model.
