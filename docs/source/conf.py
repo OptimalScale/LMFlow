@@ -59,7 +59,7 @@ source_suffix = {
 html_theme = "pydata_sphinx_theme"
 html_static_path = ['_static']
 html_css_files = []
-html_logo = "_static/logo.png"
+# html_logo = "_static/logo.png"
 html_theme_options = {
     "announcement": "We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!",
     "back_to_top_button": False,

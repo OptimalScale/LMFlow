@@ -177,7 +177,7 @@ Tips:
 ```{admonition} Auto Formatting
 :class: warning
 
-Auto formatting are not up currently. In other word, users need to include their system prompt and tool prompt into the first message, and apply the instruction template to user inputs manually. For example, for Llama-2-Chat:
+Auto formatting is not up currently. In other word, users need to include their system prompt and tool prompt into the first message, and apply the instruction template to user inputs manually. For example, for Llama-2-Chat:
 ```json
 {
   "type": "conversation",
