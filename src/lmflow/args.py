@@ -591,6 +591,12 @@ class FinetunerArguments(TrainingArguments):
             "help": "the number of steps in each freezing interval of LISA, i.e. the selected unfreezed layers are randomly switched every {lisa_interval_steps} steps."
         }
     )
+    lisa_layers_attribute: int = field(
+        default="model.model.layers",
+        metadata={
+            "help": "where the layer attribute stores, e.g. model.model.layers"
+        }
+    )
 
 
 @dataclass

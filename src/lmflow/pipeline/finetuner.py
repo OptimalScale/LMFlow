@@ -311,10 +311,14 @@ class Finetuner(BaseTuner):
                         self.layers_attribute = 'model.model.layers'  # Layer access path for Qwen model
                     elif self.model.__class__.__name__ == 'MistralForCausalLM':
                         self.layers_attribute = 'model.model.layers'
+                    elif self.model.__class__.__name__ == 'MixtralForCausalLM':
+                        self.layers_attribute = 'model.model.layers'
                     elif self.model.__class__.__name__ == 'GemmaForCausalLM':
                         self.layers_attribute = 'model.model.layers'
+                    elif self.model.__class__.__name__ == 'GPT2LMHeadModel':
+                        self.layers_attribute = 'model.transformer.h'
                     else:
-                        self.layers_attribute = 'model.transformer.h'  # General access path
+                        self.layers_attribute = training_args.lisa_layers_attribute
                     self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
 
                     self.active_layers_indices = []
