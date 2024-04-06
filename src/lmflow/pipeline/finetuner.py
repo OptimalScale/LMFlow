@@ -304,19 +304,19 @@ class Finetuner(BaseTuner):
                     self.n_layers = n_layers
                     self.interval_steps = interval_steps
                     self.model = model
+
                     # Determine the way to access layers based on the model type
-                    if self.model.__class__.__name__ == 'LlamaForCausalLM':
-                        self.layers_attribute = 'model.model.layers'  # Layer access path for LlamaForCausalLM
-                    elif self.model.__class__.__name__ == 'Qwen2ForCausalLM':
-                        self.layers_attribute = 'model.model.layers'  # Layer access path for Qwen model
-                    elif self.model.__class__.__name__ == 'MistralForCausalLM':
-                        self.layers_attribute = 'model.model.layers'
-                    elif self.model.__class__.__name__ == 'MixtralForCausalLM':
-                        self.layers_attribute = 'model.model.layers'
-                    elif self.model.__class__.__name__ == 'GemmaForCausalLM':
-                        self.layers_attribute = 'model.model.layers'
-                    elif self.model.__class__.__name__ == 'GPT2LMHeadModel':
-                        self.layers_attribute = 'model.transformer.h'
+                    class_to_layers_map = {
+                        'LlamaForCausalLM': 'model.model.layers',
+                        'Qwen2ForCausalLM': 'model.model.layers',
+                        'MistralForCausalLM': 'model.model.layers',
+                        'MixtralForCausalLM': 'model.model.layers',
+                        'GemmaForCausalLM': 'model.model.layers',
+                        'GPT2LMHeadModel': 'model.transformer.h',
+                    }
+                    model_class_name = self.model.__class__.__name__
+                    if model_class_name in class_to_layers_map:
+                        self.layers_attribute = class_to_layers_map[model_class_name]
                     else:
                         self.layers_attribute = training_args.lisa_layers_attribute
                     self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
