@@ -85,7 +85,7 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### 微调（LISA）
-[LISA](https://arxiv.org/abs/2403.17919) 是一种 **内存高效（memory-efficient）** 的微调算法，它允许在内存和随机解冻的层数之间进行权衡。下面的脚本目前仅在 **单个GPU** 上进行了测试。请关注我们的最新更新！:smile:
+[LISA](https://arxiv.org/abs/2403.17919) 是一种 **内存高效（memory-efficient）** 的微调算法，它允许在内存和随机解冻的层数之间进行权衡。下面的脚本目前仅在 **单个GPU** 上进行了测试。请关注我们的最新更新！ :smile:
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -144,19 +144,24 @@ python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json -
 <details> <summary>微调加速 & 内存优化</summary>
 
 * LISA: Layerwise Importance Sampling for Memory-Efficient Large Language Model Fine-Tuning
-  LISA是一种内存高效的LLM微调算法。通过在微调过程中选择性地冻结层，LISA超越了现有的微调方法（如LoRA）。欢迎查阅 [\[论文\]] 了解更多。
+  
+  LISA是一种内存高效的LLM微调算法。通过在微调过程中选择性地冻结层，LISA超越了现有的微调方法（如LoRA）。欢迎查阅 [论文](https://arxiv.org/abs/2403.17919) 了解更多。
   可以在训练命令中指定参数 `--use_lisa 1` 来使用LISA。通过 `--lisa_activated_layers 2` 来控制激活的层的数量，并通过 `--lisa_step_interval 20` 来调整冻结的层的间隔。
 
 * LoRA
+  
   LoRA 是一种比全参数微调更为高效的参数高效（parameter-efficient）微调算法，请参考：[微调（LoRA）](#微调lora)。
 
 * FlashAttention
+  
   我们支持FlashAttention-1 和 FlashAttention-2。更多细节见：[FlashAttention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md)。
 
 * Gradient Checkpointing
+  
   [Gradient checkpointing](https://github.com/cybertronai/gradient-checkpointing) 是一种内存优化技术，核心思想是通过计算换取内存，从而减少显存占用。在训练命令中添加 `--gradient_checkpointing` 即可使用。
 
 * Deepspeed Zero3
+  
   LMFlow 支持 [Deepspeed Zero-3 Offload](https://www.deepspeed.ai/2021/03/07/zero3-offload.html)。我们提供了开箱即用的 [deepspeed配置文件](https://github.com/OptimalScale/LMFlow/blob/main/configs/ds_config_zero3.json)。
 
 </details>
@@ -165,9 +170,11 @@ python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json -
 <details> <summary>推理加速</summary>
 
 * LLaMA CPU推理
+  
   感谢 [llama.cpp](https://github.com/ggerganov/llama.cpp)，现在所有人都能在CPU上运行自己的LLaMA（4-bit量化）了！我们提供了将LLaMA LoRA权重转换成`.pt`文件的脚本，只需要使用 llama.cpp 的 `convert-pth-to-ggml.py` 进行模型量化即可进行LLaMA CPU推理。
 
 * FlashAttention
+  
   我们支持FlashAttention-1 和 FlashAttention-2。更多细节见：[FlashAttention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md)。
 
 </details>
@@ -176,6 +183,7 @@ python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json -
 <details> <summary>长文本</summary>
 
 * LLaMA模型的位置插值（Position Interpolation）
+  
   支持通过位置插值（Postion Interpolation）（Linear & NTK scaling）扩展LLaMA的上下文窗口，查看详情：[位置插值](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md)。
 
 </details>
@@ -184,6 +192,7 @@ python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json -
 <details> <summary>模型定制</summary>
 
 * 词表扩充
+  
   训练自己的sentencepiece tokenizer，然后和模型自带的huggingface tokenizer进行合并！请参考：[词表扩充](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) 。
 
 </details>
@@ -192,6 +201,7 @@ python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json -
 <details> <summary>多模态</summary>
 
 * 多模态Chatbot
+  
   LMFlow 支持多模态（图、文）输入。请参考：[LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh)。
 
 </details>
