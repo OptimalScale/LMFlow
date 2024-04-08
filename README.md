@@ -157,7 +157,6 @@ Running the following command will launch the demo for robin-7b:
 pip install gradio
 python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
 ```
-We also hosted it on Hugging Face [Space](https://huggingface.co/spaces/OptimalScale/Robin-7b).
 
 
 ### Evaluation
@@ -242,7 +241,6 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 * Multimodal Chatbot
 
   LMFlow supports multimodal inputs of images and texts. Check out our [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh).
-  [Online Demo](http://multimodal.lmflow.online) is also provided.
 </details>
 
 
