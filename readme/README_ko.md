@@ -15,10 +15,11 @@
     <p>
 </h4>
 
->Disclaimer: 
-The Korean README file was translated by LLM for reference only. Korean speakers are welcome to submit a PR to polish the document!
->면책조항: 
-한국어 README 파일은 참고용으로 LLM에 의해 번역되었습니다. 한국어 사용자들은 문서를 개선하기 위해 PR을 제출할 것을 환영합니다!
+>Disclaimer:  
+The Korean README file was translated by LLM for reference only. Korean speakers are welcome to submit a PR to polish the document!  
+
+>면책조항:  
+한국어 README 파일은 참고용으로 LLM에 의해 번역되었습니다. 한국어 사용자들은 문서를 개선하기 위해 PR을 제출할 것을 환영합니다!  
 
 [![Website](https://img.shields.io/badge/Website-Demo-20B2AA.svg)](https://lmflow.com)
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
