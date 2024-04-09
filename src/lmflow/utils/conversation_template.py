@@ -1,16 +1,23 @@
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 from transformers import PreTrainedTokenizer
 
 from .constants import CONVERSATION_ROLE_NAMES
+from .conversation_formatter import Formatter, TemplateComponent
+
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class ConversationTemplate:
+    user_formatter: Formatter
+    assistant_formatter: Formatter
+    system_formatter: Formatter
+    tools_formatter: Formatter
+    
     def encode_conversation(
         self,
         tokenizer: PreTrainedTokenizer,
@@ -30,12 +37,12 @@ class ConversationTemplate:
             "tools": ["tool_1_desc"],
             "messages": [
                 {
-                    "role": "human",
-                    "content": "I have a M via API so"
+                    "role": "user",
+                    "content": "hi"
                 },
                 {
-                    "role": "gpt",
-                    "content": "To"
+                    "role": "assistant",
+                    "content": "Hello!"
                 }
             ]
         }
@@ -55,26 +62,54 @@ class ConversationTemplate:
     ) -> Sequence[Tuple[List[int], List[int]]]:
         # TODO: truncation according to model max length
         # TODO: make sure the last few tokens are "learnable", not masked with token_id = -100.
-        bos = [] if kwargs.get("disable_conversation_bos_token", False) else [tokenizer.bos_token_id]
-        eos = [] if kwargs.get("disable_conversation_eos_token", False) else [tokenizer.eos_token_id]
+        if tools:
+            raise NotImplementedError("Tools are not supported yet.")
+        
         res_all = []
+        
+        system_formatted = self.system_formatter.format(content=system) if system else []
+        system_encoded = self.__encode_template(system_formatted, tokenizer)
         
         for i in range(0, len(messages), 2):
             user_message = messages[i]
-            system_message = messages[i + 1]
+            assistant_message = messages[i + 1]
             
-            user_input = user_message["content"]
-            system_input = system_message["content"]
+            user_formatted = self.user_formatter.format(content=user_message["content"])
+            assistant_formatted = self.assistant_formatter.format(content=assistant_message["content"])
             
-            user_encoded = tokenizer.encode(user_input, add_special_tokens=False)
-            system_encoded = tokenizer.encode(system_input, add_special_tokens=False)
+            user_encoded = self.__encode_template(user_formatted, tokenizer)
+            assistant_encoded = self.__encode_template(assistant_formatted, tokenizer)
             
             res_all.append((
-                bos + user_encoded, 
-                system_encoded + eos
+                system_encoded + user_encoded if i == 0 else user_encoded, 
+                assistant_encoded
             ))
             
         return res_all
+    
+    def __encode_template(
+        self, 
+        template: List[TemplateComponent],
+        tokenizer: PreTrainedTokenizer,
+        **kwargs) -> List[int]:
+        encoded_ids = []
+        for component in template:
+            if component.type == 'string':
+                if len(component.content) == 0:
+                    logger.warning("Empty string component found in the template.")
+                    continue
+                else:
+                    encoded_ids += tokenizer.encode(component.content, add_special_tokens=False)
+            elif component.type == 'token':
+                if component.content == 'bos_token':
+                    encoded_ids += [tokenizer.bos_token_id]
+                elif component.content == 'eos_token':
+                    encoded_ids += [tokenizer.eos_token_id]
+                else:
+                    encoded_ids += [tokenizer.convert_tokens_to_ids(component.content)]
+            else:
+                raise NotImplementedError(f"Component type {component.type} is not supported yet.")
+        return encoded_ids
             
             
 @dataclass
@@ -87,6 +122,28 @@ class Llama2ConversationTemplate(ConversationTemplate):
         tools: Optional[str] = None,
         **kwargs
     ) -> Sequence[Tuple[List[int], List[int]]]:
-        '''The system info is included in the first round of user input for Llama2.
-        '''
-        pass
+        if tools:
+            raise NotImplementedError("Tools are not supported in Llama2.")
+        
+        res_all = []
+        
+        system_formatted = self.system_formatter.format(content=system) if system else []
+        system_formatted_text = "".join([component.content for component in system_formatted if component.type == 'string']) # HACK
+        
+        for i in range(0, len(messages), 2):
+            user_message = messages[i]
+            assistant_message = messages[i + 1]
+            
+            user_content = system_formatted_text + user_message["content"] if i == 0 else user_message["content"]
+            user_formatted = self.user_formatter.format(content=user_content)
+            assistant_formatted = self.assistant_formatter.format(content=assistant_message["content"])
+            
+            user_encoded = self.__encode_template(user_formatted, tokenizer)
+            assistant_encoded = self.__encode_template(assistant_formatted, tokenizer)
+            
+            res_all.append((
+                user_encoded, 
+                assistant_encoded
+            ))
+            
+        return res_all

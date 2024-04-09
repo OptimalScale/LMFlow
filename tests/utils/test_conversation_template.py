@@ -59,7 +59,7 @@ conversation_multiturn_llama2_ids = [
 ]
 
 
-class TestConversationTemplate(unittest.TestCase):
+class ConversationTemplateTest(unittest.TestCase):
     def setUp(self):
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=False)
         self.conversation_template = ConversationTemplate()
