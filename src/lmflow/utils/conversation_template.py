@@ -48,11 +48,11 @@ class ConversationTemplate:
         }
         ```
         '''        
-        encoded_pairs = self.__encode(tokenizer, messages, system, tools, **kwargs)
+        encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
         
         return encoded_pairs
         
-    def __encode(
+    def _encode(
         self,
         tokenizer: PreTrainedTokenizer,
         messages: List[Dict[str, str]],
@@ -65,10 +65,12 @@ class ConversationTemplate:
         if tools:
             raise NotImplementedError("Tools are not supported yet.")
         
+        assert isinstance(messages, list), "Messages must be a list."
+        
         res_all = []
         
         system_formatted = self.system_formatter.format(content=system) if system else []
-        system_encoded = self.__encode_template(system_formatted, tokenizer)
+        system_encoded = self._encode_template(system_formatted, tokenizer)
         
         for i in range(0, len(messages), 2):
             user_message = messages[i]
@@ -77,8 +79,8 @@ class ConversationTemplate:
             user_formatted = self.user_formatter.format(content=user_message["content"])
             assistant_formatted = self.assistant_formatter.format(content=assistant_message["content"])
             
-            user_encoded = self.__encode_template(user_formatted, tokenizer)
-            assistant_encoded = self.__encode_template(assistant_formatted, tokenizer)
+            user_encoded = self._encode_template(user_formatted, tokenizer)
+            assistant_encoded = self._encode_template(assistant_formatted, tokenizer)
             
             res_all.append((
                 system_encoded + user_encoded if i == 0 else user_encoded, 
@@ -87,7 +89,7 @@ class ConversationTemplate:
             
         return res_all
     
-    def __encode_template(
+    def _encode_template(
         self, 
         template: List[TemplateComponent],
         tokenizer: PreTrainedTokenizer,
@@ -114,7 +116,7 @@ class ConversationTemplate:
             
 @dataclass
 class Llama2ConversationTemplate(ConversationTemplate):
-    def __encode(
+    def _encode(
         self,
         tokenizer: PreTrainedTokenizer,
         messages: List[Dict[str, str]],
@@ -124,6 +126,8 @@ class Llama2ConversationTemplate(ConversationTemplate):
     ) -> Sequence[Tuple[List[int], List[int]]]:
         if tools:
             raise NotImplementedError("Tools are not supported in Llama2.")
+        
+        assert isinstance(messages, list), "Messages must be a list."
         
         res_all = []
         
@@ -138,8 +142,8 @@ class Llama2ConversationTemplate(ConversationTemplate):
             user_formatted = self.user_formatter.format(content=user_content)
             assistant_formatted = self.assistant_formatter.format(content=assistant_message["content"])
             
-            user_encoded = self.__encode_template(user_formatted, tokenizer)
-            assistant_encoded = self.__encode_template(assistant_formatted, tokenizer)
+            user_encoded = self._encode_template(user_formatted, tokenizer)
+            assistant_encoded = self._encode_template(assistant_formatted, tokenizer)
             
             res_all.append((
                 user_encoded, 

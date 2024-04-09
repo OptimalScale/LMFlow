@@ -8,7 +8,6 @@ class StringFormatterTest(unittest.TestCase):
         formatter = StringFormatter(
             template=[
                 TemplateComponent(type='token', content='bos_token'),
-                TemplateComponent(type='tools', content=['tool_1_desc', 'tool_2_desc']),
                 TemplateComponent(type='string', content='[INST] {{content}} [/INST]'),
                 TemplateComponent(type='token', content='eos_token')
             ]
@@ -16,7 +15,6 @@ class StringFormatterTest(unittest.TestCase):
         formatted_components = formatter.format(content='Who are you?')
         expected_components = [
             TemplateComponent(type='token', content='bos_token'),
-            TemplateComponent(type='tools', content=['tool_1_desc', 'tool_2_desc']),
             TemplateComponent(type='string', content='[INST] Who are you? [/INST]'),
             TemplateComponent(type='token', content='eos_token')
         ]
