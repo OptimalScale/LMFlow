@@ -102,7 +102,7 @@ Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASET
 
 ### Finetuning (Full)
 Full training updates all the parameters to finetune a language model.
-Here is an example to finetune a GPT-2 base model. (We encounter a data server problem recently. To avoid errors, please use the latest `download.sh` script in main branch to download the dataset)
+Here is an example to finetune a GPT-2 base model. (We encounter a data server problem recently. To avoid errors, please use the latest [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) script in main branch to download the dataset)
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -113,7 +113,7 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Finetuning (LISA)
-[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile: (We encounter a data server problem recently. To avoid errors, please use the latest `download.sh` script in main branch to download the dataset)
+[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile: (We encounter a data server problem recently. To avoid errors, please use the latest [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) script in main branch to download the dataset)
 
 ```sh
 cd data && ./download.sh alpaca && cd -
