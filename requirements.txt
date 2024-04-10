@@ -23,4 +23,3 @@ gradio
 accelerate>=0.27.2
 einops>=0.6.1
 scikit-learn==1.2.2
-flash-attn
