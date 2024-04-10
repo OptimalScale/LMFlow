@@ -4,8 +4,7 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 from transformers import PreTrainedTokenizer
 
-from .constants import CONVERSATION_ROLE_NAMES
-from .conversation_formatter import Formatter, TemplateComponent
+from .conversation_formatter import Formatter, TemplateComponent, StringFormatter, EmptyFormatter
 
 
 logger = logging.getLogger(__name__)
@@ -15,8 +14,9 @@ logger = logging.getLogger(__name__)
 class ConversationTemplate:
     user_formatter: Formatter
     assistant_formatter: Formatter
-    system_formatter: Formatter
-    tools_formatter: Formatter
+    system_formatter: Optional[Formatter] = None
+    tools_formatter: Optional[Formatter] = None
+    separator: Optional[TemplateComponent] = None
     
     def encode_conversation(
         self,
@@ -47,8 +47,16 @@ class ConversationTemplate:
             ]
         }
         ```
-        '''        
+        '''
+        assert isinstance(messages, list), "Messages must be a list."
+        
+        if tools:
+            raise NotImplementedError("Tools are not supported yet.")
+        
         encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
+        
+        if self.separator:
+            encoded_pairs = self.remove_last_separator(encoded_pairs, tokenizer)
         
         return encoded_pairs
         
@@ -62,10 +70,6 @@ class ConversationTemplate:
     ) -> Sequence[Tuple[List[int], List[int]]]:
         # TODO: truncation according to model max length
         # TODO: make sure the last few tokens are "learnable", not masked with token_id = -100.
-        if tools:
-            raise NotImplementedError("Tools are not supported yet.")
-        
-        assert isinstance(messages, list), "Messages must be a list."
         
         res_all = []
         
@@ -93,7 +97,22 @@ class ConversationTemplate:
         self, 
         template: List[TemplateComponent],
         tokenizer: PreTrainedTokenizer,
-        **kwargs) -> List[int]:
+        **kwargs
+    ) -> List[int]:
+        """Encode template components into token ids.
+
+        Parameters
+        ----------
+        template : List[TemplateComponent]
+            Formatted template components.
+        tokenizer : PreTrainedTokenizer
+            Tokenizer to convert tokens into token ids.
+
+        Returns
+        -------
+        List[int]
+            Encoded token ids.
+        """
         encoded_ids = []
         for component in template:
             if component.type == 'string':
@@ -112,10 +131,67 @@ class ConversationTemplate:
             else:
                 raise NotImplementedError(f"Component type {component.type} is not supported yet.")
         return encoded_ids
+    
+    def remove_last_separator(
+        self, 
+        encoded_pairs: Sequence[Tuple[List[int], List[int]]],
+        tokenizer: PreTrainedTokenizer
+    ) -> Sequence[Tuple[List[int], List[int]]]:
+        last_assistant_msg = encoded_pairs[-1][1]
+        if self.separator.type == 'string':
+            separator_ids = tokenizer.encode(self.separator.content, add_special_tokens=False)
+        elif self.separator.type == 'token':
+            separator_ids = [tokenizer.convert_tokens_to_ids(self.separator.content)]
+        else:
+            raise NotImplementedError(f"Component type {self.separator.type} cannot be used as a separator.")
+        
+        if len(separator_ids) > len(last_assistant_msg):
+            raise ValueError("Separator is longer than the last assistant message, please check.")
+        
+        if last_assistant_msg[-len(separator_ids):] == separator_ids:
+            last_assistant_msg = last_assistant_msg[:-len(separator_ids)]
             
+        encoded_pairs[-1] = (encoded_pairs[-1][0], last_assistant_msg)
+        
+        return encoded_pairs
+    
+            
+@dataclass
+class EmptyConversationTemplate(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='token', content='bos_token'),
+            TemplateComponent(type='string', content='{{content}}')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}'),
+            TemplateComponent(type='token', content='eos_token')
+        ]
+    )
+    
             
 @dataclass
 class Llama2ConversationTemplate(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='token', content='bos_token'),
+            TemplateComponent(type='string', content='[INST] {{content}} [/INST]')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}'),
+            TemplateComponent(type='token', content='eos_token')
+        ]
+    )
+    system_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<<SYS>>\n{{content}}\n<</SYS>>\n\n')
+        ]
+    )
+    
     def _encode(
         self,
         tokenizer: PreTrainedTokenizer,
@@ -125,9 +201,8 @@ class Llama2ConversationTemplate(ConversationTemplate):
         **kwargs
     ) -> Sequence[Tuple[List[int], List[int]]]:
         if tools:
-            raise NotImplementedError("Tools are not supported in Llama2.")
-        
-        assert isinstance(messages, list), "Messages must be a list."
+            raise NotImplementedError("Formatted tools are not supported in Llama2. "
+                                      "Please include tools in the system message.")
         
         res_all = []
         
@@ -151,3 +226,23 @@ class Llama2ConversationTemplate(ConversationTemplate):
             ))
             
         return res_all
+    
+    
+@dataclass
+class QwenConversationTemplate(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
+        ]
+    )
+    system_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
+        ]
+    )
+    separator: TemplateComponent = TemplateComponent(type='string', content='\n')

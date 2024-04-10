@@ -3,8 +3,7 @@ import unittest
 
 from transformers import AutoTokenizer
 
-from lmflow.utils.conversation_template import ConversationTemplate, Llama2ConversationTemplate
-from lmflow.utils.conversation_formatter import StringFormatter, EmptyFormatter, TemplateComponent
+from lmflow.utils.conversation_template import EmptyConversationTemplate, Llama2ConversationTemplate
 
 MODEL_PATH = 'meta-llama/Llama-2-7b-hf'
 
@@ -99,34 +98,7 @@ conversation_multiturn_llama2_ids = [
 class Llama2ConversationTemplateTest(unittest.TestCase):
     def setUp(self):
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=False)
-        self.user_foramtter = StringFormatter(
-            template=[
-                TemplateComponent(type='token', content='bos_token'),
-                TemplateComponent(type='string', content='[INST] {{content}} [/INST]')
-            ]
-        )
-        self.system_formatter = StringFormatter(
-            template=[
-                TemplateComponent(type='string', content='<<SYS>>\n{{content}}\n<</SYS>>\n\n')
-            ]
-        )
-        self.assistant_formatter = StringFormatter(
-            template=[
-                TemplateComponent(type='string', content='{{content}}'),
-                TemplateComponent(type='token', content='eos_token')
-            ]
-        )
-        self.tools_formatter = EmptyFormatter(
-            template=[
-                TemplateComponent(type='string', content='')
-            ]
-        ) # TODO
-        self.conversation_template = Llama2ConversationTemplate(
-            user_formatter=self.user_foramtter,
-            assistant_formatter=self.assistant_formatter,
-            system_formatter=self.system_formatter,
-            tools_formatter=self.tools_formatter
-        )
+        self.conversation_template = Llama2ConversationTemplate()
         
     def test_encode_conversation_singleturn_llama2_no_template(self):
         res = self.conversation_template.encode_conversation(
@@ -150,24 +122,7 @@ class Llama2ConversationTemplateTest(unittest.TestCase):
 class EmptyConversationTemplateTest(unittest.TestCase):
     def setUp(self):
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=False)
-        self.user_foramtter = StringFormatter(
-            template=[
-                TemplateComponent(type='token', content='bos_token'),
-                TemplateComponent(type='string', content='{{content}}')
-            ]
-        )
-        self.assistant_formatter = StringFormatter(
-            template=[
-                TemplateComponent(type='string', content='{{content}}'),
-                TemplateComponent(type='token', content='eos_token')
-            ]
-        )
-        self.conversation_template = ConversationTemplate(
-            user_formatter=self.user_foramtter,
-            assistant_formatter=self.assistant_formatter,
-            system_formatter=None,
-            tools_formatter=None
-        )
+        self.conversation_template = EmptyConversationTemplate()
 
     def test_encode_conversation_singleturn_llama2(self):
         res = self.conversation_template.encode_conversation(

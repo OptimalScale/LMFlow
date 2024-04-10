@@ -1,5 +1,3 @@
-# reserved for handling different conversation formats, 
-# such that users don't need to preprocess system prompt, tools, model-relate formats, etc.
 import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -103,10 +101,4 @@ class StringFormatter(Formatter):
 @dataclass
 class ListFormatter(Formatter):
     def format(self, **kwargs) -> list:
-        formatted_template = []
-        for component in self.template:
-            if component.type == 'tools':
-                pass
-            else:
-                formatted_template.append(component)
-
+        pass # Work in progress
