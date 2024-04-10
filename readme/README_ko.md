@@ -15,10 +15,11 @@
     <p>
 </h4>
 
->Disclaimer: 
-The Korean README file was translated by LLM for reference only. Korean speakers are welcome to submit a PR to polish the document!
->면책조항: 
-한국어 README 파일은 참고용으로 LLM에 의해 번역되었습니다. 한국어 사용자들은 문서를 개선하기 위해 PR을 제출할 것을 환영합니다!
+> [!NOTE]
+> The Korean README file was translated by LLM for reference only. Korean speakers are welcome to submit a PR to polish the document!  
+
+> [!NOTE]  
+> 한국어 README 파일은 참고용으로 LLM에 의해 번역되었습니다. 한국어 사용자들은 문서를 개선하기 위해 PR을 제출할 것을 환영합니다!  
 
 [![Website](https://img.shields.io/badge/Website-Demo-20B2AA.svg)](https://lmflow.com)
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
@@ -43,22 +44,35 @@ The Korean README file was translated by LLM for reference only. Korean speakers
 * [2023-08-02] [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b) 및 [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) 모델을 지원합니다.
 
 
-## Demos
+## 빠른 시작
+### 설치
+저희의 Repo는 이미 리눅스 (우분투 20.04)에서 완전한 테스트가 이루어졌습니다. 다른 운영 체제 플랫폼 (맥OS, 윈도우)은 아직 완전히 테스트되지 않았으므로 예상치 못한 오류가 발생할 수 있습니다. 먼저 리눅스/윈도우 WSL에서 사용해보거나 Google Colab을 사용하는 것을 권장합니다.
+CUDA 10.3-11.7에 대해서는 `v0.0.5` 및 그 이전 버전을 사용하는 것이 좋습니다. 11.7보다 큰 CUDA의 경우, 더 나은 경험을 위해 우리의 stable 브랜치인 `>= v0.0.6` 을 사용하십시오.
+```bash
+git clone https://github.com/OptimalScale/LMFlow.git
+cd LMFlow
+conda create -n lmflow python=3.9 -y
+conda activate lmflow
+conda install mpi4py
+bash install.sh
+```
 
-### 현재 체크포인트 다운로드 서비스 capacity를 초과해서 서비스 capacity를 늘리기 위해 하나의 서버를 추가로 할당했습니다. 
-"_too many HTTP requests_"라는 에러가 발생한다면 몇 분 정도 기다렸다가 다시 시도해주기 바랍니다.
+### 데이터셋 준비
+저희의 [공식 문서(영문)](https://optimalscale.github.io/LMFlow/examples/DATASETS.html) 를 참고해 주세요. 공식 문서는 현재 번역 중이며, 조금만 기다려 주시기 바랍니다.
 
-LMflow는 다음과 같은 네 개의 데모를 제공합니다.
-- 온라인 서비스: 코드실행 없이 저희의 모델을 실행해보시고 싶으신 분들을 위해서 instruction-tuned LLaMA-7B와 LLaMA-33B 배포하였습니다.
-- 코랩 챗봇 (shell): 쉘 기반의 상호작용 챗봇으로 코랩에서 챗봇을 쉽게 배포해보실 수 있습니다.
-- 코랩 챗봇 (web): 웹 기반의 상호작용 챗봇으로 코랩에서 자신만의 챗봇을 쉽게 배포해보실 수 있습니다.
-- 로컬 배포: 로컬에서 모델/챗봇을 배포할 수 있는 방법 또한 제공하기 때문에 충분한 리소스가 있으시다면 위의 세 가지 방법보다 훨씬 큰 모델을 배포해보실 수 있습니다.
+### 파인 튜닝 (전체 매개변수)
+> [!IMPORTANT]
+> 최근에 데이터 저장 서버에 일부 문제가 발생했습니다. 데이터를 다운로드할 때, 최신 스크립트인 메인 브랜치의 [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) 를 사용해주시기 바랍니다. 불편을 끼쳐드려 죄송합니다.
 
+전체 매개변수 파인 튜닝은 모델의 모든 매개변수를 업데이트합니다. GPT-2의 전체 매개변수 파인 튜닝의 예시는 아래와 같습니다:
+```sh
+cd data && ./download.sh alpaca && cd -
 
-[![Code License](https://img.shields.io/badge/Online%20Service-Web-green.svg)](https://lmflow.com)
-[![colab badge](https://img.shields.io/badge/Colab-(shell)%20%20chatbot:%20gpt--neo-orange?logo=google-colab&amp)](https://colab.research.google.com/drive/1P9Hf6_mLE7WHH92pw73j9D5kz6GTdkow?usp=sharing)
-[![colab badge](https://img.shields.io/badge/Colab-(web)%20%20chatbot:%20gpt--neo-blue?logo=google-colab&amp)](https://colab.research.google.com/drive/1LLtiiQO-ZIIFsTKxYzGWYX9BDRc-v8dq?usp=sharing)
-
+./scripts/run_finetune.sh \
+  --model_name_or_path gpt2 \
+  --dataset_path data/alpaca/train \
+  --output_model_path output_models/finetuned_gpt2
+```
 
 ### Online Service
 > LMflow의 [웹 서비스를](https://lmflow.com/) 방문해주시면 감사하겠습니다. LMflow의 웹사이트에 LLaMA-7B-tuned와 LLaMA-33B-tuned를 미리 배포해 놓았습니다.  웹사이트 트래픽이 많을 경우, 웹사이트가 적절하게 응답하지 않을 수 있지만, 웹 서비스의 `Local Deploy`를 참조하여 직접 배포해보실 수도 있습니다.
