@@ -2,10 +2,12 @@
 # Please run this script under ${project_id} in project directory of
 
 # Parses arguments
+WORLD_SIZE=2
+CUDA_VISIBLE_DEVICES=2,3
 model_name_or_path=Llama-2-7b-hf
 dataset_path=data/stack_exchange_paired/train
 output_dir=output_models/dpo
-deepspeed_args="--master_port=11000"
+deepspeed_args="--include localhost:2,3 --master_port=11000"
 
 while [[ $# -ge 1 ]]; do
   key="$1"
@@ -46,6 +48,7 @@ deepspeed ${deepspeed_args} \
     --learning_rate 1e-4 \
     --use_lora 1 \
     --lora_r 8 \
+    --sanity_check True \
     --save_aggregated_lora 0\
     --logging_steps 20 \
     | tee ${log_dir}/train.log \
