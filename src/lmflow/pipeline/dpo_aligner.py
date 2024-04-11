@@ -100,6 +100,7 @@ class DPOAligner(BaseAligner):
             bf16=True,
             remove_unused_columns=False,
             run_name="dpo_llama2",
+            ddp_find_unused_parameters=False,
             # gradient_checkpointing_kwargs=dict(use_reentrant=self.aligner_args.gradient_checkpointing_use_reentrant),
             seed=self.aligner_args.seed,
         )

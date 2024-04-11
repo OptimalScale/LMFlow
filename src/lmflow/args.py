@@ -490,21 +490,16 @@ class DatasetArguments:
         }
     )
     disable_group_texts: bool = field(
-        default=True,
+        default=False,
         metadata={
             "help": (
-                "Whether we disable group of original samples together to"
-                " generate sample sequences of length `block_size`"
-                " By Default, it is True, which means the long samples"
-                " are truncated to `block_size` tokens"
-                " and short samples are padded to `block_size` tokens."
-                " If set to False, we group every 1000 tokenized"
-                " sequences together, divide them into"
-                " [{total_num_tokens} / {block_size}] sequences,"
-                " each with `block_size` tokens"
-                " (the remaining tokens are ommited."
-                " This group text behavior is useful"
-                " for continual pretrain or pretrain."
+                "Whether we group original samples together to generate sample"
+                " sequences of length `block_size`. By default, we group every"
+                " 1000 tokenized sequences together, divide them into "
+                " [{total_num_tokens} / {block_size}] sequences, each with"
+                " `block_size` tokens (the remaining tokens are ommited."
+                " If this flag is set to True, we only group 1 tokenized"
+                " sequence, i.e. cutting long sequence into chunks."
             )
         },
     )
