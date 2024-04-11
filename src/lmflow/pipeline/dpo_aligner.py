@@ -121,7 +121,7 @@ class DPOAligner(BaseAligner):
     def _load_dataset(self):
         # load training set
         self.train_dataset = get_paired_dataset(data_root=self.data_args.dataset_path,
-                                                data_dir="rl",
+                                                data_dir="data/rl",
                                                 sanity_check=self.aligner_args.sanity_check)
         self.train_dataset = self.train_dataset.filter(
             lambda x: len(x["prompt"]) + len(x["chosen"]) <= self.aligner_args.max_length
@@ -129,7 +129,7 @@ class DPOAligner(BaseAligner):
         )
         # load evaluation set
         self.eval_dataset = get_paired_dataset(data_root=self.data_args.dataset_path,
-                                               data_dir="evaluation",
+                                               data_dir="data/evaluation",
                                                sanity_check=True)
         self.eval_dataset = self.eval_dataset.filter(
             lambda x: len(x["prompt"]) + len(x["chosen"]) <= self.aligner_args.max_length

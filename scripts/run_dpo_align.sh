@@ -2,12 +2,12 @@
 # Please run this script under ${project_id} in project directory of
 
 # Parses arguments
-WORLD_SIZE=2
-CUDA_VISIBLE_DEVICES=2,3
-model_name_or_path=Llama-2-7b-hf
-dataset_path=data/stack_exchange_paired/train
+model_name_or_path=meta-llama/Llama-2-7b-hf
+dataset_path=data/stack-exchange-paired-dummy
 output_dir=output_models/dpo
-deepspeed_args="--include localhost:2,3 --master_port=11000"
+deepspeed_args="--master_port=11000"
+# specify gpus/single gpu here by 
+# `--include localhost:0,1` or `--include localhost:0`
 
 while [[ $# -ge 1 ]]; do
   key="$1"
