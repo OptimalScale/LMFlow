@@ -102,7 +102,7 @@ Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASET
 
 ### Finetuning (Full)
 Full training updates all the parameters to finetune a language model.
-Here is an example to finetune a GPT-2 base model
+Here is an example to finetune a GPT-2 base model. (We encounter a data server problem recently. To avoid errors, please use the latest [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) script in main branch to download the dataset)
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -113,7 +113,8 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Finetuning (LISA)
-[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile:
+[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile: (We encounter a data server problem recently. To avoid errors, please use the latest [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) script in main branch to download the dataset)
+
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -157,7 +158,6 @@ Running the following command will launch the demo for robin-7b:
 pip install gradio
 python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
 ```
-We also hosted it on Hugging Face [Space](https://huggingface.co/spaces/OptimalScale/Robin-7b).
 
 
 ### Evaluation
@@ -242,7 +242,6 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 * Multimodal Chatbot
 
   LMFlow supports multimodal inputs of images and texts. Check out our [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh).
-  [Online Demo](http://multimodal.lmflow.online) is also provided.
 </details>
 
 
