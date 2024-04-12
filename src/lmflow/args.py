@@ -31,7 +31,7 @@ class ModelArguments:
     """
     Define a class ModelArguments using the dataclass decorator. 
     The class contains several optional parameters that can be used to configure a model. 
-    
+
     model_name_or_path : str
         a string representing the path or name of a pretrained
         model checkpoint for weights initialization. If None, a model will be trained from scratch.
@@ -39,15 +39,15 @@ class ModelArguments:
     model_type :  str
         a string representing the type of model to use if training from
         scratch. If not provided, a pretrained model will be used.
-    
+
     config_overrides :  str
         a string representing the default config settings to override
         when training a model from scratch.
-    
+
     config_name : str
         a string representing the name or path of the pretrained config to
         use, if different from the model_name_or_path.
-    
+
     tokenizer_name :  str
         a string representing the name or path of the pretrained tokenizer
         to use, if different from the model_name_or_path.
@@ -77,6 +77,8 @@ class ModelArguments:
         enough.
     use_int8 : bool
         a boolean indicating whether to load int8 quantization for inference.
+    load_in_4bit : bool
+        whether to load the model in 4bit
     """
 
     model_name_or_path: Optional[str] = field(
@@ -151,7 +153,7 @@ class ModelArguments:
             )
         },
     )
-    trust_remote_code : bool = field(
+    trust_remote_code: bool = field(
         default=False,
         metadata={
             "help": (
@@ -180,12 +182,12 @@ class ModelArguments:
     bits: int = field(
         default=4,
         metadata={"help": "The number of bits for quantization.",
-                  "choices": [4, 8],},
+                  "choices": [4, 8], },
     )
     quant_type: str = field(
         default='nf4',
         metadata={"help": "The quantization type for quantization.",
-                  "choices": ["nf4", "fp4"],},
+                  "choices": ["nf4", "fp4"], },
     )
     double_quant: bool = field(
         default=True,
@@ -197,11 +199,12 @@ class ModelArguments:
     )
     lora_alpha: int = field(
         default=32,
-        metadata={"help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
+        metadata={
+            "help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
     )
     lora_target_modules: List[str] = field(
         default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",
-                              }
+                                }
     )
     lora_dropout: float = field(
         default=0.1,
@@ -210,7 +213,7 @@ class ModelArguments:
     save_aggregated_lora: bool = field(
         default=False,
         metadata={"help": "Whether to save aggregated lora."},
-        )
+    )
     use_ram_optimized_load: bool = field(
         default=True,
         metadata={"help": "Whether use disk mapping when memory is not enough."}
@@ -233,7 +236,7 @@ class ModelArguments:
         }
     )
     do_rope_scaling: bool = field(
-        default = False,
+        default=False,
         metadata={
             "help": (
                 "whether do ROPE scaling for llama model."
@@ -242,7 +245,7 @@ class ModelArguments:
                 "NTK_scaling credits to the Reddit users /u/bloc97 and /u/emozilla."
                 "https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/ntkaware_scaled_rope_allows_llama_models_to_have/"
             )
-        }   
+        }
     )
     rope_pi_ratio: int = field(
         default=1,
@@ -263,6 +266,12 @@ class ModelArguments:
     use_int8: bool = field(
         default=False,
         metadata={"help": "whether to load int8 quantization for inference"}
+    )
+    load_in_4bit: Optional[bool] = field(
+        default=True,
+        metadata={
+            "help": "whether to load the model in 4bit"
+        },
     )
 
     def __post_init__(self):
@@ -345,12 +354,13 @@ class VisModelArguments(ModelArguments):
         metadata={"help": "Path to pretrained model."},
     )
 
+
 @dataclass
 class DatasetArguments:
     """
-    Define a class DatasetArguments using the dataclass decorator. 
-    The class contains several optional parameters that can be used to configure a dataset for a language model. 
-    
+    Define a class DatasetArguments using the dataclass decorator.
+    The class contains several optional parameters that can be used to configure a dataset for a language model.
+
 
     dataset_path : str
         a string representing the path of the dataset to use.
@@ -374,26 +384,26 @@ class DatasetArguments:
         a string representing the path to the input evaluation data file to evaluate the perplexity on (a text file).
 
     max_train_samples : int
-        an integer indicating the maximum number of training examples to use for debugging or quicker training. 
+        an integer indicating the maximum number of training examples to use for debugging or quicker training.
         If set, the training dataset will be truncated to this number.
 
     max_eval_samples: int
-        an integer indicating the maximum number of evaluation examples to use for debugging or quicker training. 
+        an integer indicating the maximum number of evaluation examples to use for debugging or quicker training.
         If set, the evaluation dataset will be truncated to this number.
 
     streaming : bool
         a boolean indicating whether to enable streaming mode.
 
     block_size: int
-        an integer indicating the optional input sequence length after tokenization. The training dataset will be 
+        an integer indicating the optional input sequence length after tokenization. The training dataset will be
         truncated in blocks of this size for training.
-        
+
     train_on_prompt: bool
         a boolean indicating whether to train on prompt for conversation datasets such as ShareGPT.
-        
+
     disable_conversation_bos_token: bool
         a boolean indicating whether to disable the bos token for conversation datasets.
-        
+
     disable_conversation_eos_token: bool
         a boolean indicating whether to disable the eos token for conversation datasets.
 
@@ -402,7 +412,7 @@ class DatasetArguments:
     `keep_linebreaks`, and `prompt_structure`.
 
     The field function is used to set default values and provide help messages for each parameter. The Optional type hint is
-    used to indicate that a parameter is optional. The metadata argument is used to provide additional information about 
+    used to indicate that a parameter is optional. The metadata argument is used to provide additional information about
     each parameter, such as a help message.
     """
 
@@ -480,21 +490,16 @@ class DatasetArguments:
         }
     )
     disable_group_texts: bool = field(
-        default=True,
+        default=False,
         metadata={
             "help": (
-                "Whether we disable group of original samples together to"
-                " generate sample sequences of length `block_size`"
-                " By Default, it is True, which means the long samples"
-                " are truncated to `block_size` tokens"
-                " and short samples are padded to `block_size` tokens."
-                " If set to False, we group every 1000 tokenized"
-                " sequences together, divide them into"
-                " [{total_num_tokens} / {block_size}] sequences,"
-                " each with `block_size` tokens"
-                " (the remaining tokens are ommited."
-                " This group text behavior is useful"
-                " for continual pretrain or pretrain."
+                "Whether we group original samples together to generate sample"
+                " sequences of length `block_size`. By default, we group every"
+                " 1000 tokenized sequences together, divide them into "
+                " [{total_num_tokens} / {block_size}] sequences, each with"
+                " `block_size` tokens (the remaining tokens are ommited."
+                " If this flag is set to True, we only group 1 tokenized"
+                " sequence, i.e. cutting long sequence into chunks."
             )
         },
     )
@@ -550,7 +555,6 @@ class MultiModalDatasetArguments(DatasetArguments):
     sep_style: Optional[str] = field(
         default="plain", metadata={"help": "Sep style in multi_modality dataset."}
     )
-
 
 
 @dataclass
@@ -624,28 +628,28 @@ class EvaluatorArguments:
     mixed_precision : str, choice from ["bf16","fp16"].
         mixed precision mode, whether to use bf16 or fp16
 
-    deepspeed : 
+    deepspeed :
         Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
         loaded json file as a dict
-        
+
     temperature : float
         An argument of model.generate in huggingface to control the diversity of generation.
-        
+
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
     """
     local_rank: int = field(
         default=-1,
         metadata={"help": "For distributed training: local_rank"
-        }
+                  }
     )
 
     random_shuffle: Optional[bool] = field(
-        default=False, 
+        default=False,
         metadata={"help": ""
-        }
+                  }
     )
-    
+
     use_wandb: Optional[bool] = field(
         default=False,
         metadata={
@@ -672,7 +676,7 @@ class EvaluatorArguments:
             "help": (
                 "mixed precision mode, whether to use bf16 or fp16"
             ),
-            "choices": ["bf16","fp16"],
+            "choices": ["bf16", "fp16"],
         },
     )
     deepspeed: Optional[str] = field(
@@ -749,22 +753,23 @@ class EvaluatorArguments:
     use_accelerator_for_evaluator: bool = field(
         default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
-        
+
     temperature: float = field(
         default=0,
         metadata={"help": "Temperature during inference."},
     )
-    
+
     repetition_penalty: float = field(
         default=1,
         metadata={"help": "Repetition_penalty during inference."},
     )
-        
+
     max_new_tokens: int = field(
         default=100,
         metadata={"help": "Maximum length during inference."},
     )
-    
+
+
 @dataclass
 class InferencerArguments:
     """
@@ -781,10 +786,10 @@ class InferencerArguments:
         loaded json file as a dict
     mixed_precision : str, choice from ["bf16","fp16"].
         mixed precision mode, whether to use bf16 or fp16
-    
+
     temperature : float
         An argument of model.generate in huggingface to control the diversity of generation.
-        
+
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
     """
@@ -798,19 +803,19 @@ class InferencerArguments:
     local_rank: int = field(
         default=-1,
         metadata={"help": "For distributed training: local_rank"
-        },
+                  },
     )
-        
+
     temperature: float = field(
         default=0.0,
         metadata={"help": "Temperature during inference."},
     )
-    
+
     repetition_penalty: float = field(
         default=1,
         metadata={"help": "Repetition_penalty during inference."},
     )
-        
+
     max_new_tokens: int = field(
         default=100,
         metadata={"help": "Maximum length during inference."},
@@ -839,7 +844,7 @@ class InferencerArguments:
             "help": (
                 "mixed precision mode, whether to use bf16 or fp16"
             ),
-            "choices": ["bf16","fp16"],
+            "choices": ["bf16", "fp16"],
         },
     )
     do_sample: Optional[bool] = field(
@@ -926,6 +931,7 @@ class RaftAlignerArguments(TrainingArguments):
         },
     )
 
+
 @dataclass
 class BenchmarkingArguments:
     dataset_name: Optional[str] = field(
@@ -939,11 +945,154 @@ class BenchmarkingArguments:
         metadata={
             "help": "the metric the model will be evaluated on",
             "choices": ["acc", "acc_norm", "bleu", "chrf", "em", "f1", "ppl", \
-                "ter", "r@1", "r@2", "mrr", "mc1", "mc2", "word_perplexity", \
-                    "byte_perplexity", "bits_per_byte"],
+                        "ter", "r@1", "r@2", "mrr", "mc1", "mc2", "word_perplexity", \
+                        "byte_perplexity", "bits_per_byte"],
         },
     )
 
+
+@dataclass
+class DPOAlignerArguments:
+    """
+    The arguments for the DPO training script.
+    """
+    local_rank: int = field(
+        default=-1,
+        metadata={"help": "For distributed training: local_rank"
+                  },
+    )
+    # data parameters
+    beta: Optional[float] = field(
+        default=0.1,
+        metadata={
+            "help": "the beta parameter for DPO loss"
+        }
+    )
+    # # training parameters
+    learning_rate: Optional[float] = field(
+        default=5e-4,
+        metadata={
+            "help": "optimizer learning rate"
+        }
+    )
+    lr_scheduler_type: Optional[str] = field(
+        default="cosine",
+        metadata={
+            "help": "the lr scheduler type"
+        }
+    )
+    warmup_steps: Optional[int] = field(
+        default=100, metadata={
+            "help": "the number of warmup steps"
+        }
+    )
+    weight_decay: Optional[float] = field(
+        default=0.05, metadata={
+            "help": "the weight decay"
+        }
+    )
+    optimizer_type: Optional[str] = field(
+        default="paged_adamw_32bit",
+        metadata={
+            "help": "the optimizer type"
+        }
+    )
+
+    per_device_train_batch_size: Optional[int] = field(
+        default=4,
+        metadata={
+            "help": "train batch size per device"
+        }
+    )
+    per_device_eval_batch_size: Optional[int] = field(
+        default=1, metadata={
+            "help": "eval batch size per device"
+        }
+    )
+    gradient_accumulation_steps: Optional[int] = field(
+        default=4,
+        metadata={
+            "help": "the number of gradient accumulation steps"
+        },
+    )
+    gradient_checkpointing: Optional[bool] = field(
+        default=True,
+        metadata={
+            "help": "whether to use gradient checkpointing"
+        },
+    )
+
+    gradient_checkpointing_use_reentrant: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "whether to use reentrant for gradient checkpointing"
+        },
+    )
+    max_prompt_length: Optional[int] = field(
+        default=512,
+        metadata={
+            "help": "the maximum prompt length"
+        },
+    )
+    max_length: Optional[int] = field(
+        default=1024,
+        metadata={
+            "help": "the maximum sequence length"
+        },
+    )
+    max_steps: Optional[int] = field(
+        default=1000,
+        metadata={
+            "help": "max number of training steps"
+        },
+    )
+    logging_steps: Optional[int] = field(
+        default=10,
+        metadata={
+            "help": "the logging frequency"
+        },
+    )
+    save_steps: Optional[int] = field(
+        default=100,
+        metadata={
+            "help": "the saving frequency"
+        },
+    )
+    eval_steps: Optional[int] = field(
+        default=100,
+        metadata={
+            "help": "the evaluation frequency"
+        },
+    )
+    output_dir: Optional[str] = field(
+        default="./results",
+        metadata={
+            "help": "the output directory"
+        },
+    )
+    log_freq: Optional[int] = field(
+        default=1,
+        metadata={
+            "help": "the logging frequency"
+        },
+    )
+    sanity_check: Optional[bool] = field(
+        default=False,
+        metadata={
+            "help": "only train on 1000 samples"
+        }
+    )
+    report_to: Optional[str] = field(
+        default="wandb",
+        metadata={
+            "help": 'The list of integrations to report the results and logs to. Supported platforms are `"azure_ml"`,'
+                    '`"comet_ml"`, `"mlflow"`, `"neptune"`, `"tensorboard"`,`"clearml"` and `"wandb"`. '
+                    'Use `"all"` to report to all integrations installed, `"none"` for no integrations.'
+        },
+    )
+    seed: Optional[int] = field(
+        default=0, metadata={"help": "Random seed that will be set at the beginning of training."}
+    )
 
 
 PIPELINE_ARGUMENT_MAPPING = {
@@ -951,6 +1100,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
+    "dpo_aligner": DPOAlignerArguments,
 }
 
 
@@ -958,5 +1108,6 @@ class AutoArguments:
     """
     Automatically choose arguments from FinetunerArguments or EvaluatorArguments.
     """
+
     def get_pipeline_args_class(pipeline_name: str):
         return PIPELINE_ARGUMENT_MAPPING[pipeline_name]
