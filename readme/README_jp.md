@@ -15,18 +15,22 @@
     <p>
 </h4>
 
+> [!NOTE]
+> This README file was translated by LLM for reference only. Japanese speakers are welcome to submit PRs to polish the document!  
+
+> [!NOTE]  
 日本語版はChatGPTによって翻訳されました。もし間違いがあれば、contributorに修正していただけると幸いです。また、英語版と内容に差異がある場合は、英語版を優先してください。
 
+[![Website](https://img.shields.io/badge/Website-Demo-20B2AA.svg)](https://lmflow.com)
 [![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Doc](https://img.shields.io/badge/Website-Doc-ff69b4.svg)](https://optimalscale.github.io/LMFlow/)
-[![Embark](https://img.shields.io/badge/discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/u9VJNpzhvA)
-[![slack badge](https://img.shields.io/badge/Slack-join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1wju9nicy-woXbNtS~5MavHSAtiMxmxQ)
-[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://i.328888.xyz/2023/04/05/i8gG4z.jpeg)
+[![Embark](https://img.shields.io/badge/Discord-LMFlow-%237289da.svg?logo=discord)](https://discord.gg/u9VJNpzhvA)
+[![slack badge](https://img.shields.io/badge/Slack-Join-blueviolet?logo=slack&amp)](https://join.slack.com/t/lmflow/shared_invite/zt-1wju9nicy-woXbNtS~5MavHSAtiMxmxQ)
+[![WeChat badge](https://img.shields.io/badge/WeChat-Join-brightgreen?logo=wechat&amp)](https://ibb.co/ZhM4hhn)
 
 拡張性、利便性、効率性に優れた、大規模な機械学習モデルのファインチューニングに最適なツールボックスで、ユーザーフレンドリーで高速かつ信頼性があり、コミュニティ全体で利用可能な設計です。
 
-すべての人のための大規模言語モデル。私たちの[ビジョン](https://github.com/OptimalScale/LMFlow#vision)をご覧ください
 
 <p align="center" width="100%">
 <img src="../assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
@@ -34,12 +38,80 @@
 
 
 ## Latest News
-* [2023-04-02] [Web service is online!](https://lmflow.com/)
-* [2023-04-01] [Release Chinese checkpoints in model zoo: LLaMA-7B-tuned, LLaMA-13B-tuned, LLaMA-33B-tuned.](https://github.com/OptimalScale/LMFlow#model-zoo)
-* [2023-04-01] [Release English checkpoints in model zoo: LLaMA-7B-medical, LLaMA-13B-medical, and LLaMA-33B-medical.](https://github.com/OptimalScale/LMFlow#model-zoo)
-* [2023-03-27] [Support full tuning and lora tuning for all decoder models.](https://github.com/OptimalScale/LMFlow#supported-models)
-* [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance)
-* [2023-03-27] [Release code and checkpoints - version 0.0.1](https://optimalscale.github.io/LMFlow/)
+* [2024-03-27] :rocket: [LISA](https://arxiv.org/abs/2403.17919) に対応 —— オフロード不要、24GのGPUで7Bモデルをトレーニング！ :rocket:
+* [2023-09-11] [スペキュラティブ・デコーディング](https://arxiv.org/abs/2211.17192) をサポート、使用方法や簡単な性能統計については [使用ガイド](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) を参照してください。
+* [2023-08-14] [位置補間（Linear & NTK scaling）](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) を使用したLLaMAのコンテキストウィンドウを拡張する機能をサポートしています。
+* [2023-08-07] [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html) をサポートしています。詳細は[Flash Attentionの使用ガイド](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md)を参照してください。
+* [2023-08-02] [Llama2](https://ai.meta.com/llama/)、[ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b)、[Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) をサポートしています。
+
+
+## Quick Start
+### Setup
+私たちのリポジトリはすでにLinux（Ubuntu 20.04）で包括的なテストを完了しています。他のオペレーティングシステムプラットフォーム（MacOS、Windows）は完全にテストされていませんので、予期しないエラーが発生する可能性があります。まずLinux/Windows WSLで試してみるか、またはGoogle Colabをご利用ください。
+CUDA 10.3-11.7については、`v0.0.5`またはそれ以前のバージョンを使用することをお勧めします。11.7よりも新しいCUDAの場合は、より良い体験を得るために、安定したブランチ`>= v0.0.6`を使用してください。
+```bash
+git clone https://github.com/OptimalScale/LMFlow.git
+cd LMFlow
+conda create -n lmflow python=3.9 -y
+conda activate lmflow
+conda install mpi4py
+bash install.sh
+```
+
+### Prepare Dataset
+当社の[公式ドキュメント（英語版）](https://optimalscale.github.io/LMFlow/examples/DATASETS.html)を参照してください。公式ドキュメントは現在翻訳中ですので、しばらくお待ちください。
+
+### Fine-Tuning (Full)
+> [!IMPORTANT]
+> 最近、当社のデータストレージサーバーに問題が発生しました。データをダウンロードする際には、最新の [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) スクリプトが main ブランチにあることをご確認ください。ご不便をおかけして申し訳ございません。
+
+全パラメーターファインチューニングは、モデルのすべてのパラメーターを更新します。GPT-2の全パラメーターファインチューニングの例を以下に示します：
+```sh
+cd data && ./download.sh alpaca && cd -
+
+./scripts/run_finetune.sh \
+  --model_name_or_path gpt2 \
+  --dataset_path data/alpaca/train \
+  --output_model_path output_models/finetuned_gpt2
+```
+
+### Fine-Tuning (LISA)
+> [!IMPORTANT]
+> 最近、当社のデータストレージサーバーに問題が発生しました。データをダウンロードする際には、最新の [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) スクリプトが main ブランチにあることをご確認ください。ご不便をおかけして申し訳ございません。
+
+[LISA](https://arxiv.org/abs/2403.17919) は、**メモリ効率** の高いファインチューニングアルゴリズムであり、メモリとランダムに解凍された層の間でのバランスを取ることができます。以下のスクリプトは現在、**単一のGPU** 上でのみテストされています。最新情報にご注意ください！ :smile:
+```sh
+cd data && ./download.sh alpaca && cd -
+
+./scripts/run_finetune_with_lisa.sh \
+  --model_name_or_path meta-llama/Llama-2-7b-hf \
+  --dataset_path data/alpaca/train \
+  --output_model_path output_models/finetuned_llama \
+  --lisa_activated_layers 1 \
+  --lisa_interval_steps 20
+```
+
+### Fine-Tuning (LoRA)
+> [!IMPORTANT]
+> 最近、当社のデータストレージサーバーに問題が発生しました。データをダウンロードする際には、最新の [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) スクリプトが main ブランチにあることをご確認ください。ご不便をおかけして申し訳ございません。
+
+LoRAは、全パラメータ微調整よりも効率的なパラメータ効率微調整アルゴリズムです。
+```sh
+cd data && ./download.sh alpaca && cd -
+
+# Saves lora only
+./scripts/run_finetune_with_lora.sh \
+  --model_name_or_path facebook/galactica-1.3b \
+  --dataset_path data/alpaca/train \
+  --output_lora_path output_models/finetuned_galactica_lora
+
+# Saves lora and merges into original model
+./scripts/run_finetune_with_lora_save_aggregated_weights.sh \
+  --model_name_or_path facebook/galactica-1.3b \
+  --dataset_path data/alpaca/train \
+  --output_model_path output_models/finetuned_galactica
+```
+
 
 ## Demos
 
