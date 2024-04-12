@@ -5,8 +5,8 @@ tokenizers>=0.13.3
 peft==0.4.0
 torch>=2.0.1
 wandb==0.14.0
-deepspeed==0.10.0
-trl==0.5.0
+deepspeed>=0.10.0
+trl>=0.5.0
 sentencepiece
 transformers>=4.31.0
 flask
@@ -23,3 +23,5 @@ gradio
 accelerate>=0.27.2
 einops>=0.6.1
 scikit-learn==1.2.2
+flash-attn
+vllm
