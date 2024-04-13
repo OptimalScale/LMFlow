@@ -83,8 +83,8 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 ### Setup
 
-Our package has been fully tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested.
-You may encounter some unexpected errors. You may try it first on a Linux machine or use Google Colab to experience it.
+Our package has been tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested, where you may encounter unexpected errors. If you are using LMFlow for the first time, we recommend you to try on a Linux machine or Google Colab.
+
 CUDA versions 10.3-11.7 are supported in versions `v0.0.5` or older. For CUDA versions greater than 11.7, one can use our stable branch `>= v0.0.6`.
 
 ```bash
@@ -102,7 +102,8 @@ Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASET
 
 ### Finetuning (Full)
 Full training updates all the parameters to finetune a language model.
-Here is an example to finetune a GPT-2 base model. (We encounter a data server problem recently. To avoid errors, please use the latest [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) script in main branch to download the dataset)
+Here is an example to finetune a GPT-2 base model.
+
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -113,8 +114,7 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Finetuning (LISA)
-[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile: (We encounter a data server problem recently. To avoid errors, please use the latest [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) script in main branch to download the dataset)
-
+[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile:
 ```sh
 cd data && ./download.sh alpaca && cd -
 
