@@ -80,9 +80,6 @@ bash install.sh
 저희의 [공식 문서(영문)](https://optimalscale.github.io/LMFlow/examples/DATASETS.html) 를 참고해 주세요. 공식 문서는 현재 번역 중이며, 조금만 기다려 주시기 바랍니다.
 
 ### Fine-Tuning (Full)
-> [!IMPORTANT]
-> 최근에 데이터 저장 서버에 일부 문제가 발생했습니다. 데이터를 다운로드할 때, 최신 스크립트인 메인 브랜치의 [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) 를 사용해주시기 바랍니다. 불편을 끼쳐드려 죄송합니다.
-
 전체 매개변수 파인 튜닝은 모델의 모든 매개변수를 업데이트합니다. GPT-2의 전체 매개변수 파인 튜닝의 예시는 아래와 같습니다:
 ```sh
 cd data && ./download.sh alpaca && cd -
@@ -94,8 +91,6 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Fine-Tuning (LISA)
-> [!IMPORTANT]
-> 최근에 데이터 저장 서버에 일부 문제가 발생했습니다. 데이터를 다운로드할 때, 최신 스크립트인 메인 브랜치의 [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) 를 사용해주시기 바랍니다. 불편을 끼쳐드려 죄송합니다.
 [LISA](https://arxiv.org/abs/2403.17919) 는 **메모리 효율적인(memory-efficient)** 파인 튜닝 알고리즘이며, 메모리와 무작위로 해동하는 레이어 수 사이의 균형을 가능하게 합니다. 아래 스크립트는 현재 **단일 GPU** 에서만 테스트되었습니다. 최신 업데이트에 주목해 주세요! :smile:
 ```sh
 cd data && ./download.sh alpaca && cd -
@@ -109,9 +104,6 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Fine-Tuning (LoRA)
-> [!IMPORTANT]
-> 최근에 데이터 저장 서버에 일부 문제가 발생했습니다. 데이터를 다운로드할 때, 최신 스크립트인 메인 브랜치의 [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) 를 사용해주시기 바랍니다. 불편을 끼쳐드려 죄송합니다.
-
 LoRA는 전체 매개변수 미세 조정보다 더 효율적인 매개변수 효율적인 미세 조정 알고리즘입니다.
 ```sh
 cd data && ./download.sh alpaca && cd -

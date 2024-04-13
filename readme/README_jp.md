@@ -62,9 +62,6 @@ bash install.sh
 当社の[公式ドキュメント（英語版）](https://optimalscale.github.io/LMFlow/examples/DATASETS.html)を参照してください。公式ドキュメントは現在翻訳中ですので、しばらくお待ちください。
 
 ### Fine-Tuning (Full)
-> [!IMPORTANT]
-> 最近、当社のデータストレージサーバーに問題が発生しました。データをダウンロードする際には、最新の [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) スクリプトが main ブランチにあることをご確認ください。ご不便をおかけして申し訳ございません。
-
 全パラメーターファインチューニングは、モデルのすべてのパラメーターを更新します。GPT-2の全パラメーターファインチューニングの例を以下に示します：
 ```sh
 cd data && ./download.sh alpaca && cd -
@@ -76,9 +73,6 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Fine-Tuning (LISA)
-> [!IMPORTANT]
-> 最近、当社のデータストレージサーバーに問題が発生しました。データをダウンロードする際には、最新の [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) スクリプトが main ブランチにあることをご確認ください。ご不便をおかけして申し訳ございません。
-
 [LISA](https://arxiv.org/abs/2403.17919) は、**メモリ効率** の高いファインチューニングアルゴリズムであり、メモリとランダムに解凍された層の間でのバランスを取ることができます。以下のスクリプトは現在、**単一のGPU** 上でのみテストされています。最新情報にご注意ください！ :smile:
 ```sh
 cd data && ./download.sh alpaca && cd -
@@ -92,9 +86,6 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### Fine-Tuning (LoRA)
-> [!IMPORTANT]
-> 最近、当社のデータストレージサーバーに問題が発生しました。データをダウンロードする際には、最新の [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh) スクリプトが main ブランチにあることをご確認ください。ご不便をおかけして申し訳ございません。
-
 LoRAは、全パラメータ微調整よりも効率的なパラメータ効率微調整アルゴリズムです。
 ```sh
 cd data && ./download.sh alpaca && cd -

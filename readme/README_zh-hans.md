@@ -74,9 +74,6 @@ bash install.sh
 请参考我们的 [官方文档（英文版）](https://optimalscale.github.io/LMFlow/examples/DATASETS.html)。官方文档正在汉化中，请耐心等待。
 
 ### 微调（全参数）
-> [!IMPORTANT]
-> 近期我们的数据存储服务器遇到了一些问题。当下载数据时，请确保使用main分支中最新的脚本 [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh)。给您带来的不便敬请谅解。
-
 全参数微调将更新模型的所有参数。全参数微调GPT-2的示例如下：
 ```sh
 cd data && ./download.sh alpaca && cd -
@@ -88,9 +85,6 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### 微调（LISA）
-> [!IMPORTANT]
-> 近期我们的数据存储服务器遇到了一些问题。当下载数据时，请确保使用main分支中最新的脚本 [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh)。给您带来的不便敬请谅解。
-
 [LISA](https://arxiv.org/abs/2403.17919) 是一种 **内存高效（memory-efficient）** 的微调算法，它允许在内存和随机解冻的层数之间进行权衡。下面的脚本目前仅在 **单个GPU** 上进行了测试。请关注我们的最新更新！ :smile:
 ```sh
 cd data && ./download.sh alpaca && cd -
@@ -104,9 +98,6 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ### 微调（LoRA）
-> [!IMPORTANT]
-> 近期我们的数据存储服务器遇到了一些问题。当下载数据时，请确保使用main分支中最新的脚本 [`download.sh`](https://github.com/OptimalScale/LMFlow/blob/main/data/download.sh)。给您带来的不便敬请谅解。
-
 LoRA 是一种比全参数微调更为高效的 **参数高效（parameter-efficient）** 微调算法。
 ```sh
 cd data && ./download.sh alpaca && cd -
