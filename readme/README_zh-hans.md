@@ -60,6 +60,7 @@
 ## 快速上手
 ### 安装
 我们的Repo已经在Linux（Ubuntu 20.04）上进行了全面测试。其他操作系统平台（MacOS、Windows）尚未完全测试，因此可能会遇到一些预期外的错误。建议先在Linux/Windows WSL上尝试使用，或者使用Google Colab来体验。
+
 对于CUDA 10.3-11.7，建议使用`v0.0.5`及更早版本。对于大于11.7的CUDA，请使用我们的稳定分支`>= v0.0.6`以获得更好的体验。
 ```bash
 git clone https://github.com/OptimalScale/LMFlow.git
@@ -131,6 +132,7 @@ python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json -
 
 ### 评测
 [LMFlow Benchmark](https://blog.gopenai.com/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418) 是一个针对开源LLM的自动评估框架。我们使用Negative Log Likelihood (NLL)作为指标来评估LLM的各个方面，如：闲聊、常识推理和指令遵循能力。欢迎使用LMFlow Benchmark对您手上的模型进行评测，并参与我们的 [模型比较（LLM comparision）](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing)。
+
 以GPT-2 XL为例，通过以下指令开始评测：
 ```sh
 ./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
@@ -140,7 +142,6 @@ python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json -
 
 
 ## 支持功能
-
 <details> <summary>微调加速 & 内存优化</summary>
 
 * LISA: Layerwise Importance Sampling for Memory-Efficient Large Language Model Fine-Tuning
