@@ -78,6 +78,57 @@ TEXT2TEXT_DATASET_DESCRIPTION = (
 ).lstrip("\n")
 
 
+CONVERSATION_DATASET_DESCRIPTION = (
+"""
+"conversation": a dataset with conversation instances, with following format (`conversation_id`, `system` and `tools` are optional):
+
+    {
+    "type": "conversation",
+    "instances": [
+        {
+        "conversation_id": "CONVERSATION_ID",
+        "system": "SYSTEM_PROPMT",
+        "tools": ["TOOL_DESCRIPTION_1","TOOL_DESCRIPTION_2","TOOL_DESCRIPTION_X"],
+        "messages": [
+            {
+                "role": "user",
+                "content": "USER_INPUT_1"
+            },
+            {
+                "role": "assistant",
+                "content": "ASSISTANT_RESPONSE_1"
+            },
+            {
+                "role": "user",
+                "content": "USER_INPUT_2"
+            },
+            {
+                "role": "assistant",
+                "content": "ASSISTANT_RESPONSE_2"
+            }
+        ]
+        },
+        {
+        "conversation_id": "CONVERSATION_ID",
+        "system": "SYSTEM_PROPMT",
+        "tools": ["TOOL_DESCRIPTION_1"],
+        "messages": [
+            {
+                "role": "user",
+                "content": "USER_INPUT_1"
+            },
+            {
+                "role": "assistant",
+                "content": "ASSISTANT_RESPONSE_1"
+            }
+        ]
+        }
+    ]
+    }
+"""
+).lstrip("\n")
+
+
 TEXT2TEXT_DATASET_DETAILS = (
 """
     For example,
@@ -166,7 +217,7 @@ DATASET_DESCRIPTION_MAP = {
 INSTANCE_FIELDS_MAP = {
     "text_only": ["text"],
     "text2text": ["input", "output"],
-    "conversation": ["conversation_id", "system", "tools", "messages"],
+    "conversation": ["messages"], # system, tools and conversation_id are optional
     "float_only": ["value"],
     "image_text": ["images", "text"],
 }

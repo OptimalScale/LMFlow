@@ -24,11 +24,11 @@ class ConversationTemplate:
         messages: List[Dict[str, str]],
         system: Optional[str] = None,
         tools: Optional[List[str]] = None,
+        remove_last_sep: bool = False,
         **kwargs
     ) -> Sequence[Tuple[List[int], List[int]]]:
         r'''
         Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
-        TODO: Support for different models.
         Data example: 
         ```json
         {
@@ -51,11 +51,22 @@ class ConversationTemplate:
         assert isinstance(messages, list), "Messages must be a list."
         
         if tools:
-            raise NotImplementedError("Tools are not supported yet.")
+            logger.warning("Tools are not supported yet. Please include tools in the system message manually.")
+        
+        if system:
+            if system.replace(" ",""):
+                if not self.system_formatter:
+                    raise ValueError("Your dataset contains system message but no system formatter is provided.")
+            else:
+                system = None
         
         encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
         
-        if self.separator:
+        if self.separator and remove_last_sep:
+            # For models that require a separator between messages, 
+            # user can include the seperator at the end of each template
+            # and specify the separator. Auto formatting will remove the 
+            # last separator once user specifies this option.
             encoded_pairs = self.remove_last_separator(encoded_pairs, tokenizer)
         
         return encoded_pairs
@@ -171,6 +182,20 @@ class EmptyConversationTemplate(ConversationTemplate):
         ]
     )
     
+
+@dataclass
+class EmptyConversationTemplateWithoutSpecialTokens(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}')
+        ]
+    )
+    
             
 @dataclass
 class Llama2ConversationTemplate(ConversationTemplate):
@@ -201,8 +226,8 @@ class Llama2ConversationTemplate(ConversationTemplate):
         **kwargs
     ) -> Sequence[Tuple[List[int], List[int]]]:
         if tools:
-            raise NotImplementedError("Formatted tools are not supported in Llama2. "
-                                      "Please include tools in the system message.")
+            logger.warning("Formatted tools are not supported in Llama2, thus tools will be ignored. "
+                           "If this is intended, please include tools in the system message manually.")
         
         res_all = []
         
@@ -229,7 +254,7 @@ class Llama2ConversationTemplate(ConversationTemplate):
     
     
 @dataclass
-class QwenConversationTemplate(ConversationTemplate):
+class Qwen2ConversationTemplate(ConversationTemplate):
     user_formatter: Formatter = StringFormatter(
         template=[
             TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')

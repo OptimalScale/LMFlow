@@ -3,10 +3,10 @@ import unittest
 
 from transformers import AutoTokenizer
 
-from lmflow.utils.conversation_template import EmptyConversationTemplate, Llama2ConversationTemplate, QwenConversationTemplate
+from lmflow.utils.conversation_template import EmptyConversationTemplate, Llama2ConversationTemplate, Qwen2ConversationTemplate
 
 
-conversation_singleturn = {
+CONVERSATION_SINGLETURN = {
     "system": "sysinfo",
     "messages": [
         {
@@ -20,7 +20,7 @@ conversation_singleturn = {
     ]
 }
 
-conversation_singleturn_llama2 = [
+CONVERSATION_SINGLETURN_LLAMA2 = [
     {
         "role": "user",
         "content": "[INST] <<SYS>>\nsysinfo\n<</SYS>>\n\nHello [/INST]"
@@ -31,7 +31,7 @@ conversation_singleturn_llama2 = [
     }
 ]
 
-conversation_singleturn_llama2_ids = [
+CONVERSATION_SINGLETURN_LLAMA2_IDS = [
     (
         [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 9675, 3888, 13, 
          29966, 829, 14816, 29903, 6778, 13, 13, 10994, 518, 29914, 25580, 29962],
@@ -39,7 +39,7 @@ conversation_singleturn_llama2_ids = [
     )
 ]
 
-conversation_multiturn = {
+CONVERSATION_MULTITURN = {
     "system": "sysinfo",
     "messages": [
         {
@@ -61,7 +61,7 @@ conversation_multiturn = {
     ]
 }
 
-conversation_multiturn_llama2 = [
+CONVERSATION_MULTITURN_LLAMA2 = [
     {
         "role": "user",
         "content": "[INST] <<SYS>>\nsysinfo\n<</SYS>>\n\nHello [/INST]"
@@ -80,7 +80,7 @@ conversation_multiturn_llama2 = [
     }
 ]
 
-conversation_multiturn_llama2_ids = [
+CONVERSATION_MULTITURN_LLAMA2_IDS = [
     (
         [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 9675, 3888, 13, 
          29966, 829, 14816, 29903, 6778, 13, 13, 10994, 518, 29914, 25580, 29962], 
@@ -102,20 +102,20 @@ class EmptyConversationTemplateTest(unittest.TestCase):
     def test_encode_conversation_singleturn_llama2(self):
         res = self.conversation_template.encode_conversation(
             tokenizer=self.tokenizer,
-            messages=conversation_singleturn_llama2,
+            messages=CONVERSATION_SINGLETURN_LLAMA2,
             system=None,
             tools=None
         )
-        self.assertEqual(res, conversation_singleturn_llama2_ids)
+        self.assertEqual(res, CONVERSATION_SINGLETURN_LLAMA2_IDS)
 
     def test_encode_conversation_multiturn_llama2(self):
         res = self.conversation_template.encode_conversation(
             tokenizer=self.tokenizer,
-            messages=conversation_multiturn_llama2,
+            messages=CONVERSATION_MULTITURN_LLAMA2,
             system=None,
             tools=None
         )
-        self.assertEqual(res, conversation_multiturn_llama2_ids)
+        self.assertEqual(res, CONVERSATION_MULTITURN_LLAMA2_IDS)
         
         
 class Llama2ConversationTemplateTest(unittest.TestCase):
@@ -127,59 +127,59 @@ class Llama2ConversationTemplateTest(unittest.TestCase):
     def test_encode_conversation_singleturn(self):
         res = self.conversation_template.encode_conversation(
             tokenizer=self.tokenizer,
-            messages=conversation_singleturn['messages'],
-            system=conversation_singleturn['system'],
+            messages=CONVERSATION_SINGLETURN['messages'],
+            system=CONVERSATION_SINGLETURN['system'],
             tools=None
         )
-        self.assertEqual(res, conversation_singleturn_llama2_ids)
+        self.assertEqual(res, CONVERSATION_SINGLETURN_LLAMA2_IDS)
         
     def test_encode_conversation_multiturn(self):
         res = self.conversation_template.encode_conversation(
             tokenizer=self.tokenizer,
-            messages=conversation_multiturn['messages'],
-            system=conversation_multiturn['system'],
+            messages=CONVERSATION_MULTITURN['messages'],
+            system=CONVERSATION_MULTITURN['system'],
             tools=None
         )
-        self.assertEqual(res, conversation_multiturn_llama2_ids)
+        self.assertEqual(res, CONVERSATION_MULTITURN_LLAMA2_IDS)
         
         
-class Qwen1_5ConversationTemplateTest(unittest.TestCase):
+class Qwen2ConversationTemplateTest(unittest.TestCase):
     def setUp(self):
         MODEL_PATH = 'Qwen/Qwen1.5-0.5B-Chat'
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=False)
-        self.conversation_template = QwenConversationTemplate()
+        self.conversation_template = Qwen2ConversationTemplate()
         
     def test_encode_conversation_singleturn(self):
         res = self.conversation_template.encode_conversation(
             tokenizer=self.tokenizer,
-            messages=conversation_singleturn['messages'],
-            system=conversation_singleturn['system'],
+            messages=CONVERSATION_SINGLETURN['messages'],
+            system=CONVERSATION_SINGLETURN['system'],
             tools=None
         )
         print(res)
-        for r in res:
-            print(self.tokenizer.decode(r[0]))
-            print(self.tokenizer.decode(r[1]))
         
     def test_encode_conversation_multiturn(self):
         res = self.conversation_template.encode_conversation(
             tokenizer=self.tokenizer,
-            messages=conversation_multiturn['messages'],
-            system=conversation_multiturn['system'],
+            messages=CONVERSATION_MULTITURN['messages'],
+            system=CONVERSATION_MULTITURN['system'],
             tools=None
         )
         print(res)
-        for r in res:
-            print(self.tokenizer.decode(r[0]))
-            print(self.tokenizer.decode(r[1]))
             
-        # print('===')
-        # print(self.tokenizer.apply_chat_template(
-        #     conversation_multiturn['messages'],
-        #     tokenize=False,
-        #     add_generation_prompt=True
-        # ))
-        # print('===')
+        print('===')
+        print(self.tokenizer.apply_chat_template(
+            CONVERSATION_MULTITURN['messages'],
+            tokenize=True,
+            add_generation_prompt=False
+        ))
+        print('===')
+        print(self.tokenizer.apply_chat_template(
+            CONVERSATION_MULTITURN['messages'],
+            tokenize=False,
+            add_generation_prompt=False
+        ))
+        print('===')
 
 
 if __name__ == '__main__':

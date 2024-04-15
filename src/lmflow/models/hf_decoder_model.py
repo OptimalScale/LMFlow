@@ -57,8 +57,15 @@ from lmflow.models.interfaces.tunable import Tunable
 from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
+    CONVERSATION_DATASET_DESCRIPTION
 )
-from lmflow.utils.conversation_template import ConversationTemplate
+from lmflow.utils.conversation_template import (
+    ConversationTemplate, 
+    EmptyConversationTemplate, 
+    Llama2ConversationTemplate,
+    Qwen2ConversationTemplate,
+    EmptyConversationTemplateWithoutSpecialTokens
+)
 from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
 
 
@@ -441,14 +448,26 @@ class HFDecoderModel(DecoderModel, Tunable):
             label_columns = ["output"]
             add_special_tokens = False
         elif dataset_type == "conversation":
-            conversation_template: ConversationTemplate = kwargs.get("conversation_template", ConversationTemplate())
-            logger.info(f"Conversation template: {conversation_template}")
+            conversation_template: ConversationTemplate = kwargs.get("conversation_template")
+            if not conversation_template:
+                model_name = self.get_backend_model()._get_name()
+                logger.warning(f"No conversation template provided. "
+                               f"Trying to find {model_name} specific template.")
+                if 'llama' in model_name.lower():
+                    conversation_template = Llama2ConversationTemplate()
+                elif 'qwen2' in model_name.lower():
+                    conversation_template = Qwen2ConversationTemplate()
+                else:
+                    logger.warning(f"No specific template found for {model_name}. Using default template.")
+                    conversation_template = EmptyConversationTemplate()
+            logger.warning(f"Conversation template: {conversation_template}")
         else:
             raise NotImplementedError(
                 f"dataset type \"{dataset_type}\" is not supported, currently"
                 " only support following data types:\n"
                 f"    1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
                 f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
+                f"    3) {CONVERSATION_DATASET_DESCRIPTION}\n"
             )
 
         model_args = self.model_args
@@ -478,6 +497,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                 if dataset_type == "conversation":
                     for i in range(len(examples["messages"])):
                         messages = examples["messages"][i]
+                        system = examples.get("system", [None] * num_example)[i]
+                        tools = examples.get("tools", [None] * num_example)[i]
                         if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
                             tok_logger.warning(
                                 "Invalid instance encountered. Either the conversation has less than "
@@ -491,13 +512,19 @@ class HFDecoderModel(DecoderModel, Tunable):
                             )
                             messages = messages[:-1]
 
+                        # DEPRECATION WARNING:
+                            if data_args.disable_conversation_bos_token or data_args.disable_conversation_eos_token:
+                                logger.warning(
+                                    "The disable_conversation_bos_token and disable_conversation_eos_token "
+                                    "flags are deprecated and will be removed in 2 versions. Please "
+                                    "customize your template and pass it through `conversation_template` "
+                                    "argument when calling .tokenize() instead.")
+                        
                         encoded_conversation = conversation_template.encode_conversation(
                             tokenizer=self.tokenizer,
                             messages=messages,
-                            system=examples["system"][i],
-                            tools=examples["tools"][i],
-                            disable_conversation_bos_token=data_args.disable_conversation_bos_token,
-                            disable_conversation_eos_token=data_args.disable_conversation_eos_token
+                            system=system,
+                            tools=tools,
                         )
 
                         input_ids, labels = [], []
