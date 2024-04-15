@@ -140,6 +140,7 @@ class ConversationTemplate:
                 else:
                     encoded_ids += [tokenizer.convert_tokens_to_ids(component.content)]
             else:
+                # IDEA: support token id
                 raise NotImplementedError(f"Component type {component.type} is not supported yet.")
         return encoded_ids
     
