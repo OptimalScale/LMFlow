@@ -139,8 +139,9 @@ class ConversationTemplate:
                     encoded_ids += [tokenizer.eos_token_id]
                 else:
                     encoded_ids += [tokenizer.convert_tokens_to_ids(component.content)]
+            elif component.type == 'token_id':
+                encoded_ids += [component.content] if isinstance(component.content, int) else component.content
             else:
-                # IDEA: support token id
                 raise NotImplementedError(f"Component type {component.type} is not supported yet.")
         return encoded_ids
     

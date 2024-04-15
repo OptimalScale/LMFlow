@@ -1,7 +1,7 @@
 import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, Set, Sequence, Literal, Union, List
+from typing import Dict, Set, Sequence, Literal, Union, List, Optional
 import logging
 
 
@@ -10,16 +10,22 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TemplateComponent:
-    type: Literal['token', 'string', 'tools']
-    content: Union[str, List[str]]
+    type: Literal['token', 'token_id', 'string', 'tools']
+    content: Union[str, int, List[str], List[int]]
+    mask: Optional[bool] = True # for token specific masking, work in progress
     
     def __post_init__(self):
+        assert self.content, "Content of the component cannot be empty."
+        
         if self.type == 'tools':
             assert isinstance(self.content, list), (
                 f"Content of tools component must be a list, got {type(self.content)}")
         elif self.type in ['token', 'string']:
             assert isinstance(self.content, str), (
                 f"Content of string/token component must be a string, got {type(self.content)}")
+        elif self.type == 'token_id':
+            assert isinstance(self.content, int) or all(isinstance(token_id, int) for token_id in self.content), (
+                f"Content of token_id component must be an integer or a list of integers.")
         else:
             raise ValueError(f"The type of the component must be either "
                              f"'token', 'string' or 'tools', got {self.type}")
