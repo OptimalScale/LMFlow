@@ -59,7 +59,7 @@
 
 ## 快速上手
 ### 安装
-我们的Repo已经在Linux（Ubuntu 20.04）上进行了全面测试。其他操作系统平台（MacOS、Windows）尚未完全测试，因此可能会遇到一些预期外的错误。建议先在Linux/Windows WSL上尝试使用，或者使用Google Colab来体验。
+我们的Repo已经在Linux（Ubuntu 20.04）上进行了测试。其他操作系统平台（MacOS、Windows）尚未完全测试，因此可能会遇到一些预期外的错误。建议先在Linux/Windows WSL上尝试使用，或者使用Google Colab来体验。
 
 对于CUDA 10.3-11.7，建议使用`v0.0.5`及更早版本。对于大于11.7的CUDA，请使用我们的稳定分支`>= v0.0.6`以获得更好的体验。
 ```bash

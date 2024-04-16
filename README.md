@@ -208,7 +208,6 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 <details> <summary>Inference Acceleration</summary>
 
-
 * LLaMA Inference on CPU
 
   Thanks to the great efforts of [llama.cpp](https://github.com/ggerganov/llama.cpp). It is possible for everyone to run their LLaMA models on CPU by 4-bit quantization. We provide a script to convert LLaMA LoRA weights to `.pt` files. You only need to use `convert-pth-to-ggml.py` in llama.cpp to perform quantization.
@@ -229,7 +228,6 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 <details> <summary>Model Customization</summary>
 
-
 * Vocabulary Extension
 
   Now you can train your own sentencepiece tokenizer and merge it with model's origin hf tokenizer. Check out [vocab_extension](https://github.com/OptimalScale/LMFlow/blob/main/scripts/vocab_extension) for more details.
@@ -242,8 +240,8 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 * Multimodal Chatbot
 
   LMFlow supports multimodal inputs of images and texts. Check out our [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh).
-</details>
 
+</details>
 
 
 ## Support
