@@ -56,7 +56,8 @@ class ConversationTemplate:
         if system:
             if system.replace(" ",""):
                 if not self.system_formatter:
-                    raise ValueError("Your dataset contains system message but no system formatter is provided.")
+                    raise ValueError("Your dataset contains system message but no system formatter is provided. "
+                                     "Consider either providing a system formatter or removing system prompt from your dataset.")
             else:
                 system = None
         
