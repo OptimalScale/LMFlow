@@ -101,7 +101,7 @@ class StringFormatter(Formatter):
             else:
                 formatted_template.append(component)
                 
-        print(formatted_template)
+        logger.debug(formatted_template)
         return formatted_template
 
     

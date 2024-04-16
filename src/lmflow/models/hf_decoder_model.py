@@ -524,12 +524,12 @@ class HFDecoderModel(DecoderModel, Tunable):
                             messages = messages[:-1]
 
                         # DEPRECATION WARNING:
-                            if data_args.disable_conversation_bos_token or data_args.disable_conversation_eos_token:
-                                logger.warning(
-                                    "The disable_conversation_bos_token and disable_conversation_eos_token "
-                                    "flags are deprecated and will be removed in 2 versions. Please "
-                                    "customize your template and pass it through `conversation_template` "
-                                    "argument when calling .tokenize() instead.")
+                        if data_args.disable_conversation_bos_token or data_args.disable_conversation_eos_token:
+                            logger.warning(
+                                "The disable_conversation_bos_token and disable_conversation_eos_token "
+                                "flags are deprecated and will be removed in 2 versions. Please "
+                                "customize your template and pass it through `conversation_template` "
+                                "argument when calling .tokenize() instead.")
                         
                         encoded_conversation = conversation_template.encode_conversation(
                             tokenizer=self.tokenizer,
