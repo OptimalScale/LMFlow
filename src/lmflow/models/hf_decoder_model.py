@@ -427,6 +427,16 @@ class HFDecoderModel(DecoderModel, Tunable):
             )
 
         dataset_type = dataset.get_type()
+        model_args = self.model_args
+        raw_datasets = dataset
+        hf_raw_datasets = dataset.get_backend_dataset()
+        column_names = list(hf_raw_datasets.features)
+
+        # since this will be pickled to avoid _LazyModule error in Hasher force
+        # logger loading before tokenize_function
+        tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
+
+        data_args = raw_datasets.get_data_args()
 
         # Requires three types of information for tokenizing different datasets
         #   1) Which fields require tokenization, e.g.
@@ -449,17 +459,29 @@ class HFDecoderModel(DecoderModel, Tunable):
             add_special_tokens = False
         elif dataset_type == "conversation":
             conversation_template: ConversationTemplate = kwargs.get("conversation_template")
-            if not conversation_template:
-                model_name = self.get_backend_model()._get_name()
-                logger.warning(f"No conversation template provided. "
-                               f"Trying to find {model_name} specific template.")
-                if 'llama' in model_name.lower():
-                    conversation_template = Llama2ConversationTemplate()
-                elif 'qwen2' in model_name.lower():
-                    conversation_template = Qwen2ConversationTemplate()
+            if conversation_template:
+                if data_args.conversation_template:
+                    logger.warning("You specified conversation_template in both model.tokenize() and data_args. "
+                                   "Template in model.tokenize() will be used.")
+            else:
+                if data_args.conversation_template:
+                    # TODO: make a registry for conversation templates
+                    if data_args.conversation_template == 'llama2':
+                        conversation_template = Llama2ConversationTemplate()
+                    elif data_args.conversation_template == 'qwen2':
+                        conversation_template = Qwen2ConversationTemplate()
+                    elif data_args.conversation_template == 'empty':
+                        conversation_template = EmptyConversationTemplate()
+                    elif data_args.conversation_template == 'empty_no_special_tokens':
+                        conversation_template = EmptyConversationTemplateWithoutSpecialTokens()
+                    else:
+                        raise NotImplementedError(
+                            f"Conversation template {data_args.conversation_template} is not supported yet."
+                        )
                 else:
-                    logger.warning(f"No specific template found for {model_name}. Using default template.")
+                    logger.warning("No conversation template provided. Using default template.")
                     conversation_template = EmptyConversationTemplate()
+                        
             logger.warning(f"Conversation template: {conversation_template}")
         else:
             raise NotImplementedError(
@@ -469,17 +491,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                 f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
                 f"    3) {CONVERSATION_DATASET_DESCRIPTION}\n"
             )
-
-        model_args = self.model_args
-        raw_datasets = dataset
-        hf_raw_datasets = dataset.get_backend_dataset()
-        column_names = list(hf_raw_datasets.features)
-
-        # since this will be pickled to avoid _LazyModule error in Hasher force
-        # logger loading before tokenize_function
-        tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
-
-        data_args = raw_datasets.get_data_args()
 
         # Whether to truncate long sequences to fit into max_length
         use_truncation = False
