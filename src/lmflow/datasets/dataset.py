@@ -147,10 +147,17 @@ class Dataset:
         correct_fields = INSTANCE_FIELDS_MAP[data_type]
         # TODO: this can not guarantee every instance has correct fields.
         if set(fields) != set(correct_fields):
-            raise ValueError(
-                f'Data instance fields incorrect'
-                f' {list(fields)}: should be {list(correct_fields)}.'
-            )
+            if data_type == "conversation":
+                if "messages" not in fields:
+                    raise ValueError(
+                        f'Conversation dataset should have "messages" field'
+                        f' but got {list(fields)}'
+                    )
+            else:
+                raise ValueError(
+                    f'Data instance fields incorrect'
+                    f' {list(fields)}: should be {list(correct_fields)}.'
+                )
 
 
     def from_dict(self, dict_obj: dict, *args, **kwargs):
@@ -215,12 +222,19 @@ class Dataset:
             for i, instance in enumerate(dict_obj[KEY_INSTANCES]):
                 fields = instance.keys()
                 if set(fields) != set(correct_fields):
-                    raise ValueError(
-                        f'data instance fields incorrect'
-                        f' {list(fields)}: should be {list(correct_fields)}.\n'
-                        f'The bad instance triggers the error, the {i}-th instance:\n'
-                        f'    {instance}'
-                )
+                    if self.type == "conversation":
+                        if "messages" not in fields:
+                            raise ValueError(
+                                f'Conversation dataset should have "messages" field'
+                                f' but got {list(fields)}'
+                            )
+                    else:
+                        raise ValueError(
+                            f'data instance fields incorrect'
+                            f' {list(fields)}: should be {list(correct_fields)}.\n'
+                            f'The bad instance triggers the error, the {i}-th instance:\n'
+                            f'    {instance}'
+                    )
 
             try:
                 hf_dict = {}

@@ -57,8 +57,15 @@ from lmflow.models.interfaces.tunable import Tunable
 from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
+    CONVERSATION_DATASET_DESCRIPTION
 )
-from lmflow.utils.conversation_template import ConversationTemplate
+from lmflow.utils.conversation_template import (
+    ConversationTemplate, 
+    EmptyConversationTemplate, 
+    Llama2ConversationTemplate,
+    Qwen2ConversationTemplate,
+    EmptyConversationTemplateWithoutSpecialTokens
+)
 from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
 
 
@@ -420,6 +427,16 @@ class HFDecoderModel(DecoderModel, Tunable):
             )
 
         dataset_type = dataset.get_type()
+        model_args = self.model_args
+        raw_datasets = dataset
+        hf_raw_datasets = dataset.get_backend_dataset()
+        column_names = list(hf_raw_datasets.features)
+
+        # since this will be pickled to avoid _LazyModule error in Hasher force
+        # logger loading before tokenize_function
+        tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
+
+        data_args = raw_datasets.get_data_args()
 
         # Requires three types of information for tokenizing different datasets
         #   1) Which fields require tokenization, e.g.
@@ -441,26 +458,39 @@ class HFDecoderModel(DecoderModel, Tunable):
             label_columns = ["output"]
             add_special_tokens = False
         elif dataset_type == "conversation":
-            conversation_template: ConversationTemplate = kwargs.get("conversation_template", ConversationTemplate())
-            logger.info(f"Conversation template: {conversation_template}")
+            conversation_template: ConversationTemplate = kwargs.get("conversation_template")
+            if conversation_template:
+                if data_args.conversation_template:
+                    logger.warning("You specified conversation_template in both model.tokenize() and data_args. "
+                                   "Template in model.tokenize() will be used.")
+            else:
+                if data_args.conversation_template:
+                    # TODO: make a registry for conversation templates
+                    if data_args.conversation_template == 'llama2':
+                        conversation_template = Llama2ConversationTemplate()
+                    elif data_args.conversation_template == 'qwen2':
+                        conversation_template = Qwen2ConversationTemplate()
+                    elif data_args.conversation_template == 'empty':
+                        conversation_template = EmptyConversationTemplate()
+                    elif data_args.conversation_template == 'empty_no_special_tokens':
+                        conversation_template = EmptyConversationTemplateWithoutSpecialTokens()
+                    else:
+                        raise NotImplementedError(
+                            f"Conversation template {data_args.conversation_template} is not supported yet."
+                        )
+                else:
+                    logger.warning("No conversation template provided. Using default template.")
+                    conversation_template = EmptyConversationTemplate()
+                        
+            logger.warning(f"Conversation template: {conversation_template}")
         else:
             raise NotImplementedError(
                 f"dataset type \"{dataset_type}\" is not supported, currently"
                 " only support following data types:\n"
                 f"    1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
                 f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
+                f"    3) {CONVERSATION_DATASET_DESCRIPTION}\n"
             )
-
-        model_args = self.model_args
-        raw_datasets = dataset
-        hf_raw_datasets = dataset.get_backend_dataset()
-        column_names = list(hf_raw_datasets.features)
-
-        # since this will be pickled to avoid _LazyModule error in Hasher force
-        # logger loading before tokenize_function
-        tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
-
-        data_args = raw_datasets.get_data_args()
 
         # Whether to truncate long sequences to fit into max_length
         use_truncation = False
@@ -478,6 +508,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                 if dataset_type == "conversation":
                     for i in range(len(examples["messages"])):
                         messages = examples["messages"][i]
+                        system = examples.get("system", [None] * num_example)[i]
+                        tools = examples.get("tools", [None] * num_example)[i]
                         if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
                             tok_logger.warning(
                                 "Invalid instance encountered. Either the conversation has less than "
@@ -491,13 +523,19 @@ class HFDecoderModel(DecoderModel, Tunable):
                             )
                             messages = messages[:-1]
 
+                        # DEPRECATION WARNING:
+                        if data_args.disable_conversation_bos_token or data_args.disable_conversation_eos_token:
+                            logger.warning(
+                                "The disable_conversation_bos_token and disable_conversation_eos_token "
+                                "flags are deprecated and will be removed in 2 versions. Please "
+                                "customize your template and pass it through `conversation_template` "
+                                "argument when calling .tokenize() instead.")
+                        
                         encoded_conversation = conversation_template.encode_conversation(
                             tokenizer=self.tokenizer,
                             messages=messages,
-                            system=examples["system"][i],
-                            tools=examples["tools"][i],
-                            disable_conversation_bos_token=data_args.disable_conversation_bos_token,
-                            disable_conversation_eos_token=data_args.disable_conversation_eos_token
+                            system=system,
+                            tools=tools,
                         )
 
                         input_ids, labels = [], []

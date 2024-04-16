@@ -27,6 +27,11 @@ from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
 )
+from lmflow.utils.conversation_template import (
+    EmptyConversationTemplate,
+    Llama2ConversationTemplate,
+    EmptyConversationTemplateWithoutSpecialTokens,
+)
 
 
 SAMPLE_TEXT = "Defintion: In this task, we ask you to write an answer to a question that involves events that may be stationary (not changing over time) or transient (changing over time). For example, the sentence \"he was born in the U.S.\" contains a stationary event since it will last forever; however, \"he is hungry\" contains a transient event since it will remain true for a short period of time. Note that a lot of the questions could have more than one correct answer. We only need a single most-likely answer. Please try to keep your \"answer\" as simple as possible. Concise and simple \"answer\" is preferred over those complex and verbose ones. \\n Input: Sentence: It's hail crackled across the comm, and Tara spun to retake her seat at the helm. \nQuestion: Will the hail storm ever end? \\n Output: NA \\n\\n"
@@ -39,12 +44,126 @@ SAMPLE_ATTENTION_MASKS = [
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 ]
 
+CONVERSATION_SINGLETURN = {
+    "system": "sysinfo",
+    "messages": [
+        {
+            "role": "user",
+            "content": "Hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hi!"
+        }
+    ]
+}
+
+CONVERSATION_SINGLETURN_LLAMA2 = {
+    "messages": [
+        {
+            "role": "user",
+            "content": "[INST] <<SYS>>\nsysinfo\n<</SYS>>\n\nHello [/INST]"
+        },
+        {
+            "role": "assistant",
+            "content": "Hi!"
+        }
+    ]
+}
+
+CONVERSATION_SINGLETURN_LLAMA2_IDS = [
+    (
+        [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 9675, 3888, 13, 
+         29966, 829, 14816, 29903, 6778, 13, 13, 10994, 518, 29914, 25580, 29962],
+        [6324, 29991, 2]
+    )
+]
+
+CONVERSATION_MULTITURN = {
+    "system": "sysinfo",
+    "messages": [
+        {
+            "role": "user",
+            "content": "Hello"
+        },
+        {
+            "role": "assistant",
+            "content": "Hi!"
+        },
+        {
+            "role": "user",
+            "content": "How are you?"
+        },
+        {
+            "role": "assistant",
+            "content": "I'm good, thanks!"
+        }
+    ]
+}
+
+CONVERSATION_MULTITURN_LLAMA2 = {
+    "messages": [
+        {
+            "role": "user",
+            "content": "[INST] <<SYS>>\nsysinfo\n<</SYS>>\n\nHello [/INST]"
+        },
+        {
+            "role": "assistant",
+            "content": "Hi!"
+        },
+        {
+            "role": "user",
+            "content": "[INST] How are you? [/INST]"
+        },
+        {
+            "role": "assistant",
+            "content": "I'm good, thanks!"
+        }
+    ]
+}
+
+CONVERSATION_MULTITURN_LLAMA2_IDS = [
+    (
+        [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 9675, 3888, 13, 
+         29966, 829, 14816, 29903, 6778, 13, 13, 10994, 518, 29914, 25580, 29962], 
+        [6324, 29991, 2]
+    ), 
+    (
+        [1, 518, 25580, 29962, 1128, 526, 366, 29973, 518, 29914, 25580, 29962], 
+        [306, 29915, 29885, 1781, 29892, 3969, 29991, 2]
+    )
+]
+
 test_encode_input = "Question: Which of the following is not true for myelinated nerve fibers: (A) Impulse through myelinated fibers is slower than non-myelinated fibers (B) Membrane currents are generated at nodes of Ranvier (C) Saltatory conduction of impulses is seen (D) Local anesthesia is effective only when the nerve is not covered by myelin sheath."
 test_encode_output = [24361, 25, 9022, 286, 262, 1708, 318, 407, 2081, 329, 616, 417, 3898, 16384, 26742, 25, 357, 32, 8, 9855, 9615, 832, 616, 417, 3898, 26742, 318, 13611, 621, 1729, 12, 1820, 417, 3898, 26742, 357, 33, 8, 4942, 1671, 1531, 28629, 389, 7560, 379, 13760, 286, 23075, 49663, 357, 34, 8, 13754, 2870, 369, 11124, 286, 37505, 318, 1775, 357, 35, 8, 10714, 49592, 318, 4050, 691, 618, 262, 16384, 318, 407, 5017, 416, 616, 27176, 673, 776, 13]
 test_decode_input = [24361, 25, 9022, 286, 262, 1708, 318, 407, 2081, 329, 616, 417, 3898, 16384, 26742, 25, 357, 32, 8, 9855, 9615, 832, 616, 417, 3898, 26742, 318, 13611, 621, 1729, 12, 1820, 417, 3898, 26742, 357, 33, 8, 4942, 1671, 1531, 28629, 389, 7560, 379, 13760, 286, 23075, 49663, 357, 34, 8, 13754, 2870, 369, 11124, 286, 37505, 318, 1775, 357, 35, 8, 10714, 49592, 318, 4050, 691, 618, 262, 16384, 318, 407, 5017, 416, 616, 27176, 673, 776, 13]
 test_decode_output = "Question: Which of the following is not true for myelinated nerve fibers: (A) Impulse through myelinated fibers is slower than non-myelinated fibers (B) Membrane currents are generated at nodes of Ranvier (C) Saltatory conduction of impulses is seen (D) Local anesthesia is effective only when the nerve is not covered by myelin sheath."
 
 test_inference_output = "The following is a list of the most common causes of myelinated nerve fibers."
+
+
+def make_gt_from_conversation_ids(conversation_ids):
+    res = {"input_ids": [], "attention_mask": [], "labels": []}
+    for turn_idx, turn_content in enumerate(conversation_ids):
+        user_content = turn_content[0]
+        assistant_content = turn_content[1]
+        res["input_ids"].extend(user_content)
+        res["input_ids"].extend(assistant_content)
+        res['attention_mask'].extend([1] * len(user_content) + [1] * len(assistant_content))
+        res['labels'].extend([-100] * len(user_content))
+        res['labels'].extend(assistant_content)
+    return res
+
+
+def make_gt_from_conversation_ids_batch(batched_conversation_ids):
+    res = {"input_ids": [], "attention_mask": [], "labels": []}
+    for conversation_ids in batched_conversation_ids:
+        this_res = make_gt_from_conversation_ids(conversation_ids)
+        res["input_ids"].append(this_res["input_ids"])
+        res["attention_mask"].append(this_res["attention_mask"])
+        res["labels"].append(this_res["labels"])
+    return res
+
 
 class HFDecoderModelTest(unittest.TestCase):
 
@@ -53,8 +172,9 @@ class HFDecoderModelTest(unittest.TestCase):
         model_name,
         groundtruth_dataset,
         groundtruth_tokenized_dataset,
+        **kwargs
     ):
-        data_args = DatasetArguments(dataset_path=None)
+        data_args = DatasetArguments(dataset_path=None, disable_group_texts=False)
         dataset = Dataset(data_args, backend="huggingface")
         dataset = dataset.from_dict(groundtruth_dataset)
 
@@ -63,7 +183,7 @@ class HFDecoderModelTest(unittest.TestCase):
         model_args = ModelArguments(model_name_or_path=model_name)
         model = HFDecoderModel(model_args)
 
-        tokenized_dataset = model.tokenize(dataset)
+        tokenized_dataset = model.tokenize(dataset, **kwargs)
 
         self.assertEqual(
             tokenized_dataset.get_backend_dataset().to_dict(),
@@ -141,9 +261,6 @@ class HFDecoderModelTest(unittest.TestCase):
             "type": "conversation",
             "instances": [
                 {
-                    "conversation_id": 1,
-                    "system": "sysinfo_1",
-                    "tools": ["tool_1_desc"],
                     "messages": [
                         {
                             "role": "user",
@@ -166,7 +283,22 @@ class HFDecoderModelTest(unittest.TestCase):
         self._test_tokenize(
             model_name="gpt2",
             groundtruth_dataset=conversation_dataset,
-            groundtruth_tokenized_dataset=conversation_tokenized_dataset
+            groundtruth_tokenized_dataset=conversation_tokenized_dataset,
+            conversation_template=EmptyConversationTemplateWithoutSpecialTokens()
+        )
+        
+        self._test_tokenize(
+            model_name='meta-llama/Llama-2-7b-hf',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN_LLAMA2]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA2_IDS]),
+            conversation_template=EmptyConversationTemplate()
+        )
+        
+        self._test_tokenize(
+            model_name='meta-llama/Llama-2-7b-hf',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA2_IDS]),
+            conversation_template=Llama2ConversationTemplate()
         )
         
         
@@ -175,9 +307,6 @@ class HFDecoderModelTest(unittest.TestCase):
             "type": "conversation",
             "instances": [
                 {
-                    "conversation_id": 1,
-                    "system": "sysinfo_1",
-                    "tools": ["tool_1_desc_1"],
                     "messages": [
                         {
                             "role": "user",
@@ -190,9 +319,6 @@ class HFDecoderModelTest(unittest.TestCase):
                     ]
                 },
                 {
-                    "conversation_id": 2,
-                    "system": "sysinfo_2",
-                    "tools": ["tool_2_desc_1"],
                     "messages": [
                         {
                             "role": "user",
@@ -215,7 +341,22 @@ class HFDecoderModelTest(unittest.TestCase):
         self._test_tokenize(
             model_name="gpt2",
             groundtruth_dataset=conversation_dataset,
-            groundtruth_tokenized_dataset=conversation_tokenized_dataset
+            groundtruth_tokenized_dataset=conversation_tokenized_dataset,
+            conversation_template=EmptyConversationTemplateWithoutSpecialTokens()
+        )
+        
+        self._test_tokenize(
+            model_name='meta-llama/Llama-2-7b-hf',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN_LLAMA2]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA2_IDS]),
+            conversation_template=EmptyConversationTemplate()
+        )
+        
+        self._test_tokenize(
+            model_name='meta-llama/Llama-2-7b-hf',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA2_IDS]),
+            conversation_template=Llama2ConversationTemplate()
         )
 
 
@@ -241,7 +382,6 @@ class HFDecoderModelTest(unittest.TestCase):
         self.assertEqual(model.decode(batch_decode_input), batch_decode_output)
 
 
-    # @unittest.skip("deepspeed master_port conflict")
     def test_inference(self):
         ds_config_path = "examples/ds_config.json"
         with open (ds_config_path, "r") as f:
