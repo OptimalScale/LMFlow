@@ -179,15 +179,27 @@ Tips:
 
 Conversations should be formatted before feeding into the model. As of now, we've preset the conversation template for following models:
 
-| Model | Template Name | Actual Format & Filled Example |
-| ----- | ------------- | ------------------------------ | 
-|Llama-2| `llama2` | [Link](./supported_conversation_template.md#llama-2) |
-| Qwen-2 | `qwen2` | [Link](./supported_conversation_template.md#qwen-2-qwen-15) |
+| Model | Template Name | Filled Example | Detailed Template |
+| ----- | ------------- | -------------- | ----------------- | 
+|Llama-2| `llama2` | \<s\>[INST] \<\<SYS\>\>\nYou are a chatbot developed by LMFlow team.\n\<\</SYS\>\>\n\nWho are you? [/INST] I am a chatbot developed by LMFlow team.\<\/s\>\<s\>[INST] How old are you? [/INST] I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.\<\/s\> | [Link](./supported_conversation_template.md#llama-2) |
+| Qwen-2| `qwen2` | <\|im_start\|>system\nYou are a Machine Learning expert.<\|im_end\|>\n<\|im_start\|>user\nHi!<\|im_end\|>\n<\|im_start\|>assistant\nHi, nice to meet you!<\|im_end\|>\n<\|im_start\|>user\nWho are you?<\|im_end\|>\n<\|im_start\|>assistant\nI'm a Machine Learning expert.<\|im_end\|>\n | [Link](./supported_conversation_template.md#qwen-2-qwen-1-5) |
+
+Passing the template name to the `--conversation_template` argument to apply the corresponding conversation template:
+```sh
+# scripts/run_finetune.sh
+# ...
+deepspeed ${deepspeed_args} \
+  examples/finetune.py \
+    --model_name_or_path meta-llama/Llama-2-7b-chat-hf \
+    --dataset_path ${dataset_path} \
+    --conversation_template llama2 \
+# ...
+```
 
 ```{admonition} Formatted Dataset
 :class: info
 
-For dataset that system prompts, tool prompts and templates are already applied (like the one below), user can run the finetune shell by passing `empty` or `empty_no_special_tokens` to the `--conversation_template`` argument. `empty` template will add a bos token to the beginning of every round of conversation as well as a eos token to the end of every round of conversation. `empty_no_special_tokens` will not add any special tokens to the conversation, just concatenates the user and assistant messages. 
+For dataset that system prompts, tool prompts and templates are already applied (like the one below), user can run the finetune shell by passing `empty` or `empty_no_special_tokens` to the `--conversation_template` argument. `empty` template will add a bos token to the beginning of every round of conversation as well as a eos token to the end of every round of conversation. `empty_no_special_tokens` will not add any special tokens to the conversation, just concatenates the user and assistant messages. 
 ```json
 {
   "type": "conversation",
