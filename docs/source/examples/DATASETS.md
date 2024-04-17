@@ -181,8 +181,8 @@ Conversations should be formatted before feeding into the model. As of now, we'v
 
 | Model | Template Name | Filled Example | Detailed Template |
 | ----- | ------------- | -------------- | ----------------- | 
-|Llama-2| `llama2` | \<s\>[INST] \<\<SYS\>\>\nYou are a chatbot developed by LMFlow team.\n\<\</SYS\>\>\n\nWho are you? [/INST] I am a chatbot developed by LMFlow team.\<\/s\>\<s\>[INST] How old are you? [/INST] I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.\<\/s\> | [Link](./supported_conversation_template.md#llama-2) |
-| Qwen-2| `qwen2` | <\|im_start\|>system\nYou are a Machine Learning expert.<\|im_end\|>\n<\|im_start\|>user\nHi!<\|im_end\|>\n<\|im_start\|>assistant\nHi, nice to meet you!<\|im_end\|>\n<\|im_start\|>user\nWho are you?<\|im_end\|>\n<\|im_start\|>assistant\nI'm a Machine Learning expert.<\|im_end\|>\n | [Link](./supported_conversation_template.md#qwen-2-qwen-1-5) |
+|Llama-2| `llama2` | ```<s>[INST] <<SYS>>\nYou are a chatbot developed by LMFlow team.\n<</SYS>>\n\nWho are you? [/INST] I am a chatbot developed by LMFlow team.</s><s>[INST] How old are you? [/INST] I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>``` | [Link](./supported_conversation_template.md#llama-2) |
+| Qwen-2| `qwen2` | ```<\|im_start\|>system\nYou are a Machine Learning expert.<\|im_end\|>\n<\|im_start\|>user\nHi!<\|im_end\|>\n<\|im_start\|>assistant\nHi, nice to meet you!<\|im_end\|>\n<\|im_start\|>user\nWho are you?<\|im_end\|>\n<\|im_start\|>assistant\nI'm a Machine Learning expert.<\|im_end\|>\n``` | [Link](./supported_conversation_template.md#qwen-2-qwen-1-5) |
 
 Passing the template name to the `--conversation_template` argument to apply the corresponding conversation template:
 ```sh
