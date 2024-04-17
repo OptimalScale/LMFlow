@@ -119,7 +119,10 @@ For example, `data/example_dataset/test/test_13.json` has the aboved format.
 We are rapidly working on this data format.  
 ```
 
+#### Data Format
+
 Conversational data are commonly used in sft process. We currently support conversational data in ShareGPT format:
+
 ```json
 {
   "type": "conversation",
@@ -166,26 +169,30 @@ Conversational data are commonly used in sft process. We currently support conve
 }
 ```
 Tips:
-- [Please see the section below] <del>Users don't have to apply any model-specific input formatting such as system prompt, tool description, and instruction template, as the pipeline will handle the conversion automatically based on different models. If the dataset is already formatted in user-assistant pairs with system prompt and model-specific instruction format, one can convert that dataset into correct lmflow conversation json format, leaving `system` and `tools` empty. </del> 
-- `conversation_id` is only for convience of tracking the conversation and will not be used in the pipeline. Users can set it to any value.
-- `system` and `tools` are not required. Setting them to empty string `""` and empty list `[""]` respectively when not applicable.
+- `system`, `tools`, and `conversation_id` are OPTIONAL. `conversation_id` is only for convience of tracking the conversation and will not be used in the pipeline.
 - Please make sure the messages are:
   1. Start with an user message.
   2. In the correct order. The pipeline will not check the order of the messages.
   3. In pairs of user and assistant (i.e., the length of the messages should be even). If the conversation ends with the user, the pipeline will trim the last user message.
 
-```{admonition} Auto Formatting
-:class: warning
+#### Conversation Template
 
-Auto formatting is not up currently. In other word, users need to include their system prompt and tool prompt into the first message, and apply the instruction template to user inputs manually. For example, for Llama-2-Chat:
+Conversations should be formatted before feeding into the model. As of now, we've preset the conversation template for following models:
+
+| Model | Template Name | Actual Format & Filled Example |
+| ----- | ------------- | ------------------------------ | 
+|Llama-2| `llama2` | [Link](./supported_conversation_template.md#llama-2) |
+| Qwen-2 | `qwen2` | [Link](./supported_conversation_template.md#qwen-2-qwen-15) |
+
+```{admonition} Formatted Dataset
+:class: info
+
+For dataset that system prompts, tool prompts and templates are already applied (like the one below), user can run the finetune shell by passing `empty` or `empty_no_special_tokens` to the `--conversation_template`` argument. `empty` template will add a bos token to the beginning of every round of conversation as well as a eos token to the end of every round of conversation. `empty_no_special_tokens` will not add any special tokens to the conversation, just concatenates the user and assistant messages. 
 ```json
 {
   "type": "conversation",
   "instances": [
     {
-      "conversation_id": 1,
-      "system": "",
-      "tools": [""],
       "messages": [
         {
             "role": "user",
@@ -206,9 +213,6 @@ Auto formatting is not up currently. In other word, users need to include their 
       ]
     },
     {
-      "conversation_id": 2,
-      "system": "",
-      "tools": [""],
       "messages": [
         {
             "role": "user",
@@ -223,3 +227,7 @@ Auto formatting is not up currently. In other word, users need to include their 
   ]
 }
 ```
+
+#### Customize Conversation Template
+
+Please refer to the [Customize Conversation Template](./customize_conversation_template.md) for more details.
