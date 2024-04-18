@@ -181,12 +181,12 @@ Conversations should be formatted before feeding into the model. As of now, we'v
 
 | Template Name | Filled Example | Detailed Template | Preseted |
 | ------------- | -------------- | ----------------- | --- |
-| `internlm2` | Work in progress :sweat_drops: | [Link](./supported_conversation_template.md#internlm2) | |
-| `chatglm3` | Work in progress :sweat_drops: | [Link](./supported_conversation_template.md#chatglm-3) | |
-| `llama2` | `<s>[INST] <<SYS>>`<br>`You are a chatbot developed by LMFlow team.`<br>`<</SYS>>`<br><br>`Who are you? [/INST] I am a chatbot developed by LMFlow team.</s><s>[INST] How old are you? [/INST] I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>` | [Link](./supported_conversation_template.md#llama-2) | :white_check_mark: |
-| `mixtral8x7b` | Work in progress :sweat_drops: | [Link](./supported_conversation_template.md#mixtral-8x7b) | |
-| `mixtral8x22b` | Work in progress :sweat_drops: | [Link](./supported_conversation_template.md#mixtral-8x22b) | |
-| `qwen2` | `<\|im_start\|>system`<br>`You are a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`Who are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I am a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`How old are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<\|im_end\|>`<br> | [Link](./supported_conversation_template.md#qwen-2) | :white_check_mark: |
+| `internlm2` | Work in progress | [Link](./supported_conversation_template.md#internlm2) | |
+| `chatglm3` | Work in progress | [Link](./supported_conversation_template.md#chatglm-3) | |
+| `llama2` | `<s>[INST] <<SYS>>`<br>`You are a chatbot developed by LMFlow team.`<br>`<</SYS>>`<br><br>`Who are you? [/INST] I am a chatbot developed by LMFlow team.</s><s>[INST] How old are you? [/INST] I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>` | [Link](./supported_conversation_template.md#llama-2) | Yes |
+| `mixtral8x7b` | Work in progress | [Link](./supported_conversation_template.md#mixtral-8x7b) | |
+| `mixtral8x22b` | Work in progress | [Link](./supported_conversation_template.md#mixtral-8x22b) | |
+| `qwen2` | `<\|im_start\|>system`<br>`You are a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`Who are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I am a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`How old are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<\|im_end\|>`<br> | [Link](./supported_conversation_template.md#qwen-2) | Yes |
 | `yi` | `<\|im_start\|>system`<br>`You are a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`Who are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I am a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`How old are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<\|im_end\|>`<br> | [Link](./supported_conversation_template.md#yi) |  |
 
 Passing the template name to the `--conversation_template` argument to apply the corresponding conversation template:
