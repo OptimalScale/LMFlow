@@ -179,15 +179,11 @@ Tips:
 
 Conversations should be formatted before feeding into the model. As of now, we've preset the conversation template for following models:
 
-| Template Name | Filled Example | Detailed Template | Preseted |
-| ------------- | -------------- | ----------------- | --- |
-| `internlm2` | Work in progress | [Link](./supported_conversation_template.md#internlm2) | |
-| `chatglm3` | Work in progress | [Link](./supported_conversation_template.md#chatglm-3) | |
-| `llama2` | `<s>[INST] <<SYS>>`<br>`You are a chatbot developed by LMFlow team.`<br>`<</SYS>>`<br><br>`Who are you? [/INST] I am a chatbot developed by LMFlow team.</s><s>[INST] How old are you? [/INST] I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>` | [Link](./supported_conversation_template.md#llama-2) | Yes |
-| `mixtral8x7b` | Work in progress | [Link](./supported_conversation_template.md#mixtral-8x7b) | |
-| `mixtral8x22b` | Work in progress | [Link](./supported_conversation_template.md#mixtral-8x22b) | |
-| `qwen2` | `<\|im_start\|>system`<br>`You are a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`Who are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I am a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`How old are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<\|im_end\|>`<br> | [Link](./supported_conversation_template.md#qwen-2) | Yes |
-| `yi` | `<\|im_start\|>system`<br>`You are a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`Who are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I am a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`How old are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<\|im_end\|>`<br> | [Link](./supported_conversation_template.md#yi) |  |
+| Template Name | Filled Example | Detailed Template |
+| ------------- | -------------- | ----------------- |
+| `llama3` | `<\|begin_of_text\|><\|start_header_id\|>system<\|end_header_id\|>`<br><br>`You are a chatbot developed by LMFlow team.<\|eot_id\|><\|start_header_id\|>user<\|end_header_id\|>`<br><br>`Who are you?<\|eot_id\|><\|start_header_id\|>assistant<\|end_header_id\|>`<br><br>`I am a chatbot developed by LMFlow team.<\|eot_id\|><\|start_header_id\|>user<\|end_header_id\|>`<br><br>`How old are you?<\|eot_id\|><\|start_header_id\|>assistant<\|end_header_id\|>`<br><br>`I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<\|eot_id\|>` | [Link](./supported_conversation_template.md#llama-3) |
+| `llama2` | `<s>[INST] <<SYS>>`<br>`You are a chatbot developed by LMFlow team.`<br>`<</SYS>>`<br><br>`Who are you? [/INST] I am a chatbot developed by LMFlow team.</s><s>[INST] How old are you? [/INST] I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>` | [Link](./supported_conversation_template.md#llama-2) |
+| `qwen2` | `<\|im_start\|>system`<br>`You are a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`Who are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I am a chatbot developed by LMFlow team.<\|im_end\|>`<br>`<\|im_start\|>user`<br>`How old are you?<\|im_end\|>`<br>`<\|im_start\|>assistant`<br>`I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<\|im_end\|>`<br> | [Link](./supported_conversation_template.md#qwen-2) |
 
 Passing the template name to the `--conversation_template` argument to apply the corresponding conversation template:
 ```sh

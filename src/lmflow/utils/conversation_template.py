@@ -17,6 +17,16 @@ class ConversationTemplate:
     system_formatter: Optional[Formatter] = None
     tools_formatter: Optional[Formatter] = None
     separator: Optional[TemplateComponent] = None
+    special_starter: Optional[TemplateComponent] = None
+    
+    def __post_init__(self):
+        if self.separator:
+            if self.separator.type not in ['string', 'token']:
+                raise NotImplementedError(f"Component type {self.separator.type} cannot be used as a separator.")
+            
+        if self.special_starter:
+            if self.special_starter.type not in ['string', 'token', 'token_id']:
+                raise NotImplementedError(f"Component type {self.special_starter.type} cannot be used as a special starter.")
     
     def encode_conversation(
         self,
@@ -69,6 +79,18 @@ class ConversationTemplate:
             # and specify the separator. Auto formatting will remove the 
             # last separator once user specifies this option.
             encoded_pairs = self.remove_last_separator(encoded_pairs, tokenizer)
+            
+        if self.special_starter:
+            # For models that has ONLY ONE bos token at the beginning of 
+            # a conversation session (not a conversation pair), user can
+            # specify a special starter to add that starter to the very
+            # beginning of the conversation session. 
+            # eg:
+            #   llama-2: <s> and </s> at every pair of conversation 
+            #   v.s.
+            #   llama-3: <|begin_of_text|> only at the beginning of a session
+            encoded_pairs = self.add_special_starter(encoded_pairs, tokenizer)
+            
         
         return encoded_pairs
         
@@ -139,9 +161,9 @@ class ConversationTemplate:
                 elif component.content == 'eos_token':
                     encoded_ids += [tokenizer.eos_token_id]
                 else:
-                    encoded_ids += [tokenizer.convert_tokens_to_ids(component.content)]
+                    encoded_ids += self._ensure_id_list(tokenizer.convert_tokens_to_ids(component.content))
             elif component.type == 'token_id':
-                encoded_ids += [component.content] if isinstance(component.content, int) else component.content
+                encoded_ids += self._ensure_id_list(component.content)
             else:
                 raise NotImplementedError(f"Component type {component.type} is not supported yet.")
         return encoded_ids
@@ -155,9 +177,9 @@ class ConversationTemplate:
         if self.separator.type == 'string':
             separator_ids = tokenizer.encode(self.separator.content, add_special_tokens=False)
         elif self.separator.type == 'token':
-            separator_ids = [tokenizer.convert_tokens_to_ids(self.separator.content)]
+            separator_ids = self._ensure_id_list(tokenizer.convert_tokens_to_ids(self.separator.content))
         else:
-            raise NotImplementedError(f"Component type {self.separator.type} cannot be used as a separator.")
+            raise ValueError(f"Component type {self.separator.type} cannot be used as a separator.")
         
         if len(separator_ids) > len(last_assistant_msg):
             raise ValueError("Separator is longer than the last assistant message, please check.")
@@ -169,7 +191,35 @@ class ConversationTemplate:
         
         return encoded_pairs
     
-            
+    def add_special_starter(
+        self,
+        encoded_pairs: Sequence[Tuple[List[int], List[int]]],
+        tokenizer: PreTrainedTokenizer
+    ) -> Sequence[Tuple[List[int], List[int]]]:
+        if self.special_starter.type == 'string':
+            special_starter_ids = tokenizer.encode(self.special_starter.content, add_special_tokens=False)
+        elif self.special_starter.type == 'token':
+            special_starter_ids = self._ensure_id_list(tokenizer.convert_tokens_to_ids(self.special_starter.content))
+        elif self.special_starter.type == 'token_id':
+            special_starter_ids = self._ensure_id_list(self.special_starter.content)
+        else:
+            raise ValueError(f"Component type {self.special_starter.type} cannot be used as a special starter.")
+        
+        encoded_pairs[0] = (special_starter_ids + encoded_pairs[0][0], encoded_pairs[0][1])
+        
+        return encoded_pairs
+    
+    def _ensure_id_list(self, obj: Union[int, List[int]]) -> List[int]:
+        '''Make sure the object is a list of integers. Useful for handling token ids.
+        '''
+        if isinstance(obj, int):
+            return [obj]
+        elif isinstance(obj, list):
+            return obj
+        else:
+            raise ValueError(f"Object type {type(obj)} is not supported yet.")
+    
+    
 @dataclass
 class EmptyConversationTemplate(ConversationTemplate):
     user_formatter: Formatter = StringFormatter(
@@ -199,7 +249,27 @@ class EmptyConversationTemplateWithoutSpecialTokens(ConversationTemplate):
         ]
     )
     
-            
+
+@dataclass
+class Llama3ConversationTemplate(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|start_header_id|>user<|end_header_id|>\n\n{{content}}<|eot_id|>')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|start_header_id|>assistant<|end_header_id|>\n\n{{content}}<|eot_id|>')
+        ]
+    )
+    system_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|start_header_id|>system<|end_header_id|>\n\n{{content}}<|eot_id|>')
+        ]
+    )
+    special_starter: TemplateComponent = TemplateComponent(type='token', content='<|begin_of_text|>')
+
+
 @dataclass
 class Llama2ConversationTemplate(ConversationTemplate):
     user_formatter: Formatter = StringFormatter(

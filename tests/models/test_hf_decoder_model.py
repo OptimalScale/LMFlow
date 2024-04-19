@@ -30,6 +30,7 @@ from lmflow.utils.constants import (
 from lmflow.utils.conversation_template import (
     EmptyConversationTemplate,
     Llama2ConversationTemplate,
+    Llama3ConversationTemplate,
     EmptyConversationTemplateWithoutSpecialTokens,
 )
 
@@ -76,6 +77,13 @@ CONVERSATION_SINGLETURN_LLAMA2_IDS = [
         [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 9675, 3888, 13, 
          29966, 829, 14816, 29903, 6778, 13, 13, 10994, 518, 29914, 25580, 29962],
         [6324, 29991, 2]
+    )
+]
+
+CONVERSATION_SINGLETURN_LLAMA3_IDS = [
+    (
+        [128000, 128006, 9125, 128007, 271, 7947, 2801, 128009, 128006, 882, 128007, 271, 9906, 128009],
+        [128006, 78191, 128007, 271, 13347, 0, 128009]        
     )
 ]
 
@@ -131,6 +139,17 @@ CONVERSATION_MULTITURN_LLAMA2_IDS = [
     (
         [1, 518, 25580, 29962, 1128, 526, 366, 29973, 518, 29914, 25580, 29962], 
         [306, 29915, 29885, 1781, 29892, 3969, 29991, 2]
+    )
+]
+
+CONVERSATION_MULTITURN_LLAMA3_IDS = [
+    (
+        [128000, 128006, 9125, 128007, 271, 7947, 2801, 128009, 128006, 882, 128007, 271, 9906, 128009],
+        [128006, 78191, 128007, 271, 13347, 0, 128009]        
+    ),
+    (
+        [128006, 882, 128007, 271, 4438, 527, 499, 30, 128009],
+        [128006, 78191, 128007, 271, 40, 2846, 1695, 11, 9523, 0, 128009]
     )
 ]
 
@@ -301,6 +320,13 @@ class HFDecoderModelTest(unittest.TestCase):
             conversation_template=Llama2ConversationTemplate()
         )
         
+        self._test_tokenize(
+            model_name='meta-llama/Meta-Llama-3-8B-Instruct',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA3_IDS]),
+            conversation_template=Llama3ConversationTemplate()
+        )
+        
         
     def test_tokenize_conversation_multiple(self):
         conversation_dataset = {
@@ -359,6 +385,13 @@ class HFDecoderModelTest(unittest.TestCase):
             conversation_template=Llama2ConversationTemplate()
         )
 
+        self._test_tokenize(
+            model_name='meta-llama/Meta-Llama-3-8B-Instruct',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA3_IDS]),
+            conversation_template=Llama3ConversationTemplate()
+        )
+
 
     def test_encode(self):
         model_name = 'gpt2'
@@ -403,3 +436,7 @@ class HFDecoderModelTest(unittest.TestCase):
         text_out = text_out[prompt_length:].strip("\n")
 
         self.assertEqual(text_out, test_inference_output)
+
+
+if __name__ == "__main__":
+    unittest.main()
