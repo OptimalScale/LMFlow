@@ -31,10 +31,10 @@ class TemplateComponent:
                              f"'token', 'string' or 'tools', got {self.type}")
             
     def __repr__(self) -> str:
-        return f"TemplateComponent(type={self.type}, content={self.content})"
+        return f"TemplateComponent(type={self.type}, content={self.content})".replace("\n", "\\n")
     
     def __str__(self) -> str:
-        return f"{self.content}"
+        return f"{self.content}".replace("\n", "\\n")
 
 
 @dataclass
