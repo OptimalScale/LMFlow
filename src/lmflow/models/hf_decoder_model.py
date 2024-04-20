@@ -477,6 +477,13 @@ class HFDecoderModel(DecoderModel, Tunable):
                         conversation_template = EmptyConversationTemplate()
                     elif data_args.conversation_template == 'empty_no_special_tokens':
                         conversation_template = EmptyConversationTemplateWithoutSpecialTokens()
+                    elif data_args.conversation_template == 'disable':
+                        raise ValueError(
+                            "You are using a conversation dataset but conversation_template is set to 'disable'. "
+                            "If you don't want to apply any conversation template to your dataset, please consider "
+                            "using 'empty' or 'empty_no_special_tokens' template instead. For more information, "
+                            "please refer to the documentation."
+                        )
                     else:
                         raise NotImplementedError(
                             f"Conversation template {data_args.conversation_template} is not supported yet."
