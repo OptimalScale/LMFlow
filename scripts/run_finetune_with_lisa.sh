@@ -4,8 +4,8 @@
 #     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
 
 # Parses arguments
-model_name_or_path=meta-llama/Meta-Llama-3-8B
-dataset_path=data/agent_flan
+model_name_or_path=meta-llama/Llama-2-7b-hf
+dataset_path=data/alpaca/train
 output_dir=output_models/finetune_lisa
 lisa_activated_layers=1
 lisa_interval_steps=20
@@ -68,6 +68,10 @@ while [[ $# -ge 1 ]]; do
       block_size="$2"
       shift
       ;;
+    --conversation_template)
+      conversation_template="$2"
+      shift
+      ;;
     --per_device_train_batch_size|--batch_size)
       per_device_train_batch_size="$2"
       shift
@@ -89,7 +93,7 @@ python examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --conversation_template llama3 \
+    --conversation_template ${conversation_template} \
     --num_train_epochs 1 \
     --learning_rate 2e-5 \
     --disable_group_texts 1 \
