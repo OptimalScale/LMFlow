@@ -8,6 +8,14 @@ function main() {
         echo "Example: bash $(basename $0) all"
     fi
 
+    if [ "$1" = "agent_flan" -o "$1" = "all" ]; then
+        echo "downloading agent_flan"
+        filename='agent_flan.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
     if [ "$1" = "MedMCQA" -o "$1" = "all" ]; then
         echo "downloading MedMCQA"
         filename='MedMCQA.tar.gz'
