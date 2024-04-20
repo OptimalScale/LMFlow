@@ -521,7 +521,7 @@ class DatasetArguments:
         metadata={"help": "Whether to disable the eos token for conversation datasets."}
     )
     conversation_template: Optional[str] = field(
-        default=None,
+        default='disable',
         metadata={"help": "The template for conversation datasets."}
     )
 
