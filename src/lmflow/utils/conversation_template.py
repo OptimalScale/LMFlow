@@ -219,7 +219,26 @@ class ConversationTemplate:
         else:
             raise ValueError(f"Object type {type(obj)} is not supported yet.")
     
-    
+
+@dataclass
+class ChatMLConversationTemplate(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
+        ]
+    )
+    system_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
+        ]
+    )
+
+
 @dataclass
 class EmptyConversationTemplate(ConversationTemplate):
     user_formatter: Formatter = StringFormatter(
@@ -327,20 +346,5 @@ class Llama2ConversationTemplate(ConversationTemplate):
     
     
 @dataclass
-class Qwen2ConversationTemplate(ConversationTemplate):
-    user_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
-        ]
-    )
-    assistant_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
-        ]
-    )
-    system_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
-        ]
-    )
+class Qwen2ConversationTemplate(ChatMLConversationTemplate):
     separator: TemplateComponent = TemplateComponent(type='string', content='\n')
