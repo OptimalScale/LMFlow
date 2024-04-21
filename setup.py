@@ -41,12 +41,3 @@ setup(
     ],
     requires_python=">=3.9",
 )
-
-# Must be called after all dependency installed, since flash-attn setup.py
-# relies on torch, packaging, etc.
-try:
-  gpu_state = subprocess.check_output(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"])
-  if b"A100" or b"A40" in gpu_state:
-    subprocess.call(["pip", "install", "flash-attn==2.0.4"])
-except:
-  pass
