@@ -42,6 +42,5 @@ We would appreciate the commit to follow the principles below:
   * Describe the message concisely about what this commit do
   * Describe the message in imperative mood, starting with a capitalized verb, e.g., "Fix typo in README" or "Add support LISA for model parallelism".
   * Squash commits to make sure that each commit describes a whole fix/feature
-  * Split commits to make sure 
 
 Thank you for your interest in LMFlow! Any suggestions and contributions would be greatly appreciated.
