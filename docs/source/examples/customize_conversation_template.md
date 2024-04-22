@@ -11,7 +11,7 @@ We are rapidly working on this page.
 
 We provide the flexibility to customize the conversation template. You can customize your own conversation template by following the steps below:
 
-## Step 1: Knowing the conversation template of your model
+## Knowing the conversation template of your model
 
 The conversation template varies according to the model you are using. For example:  
 
@@ -23,4 +23,31 @@ The template for Llama-2 looks like:
 Find more templates [here](./supported_conversation_template.md).
 
 
-## Step 2: XXX
+## Make your own template
+
+`TemplateComponent`s to a conversation template is just like bricks to a LEGO house. You can build your own template by combining different components.
+
+The following provides an example of building a conversation template for the ChatML format:
+
+1. Decompose the official template
+The official template looks like:
+```
+<|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n<|im_start|>user\n{{user_message_1}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_1}}<|im_end|>\n
+```
+It is easy to recognize the format for each message:
+- System message: `<|im_start|>system\n{{system_message}}<|im_end|>\n`
+- User message: `<|im_start|>user\n{{user_message}}<|im_end|>\n`
+- Assistant message: `<|im_start|>assistant\n{{assistant_reply}}<|im_end|>\n`
+
+2. Choose proper `Formatter`  
+Recall the requirements for a conversation dataset:  
+> - `system`: `Optional[string]`. 
+> - `tools`: `Optional[List[string]]`.  
+> - `messages`: `List[Dict]`.  
+>    - `role`: `string`.  
+>    - `content`: `string`.  
+System message, user message, and assistant message are strings thus we can use `StringFormatter` for them.
+
+3. Build the template
+```python
+```

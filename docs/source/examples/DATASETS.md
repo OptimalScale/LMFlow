@@ -62,55 +62,6 @@ supported types are listed as follows.
 
 ## Supported Dataset and Detailed Formats
 
-### TextOnly
-
-This is the most common dataset type, which only contains raw texts in each
-sample. This type of dataset can be used as the training set for text decoder
-models, or the input of decoder models / encoder-decoder models. Its format is
-as follows (three instances for example),
-
-```json
-{
-  "type": "text_only",
-  "instances": [
-    {  "text": "SAMPLE_TEXT_1" },
-    {  "text": "SAMPLE_TEXT_2" },
-    {  "text": "SAMPLE_TEXT_3" },
-  ]
-}
-```
-
-For example, `data/example_dataset/train/train_50.json` has the aboved format.
-
-### Text2Text
-
-This is the dataset type mostly used for inferencing, which contains a pair of
-texts in each sample. This type of dataset can be used as the training set for
-text encoder-decoder models, or question-answer pair for evaluating model
-inferences. Its format is as follows (three instances for example),
-
-```json
-{
-  "type": "text2text",
-  "instances": [
-    {
-        "input": "SAMPLE_INPUT_1",
-        "output": "SAMPLE_OUTPUT_1",
-    },
-    {
-        "input": "SAMPLE_INPUT_2",
-        "output": "SAMPLE_OUTPUT_2",
-    },
-    {
-        "input": "SAMPLE_INPUT_3",
-        "output": "SAMPLE_OUTPUT_3",
-    },
-  ]
-}
-```
-
-For example, `data/example_dataset/test/test_13.json` has the aboved format.
-
 ### Conversation
 
 ```{admonition} **Work in Progress**
@@ -168,12 +119,22 @@ Conversational data are commonly used in sft process. We currently support conve
   ]
 }
 ```
+Data types:
+- `conversation_id`: `Optional[Any]`. An identifier for the conversation. `conversation_id` is only for convience of tracking the conversation and will not be used in the pipeline.
+- `system`: `Optional[string]`. A system prompt that is used to start the conversation.
+- `tools`: `Optional[List[string]]`. A list of tools that are used in the conversation.
+- `messages`: `List[Dict]`. A list of messages in the conversation. Each message contains the following fields:
+  - `role`: `string`. The role of the message. It can be either `user` or `assistant`.
+  - `content`: `string`. The content of the message.
+
+> We are working on supporting customized message keys and role names. Please stay tuned.
+
 Tips:
-- `system`, `tools`, and `conversation_id` are OPTIONAL. `conversation_id` is only for convience of tracking the conversation and will not be used in the pipeline.
 - Please make sure the messages are:
   1. Start with an user message.
   2. In the correct order. The pipeline will not check the order of the messages.
   3. In pairs of user and assistant (i.e., the length of the messages should be even). If the conversation ends with the user, the pipeline will trim the last user message.
+  4. Make sure the `content`s are not empty. If the `content` is empty, the pipeline will add a space to it.
 
 #### Conversation Template
 
@@ -245,3 +206,54 @@ For dataset that system prompts, tool prompts and templates are already applied 
 #### Customize Conversation Template
 
 Please refer to the [Customize Conversation Template](./customize_conversation_template.md) for more details.
+
+
+### TextOnly
+
+This is the most common dataset type, which only contains raw texts in each
+sample. This type of dataset can be used as the training set for text decoder
+models, or the input of decoder models / encoder-decoder models. Its format is
+as follows (three instances for example),
+
+```json
+{
+  "type": "text_only",
+  "instances": [
+    {  "text": "SAMPLE_TEXT_1" },
+    {  "text": "SAMPLE_TEXT_2" },
+    {  "text": "SAMPLE_TEXT_3" },
+  ]
+}
+```
+
+For example, `data/example_dataset/train/train_50.json` has the aboved format.
+
+
+### Text2Text
+
+This is the dataset type mostly used for inferencing, which contains a pair of
+texts in each sample. This type of dataset can be used as the training set for
+text encoder-decoder models, or question-answer pair for evaluating model
+inferences. Its format is as follows (three instances for example),
+
+```json
+{
+  "type": "text2text",
+  "instances": [
+    {
+        "input": "SAMPLE_INPUT_1",
+        "output": "SAMPLE_OUTPUT_1",
+    },
+    {
+        "input": "SAMPLE_INPUT_2",
+        "output": "SAMPLE_OUTPUT_2",
+    },
+    {
+        "input": "SAMPLE_INPUT_3",
+        "output": "SAMPLE_OUTPUT_3",
+    },
+  ]
+}
+```
+
+For example, `data/example_dataset/test/test_13.json` has the aboved format.
