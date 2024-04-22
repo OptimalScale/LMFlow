@@ -97,6 +97,10 @@ class StringFormatter(Formatter):
             if component.type == 'string':
                 for key, value in kwargs.items():
                     templated = component.content.replace("{{" + key + "}}", value)
+                    if len(templated) == 0:
+                        logger.warning("Found empty string after formatting, adding a space instead. "
+                                       "If this is not intended, please check the dataset.")
+                        templated = " "
                     formatted_template.append(TemplateComponent(type='string', content=templated))
             else:
                 formatted_template.append(component)
