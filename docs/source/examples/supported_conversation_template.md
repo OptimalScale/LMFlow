@@ -24,6 +24,39 @@ This template is not preseted in LMFlow currently. We are working on it and will
 ```
 
 
+## ChatML
+**With a system message**
+```
+<|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n
+```
+
+**Without a system message**
+```
+<|im_start|>user\n{{user_message_0}}<|im_end|>\n
+```
+
+**A complete conversation**
+```
+<|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n
+```
+
+**Multiple rounds**
+```
+<|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n<|im_start|>user\n{{user_message_1}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_1}}<|im_end|>\n
+```
+
+**jinja template**  
+[[Reference](https://huggingface.co/mlabonne/OrpoLlama-3-8B/blob/3534d0562dee3a541d015ef908a71b0aa9085488/tokenizer_config.json#L2073)]
+```
+{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}
+```
+
+**Filled Example**
+```
+<|im_start|>system\nYou are a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nWho are you?<|im_end|>\n<|im_start|>assistant\nI am a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nHow old are you?<|im_end|>\n<|im_start|>assistant\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<|im_end|>\n
+```
+
+
 ## InternLM2
 ```{admonition} **Work in Progress**
 :class: info
@@ -165,7 +198,7 @@ The conversation template for Mixtral 8x7B is slightly different from the templa
 **jinja template**  
 [[Reference](https://huggingface.co/Qwen/Qwen1.5-72B/blob/93bac0d1ae83d50c43b1793e2d74a00dc43a4c36/tokenizer_config.json#L31)]
 ```
-"{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}
+{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}
 ```
 
 **Filled Example**
