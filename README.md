@@ -109,7 +109,7 @@ cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
   --output_model_path output_models/finetuned_gpt2
 ```
 
@@ -120,7 +120,7 @@ cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
   --output_model_path output_models/finetuned_llama \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20
