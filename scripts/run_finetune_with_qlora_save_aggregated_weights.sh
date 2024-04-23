@@ -3,8 +3,8 @@
 
 # Parses arguments
 model_name_or_path=meta-llama/Llama-2-13b-hf
-dataset_path=/home/paperspace/LMFlow/alpaca/train
-conversation_template=empty
+dataset_path=data/alpaca/train_conversation
+conversation_template=llama2
 output_dir=output_models/finetune
 deepspeed_args="--master_port=11000"
 
