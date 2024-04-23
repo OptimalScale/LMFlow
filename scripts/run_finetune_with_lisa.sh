@@ -7,7 +7,7 @@
 model_name_or_path=meta-llama/Llama-2-7b-hf
 dataset_path=data/alpaca/train_conversation
 output_dir=output_models/finetune_lisa
-conversation_template=empty
+conversation_template=llama2
 lisa_activated_layers=1
 lisa_interval_steps=20
 
