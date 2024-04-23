@@ -631,7 +631,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 (
                     fingerprint
                     + str(self.tokenizer)
-                    + str(conversation_template)
+                    + str(conversation_template) if dataset_type == "conversation" else ""
                     + f'###disable_group_texts={data_args.disable_group_texts}'
                     + f'###block_size={data_args.block_size}'
                 ).encode("utf-8")
