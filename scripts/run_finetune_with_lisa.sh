@@ -7,7 +7,6 @@
 model_name_or_path=meta-llama/Llama-2-7b-hf
 dataset_path=data/alpaca/train_conversation
 output_dir=output_models/finetune_lisa
-conversation_template=llama2
 lisa_activated_layers=1
 lisa_interval_steps=20
 
@@ -93,8 +92,8 @@ mkdir -p ${output_dir} ${log_dir}
 python examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
-    --conversation_template ${conversation_template} \
     --output_dir ${output_dir} --overwrite_output_dir \
+    --conversation_template ${conversation_template} \
     --num_train_epochs 1 \
     --learning_rate 1e-5 \
     --disable_group_texts 1 \
