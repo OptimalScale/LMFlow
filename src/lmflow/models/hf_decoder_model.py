@@ -65,6 +65,7 @@ from lmflow.utils.conversation_template import (
     ChatMLConversationTemplate,
     Llama2ConversationTemplate,
     Llama3ConversationTemplate,
+    Phi3ConversationTemplate,
     Qwen2ConversationTemplate,
     EmptyConversationTemplateWithoutSpecialTokens
 )
@@ -476,6 +477,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                         conversation_template = ChatMLConversationTemplate()
                     elif data_args.conversation_template == 'qwen2':
                         conversation_template = Qwen2ConversationTemplate()
+                    elif data_args.conversation_template == 'phi3':
+                        conversation_template = Phi3ConversationTemplate()
                     elif data_args.conversation_template == 'empty':
                         conversation_template = EmptyConversationTemplate()
                     elif data_args.conversation_template == 'empty_no_special_tokens':
