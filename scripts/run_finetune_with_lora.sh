@@ -3,7 +3,8 @@
 
 # Parses arguments
 model_name_or_path=gpt2
-dataset_path=data/alpaca/train
+dataset_path=data/alpaca/train_conversation
+conversation_template=llama2
 output_dir=output_models/finetune
 deepspeed_args="--master_port=11000"
 
@@ -16,6 +17,10 @@ while [[ $# -ge 1 ]]; do
       ;;
     -d|--dataset_path)
       dataset_path="$2"
+      shift
+      ;;
+    --conversation_template)
+      conversation_template="$2"
       shift
       ;;
     -o|--output_lora_path)
@@ -43,6 +48,7 @@ deepspeed ${deepspeed_args} \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
+    --conversation_template ${conversation_template} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --num_train_epochs 0.01 \
     --learning_rate 1e-4 \

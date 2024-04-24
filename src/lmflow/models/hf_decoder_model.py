@@ -631,6 +631,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 (
                     fingerprint
                     + str(self.tokenizer)
+                    + str(conversation_template) if dataset_type == "conversation" else ""
                     + f'###disable_group_texts={data_args.disable_group_texts}'
                     + f'###block_size={data_args.block_size}'
                 ).encode("utf-8")
@@ -818,7 +819,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 torch_dtype=torch_dtype,
                 device_map=device_map,
                 trust_remote_code = self.model_args.trust_remote_code,
-                attn_implementation="flash_attention_2" if model_args.use_flash_attention else None,
+                attn_implementation="flash_attention_2" if self.model_args.use_flash_attention else None,
             )
         
             self.backend_model = PeftModel.from_pretrained(self.backend_model_full, tmpdirname)
