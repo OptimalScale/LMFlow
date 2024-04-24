@@ -16,6 +16,7 @@ use_flash_attention=0
 gradient_accumulation_steps=1
 block_size=256
 per_device_train_batch_size=1
+conversation_template=llama2
 
 # Enable model parallelism for multiple gpus, modify this if you prefer
 # customized deepspeed zero-redundancy optimization settings
