@@ -18,6 +18,7 @@ class ConversationTemplate:
     tools_formatter: Optional[Formatter] = None
     separator: Optional[TemplateComponent] = None
     special_starter: Optional[TemplateComponent] = None
+    special_stopper: Optional[TemplateComponent] = None
     
     def __post_init__(self):
         if self.separator:
@@ -91,6 +92,8 @@ class ConversationTemplate:
             #   llama-3: <|begin_of_text|> only at the beginning of a session
             encoded_pairs = self.add_special_starter(encoded_pairs, tokenizer)
             
+        if self.special_stopper:
+            encoded_pairs = self.add_special_stopper(encoded_pairs, tokenizer)
         
         return encoded_pairs
         
@@ -199,13 +202,41 @@ class ConversationTemplate:
         if self.special_starter.type == 'string':
             special_starter_ids = tokenizer.encode(self.special_starter.content, add_special_tokens=False)
         elif self.special_starter.type == 'token':
-            special_starter_ids = self._ensure_id_list(tokenizer.convert_tokens_to_ids(self.special_starter.content))
+            if self.special_starter.content == 'bos_token':
+                special_starter_ids = [tokenizer.bos_token_id]
+            elif self.special_starter.content == 'eos_token':
+                special_starter_ids = [tokenizer.eos_token_id]
+            else:
+                special_starter_ids = self._ensure_id_list(tokenizer.convert_tokens_to_ids(self.special_starter.content))
         elif self.special_starter.type == 'token_id':
             special_starter_ids = self._ensure_id_list(self.special_starter.content)
         else:
             raise ValueError(f"Component type {self.special_starter.type} cannot be used as a special starter.")
         
         encoded_pairs[0] = (special_starter_ids + encoded_pairs[0][0], encoded_pairs[0][1])
+        
+        return encoded_pairs
+    
+    def add_special_stopper(
+        self,
+        encoded_pairs: Sequence[Tuple[List[int], List[int]]],
+        tokenizer: PreTrainedTokenizer
+    ) -> Sequence[Tuple[List[int], List[int]]]:
+        if self.special_stopper.type == 'string':
+            special_stopper_ids = tokenizer.encode(self.special_stopper.content, add_special_tokens=False)
+        elif self.special_stopper.type == 'token':
+            if self.special_stopper.content == 'bos_token':
+                special_stopper_ids = [tokenizer.bos_token_id]
+            elif self.special_stopper.content == 'eos_token':
+                special_stopper_ids = [tokenizer.eos_token_id]
+            else:
+                special_stopper_ids = self._ensure_id_list(tokenizer.convert_tokens_to_ids(self.special_stopper.content))
+        elif self.special_stopper.type == 'token_id':
+            special_stopper_ids = self._ensure_id_list(self.special_stopper.content)
+        else:
+            raise ValueError(f"Component type {self.special_stopper.type} cannot be used as a special stopper.")
+        
+        encoded_pairs[-1] = (encoded_pairs[-1][0], encoded_pairs[-1][1] + special_stopper_ids)
         
         return encoded_pairs
     
@@ -343,6 +374,27 @@ class Llama2ConversationTemplate(ConversationTemplate):
             ))
             
         return res_all
+    
+    
+@dataclass
+class Phi3ConversationTemplate(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|user|>\n{{content}}<|end|>\n')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|assistant|>\n{{content}}<|end|>\n')
+        ]
+    )
+    system_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|system|>\n{{content}}<|end|>\n')
+        ]
+    )
+    special_starter: TemplateComponent = TemplateComponent(type='token', content='bos_token')
+    special_stopper: TemplateComponent = TemplateComponent(type='token', content='eos_token')
     
     
 @dataclass

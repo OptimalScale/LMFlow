@@ -8,6 +8,7 @@
 - [Mixtral 8x22B](#mixtral-8x22b)
 - [Mixtral 8x7B](#mixtral-8x7b)
 - [Qwen-2](#qwen-2)
+- [Phi-3](#phi-3)
 - [Yi](#yi)
 
 
@@ -171,6 +172,39 @@ The conversation template for Mixtral 8x7B is slightly different from the templa
 [[Reference](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1/blob/1e637f2d7cb0a9d6fb1922f305cb784995190a83/tokenizer_config.json#L42)]
 ```
 {{ bos_token }}{% for message in messages %}{% if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('Conversation roles must alternate user/assistant/user/assistant/...') }}{% endif %}{% if message['role'] == 'user' %}{{ '[INST] ' + message['content'] + ' [/INST]' }}{% elif message['role'] == 'assistant' %}{{ message['content'] + eos_token}}{% else %}{{ raise_exception('Only user and assistant roles are supported!') }}{% endif %}{% endfor %}
+```
+
+
+## Phi-3
+**With a system message**
+```
+<s><|system|>\n{{system_message}}<|end|>\n<|user|>\n{{user_message_0}}<|end|>\n<|endoftext|>
+```
+
+**Without a system message**
+```
+<s><|user|>\n{{user_message_0}}<|end|>\n<|endoftext|>
+```
+
+**A complete conversation**
+```
+<s><|system|>\n{{system_message}}<|end|>\n<|user|>\n{{user_message_0}}<|end|>\n<|assistant|>\n{{assistant_reply_0}}<|end|>\n<|endoftext|>
+```
+
+**Multiple rounds**
+```
+<s><|system|>\n{{system_message}}<|end|>\n<|user|>\n{{user_message_0}}<|end|>\n<|assistant|>\n{{assistant_reply_0}}<|end|>\n<|user|>\n{{user_message_1}}<|end|>\n<|assistant|>\n{{assistant_reply_1}}<|end|>\n<|endoftext|>
+```
+
+**jinja template**
+[[Reference]](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/blob/3a811845d89f3c1b3f41b341d0f9f05104769f35/tokenizer_config.json#L338)
+```
+{{ bos_token }}{% for message in messages %}{{'<|' + message['role'] + '|>' + '\n' + message['content'] + '<|end|>\n' }}{% endfor %}{% if add_generation_prompt %}{{ '<|assistant|>\n' }}{% else %}{{ eos_token }}{% endif %}
+```
+
+**Filled Example**
+```
+<s><|system|>\nYou are a chatbot developed by LMFlow team.<|end|>\n<|user|>\nWho are you?<|end|>\n<|assistant|>\nI am a chatbot developed by LMFlow team.<|end|>\n<|user|>\nHow old are you?<|end|>\n<|assistant|>\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<|end|>\n<|endoftext|>
 ```
 
 

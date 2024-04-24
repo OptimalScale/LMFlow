@@ -31,6 +31,7 @@ from lmflow.utils.conversation_template import (
     EmptyConversationTemplate,
     Llama2ConversationTemplate,
     Llama3ConversationTemplate,
+    Phi3ConversationTemplate,
     EmptyConversationTemplateWithoutSpecialTokens,
 )
 
@@ -84,6 +85,13 @@ CONVERSATION_SINGLETURN_LLAMA3_IDS = [
     (
         [128000, 128006, 9125, 128007, 271, 7947, 2801, 128009, 128006, 882, 128007, 271, 9906, 128009],
         [128006, 78191, 128007, 271, 13347, 0, 128009]        
+    )
+]
+
+CONVERSATION_SINGLETURN_PHI3_IDS = [
+    (
+        [1, 32006, 10876, 3888, 32007, 32010, 15043, 32007],
+        [32001, 6324, 29991, 32007, 32000]
     )
 ]
 
@@ -153,6 +161,17 @@ CONVERSATION_MULTITURN_LLAMA3_IDS = [
     )
 ]
 
+CONVERSATION_MULTITURN_PHI3_IDS = [
+    (
+        [1, 32006, 10876, 3888, 32007, 32010, 15043, 32007],
+        [32001, 6324, 29991, 32007]
+    ),
+    (
+        [32010, 1128, 526, 366, 29973, 32007],
+        [32001, 306, 29915, 29885, 1781, 29892, 3969, 29991, 32007, 32000]
+    )
+]
+
 test_encode_input = "Question: Which of the following is not true for myelinated nerve fibers: (A) Impulse through myelinated fibers is slower than non-myelinated fibers (B) Membrane currents are generated at nodes of Ranvier (C) Saltatory conduction of impulses is seen (D) Local anesthesia is effective only when the nerve is not covered by myelin sheath."
 test_encode_output = [24361, 25, 9022, 286, 262, 1708, 318, 407, 2081, 329, 616, 417, 3898, 16384, 26742, 25, 357, 32, 8, 9855, 9615, 832, 616, 417, 3898, 26742, 318, 13611, 621, 1729, 12, 1820, 417, 3898, 26742, 357, 33, 8, 4942, 1671, 1531, 28629, 389, 7560, 379, 13760, 286, 23075, 49663, 357, 34, 8, 13754, 2870, 369, 11124, 286, 37505, 318, 1775, 357, 35, 8, 10714, 49592, 318, 4050, 691, 618, 262, 16384, 318, 407, 5017, 416, 616, 27176, 673, 776, 13]
 test_decode_input = [24361, 25, 9022, 286, 262, 1708, 318, 407, 2081, 329, 616, 417, 3898, 16384, 26742, 25, 357, 32, 8, 9855, 9615, 832, 616, 417, 3898, 26742, 318, 13611, 621, 1729, 12, 1820, 417, 3898, 26742, 357, 33, 8, 4942, 1671, 1531, 28629, 389, 7560, 379, 13760, 286, 23075, 49663, 357, 34, 8, 13754, 2870, 369, 11124, 286, 37505, 318, 1775, 357, 35, 8, 10714, 49592, 318, 4050, 691, 618, 262, 16384, 318, 407, 5017, 416, 616, 27176, 673, 776, 13]
@@ -199,7 +218,10 @@ class HFDecoderModelTest(unittest.TestCase):
 
         self.assertEqual(dataset.to_dict(), groundtruth_dataset)
 
-        model_args = ModelArguments(model_name_or_path=model_name)
+        model_args = ModelArguments(
+            model_name_or_path=model_name, 
+            trust_remote_code=kwargs.get("trust_remote_code", False)
+        )
         model = HFDecoderModel(model_args)
 
         tokenized_dataset = model.tokenize(dataset, **kwargs)
@@ -326,6 +348,14 @@ class HFDecoderModelTest(unittest.TestCase):
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA3_IDS]),
             conversation_template=Llama3ConversationTemplate()
         )
+
+        self._test_tokenize(
+            model_name='microsoft/Phi-3-mini-4k-instruct',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_PHI3_IDS]),
+            conversation_template=Phi3ConversationTemplate(),
+            trust_remote_code=True
+        )
         
         
     def test_tokenize_conversation_multiple(self):
@@ -390,6 +420,14 @@ class HFDecoderModelTest(unittest.TestCase):
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA3_IDS]),
             conversation_template=Llama3ConversationTemplate()
+        )
+
+        self._test_tokenize(
+            model_name='microsoft/Phi-3-mini-4k-instruct',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_PHI3_IDS]),
+            conversation_template=Phi3ConversationTemplate(),
+            trust_remote_code=True
         )
 
 
