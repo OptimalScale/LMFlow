@@ -63,7 +63,7 @@ deepspeed ${deepspeed_args} \
     --block_size 512 \
     --per_device_train_batch_size 1 \
     --use_qlora 1 \
-    --save_aggregated_lora 1\
+    --save_aggregated_lora 0 \
     --deepspeed configs/ds_config_zero2.json \
     --fp16 \
     --run_name ${exp_id} \
