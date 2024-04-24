@@ -10,6 +10,9 @@ output_dir=output_models/finetune
 deepspeed_args="--master_port=11000"
 conversation_template=llama2
 
+# Safty related arguments
+trust_remote_code=0
+
 while [[ $# -ge 1 ]]; do
   key="$1"
   case ${key} in
@@ -33,6 +36,10 @@ while [[ $# -ge 1 ]]; do
       deepspeed_args="$2"
       shift
       ;;
+    --trust_remote_code)
+      trust_remote_code="$2"
+      shift
+      ;;
     *)
       echo "error: unknown option \"${key}\"" 1>&2
       exit 1
@@ -49,6 +56,7 @@ mkdir -p ${output_dir} ${log_dir}
 deepspeed ${deepspeed_args} \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
+    --trust_remote_code ${trust_remote_code} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --conversation_template ${conversation_template} \
