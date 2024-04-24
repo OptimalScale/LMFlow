@@ -18,6 +18,9 @@ block_size=256
 per_device_train_batch_size=1
 conversation_template=llama2
 
+# Safty related arguments
+trust_remote_code=0
+
 # Enable model parallelism for multiple gpus, modify this if you prefer
 # customized deepspeed zero-redundancy optimization settings
 num_gpu=$(python -c "import torch; print(torch.cuda.device_count())")
@@ -77,6 +80,10 @@ while [[ $# -ge 1 ]]; do
       per_device_train_batch_size="$2"
       shift
       ;;
+    --trust_remote_code)
+      trust_remote_code="$2"
+      shift
+      ;;
     *)
       echo "error: unknown option \"${key}\"" 1>&2
       exit 1
@@ -92,6 +99,7 @@ mkdir -p ${output_dir} ${log_dir}
 
 python examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
+    --trust_remote_code ${trust_remote_code} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --conversation_template ${conversation_template} \
