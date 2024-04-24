@@ -18,7 +18,7 @@ block_size=256
 per_device_train_batch_size=1
 conversation_template=llama2
 
-# Safty related arguments
+# Safety related arguments
 trust_remote_code=0
 
 # Enable model parallelism for multiple gpus, modify this if you prefer

@@ -10,7 +10,7 @@ output_dir=output_models/finetune
 deepspeed_args="--master_port=11000"
 conversation_template=llama2
 
-# Safty related arguments
+# Safety related arguments
 trust_remote_code=0
 
 while [[ $# -ge 1 ]]; do
