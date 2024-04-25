@@ -37,9 +37,8 @@
 
 
 ## Latest News
-* [2024-04-25] [लामा-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) और [फी-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) का समर्थन किया गया। शैल शैली स्क्रिप्ट में एक संबंधित `--conversation_template` निर्दिष्ट करना न भूलें :hugs: । 
-* [2024-04-25] [चैटएमएल] बातचीत शैली का समर्थन किया गया। हम और पूर्वनिर्धारित शैलियों को जोड़ने पर काम कर रहे हैं। आप उन सभी टेम्पलेट्स को यहाँ [देख सकते हैं](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template) जिन्हें हम वर्तमान में समर्थित करते हैं।
-* [2024-03-27] :rocket: [LISA](https://arxiv.org/abs/2403.17919) का समर्थन —— 24जीबी जीपीयू पर 7B मॉडल का प्रशिक्षण बिना ऑफलोडिंग के! :rocket:
+* [2024-04-25] :rocket: बातचीत टेम्पलेट का समर्थन! हमने नवीनतम [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) और [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) बातचीत टेम्पलेट को पूर्वनिर्धारित किया है, साथ ही कुछ अक्सर प्रयुक्त टेम्पलेट जैसे `chatml` भी (सभी टेम्पलेट यहाँ देखें [यहाँ](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)), और हम अधिक पूर्वनिर्धारित टेम्पलेट जोड़ने पर काम कर रहे हैं। शैल अनुक्रम में संबंधित `--conversation_template` को शैल अनुक्रम में जोड़ें और आप तैयार हैं! :rocket:  
+* [2024-03-27] [LISA](https://arxiv.org/abs/2403.17919) का समर्थन —— 24जीबी जीपीयू पर 7B मॉडल का प्रशिक्षण बिना ऑफलोडिंग के!  
 * [2023-09-11] [स्पेक्युलेटिव डिकोडिंग](https://arxiv.org/abs/2211.17192) का समर्थन, इस्तेमाल के तरीके और साधारण प्रदर्शन आँकड़े देखने के लिए [उपयोग गाइड](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) पर क्लिक करें।
 * [2023-08-14] [पोजीशन इंटरपोलेशन](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) के माध्यम से LLaMA की संदर्भ विंडो को विस्तारित करने का समर्थन (लीनियर और NTK स्केलिंग)।
 * [2023-08-07] [फ्लैश एटेंशन-2](https://crfm.stanford.edu/2023/07/17/flash2.html) का समर्थन, अधिक जानकारी के लिए [फ्लैश एटेंशन उपयोग गाइड](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) देखें।

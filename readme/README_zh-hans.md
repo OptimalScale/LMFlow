@@ -31,9 +31,8 @@
 
 
 ## 新闻
-* [2024-04-25] 支持 [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) 和 [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct)，记得在训练/微调shell脚本里指定对应的`--conversation_template`。 :hugs:
-* [2024-04-25] 支持 [ChatML] 多轮对话模板。我们正在努力支持更多的模板，你可以在[这里](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)找到LMFlow目前支持的模板。
-* [2024-03-27] :rocket: 支持 [LISA](https://arxiv.org/abs/2403.17919) —— 无需offloading，在24G显存的GPU上训练7B模型！ :rocket:
+* [2024-04-25] :rocket: 支持多轮对话数据格式以及对话模板！我们已经添加了近期热门模型 [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) 和 [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct)的对应模板，也提供了一些如`chatml`等常用的模板（[这里](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)查看所有已经预设的模板），更多模板正在添加中。在微调shell脚本里指定对应的`--conversation_template`试试吧！ :rocket:  
+* [2024-03-27] 支持 [LISA](https://arxiv.org/abs/2403.17919) —— 无需offloading，在24G显存的GPU上训练7B模型！  
 * [2023-09-11] 支持 [投机解码(speculative decoding)](https://arxiv.org/abs/2211.17192)， 点击 [使用指南](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) 查看使用方法和简单的性能统计。
 * [2023-08-14] 支持通过位置插值（Postion Interpolation）（Linear & NTK scaling）扩展LLaMA的上下文窗口，查看详情：[位置插值](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md)。
 * [2023-08-07] 支持 [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html)，查看详情：[Flash Attention使用指南](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md)。

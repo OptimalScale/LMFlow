@@ -37,9 +37,8 @@
 
 
 ## Latest News
-* [2024-04-25] [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B)와 [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct)를 지원합니다. 쉘 스크립트에서 해당하는 `--conversation_template`를 지정하는 것을 잊지 마세요 :hugs: . 
-* [2024-04-25] [ChatML] 대화 템플릿을 지원합니다. 더 많은 프리셋 템플릿을 추가하기 위해 노력하고 있습니다. 현재 지원되는 모든 템플릿은 [여기](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)에서 확인할 수 있습니다.
-* [2024-03-27] :rocket: [LISA](https://arxiv.org/abs/2403.17919)를 지원합니다. 메모리를 비우지 않고도 24G 메모리에서 7B 훈련이 가능합니다! :rocket:
+* [2024-04-25] :rocket: 대화 템플릿을 지원합니다! 최신 [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) 및 [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) 대화 템플릿과 `chatml`과 같은 자주 사용되는 템플릿을 미리 설정해 두었습니다 ([여기](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)에서 모든 템플릿을 확인하세요). 더 많은 미리 설정된 템플릿을 추가하는 작업 중에 있습니다. 셸 스크립트에 해당하는 `--conversation_template`를 추가하면 됩니다! :rocket:
+* [2024-03-27] [LISA](https://arxiv.org/abs/2403.17919)를 지원합니다. 메모리를 비우지 않고도 24G 메모리에서 7B 훈련이 가능합니다!  
 * [2023-09-11] [추론적 디코딩 (speculative decoding)](https://arxiv.org/abs/2211.17192)을 지원합니다. 사용법 및 가속화 세부 정보는 [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) 를 확인하세요.
 * [2023-08-14] LLaMA 모델에 대한 위치 보간(선형 및 NTK 스케일링)을 사용하여 긴 문맥 추론을 지원합니다. 자세한 내용은 [Postion Interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) 를 확인하세요.
 * [2023-08-07] [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html)를 지원합니다. 자세한 내용은 [Flash Attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) 를 확인하세요.
