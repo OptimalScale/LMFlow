@@ -29,25 +29,49 @@ Find more templates [here](./supported_conversation_template.md).
 
 The following provides an example of building a conversation template for the ChatML format:
 
-1. Decompose the official template
+### 1. Decompose the official template
 The official template looks like:
 ```
 <|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n<|im_start|>user\n{{user_message_1}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_1}}<|im_end|>\n
 ```
 It is easy to recognize the format for each message:
-- System message: `<|im_start|>system\n{{system_message}}<|im_end|>\n`
-- User message: `<|im_start|>user\n{{user_message}}<|im_end|>\n`
-- Assistant message: `<|im_start|>assistant\n{{assistant_reply}}<|im_end|>\n`
+- System message: `<|im_start|>system\n{{system_message}}<|im_end|>\n`  
+- User message: `<|im_start|>user\n{{user_message}}<|im_end|>\n`  
+- Assistant message: `<|im_start|>assistant\n{{assistant_reply}}<|im_end|>\n`  
 
-2. Choose proper `Formatter`  
+###  2. Choose proper `Formatter`  
 Recall the requirements for a conversation dataset:  
 > - `system`: `Optional[string]`. 
 > - `tools`: `Optional[List[string]]`.  
 > - `messages`: `List[Dict]`.  
 >    - `role`: `string`.  
 >    - `content`: `string`.  
+
 System message, user message, and assistant message are strings thus we can use `StringFormatter` for them.
 
-3. Build the template
+### 3. Build the template
 ```python
+from dataclasses import dataclass
+
+from lmflow.utils.conversation_formatter import Formatter, TemplateComponent, StringFormatter
+from lmflow.utils.conversation_template import ConversationTemplate
+
+
+@dataclass
+class ChatMLConversationTemplate(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
+        ]
+    )
+    system_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
+        ]
+    )
 ```

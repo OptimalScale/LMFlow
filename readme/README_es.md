@@ -38,11 +38,12 @@ Una caja de herramientas extensible, conveniente y eficiente para ajustar modelo
 
 
 ## Latest News
+* [2024-04-25] Soporte para [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) y [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct). No olvides especificar un `--conversation_template` correspondiente en el script de shell :hugs: .
+* [2024-04-25] Soporte para la plantilla de conversación [ChatML]. Estamos trabajando en agregar más plantillas predefinidas. Puedes encontrar todas las plantillas que actualmente admitimos [aquí](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template).
 * [2024-03-27] :rocket: Soporte para [LISA](https://arxiv.org/abs/2403.17919) — ¡Entrenamiento de modelos de 7B en GPU con 24G de memoria sin necesidad de offloading! :rocket:
 * [2023-09-11] Soporte para [decodificación especulativa](https://arxiv.org/abs/2211.17192), consulta la [guía de uso](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) para ver cómo utilizarlo y estadísticas de rendimiento básicas.
 * [2023-08-14] Soporte para ampliar la ventana de contexto de LLaMA a través de interpolación de posición (Lineal y Escalado NTK), más información en: [Interpolación de Posición](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md).
 * [2023-08-07] Soporte para [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html), consulta la [guía de uso de Flash Attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) para más detalles.
-* [2023-08-02] Soporte para [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B).
 
 
 ## Quick Start
@@ -64,23 +65,27 @@ Por favor, consulta nuestra [documentación oficial (en inglés)](https://optima
 
 ### Fine-Tuning (Full)
 El ajuste fino completo actualizará todos los parámetros del modelo. A continuación se muestra un ejemplo de ajuste fino completo de GPT-2:
+
 ```sh
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
+  --conversation_template chatml \
   --output_model_path output_models/finetuned_gpt2
 ```
 
 ### Fine-Tuning (LISA)
 [LISA](https://arxiv.org/abs/2403.17919) es un algoritmo de ajuste fino que es **eficiente en memoria**, permitiendo un equilibrio entre la memoria y el número de capas descongeladas aleatoriamente. El script siguiente ha sido probado únicamente en **una sola GPU**. ¡Estén atentos a nuestras últimas actualizaciones! :smile:
+
 ```sh
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
+  --conversation_template llama2 \
   --output_model_path output_models/finetuned_llama \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20

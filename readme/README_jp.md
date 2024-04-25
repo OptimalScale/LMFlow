@@ -38,11 +38,12 @@
 
 
 ## Latest News
+* [2024-04-25] [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B)と[Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct)をサポートしました。シェルスクリプト内で対応する`--conversation_template`を指定するのを忘れないでください :hugs: . 
+* [2024-04-25] [ChatML] 会話テンプレートをサポートしました。より多くのプリセットテンプレートを追加する作業を進めています。現在サポートしているすべてのテンプレートは[こちら](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)で確認できます。
 * [2024-03-27] :rocket: [LISA](https://arxiv.org/abs/2403.17919) に対応 —— オフロード不要、24GのGPUで7Bモデルをトレーニング！ :rocket:
 * [2023-09-11] [スペキュラティブ・デコーディング](https://arxiv.org/abs/2211.17192) をサポート、使用方法や簡単な性能統計については [使用ガイド](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) を参照してください。
 * [2023-08-14] [位置補間（Linear & NTK scaling）](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) を使用したLLaMAのコンテキストウィンドウを拡張する機能をサポートしています。
 * [2023-08-07] [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html) をサポートしています。詳細は[Flash Attentionの使用ガイド](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md)を参照してください。
-* [2023-08-02] [Llama2](https://ai.meta.com/llama/)、[ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b)、[Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) をサポートしています。
 
 
 ## Table of Contents
@@ -82,12 +83,14 @@ bash install.sh
 
 ### Fine-Tuning (Full)
 全パラメーターファインチューニングは、モデルのすべてのパラメーターを更新します。GPT-2の全パラメーターファインチューニングの例を以下に示します：
+
 ```sh
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
+  --conversation_template chatml \
   --output_model_path output_models/finetuned_gpt2
 ```
 
@@ -98,7 +101,8 @@ cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
+  --conversation_template llama2 \
   --output_model_path output_models/finetuned_llama \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20
