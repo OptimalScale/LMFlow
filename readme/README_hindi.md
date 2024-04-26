@@ -37,11 +37,11 @@
 
 
 ## Latest News
-* [2024-03-27] :rocket: [LISA](https://arxiv.org/abs/2403.17919) का समर्थन —— 24जीबी जीपीयू पर 7B मॉडल का प्रशिक्षण बिना ऑफलोडिंग के! :rocket:
+* [2024-04-25] :rocket: बातचीत टेम्पलेट का समर्थन! हमने नवीनतम [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) और [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) बातचीत टेम्पलेट को पूर्वनिर्धारित किया है, साथ ही कुछ अक्सर प्रयुक्त टेम्पलेट जैसे `chatml` भी (सभी टेम्पलेट यहाँ देखें [यहाँ](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)), और हम अधिक पूर्वनिर्धारित टेम्पलेट जोड़ने पर काम कर रहे हैं। शैल अनुक्रम में संबंधित `--conversation_template` को शैल अनुक्रम में जोड़ें और आप तैयार हैं! :rocket:  
+* [2024-03-27] [LISA](https://arxiv.org/abs/2403.17919) का समर्थन —— 24जीबी जीपीयू पर 7B मॉडल का प्रशिक्षण बिना ऑफलोडिंग के!  
 * [2023-09-11] [स्पेक्युलेटिव डिकोडिंग](https://arxiv.org/abs/2211.17192) का समर्थन, इस्तेमाल के तरीके और साधारण प्रदर्शन आँकड़े देखने के लिए [उपयोग गाइड](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) पर क्लिक करें।
 * [2023-08-14] [पोजीशन इंटरपोलेशन](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) के माध्यम से LLaMA की संदर्भ विंडो को विस्तारित करने का समर्थन (लीनियर और NTK स्केलिंग)।
 * [2023-08-07] [फ्लैश एटेंशन-2](https://crfm.stanford.edu/2023/07/17/flash2.html) का समर्थन, अधिक जानकारी के लिए [फ्लैश एटेंशन उपयोग गाइड](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) देखें।
-* [2023-08-02] [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) का समर्थन किया गया।
 
 
 ## Table of Contents
@@ -82,12 +82,14 @@ bash install.sh
 
 ### Fine-Tuning (Full)
 मॉडल को पूर्ण पैरामीटर फ़ाइन ट्यूनिंग करने से सभी पैरामीटर अपडेट होते हैं। GPT-2 का एक पूर्ण पैरामीटर फ़ाइन ट्यूनिंग का उदाहरण निम्नलिखित है:
+
 ```sh
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
+  --conversation_template chatml \
   --output_model_path output_models/finetuned_gpt2
 ```
 
@@ -98,7 +100,8 @@ cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
+  --conversation_template llama2 \
   --output_model_path output_models/finetuned_llama \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20
