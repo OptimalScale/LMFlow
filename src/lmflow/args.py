@@ -31,7 +31,7 @@ class ModelArguments:
     """
     Define a class ModelArguments using the dataclass decorator. 
     The class contains several optional parameters that can be used to configure a model. 
-
+    
     model_name_or_path : str
         a string representing the path or name of a pretrained
         model checkpoint for weights initialization. If None, a model will be trained from scratch.
@@ -39,15 +39,15 @@ class ModelArguments:
     model_type :  str
         a string representing the type of model to use if training from
         scratch. If not provided, a pretrained model will be used.
-
+    
     config_overrides :  str
         a string representing the default config settings to override
         when training a model from scratch.
-
+    
     config_name : str
         a string representing the name or path of the pretrained config to
         use, if different from the model_name_or_path.
-
+    
     tokenizer_name :  str
         a string representing the name or path of the pretrained tokenizer
         to use, if different from the model_name_or_path.
@@ -402,7 +402,7 @@ class DatasetArguments:
         a boolean indicating whether to train on prompt for conversation datasets such as ShareGPT.
 
     disable_conversation_bos_token: bool
-        [DEPRECATE SOON] a boolean indicating whether to disable the bos token for conversation datasets.
+        a boolean indicating whether to disable the bos token for conversation datasets.
         
     disable_conversation_eos_token: bool
         [DEPRECATE SOON] a boolean indicating whether to disable the eos token for conversation datasets.
