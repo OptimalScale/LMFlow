@@ -44,8 +44,9 @@ deepspeed ${deepspeed_args} \
     --model_name_or_path ${model_name_or_path} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} \
+    --run_name dpo \
     --max_steps 200 \
-    --learning_rate 1e-4 \
+    --learning_rate 1e-6 \
     --use_lora 1 \
     --lora_r 8 \
     --sanity_check True \
