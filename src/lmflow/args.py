@@ -402,7 +402,7 @@ class DatasetArguments:
         a boolean indicating whether to train on prompt for conversation datasets such as ShareGPT.
 
     disable_conversation_bos_token: bool
-        a boolean indicating whether to disable the bos token for conversation datasets.
+        [DEPRECATE SOON] a boolean indicating whether to disable the bos token for conversation datasets.
         
     disable_conversation_eos_token: bool
         [DEPRECATE SOON] a boolean indicating whether to disable the eos token for conversation datasets.
