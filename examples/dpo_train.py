@@ -8,11 +8,11 @@
 import logging
 import os
 import sys
-
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from dataclasses import dataclass, field
 from typing import Optional
 
+import torch
 from transformers import HfArgumentParser, pipeline, AutoTokenizer
 
 from lmflow.args import (
@@ -20,7 +20,6 @@ from lmflow.args import (
     DatasetArguments,
     AutoArguments,
 )
-import torch
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.auto_model import AutoModel
 from lmflow.pipeline.auto_pipeline import AutoPipeline
