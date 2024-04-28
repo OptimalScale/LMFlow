@@ -2,11 +2,11 @@
 # Please run this script under ${project_id} in project directory of
 
 # Parses arguments
-model_name_or_path=gpt2
-dataset_path=data/alpaca/train_conversation
-conversation_template=llama2
+model_name_or_path=Qwen/Qwen1.5-1.8B
+dataset_path=data/agent_flan
+conversation_template=qwen2
 output_dir=output_models/finetune
-deepspeed_args="--master_port=11000"
+deepspeed_args="--master_port=11000 --include localhost:0"
 
 # Safety related arguments
 trust_remote_code=0
@@ -46,7 +46,7 @@ while [[ $# -ge 1 ]]; do
 done
 
 # Finetune
-exp_id=finetune_with_lora
+exp_id=finetune_qwen1.5-1.8B_lora
 project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
@@ -63,6 +63,7 @@ deepspeed ${deepspeed_args} \
     --block_size 512 \
     --per_device_train_batch_size 1 \
     --use_lora 1 \
+    --lora_target_modules q_proj, v_proj \
     --lora_r 8 \
     --save_aggregated_lora 0\
     --deepspeed configs/ds_config_zero2.json \
