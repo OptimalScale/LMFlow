@@ -3,7 +3,7 @@
 
 # Parses arguments
 model_name_or_path=meta-llama/Llama-2-7b-hf
-dataset_path=data/stack-exchange-paired-dummy
+dataset_path=data/dpo-mix-7k
 output_dir=output_models/dpo
 deepspeed_args="--master_port=11000"
 # specify gpus/single gpu here by 
