@@ -16,6 +16,14 @@ function main() {
         rm ${filename}
     fi
 
+    if [ "$1" = "dpo-mix-7k" -o "$1" = "all" ]; then
+        echo "downloading dpo-mix-7k"
+        filename='dpo-mix-7k.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
     if [ "$1" = "MedMCQA" -o "$1" = "all" ]; then
         echo "downloading MedMCQA"
         filename='MedMCQA.tar.gz'
