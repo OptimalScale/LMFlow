@@ -4,18 +4,21 @@
 # @Author  : Yu Li
 # @Site    :
 # @File    : dpo_pipeline.py
-from lmflow.pipeline.base_aligner import BaseAligner
-from trl import DPOTrainer
-from typing import Dict, Optional
-from datasets import Dataset, load_dataset
 import os
+from pathlib import Path
+from typing import Dict, Optional
+
+from trl import DPOTrainer
+from datasets import Dataset, load_dataset
 from peft import LoraConfig
 from transformers import TrainingArguments
 
+from lmflow.pipeline.base_aligner import BaseAligner
+
 
 def get_paired_dataset(
-        data_dir: str = "rl",
-        data_root: str = None,
+        data_root: str,
+        data_dir: str,
         sanity_check: bool = False,
         cache_dir: Optional[str] = None,
         num_proc=24,
@@ -32,11 +35,16 @@ def get_paired_dataset(
     Prompts are structured as follows:
       "Question: " + <prompt> + "\n\nAnswer: "
     """
+    data_path = Path(data_root) / data_dir
+    data_files = [
+        x.absolute().as_posix()
+            for x in data_path.glob("*.json")
+    ]
     dataset = load_dataset(
-        data_root,
+        path=data_root,
         split="train",
+        data_files=data_files,
         cache_dir=cache_dir,
-        data_dir=data_dir,
     )
     original_columns = dataset.column_names
 
@@ -99,7 +107,7 @@ class DPOAligner(BaseAligner):
             optim=self.aligner_args.optimizer_type,
             bf16=True,
             remove_unused_columns=False,
-            run_name="dpo_llama2",
+            run_name=self.aligner_args.run_name,
             ddp_find_unused_parameters=False,
             # gradient_checkpointing_kwargs=dict(use_reentrant=self.aligner_args.gradient_checkpointing_use_reentrant),
             seed=self.aligner_args.seed,
@@ -121,7 +129,7 @@ class DPOAligner(BaseAligner):
     def _load_dataset(self):
         # load training set
         self.train_dataset = get_paired_dataset(data_root=self.data_args.dataset_path,
-                                                data_dir="data/rl",
+                                                data_dir="train",
                                                 sanity_check=self.aligner_args.sanity_check)
         self.train_dataset = self.train_dataset.filter(
             lambda x: len(x["prompt"]) + len(x["chosen"]) <= self.aligner_args.max_length
@@ -129,7 +137,7 @@ class DPOAligner(BaseAligner):
         )
         # load evaluation set
         self.eval_dataset = get_paired_dataset(data_root=self.data_args.dataset_path,
-                                               data_dir="data/evaluation",
+                                               data_dir="test",
                                                sanity_check=True)
         self.eval_dataset = self.eval_dataset.filter(
             lambda x: len(x["prompt"]) + len(x["chosen"]) <= self.aligner_args.max_length

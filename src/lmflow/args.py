@@ -1100,6 +1100,9 @@ class DPOAlignerArguments:
     seed: Optional[int] = field(
         default=0, metadata={"help": "Random seed that will be set at the beginning of training."}
     )
+    run_name: Optional[str] = field(
+        default="dpo", metadata={"help": "The name of the run."}
+    )
 
 
 PIPELINE_ARGUMENT_MAPPING = {
