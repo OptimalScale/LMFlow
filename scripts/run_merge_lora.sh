@@ -17,15 +17,15 @@ while [[ $# -ge 1 ]]; do
       shift
       ;;
     --lora_model_path)
-      dataset_path="$2"
+      lora_model_path="$2"
       shift
       ;;
     --output_model_path)
-      output_dir="$2"
+      output_model_path="$2"
       shift
       ;;
     --device)
-      output_dir="$2"
+      device="$2"
       shift
       ;;
     --deepspeed_args)
