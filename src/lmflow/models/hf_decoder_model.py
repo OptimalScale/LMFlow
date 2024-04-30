@@ -327,7 +327,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                     )
                 if peft_model_id is not None:
                     self.backend_model = PeftModel.from_pretrained(
-                        self.backend_model, peft_model_id
+                        self.backend_model, 
+                        peft_model_id,
                     )
                 self.tokenizer.padding_side = "left"
             else:
