@@ -327,9 +327,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                     )
                 if peft_model_id is not None:
                     self.backend_model = PeftModel.from_pretrained(
-                        self.backend_model, 
-                        peft_model_id, 
-                        torch_dtype=torch_dtype,
+                        self.backend_model, peft_model_id
                     )
                 self.tokenizer.padding_side = "left"
             else:
@@ -383,7 +381,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 self.backend_model_full = self.backend_model
                 if peft_model_id is not None:
                     self.backend_model = PeftModel.from_pretrained(
-                        self.backend_model, peft_model_id,
+                        self.backend_model, peft_model_id
                     )
   
                 self.tokenizer.padding_side = "left" #necessary for llama, gpt2 and other decoder models
