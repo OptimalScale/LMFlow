@@ -202,6 +202,7 @@ class HFDecoderModel(DecoderModel, Tunable):
             if model_args.torch_dtype in ["auto", None]
             else getattr(torch, model_args.torch_dtype)
         )
+        logger.debug(f"torch_dtype on init: {torch_dtype}")
 
         config_kwargs = {
             "cache_dir": model_args.cache_dir,
@@ -852,7 +853,13 @@ class HFDecoderModel(DecoderModel, Tunable):
         """
         self.get_tokenizer().save_pretrained(dir)
         if save_full_model and self.model_args.use_lora:
-            self.backend_model_full.save_pretrained(dir)
+            save_dtype = (
+                torch.float16
+                if self.model_args.torch_dtype in ["auto", None]
+                else getattr(torch, self.model_args.torch_dtype)
+            )
+            self.backend_model_full.to(dtype=save_dtype).save_pretrained(dir)
+            logger.warning(f"Save full model with dtype: {save_dtype}")
         else:
             self.get_backend_model().save_pretrained(dir)
 
