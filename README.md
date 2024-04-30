@@ -186,7 +186,7 @@ cd data && ./download.sh alpaca && cd -
 >Merge LoRA weight and the base model into one using:  
 >```sh
 >./scripts/run_merge_lora.sh \
->  --model_name_or_path=Qwen/Qwen1.5-1.8B \
+>  --model_name_or_path Qwen/Qwen1.5-1.8B \
 >  --lora_model_path output_models/lora \
 >  --output_model_path output_models/lora_merged \
 >```
