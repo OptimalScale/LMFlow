@@ -54,7 +54,7 @@ elif [ ${device} == "gpu" ]; then
         --lora_model_path ${lora_model_path} \
         --output_model_path ${output_model_path} \
         --device ${device} \
-        --ds_config configs/ds_config_eval.json
+        --ds_config configs/ds_config_zero3_for_eval.json
 else
     echo "error: unknown device \"${device}\"" 1>&2
     exit 1

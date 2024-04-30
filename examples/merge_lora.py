@@ -41,6 +41,12 @@ class MergeLoraArguments:
             "help": "output merged full model path"
         },
     )
+    local_rank: Optional[int] = field(
+        default=-1,
+        metadata={
+            "help": "local rank for deepspeed",
+        },
+    )
 
 
 def main():
