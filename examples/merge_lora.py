@@ -55,6 +55,9 @@ def main():
         model_args, merge_lora_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
     else:
         model_args, merge_lora_args = parser.parse_args_into_dataclasses()
+        
+    if merge_lora_args.device == 'gpu':
+        raise NotImplementedError('Merging LoRA weight using GPU not supported yet. Please use cpu.')
 
     model_args.use_lora = True
     model = AutoModel.get_model(
