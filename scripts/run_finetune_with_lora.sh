@@ -63,7 +63,6 @@ deepspeed ${deepspeed_args} \
     --block_size 512 \
     --per_device_train_batch_size 1 \
     --use_lora 1 \
-    --lora_target_modules q_proj, v_proj \
     --lora_r 8 \
     --save_aggregated_lora 0\
     --deepspeed configs/ds_config_zero2.json \
