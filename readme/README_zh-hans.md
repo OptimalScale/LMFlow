@@ -84,9 +84,24 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template chatml \
   --output_model_path output_models/finetuned_gpt2
 ```
+
+> [!TIP]
+> 可以通过添加`--conversation_template`参数为对话数据集指定对话模板。
+> 
+> <details><summary>示例：为 Llama-3-8B 指定对话数据集模板</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune.sh \
+>  --model_name_or_path meta-llama/Meta-Llama-3-8B \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama3 \
+>  --output_model_path output_models/finetuned_llama3_8b
+>```
+> </details>
 
 ### 微调（LISA）
 [LISA](https://arxiv.org/abs/2403.17919) 是一种 **内存高效（memory-efficient）** 的微调算法，它允许在内存和随机解冻的层数之间进行权衡。下面的脚本目前仅在 **单个GPU** 上进行了测试。请关注我们的最新更新！ :smile:
@@ -96,23 +111,62 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template llama2 \
-  --output_model_path output_models/finetuned_llama \
+  --output_model_path output_models/finetuned_llama2_7b \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20
 ```
+
+> [!TIP]
+> <details><summary>示例：为 Llama-2-7B 指定对话数据集模板</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lisa.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lisa \
+>  --lisa_activated_layers 1 \
+>  --lisa_interval_steps 20
+>```
+> </details>
 
 ### 微调（LoRA）
 LoRA 是一种比全参数微调更为高效的 **参数高效（parameter-efficient）** 微调算法。
 ```sh
 cd data && ./download.sh alpaca && cd -
 
-# Saves lora only
 ./scripts/run_finetune_with_lora.sh \
   --model_name_or_path facebook/galactica-1.3b \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
   --output_lora_path output_models/finetuned_galactica_lora
 ```
+
+> [!TIP]
+> <details><summary>示例：为 Llama-2-7B 指定对话数据集模板</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lora.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lora \
+>```
+> </details>
+>
+> <details><summary>合并LoRA权重</summary>
+>
+>可以通过下面的指令把LoRA权重和原模型合并:  
+>```sh
+>./scripts/run_merge_lora.sh \
+>  --model_name_or_path Qwen/Qwen1.5-1.8B \
+>  --lora_model_path output_models/lora \
+>  --output_model_path output_models/lora_merged \
+>```
+></details>
 
 ### 推理
 在微调结束后，可以通过以下命令与模型进行对话。
