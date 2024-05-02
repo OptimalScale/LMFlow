@@ -88,9 +88,24 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template chatml \
   --output_model_path output_models/finetuned_gpt2
 ```
+
+> [!TIP]
+> 대화 데이터셋에 대화 템플릿을 지정하려면 `--conversation_template` 매개변수를 추가할 수 있습니다.
+> 
+> <details><summary>예시: Llama-3-8B에 대화 데이터셋 템플릿 지정</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune.sh \
+>  --model_name_or_path meta-llama/Meta-Llama-3-8B \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama3 \
+>  --output_model_path output_models/finetuned_llama3_8b
+>```
+> </details>
 
 ### Fine-Tuning (LISA)
 [LISA](https://arxiv.org/abs/2403.17919) 는 **메모리 효율적인(memory-efficient)** 파인 튜닝 알고리즘이며, 메모리와 무작위로 해동하는 레이어 수 사이의 균형을 가능하게 합니다. 아래 스크립트는 현재 **단일 GPU** 에서만 테스트되었습니다. 최신 업데이트에 주목해 주세요! :smile:
@@ -100,23 +115,62 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template llama2 \
-  --output_model_path output_models/finetuned_llama \
+  --output_model_path output_models/finetuned_llama2_7b \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20
 ```
+
+> [!TIP]
+> <details><summary>예시: Llama-2-7B 대화 데이터셋 템플릿 지정</summary>  
+>
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lisa.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lisa \
+>  --lisa_activated_layers 1 \
+>  --lisa_interval_steps 20
+>```
+></details>
 
 ### Fine-Tuning (LoRA)
 LoRA는 전체 매개변수 미세 조정보다 더 효율적인 매개변수 효율적인 미세 조정 알고리즘입니다.
 ```sh
 cd data && ./download.sh alpaca && cd -
 
-# Saves lora only
 ./scripts/run_finetune_with_lora.sh \
   --model_name_or_path facebook/galactica-1.3b \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
   --output_lora_path output_models/finetuned_galactica_lora
 ```
+
+> [!TIP]
+> <details><summary>예시: Llama-2-7B 대화 데이터셋 템플릿 지정</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lora.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lora \
+>```
+> </details>
+>
+> <details><summary>LoRA 가중치 병합</summary>
+>
+>아래 명령어를 사용하여 LoRA 가중치를 원본 모델과 병합할 수 있습니다:  
+>```sh
+>./scripts/run_merge_lora.sh \
+>  --model_name_or_path Qwen/Qwen1.5-1.8B \
+>  --lora_model_path output_models/lora \
+>  --output_model_path output_models/lora_merged \
+>```
+></details>
 
 ### Inference
 미세 조정이 완료된 후에는 다음 명령을 사용하여 모델과 대화할 수 있습니다.
