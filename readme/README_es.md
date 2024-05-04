@@ -71,9 +71,24 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template chatml \
   --output_model_path output_models/finetuned_gpt2
 ```
+
+> [!TIP]
+> Puedes especificar una plantilla de conversación para el conjunto de datos de diálogo agregando el parámetro `--conversation_template`.
+>
+><details><summary>Ejemplo: Especificar una plantilla de conversación para Llama-3-8B</summary>  
+>
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune.sh \
+>  --model_name_or_path meta-llama/Meta-Llama-3-8B \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama3 \
+>  --output_model_path output_models/finetuned_llama3_8b
+>```
+></details>
 
 ### Fine-Tuning (LISA)
 [LISA](https://arxiv.org/abs/2403.17919) es un algoritmo de ajuste fino que es **eficiente en memoria**, permitiendo un equilibrio entre la memoria y el número de capas descongeladas aleatoriamente. El script siguiente ha sido probado únicamente en **una sola GPU**. ¡Estén atentos a nuestras últimas actualizaciones! :smile:
@@ -84,23 +99,62 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template llama2 \
-  --output_model_path output_models/finetuned_llama \
+  --output_model_path output_models/finetuned_llama2_7b \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20
 ```
+
+> [!TIP]
+> <details><summary>Ejemplo: Especificando el conjunto de datos de conversación para Llama-2-7B</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lisa.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lisa \
+>  --lisa_activated_layers 1 \
+>  --lisa_interval_steps 20
+>```
+> </details>
 
 ### Fine-Tuning (LoRA)
 LoRA es un algoritmo de ajuste fino de parámetros que es más eficiente que el ajuste fino completo de parámetros.
 ```sh
 cd data && ./download.sh alpaca && cd -
 
-# Saves lora only
 ./scripts/run_finetune_with_lora.sh \
   --model_name_or_path facebook/galactica-1.3b \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
   --output_lora_path output_models/finetuned_galactica_lora
 ```
+
+> [!TIP]
+> <details><summary>Ejemplo: Especificando el conjunto de datos de diálogo para Llama-2-7B</summary>  
+>
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lora.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lora \
+>```
+> </details>
+>
+> <details><summary>Combinando pesos de LoRA</summary>
+>
+>Puede combinar los pesos de LoRA con el modelo original utilizando el siguiente comando:  
+>```sh
+>./scripts/run_merge_lora.sh \
+>  --model_name_or_path Qwen/Qwen1.5-1.8B \
+>  --lora_model_path output_models/lora \
+>  --output_model_path output_models/lora_merged \
+>```
+></details>
 
 ### Inference
 Después de haber terminado el ajuste fino, puedes entablar una conversación con el modelo usando el siguiente comando.
