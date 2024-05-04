@@ -89,9 +89,24 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template chatml \
   --output_model_path output_models/finetuned_gpt2
 ```
+
+> [!TIP]
+> 対話データセットに対話テンプレートを指定するには、`--conversation_template`パラメータを追加します。
+> 
+> <details><summary>Llama-3-8Bに対話データセットテンプレートを指定する例</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune.sh \
+>  --model_name_or_path meta-llama/Meta-Llama-3-8B \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama3 \
+>  --output_model_path output_models/finetuned_llama3_8b
+>```
+> </details>
 
 ### Fine-Tuning (LISA)
 [LISA](https://arxiv.org/abs/2403.17919) は、**メモリ効率** の高いファインチューニングアルゴリズムであり、メモリとランダムに解凍された層の間でのバランスを取ることができます。以下のスクリプトは現在、**単一のGPU** 上でのみテストされています。最新情報にご注意ください！ :smile:
@@ -101,24 +116,62 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template llama2 \
-  --output_model_path output_models/finetuned_llama \
+  --output_model_path output_models/finetuned_llama2_7b \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20
 ```
+
+> [!TIP]
+> <details><summary>例: Llama-2-7Bの対話データセットテンプレートの指定</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lisa.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lisa \
+>  --lisa_activated_layers 1 \
+>  --lisa_interval_steps 20
+>```
+> </details> 
 
 ### Fine-Tuning (LoRA)
 LoRAは、全パラメータ微調整よりも効率的なパラメータ効率微調整アルゴリズムです。
 ```sh
 cd data && ./download.sh alpaca && cd -
 
-# Saves lora only
 ./scripts/run_finetune_with_lora.sh \
   --model_name_or_path facebook/galactica-1.3b \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
   --output_lora_path output_models/finetuned_galactica_lora
 ```
 
+> [!TIP]
+> <details><summary>例：Llama-2-7Bに対する対話データセットのテンプレートを指定する</summary>  
+>
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lora.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lora \
+>```
+></details>
+>
+><details><summary>LoRA重みの結合</summary>
+>
+>以下のコマンドを使用して、LoRAの重みと元のモデルを結合できます:  
+>```sh
+>./scripts/run_merge_lora.sh \
+>  --model_name_or_path Qwen/Qwen1.5-1.8B \
+>  --lora_model_path output_models/lora \
+>  --output_model_path output_models/lora_merged \
+>```
+></details>
 
 ### Inference
 微調が終了したら、以下のコマンドを使用してモデルと対話できます。
