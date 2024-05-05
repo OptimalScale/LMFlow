@@ -89,9 +89,24 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template chatml \
   --output_model_path output_models/finetuned_gpt2
 ```
+
+>[!TIP]
+>आप बातचीत डेटासेट के लिए बातचीत टेम्पलेट को निर्दिष्ट करने के लिए `--conversation_template` पैरामीटर को जोड़कर कर सकते हैं।
+>
+><details><summary>उदाहरण: Llama-3-8B के लिए बातचीत डेटासेट टेम्पलेट का निर्दिष्ट करें</summary>
+>
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune.sh \
+>  --model_name_or_path meta-llama/Meta-Llama-3-8B \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama3 \
+>  --output_model_path output_models/finetuned_llama3_8b
+>```
+></details>
 
 ### Fine-Tuning (LISA)
 [LISA](https://arxiv.org/abs/2403.17919) एक **मेमरी-एफिशिएंट (memory-efficient)** फ़ाइन ट्यूनिंग एल्गोरिदम है, जो मेमरी और रैंडम अनफ्रोज़न लेयरों के बीच संतुलन स्थापित करता है। निम्नलिखित स्क्रिप्ट अब **एकल GPU** पर ही टेस्ट किया गया है। हमारे नवीनतम अपडेट पर ध्यान दें! :smile:
@@ -101,23 +116,62 @@ cd data && ./download.sh alpaca && cd -
 ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
   --dataset_path data/alpaca/train_conversation \
-  --conversation_template llama2 \
-  --output_model_path output_models/finetuned_llama \
+  --output_model_path output_models/finetuned_llama2_7b \
   --lisa_activated_layers 1 \
   --lisa_interval_steps 20
 ```
+
+> [!TIP]
+> <details><summary>उदाहरण: Llama-2-7B के लिए बातचीत डेटा सेट टेम्पलेट का निर्दिष्ट करें</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lisa.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lisa \
+>  --lisa_activated_layers 1 \
+>  --lisa_interval_steps 20
+>```
+> </details>
 
 ### Fine-Tuning (LoRA)
 LoRA एक पैरामीटर-सुसंगत (parameter-efficient) फाइन-ट्यूनिंग एल्गोरिथ्म है जो पूर्ण-पैरामीटर फाइन-ट्यूनिंग से अधिक दक्ष है।
 ```sh
 cd data && ./download.sh alpaca && cd -
 
-# Saves lora only
 ./scripts/run_finetune_with_lora.sh \
   --model_name_or_path facebook/galactica-1.3b \
-  --dataset_path data/alpaca/train \
+  --dataset_path data/alpaca/train_conversation \
   --output_lora_path output_models/finetuned_galactica_lora
 ```
+
+> [!TIP]
+> <details><summary>उदाहरण: Llama-2-7B के लिए बातचीत डेटा सेट टेम्पलेट निर्दिष्ट करें</summary>  
+> 
+>```bash
+>cd data && ./download.sh alpaca && cd -
+>
+>./scripts/run_finetune_with_lora.sh \
+>  --model_name_or_path meta-llama/Llama-2-7b-hf \
+>  --dataset_path data/alpaca/train_conversation \
+>  --conversation_template llama2 \
+>  --output_model_path output_models/finetuned_llama2_7b_lora \
+>```
+> </details>
+>
+> <details><summary>LoRA वज़न को मिलाना</summary>
+>
+>निम्नलिखित आदेश का उपयोग करके LoRA वज़न और मूल मॉडल को मिलाया जा सकता है:  
+>```sh
+>./scripts/run_merge_lora.sh \
+>  --model_name_or_path Qwen/Qwen1.5-1.8B \
+>  --lora_model_path output_models/lora \
+>  --output_model_path output_models/lora_merged \
+>```
+></details>
 
 ### Inference
 एक बार फ़ाइन-ट्यूनिंग समाप्त हो जाने पर, आप निम्न आदेशों का उपयोग करके मॉडल के साथ इंटरैक्ट कर सकते हैं।
