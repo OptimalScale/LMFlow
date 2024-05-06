@@ -260,7 +260,7 @@ class Finetuner(BaseTuner):
                         model_max_length=model.get_max_length(),
                     )
             eval_dataset = lm_dataset.get_backend_dataset()
-            logger.info(f"Number of eval samples: {len(train_dataset)}")
+            logger.info(f"Number of eval samples: {len(eval_dataset)}")
 
 
             def preprocess_logits_for_metrics(logits, labels):
