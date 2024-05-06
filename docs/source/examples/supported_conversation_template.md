@@ -1,15 +1,17 @@
 # Supported Conversation Template
 
-## Table of Contents
-- [ChatGLM-3](#chatglm-3)
-- [InternLM2](#internlm2)
-- [Llama-2](#llama-2)
-- [Llama-3](#llama-3)
-- [Mixtral 8x22B](#mixtral-8x22b)
-- [Mixtral 8x7B](#mixtral-8x7b)
-- [Qwen-2](#qwen-2)
-- [Phi-3](#phi-3)
-- [Yi](#yi)
+- [Supported Conversation Template](#supported-conversation-template)
+  - [ChatGLM-3](#chatglm-3)
+  - [ChatML](#chatml)
+  - [DeepSeek](#deepseek)
+  - [InternLM2](#internlm2)
+  - [Llama-2](#llama-2)
+  - [Llama-3](#llama-3)
+  - [Mixtral 8x22B](#mixtral-8x22b)
+  - [Mixtral 8x7B](#mixtral-8x7b)
+  - [Phi-3](#phi-3)
+  - [Qwen-2](#qwen-2)
+  - [Yi](#yi)
 
 
 ## ChatGLM-3
@@ -55,6 +57,39 @@ This template is not preseted in LMFlow currently. We are working on it and will
 **Filled Example**
 ```
 <|im_start|>system\nYou are a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nWho are you?<|im_end|>\n<|im_start|>assistant\nI am a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nHow old are you?<|im_end|>\n<|im_start|>assistant\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<|im_end|>\n
+```
+
+
+## DeepSeek
+**With a system message** 
+```
+<｜begin▁of▁sentence｜>{{system_message}}\n\nUser: {{user_message_0}}\n\n
+```
+
+**Without a system message**
+```
+<｜begin▁of▁sentence｜>User: {{user_message_0}}\n\n
+```
+
+**A complete conversation**
+```
+<｜begin▁of▁sentence｜>{{system_message}}\n\nUser: {{user_message_0}}\n\nAssistant: {{assistant_reply_0}}<｜end▁of▁sentence｜>
+```
+
+**Multiple rounds**
+```
+<｜begin▁of▁sentence｜>{{system_message}}\n\nUser: {{user_message_0}}\n\nAssistant: {{assistant_reply_0}}<｜end▁of▁sentence｜>User: {{user_message_1}}\n\nAssistant: {{assistant_reply_1}}<｜end▁of▁sentence｜>
+```
+
+**jinja template**  
+[[Reference](https://huggingface.co/deepseek-ai/DeepSeek-V2-Chat/blob/941577e8236164bc96829096d20c61568630d7bc/tokenizer_config.json#L34)]
+```
+{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{{ bos_token }}{% for message in messages %}{% if message['role'] == 'user' %}{{ 'User: ' + message['content'] + '\n\n' }}{% elif message['role'] == 'assistant' %}{{ 'Assistant: ' + message['content'] + eos_token }}{% elif message['role'] == 'system' %}{{ message['content'] + '\n\n' }}{% endif %}{% endfor %}{% if add_generation_prompt %}{{ 'Assistant:' }}{% endif %}
+```
+
+**Filled Example**
+```
+<｜begin▁of▁sentence｜>You are a chatbot developed by LMFlow team.\n\nUser: Who are you?\n\nAssistant: I am a chatbot developed by LMFlow team.<｜end▁of▁sentence｜>User: How old are you?\n\nAssistant: I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<｜end▁of▁sentence｜>
 ```
 
 
@@ -196,7 +231,7 @@ The conversation template for Mixtral 8x7B is slightly different from the templa
 <s><|system|>\n{{system_message}}<|end|>\n<|user|>\n{{user_message_0}}<|end|>\n<|assistant|>\n{{assistant_reply_0}}<|end|>\n<|user|>\n{{user_message_1}}<|end|>\n<|assistant|>\n{{assistant_reply_1}}<|end|>\n<|endoftext|>
 ```
 
-**jinja template**
+**jinja template**  
 [[Reference]](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/blob/3a811845d89f3c1b3f41b341d0f9f05104769f35/tokenizer_config.json#L338)
 ```
 {{ bos_token }}{% for message in messages %}{{'<|' + message['role'] + '|>' + '\n' + message['content'] + '<|end|>\n' }}{% endfor %}{% if add_generation_prompt %}{{ '<|assistant|>\n' }}{% else %}{{ eos_token }}{% endif %}
