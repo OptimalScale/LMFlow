@@ -268,6 +268,27 @@ class ChatMLConversationTemplate(ConversationTemplate):
             TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
         ]
     )
+    
+
+@dataclass
+class DeepSeekConversationTemplate(ConversationTemplate):
+    user_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='User: {{content}}\n\n')
+        ]
+    )
+    assistant_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='Assistant: {{content}}'),
+            TemplateComponent(type='token', content='eos_token')
+        ]
+    )
+    system_formatter: Formatter = StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}\n\n')
+        ]
+    )
+    special_starter: TemplateComponent = TemplateComponent(type='token', content='bos_token')
 
 
 @dataclass
