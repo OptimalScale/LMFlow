@@ -10,6 +10,9 @@ from .conversation_formatter import Formatter, TemplateComponent, StringFormatte
 logger = logging.getLogger(__name__)
 
 
+PRESET_TEMPLATES = {}
+
+
 @dataclass
 class ConversationTemplate:
     user_formatter: Formatter
@@ -19,6 +22,7 @@ class ConversationTemplate:
     separator: Optional[TemplateComponent] = None
     special_starter: Optional[TemplateComponent] = None
     special_stopper: Optional[TemplateComponent] = None
+    template_name: Optional[str] = None
     
     def __post_init__(self):
         if self.separator:
@@ -249,118 +253,9 @@ class ConversationTemplate:
             return obj
         else:
             raise ValueError(f"Object type {type(obj)} is not supported yet.")
-    
-
-@dataclass
-class ChatMLConversationTemplate(ConversationTemplate):
-    user_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
-        ]
-    )
-    assistant_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
-        ]
-    )
-    system_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
-        ]
-    )
-    
-
-@dataclass
-class DeepSeekConversationTemplate(ConversationTemplate):
-    user_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='User: {{content}}\n\n')
-        ]
-    )
-    assistant_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='Assistant: {{content}}'),
-            TemplateComponent(type='token', content='eos_token')
-        ]
-    )
-    system_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='{{content}}\n\n')
-        ]
-    )
-    special_starter: TemplateComponent = TemplateComponent(type='token', content='bos_token')
 
 
-@dataclass
-class EmptyConversationTemplate(ConversationTemplate):
-    user_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='token', content='bos_token'),
-            TemplateComponent(type='string', content='{{content}}')
-        ]
-    )
-    assistant_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='{{content}}'),
-            TemplateComponent(type='token', content='eos_token')
-        ]
-    )
-    
-
-@dataclass
-class EmptyConversationTemplateWithoutSpecialTokens(ConversationTemplate):
-    user_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='{{content}}')
-        ]
-    )
-    assistant_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='{{content}}')
-        ]
-    )
-    
-
-@dataclass
-class Llama3ConversationTemplate(ConversationTemplate):
-    user_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|start_header_id|>user<|end_header_id|>\n\n{{content}}<|eot_id|>')
-        ]
-    )
-    assistant_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|start_header_id|>assistant<|end_header_id|>\n\n{{content}}<|eot_id|>')
-        ]
-    )
-    system_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|start_header_id|>system<|end_header_id|>\n\n{{content}}<|eot_id|>')
-        ]
-    )
-    special_starter: TemplateComponent = TemplateComponent(type='token', content='<|begin_of_text|>')
-
-
-@dataclass
-class Llama2ConversationTemplate(ConversationTemplate):
-    user_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='token', content='bos_token'),
-            TemplateComponent(type='string', content='[INST] {{content}} [/INST]')
-        ]
-    )
-    assistant_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='{{content}}'),
-            TemplateComponent(type='token', content='eos_token')
-        ]
-    )
-    system_formatter: Formatter = StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<<SYS>>\n{{content}}\n<</SYS>>\n\n')
-        ]
-    )
-    
+class Llama2ConversationTemplate(ConversationTemplate):    
     def _encode(
         self,
         tokenizer: PreTrainedTokenizer,
@@ -395,29 +290,189 @@ class Llama2ConversationTemplate(ConversationTemplate):
             ))
             
         return res_all
+
+
+def register_template(
+    template_name: str,
+    user_formatter: Formatter,
+    assistant_formatter: Formatter,
+    system_formatter: Optional[Formatter] = None,
+    tools_formatter: Optional[Formatter] = None,
+    separator: Optional[TemplateComponent] = None,
+    special_starter: Optional[TemplateComponent] = None,
+    special_stopper: Optional[TemplateComponent] = None,
+    template: ConversationTemplate = ConversationTemplate,
+) -> None:
+    if template_name in PRESET_TEMPLATES.keys():
+        logger.warning(f"Conversation template {template_name} already in PRESET_TEMPLATES, overriding.")
+    PRESET_TEMPLATES[template_name] = template(
+        user_formatter=user_formatter,
+        assistant_formatter=assistant_formatter,
+        system_formatter=system_formatter,
+        tools_formatter=tools_formatter,
+        separator=separator,
+        special_starter=special_starter,
+        special_stopper=special_stopper,
+        template_name=template_name
+    )
+
+
+register_template(
+    template_name='chatml',
+    user_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
+        ]
+    ),
+    assistant_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
+        ]
+    ),
+    system_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
+        ]
+    )
+)
+
+
+register_template(
+    template_name='deepseek',
+    user_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='User: {{content}}\n\n')
+        ]
+    ),
+    assistant_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='Assistant: {{content}}'),
+            TemplateComponent(type='token', content='eos_token')
+        ]
+    ),
+    system_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}\n\n')
+        ]
+    ),
+    special_starter=TemplateComponent(type='token', content='bos_token')
+)
     
-    
-@dataclass
-class Phi3ConversationTemplate(ConversationTemplate):
-    user_formatter: Formatter = StringFormatter(
+
+register_template(
+    template_name='empty',
+    user_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='token', content='bos_token'),
+            TemplateComponent(type='string', content='{{content}}')
+        ]
+    ),
+    assistant_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}'),
+            TemplateComponent(type='token', content='eos_token')
+        ]
+    )
+)
+
+
+register_template(
+    template_name='empty_no_special_tokens',
+    user_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}')
+        ]
+    ),
+    assistant_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}')
+        ]
+    )
+)
+
+
+register_template(
+    template_name='llama3',
+    user_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|start_header_id|>user<|end_header_id|>\n\n{{content}}<|eot_id|>')
+        ]
+    ),
+    assistant_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|start_header_id|>assistant<|end_header_id|>\n\n{{content}}<|eot_id|>')
+        ]
+    ),
+    system_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|start_header_id|>system<|end_header_id|>\n\n{{content}}<|eot_id|>')
+        ]
+    ),
+    special_starter=TemplateComponent(type='token', content='bos_token')
+)
+
+
+register_template(
+    template_name='llama2',
+    user_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='token', content='bos_token'),
+            TemplateComponent(type='string', content='[INST] {{content}} [/INST]')
+        ]
+    ),
+    assistant_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='{{content}}'),
+            TemplateComponent(type='token', content='eos_token')
+        ]
+    ),
+    system_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<<SYS>>\n{{content}}\n<</SYS>>\n\n')
+        ]
+    ),
+    template=Llama2ConversationTemplate
+)
+
+
+register_template(
+    template_name='phi3',
+    user_formatter=StringFormatter(
         template=[
             TemplateComponent(type='string', content='<|user|>\n{{content}}<|end|>\n')
         ]
-    )
-    assistant_formatter: Formatter = StringFormatter(
+    ),
+    assistant_formatter=StringFormatter(
         template=[
             TemplateComponent(type='string', content='<|assistant|>\n{{content}}<|end|>\n')
         ]
-    )
-    system_formatter: Formatter = StringFormatter(
+    ),
+    system_formatter=StringFormatter(
         template=[
             TemplateComponent(type='string', content='<|system|>\n{{content}}<|end|>\n')
         ]
-    )
-    special_starter: TemplateComponent = TemplateComponent(type='token', content='bos_token')
-    special_stopper: TemplateComponent = TemplateComponent(type='token', content='eos_token')
-    
-    
-@dataclass
-class Qwen2ConversationTemplate(ChatMLConversationTemplate):
-    separator: TemplateComponent = TemplateComponent(type='string', content='\n')
+    ),
+    special_starter=TemplateComponent(type='token', content='bos_token'),
+    special_stopper=TemplateComponent(type='token', content='eos_token')
+)
+
+
+register_template(
+    template_name='qwen2',
+    user_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
+        ]
+    ),
+    assistant_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
+        ]
+    ),
+    system_formatter=StringFormatter(
+        template=[
+            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
+        ]
+    ),
+    separator=TemplateComponent(type='string', content='\n')
+)
