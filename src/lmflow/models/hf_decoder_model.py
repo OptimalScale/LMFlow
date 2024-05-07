@@ -59,16 +59,7 @@ from lmflow.utils.constants import (
     TEXT2TEXT_DATASET_DESCRIPTION,
     CONVERSATION_DATASET_DESCRIPTION
 )
-from lmflow.utils.conversation_template import (
-    ConversationTemplate, 
-    EmptyConversationTemplate, 
-    ChatMLConversationTemplate,
-    Llama2ConversationTemplate,
-    Llama3ConversationTemplate,
-    Phi3ConversationTemplate,
-    Qwen2ConversationTemplate,
-    EmptyConversationTemplateWithoutSpecialTokens
-)
+from lmflow.utils.conversation_template import ConversationTemplate, PRESET_TEMPLATES
 from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
 
 
@@ -469,35 +460,22 @@ class HFDecoderModel(DecoderModel, Tunable):
                                    "Template in model.tokenize() will be used.")
             else:
                 if data_args.conversation_template:
-                    # TODO: make a registry for conversation templates
-                    if data_args.conversation_template == 'llama2':
-                        conversation_template = Llama2ConversationTemplate()
-                    elif data_args.conversation_template == 'llama3':
-                        conversation_template = Llama3ConversationTemplate()
-                    elif data_args.conversation_template == 'chatml':
-                        conversation_template = ChatMLConversationTemplate()
-                    elif data_args.conversation_template == 'qwen2':
-                        conversation_template = Qwen2ConversationTemplate()
-                    elif data_args.conversation_template == 'phi3':
-                        conversation_template = Phi3ConversationTemplate()
-                    elif data_args.conversation_template == 'empty':
-                        conversation_template = EmptyConversationTemplate()
-                    elif data_args.conversation_template == 'empty_no_special_tokens':
-                        conversation_template = EmptyConversationTemplateWithoutSpecialTokens()
-                    elif data_args.conversation_template == 'disable':
+                    if data_args.conversation_template == 'disable':
                         raise ValueError(
                             "You are using a conversation dataset but conversation_template is set to 'disable'. "
                             "If you don't want to apply any conversation template to your dataset, please consider "
                             "using 'empty' or 'empty_no_special_tokens' template instead. For more information, "
                             "please refer to the documentation."
                         )
+                    elif data_args.conversation_template in PRESET_TEMPLATES.keys():
+                        conversation_template = PRESET_TEMPLATES[data_args.conversation_template]
                     else:
                         raise NotImplementedError(
                             f"Conversation template {data_args.conversation_template} is not supported yet."
                         )
                 else:
                     logger.warning("No conversation template provided. Using default template.")
-                    conversation_template = EmptyConversationTemplate()
+                    conversation_template = PRESET_TEMPLATES['empty']
                         
             logger.warning(f"Conversation template: {conversation_template}")
         else:

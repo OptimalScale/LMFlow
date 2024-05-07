@@ -27,13 +27,7 @@ from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
 )
-from lmflow.utils.conversation_template import (
-    EmptyConversationTemplate,
-    Llama2ConversationTemplate,
-    Llama3ConversationTemplate,
-    Phi3ConversationTemplate,
-    EmptyConversationTemplateWithoutSpecialTokens,
-)
+from lmflow.utils.conversation_template import PRESET_TEMPLATES
 
 
 SAMPLE_TEXT = "Defintion: In this task, we ask you to write an answer to a question that involves events that may be stationary (not changing over time) or transient (changing over time). For example, the sentence \"he was born in the U.S.\" contains a stationary event since it will last forever; however, \"he is hungry\" contains a transient event since it will remain true for a short period of time. Note that a lot of the questions could have more than one correct answer. We only need a single most-likely answer. Please try to keep your \"answer\" as simple as possible. Concise and simple \"answer\" is preferred over those complex and verbose ones. \\n Input: Sentence: It's hail crackled across the comm, and Tara spun to retake her seat at the helm. \nQuestion: Will the hail storm ever end? \\n Output: NA \\n\\n"
@@ -72,6 +66,13 @@ CONVERSATION_SINGLETURN_LLAMA2 = {
         }
     ]
 }
+
+CONVERSATION_SINGLETURN_DEEPSEEK_IDS = [
+    (
+        [100000, 10183, 4904, 185, 185, 5726, 25, 37727, 185, 185],
+        [77398, 25, 11598, 0, 100001]
+    )
+]
 
 CONVERSATION_SINGLETURN_LLAMA2_IDS = [
     (
@@ -137,6 +138,17 @@ CONVERSATION_MULTITURN_LLAMA2 = {
         }
     ]
 }
+
+CONVERSATION_MULTITURN_DEEPSEEK_IDS = [
+    (
+        [100000, 10183, 4904, 185, 185, 5726, 25, 37727, 185, 185],
+        [77398, 25, 11598, 0, 100001]
+    ),
+    (
+        [5726, 25, 1724, 418, 340, 30, 185, 185],
+        [77398, 25, 304, 6, 76, 1207, 11, 7749, 0, 100001]
+    )
+]
 
 CONVERSATION_MULTITURN_LLAMA2_IDS = [
     (
@@ -325,36 +337,43 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name="gpt2",
             groundtruth_dataset=conversation_dataset,
             groundtruth_tokenized_dataset=conversation_tokenized_dataset,
-            conversation_template=EmptyConversationTemplateWithoutSpecialTokens()
+            conversation_template=PRESET_TEMPLATES['empty_no_special_tokens']
         )
         
         self._test_tokenize(
             model_name='meta-llama/Llama-2-7b-hf',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN_LLAMA2]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA2_IDS]),
-            conversation_template=EmptyConversationTemplate()
+            conversation_template=PRESET_TEMPLATES['empty']
         )
         
         self._test_tokenize(
             model_name='meta-llama/Llama-2-7b-hf',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA2_IDS]),
-            conversation_template=Llama2ConversationTemplate()
+            conversation_template=PRESET_TEMPLATES['llama2']
         )
         
         self._test_tokenize(
             model_name='meta-llama/Meta-Llama-3-8B-Instruct',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA3_IDS]),
-            conversation_template=Llama3ConversationTemplate()
+            conversation_template=PRESET_TEMPLATES['llama3']
         )
 
         self._test_tokenize(
             model_name='microsoft/Phi-3-mini-4k-instruct',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_PHI3_IDS]),
-            conversation_template=Phi3ConversationTemplate(),
+            conversation_template=PRESET_TEMPLATES['phi3'],
             trust_remote_code=True
+        )
+        
+        self._test_tokenize(
+            model_name='deepseek-ai/deepseek-llm-7b-base',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_DEEPSEEK_IDS]),
+            conversation_template=PRESET_TEMPLATES['deepseek']
         )
         
         
@@ -398,36 +417,43 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name="gpt2",
             groundtruth_dataset=conversation_dataset,
             groundtruth_tokenized_dataset=conversation_tokenized_dataset,
-            conversation_template=EmptyConversationTemplateWithoutSpecialTokens()
+            conversation_template=PRESET_TEMPLATES['empty_no_special_tokens']
         )
         
         self._test_tokenize(
             model_name='meta-llama/Llama-2-7b-hf',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN_LLAMA2]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA2_IDS]),
-            conversation_template=EmptyConversationTemplate()
+            conversation_template=PRESET_TEMPLATES['empty']
         )
         
         self._test_tokenize(
             model_name='meta-llama/Llama-2-7b-hf',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA2_IDS]),
-            conversation_template=Llama2ConversationTemplate()
+            conversation_template=PRESET_TEMPLATES['llama2']
         )
 
         self._test_tokenize(
             model_name='meta-llama/Meta-Llama-3-8B-Instruct',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA3_IDS]),
-            conversation_template=Llama3ConversationTemplate()
+            conversation_template=PRESET_TEMPLATES['llama3']
         )
 
         self._test_tokenize(
             model_name='microsoft/Phi-3-mini-4k-instruct',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_PHI3_IDS]),
-            conversation_template=Phi3ConversationTemplate(),
+            conversation_template=PRESET_TEMPLATES['phi3'],
             trust_remote_code=True
+        )
+        
+        self._test_tokenize(
+            model_name='deepseek-ai/deepseek-llm-7b-base',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_DEEPSEEK_IDS]),
+            conversation_template=PRESET_TEMPLATES['deepseek'],
         )
 
 
