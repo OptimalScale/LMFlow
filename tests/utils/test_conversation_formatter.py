@@ -1,5 +1,5 @@
 import unittest
-from lmflow.utils.conversation_formatter import StringFormatter, TemplateComponent
+from lmflow.utils.conversation_template.base import StringFormatter, TemplateComponent
 
 
 class StringFormatterTest(unittest.TestCase):

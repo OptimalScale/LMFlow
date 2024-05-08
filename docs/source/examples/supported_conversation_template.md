@@ -61,11 +61,6 @@ This template is not preseted in LMFlow currently. We are working on it and will
 
 
 ## DeepSeek
-```{admonition} **Work in Progress**
-:class: info
-
-We are working on building test cases for this template. We will add this template into switch case once the tests pass.    
-```
 **With a system message** 
 ```
 <｜begin▁of▁sentence｜>{{system_message}}\n\nUser: {{user_message_0}}\n\n
