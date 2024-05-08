@@ -1,16 +1,120 @@
+import re
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Dict, Set, Sequence, Literal, Union, List, Optional, Tuple
 import logging
-from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 from transformers import PreTrainedTokenizer
-
-from .conversation_formatter import Formatter, TemplateComponent, StringFormatter, EmptyFormatter
 
 
 logger = logging.getLogger(__name__)
 
 
-PRESET_TEMPLATES = {}
+@dataclass
+class TemplateComponent:
+    type: Literal['token', 'token_id', 'string', 'tools']
+    content: Union[str, int, List[str], List[int]]
+    mask: Optional[bool] = True # for token specific masking, work in progress
+    
+    def __post_init__(self):
+        assert self.content, "Content of the component cannot be empty."
+        
+        if self.type == 'tools':
+            assert isinstance(self.content, list), (
+                f"Content of tools component must be a list, got {type(self.content)}")
+        elif self.type in ['token', 'string']:
+            assert isinstance(self.content, str), (
+                f"Content of string/token component must be a string, got {type(self.content)}")
+        elif self.type == 'token_id':
+            assert isinstance(self.content, int) or all(isinstance(token_id, int) for token_id in self.content), (
+                f"Content of token_id component must be an integer or a list of integers.")
+        else:
+            raise ValueError(f"The type of the component must be either "
+                             f"'token', 'string' or 'tools', got {self.type}")
+            
+    def __repr__(self) -> str:
+        return f"TemplateComponent(type={self.type}, content={self.content})".replace("\n", "\\n")
+    
+    def __str__(self) -> str:
+        return f"{self.content}".replace("\n", "\\n")
+
+
+@dataclass
+class Formatter(ABC):
+    template: List[TemplateComponent] = field(default_factory=list)
+    
+    @abstractmethod
+    def format(self, **kwargs) -> List[TemplateComponent]: ...
+    
+    def has_placeholder(self):
+        flag = False
+        for component in self.template:
+            if component.type == 'string':
+                if re.search(r"{{(.*?)}}", component.content):
+                    flag = True
+                    break
+        return flag
+
+
+@dataclass
+class EmptyFormatter(Formatter):
+    def __post_init__(self):
+        if self.has_placeholder():
+            raise ValueError("Empty formatter should not have placeholders.")
+    
+    def format(self, **kwargs) -> list:
+        """Empty formatter for when no formatting is needed.
+        This is useful when user has already applied formatting to the dataset.
+
+        Returns
+        -------
+        list
+            Original template.
+        """
+        return self.template
+    
+
+@dataclass
+class StringFormatter(Formatter):
+    def __post_init__(self):
+        if not self.has_placeholder():
+            raise ValueError("String formatter should have placeholders.")
+    
+    def format(self, **kwargs) -> list:
+        """Format the string components with the provided keyword arguments. 
+        Mostly used for formatting system prompt, user and assistant messages.
+
+        Parameters
+        ----------
+        **kwargs : dict
+            Keyword arguments containing values to replace in the template components.
+
+        Returns
+        -------
+        list
+            Formatted template.
+        """
+        formatted_template = []
+        for component in self.template:
+            if component.type == 'string':
+                for key, value in kwargs.items():
+                    templated = component.content.replace("{{" + key + "}}", value)
+                    if len(templated) == 0:
+                        logger.warning("Found empty string after formatting, adding a space instead. "
+                                       "If this is not intended, please check the dataset.")
+                        templated = " "
+                    formatted_template.append(TemplateComponent(type='string', content=templated))
+            else:
+                formatted_template.append(component)
+                
+        logger.debug(formatted_template)
+        return formatted_template
+
+
+@dataclass
+class ListFormatter(Formatter):
+    def format(self, **kwargs) -> list:
+        pass # Work in progress
 
 
 @dataclass
@@ -255,111 +359,7 @@ class ConversationTemplate:
             raise ValueError(f"Object type {type(obj)} is not supported yet.")
 
 
-class Llama2ConversationTemplate(ConversationTemplate):    
-    def _encode(
-        self,
-        tokenizer: PreTrainedTokenizer,
-        messages: List[Dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        **kwargs
-    ) -> Sequence[Tuple[List[int], List[int]]]:
-        if tools:
-            logger.warning("Formatted tools are not supported in Llama2, thus tools will be ignored. "
-                           "If this is intended, please include tools in the system message manually.")
-        
-        res_all = []
-        
-        system_formatted = self.system_formatter.format(content=system) if system else []
-        system_formatted_text = "".join([component.content for component in system_formatted if component.type == 'string']) # HACK
-        
-        for i in range(0, len(messages), 2):
-            user_message = messages[i]
-            assistant_message = messages[i + 1]
-            
-            user_content = system_formatted_text + user_message["content"] if i == 0 else user_message["content"]
-            user_formatted = self.user_formatter.format(content=user_content)
-            assistant_formatted = self.assistant_formatter.format(content=assistant_message["content"])
-            
-            user_encoded = self._encode_template(user_formatted, tokenizer)
-            assistant_encoded = self._encode_template(assistant_formatted, tokenizer)
-            
-            res_all.append((
-                user_encoded, 
-                assistant_encoded
-            ))
-            
-        return res_all
-
-
-def register_template(
-    template_name: str,
-    user_formatter: Formatter,
-    assistant_formatter: Formatter,
-    system_formatter: Optional[Formatter] = None,
-    tools_formatter: Optional[Formatter] = None,
-    separator: Optional[TemplateComponent] = None,
-    special_starter: Optional[TemplateComponent] = None,
-    special_stopper: Optional[TemplateComponent] = None,
-    template: ConversationTemplate = ConversationTemplate,
-) -> None:
-    if template_name in PRESET_TEMPLATES.keys():
-        logger.warning(f"Conversation template {template_name} already in PRESET_TEMPLATES, overriding.")
-    PRESET_TEMPLATES[template_name] = template(
-        user_formatter=user_formatter,
-        assistant_formatter=assistant_formatter,
-        system_formatter=system_formatter,
-        tools_formatter=tools_formatter,
-        separator=separator,
-        special_starter=special_starter,
-        special_stopper=special_stopper,
-        template_name=template_name
-    )
-
-
-register_template(
-    template_name='chatml',
-    user_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
-        ]
-    ),
-    assistant_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
-        ]
-    ),
-    system_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
-        ]
-    )
-)
-
-
-register_template(
-    template_name='deepseek',
-    user_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='User: {{content}}\n\n')
-        ]
-    ),
-    assistant_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='Assistant: {{content}}'),
-            TemplateComponent(type='token', content='eos_token')
-        ]
-    ),
-    system_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='{{content}}\n\n')
-        ]
-    ),
-    special_starter=TemplateComponent(type='token', content='bos_token')
-)
-    
-
-register_template(
+EMPTY_TEMPLATE = ConversationTemplate(
     template_name='empty',
     user_formatter=StringFormatter(
         template=[
@@ -376,7 +376,7 @@ register_template(
 )
 
 
-register_template(
+EMPTY_NO_SPECIAL_TOKENS_TEMPLATE = ConversationTemplate(
     template_name='empty_no_special_tokens',
     user_formatter=StringFormatter(
         template=[
@@ -388,91 +388,4 @@ register_template(
             TemplateComponent(type='string', content='{{content}}')
         ]
     )
-)
-
-
-register_template(
-    template_name='llama3',
-    user_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|start_header_id|>user<|end_header_id|>\n\n{{content}}<|eot_id|>')
-        ]
-    ),
-    assistant_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|start_header_id|>assistant<|end_header_id|>\n\n{{content}}<|eot_id|>')
-        ]
-    ),
-    system_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|start_header_id|>system<|end_header_id|>\n\n{{content}}<|eot_id|>')
-        ]
-    ),
-    special_starter=TemplateComponent(type='token', content='bos_token')
-)
-
-
-register_template(
-    template_name='llama2',
-    user_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='token', content='bos_token'),
-            TemplateComponent(type='string', content='[INST] {{content}} [/INST]')
-        ]
-    ),
-    assistant_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='{{content}}'),
-            TemplateComponent(type='token', content='eos_token')
-        ]
-    ),
-    system_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<<SYS>>\n{{content}}\n<</SYS>>\n\n')
-        ]
-    ),
-    template=Llama2ConversationTemplate
-)
-
-
-register_template(
-    template_name='phi3',
-    user_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|user|>\n{{content}}<|end|>\n')
-        ]
-    ),
-    assistant_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|assistant|>\n{{content}}<|end|>\n')
-        ]
-    ),
-    system_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|system|>\n{{content}}<|end|>\n')
-        ]
-    ),
-    special_starter=TemplateComponent(type='token', content='bos_token'),
-    special_stopper=TemplateComponent(type='token', content='eos_token')
-)
-
-
-register_template(
-    template_name='qwen2',
-    user_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
-        ]
-    ),
-    assistant_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>assistant\n{{content}}<|im_end|>\n')
-        ]
-    ),
-    system_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
-        ]
-    ),
-    separator=TemplateComponent(type='string', content='\n')
 )

@@ -3,7 +3,7 @@ import unittest
 
 from transformers import AutoTokenizer
 
-from lmflow.utils.conversation_template import EmptyConversationTemplate, Llama2ConversationTemplate, Qwen2ConversationTemplate
+from lmflow.utils.conversation_template import PRESET_TEMPLATES
 
 
 CONVERSATION_SINGLETURN = {
@@ -97,7 +97,7 @@ class EmptyConversationTemplateTest(unittest.TestCase):
     def setUp(self):
         MODEL_PATH = 'meta-llama/Llama-2-7b-hf'
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=False)
-        self.conversation_template = EmptyConversationTemplate()
+        self.conversation_template = PRESET_TEMPLATES['empty']
 
     def test_encode_conversation_singleturn_llama2(self):
         res = self.conversation_template.encode_conversation(
@@ -122,7 +122,7 @@ class Llama2ConversationTemplateTest(unittest.TestCase):
     def setUp(self):
         MODEL_PATH = 'meta-llama/Llama-2-7b-hf'
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=False)
-        self.conversation_template = Llama2ConversationTemplate()
+        self.conversation_template = PRESET_TEMPLATES['llama2']
         
     def test_encode_conversation_singleturn(self):
         res = self.conversation_template.encode_conversation(
@@ -147,7 +147,7 @@ class Qwen2ConversationTemplateTest(unittest.TestCase):
     def setUp(self):
         MODEL_PATH = 'Qwen/Qwen1.5-0.5B-Chat'
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, use_fast=False)
-        self.conversation_template = Qwen2ConversationTemplate()
+        self.conversation_template = PRESET_TEMPLATES['qwen2']
         
     def test_encode_conversation_singleturn(self):
         res = self.conversation_template.encode_conversation(
