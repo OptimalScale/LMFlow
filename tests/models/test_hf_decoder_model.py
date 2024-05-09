@@ -74,6 +74,14 @@ CONVERSATION_SINGLETURN_DEEPSEEK_IDS = [
     )
 ]
 
+CONVERSATION_SINGLETURN_INTERNLM2_IDS = [
+    (
+        [1, 333, 352, 449, 5064, 352, 330, 9081, 364, 7930, 2896, 333, 352, 449, 6368, 352, 527, 
+         333, 352, 449, 5064, 352, 330, 1008, 364, 9843, 333, 352, 449, 6368, 352, 527,],
+        [333, 352, 449, 5064, 352, 330, 525, 11353, 364, 13195, 346, 333, 352, 449, 6368, 352, 527, ]        
+    )
+]
+
 CONVERSATION_SINGLETURN_LLAMA2_IDS = [
     (
         [1, 518, 25580, 29962, 3532, 14816, 29903, 6778, 13, 9675, 3888, 13, 
@@ -147,6 +155,18 @@ CONVERSATION_MULTITURN_DEEPSEEK_IDS = [
     (
         [5726, 25, 1724, 418, 340, 30, 185, 185],
         [77398, 25, 304, 6, 76, 1207, 11, 7749, 0, 100001]
+    )
+]
+
+CONVERSATION_MULTITURN_INTERNLM2_IDS = [
+    (
+        [1, 333, 352, 449, 5064, 352, 330, 9081, 364, 7930, 2896, 333, 352, 449, 6368, 352, 527, 
+         333, 352, 449, 5064, 352, 330, 1008, 364, 9843, 333, 352, 449, 6368, 352, 527,],
+        [333, 352, 449, 5064, 352, 330, 525, 11353, 364, 13195, 346, 333, 352, 449, 6368, 352, 527, ]        
+    ),
+    (
+        [333, 352, 449, 5064, 352, 330, 1008, 364, 4500, 657, 629, 345, 333, 352, 449, 6368, 352, 527, ],
+        [333, 352, 449, 5064, 352, 330, 525, 11353, 364, 295, 2940, 1811, 328, 9467, 346, 333, 352, 449, 6368, 352, 527]
     )
 ]
 
@@ -376,6 +396,14 @@ class HFDecoderModelTest(unittest.TestCase):
             conversation_template=PRESET_TEMPLATES['deepseek']
         )
         
+        self._test_tokenize(
+            model_name='internlm/internlm2-1_8b',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_INTERNLM2_IDS]),
+            conversation_template=PRESET_TEMPLATES['internlm2'],
+            trust_remote_code=True
+        )
+        
         
     def test_tokenize_conversation_multiple(self):
         conversation_dataset = {
@@ -454,6 +482,14 @@ class HFDecoderModelTest(unittest.TestCase):
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_DEEPSEEK_IDS]),
             conversation_template=PRESET_TEMPLATES['deepseek'],
+        )
+        
+        self._test_tokenize(
+            model_name='internlm/internlm2-1_8b',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_INTERNLM2_IDS]),
+            conversation_template=PRESET_TEMPLATES['internlm2'],
+            trust_remote_code=True
         )
 
 

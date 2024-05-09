@@ -4,8 +4,8 @@
 from .base import StringFormatter, TemplateComponent, ConversationTemplate
 
 
-CHATML_TEMPLATE = ConversationTemplate(
-    template_name='chatml',
+INTERNLM2_TEMPLATE = ConversationTemplate(
+    template_name='internlm2',
     user_formatter=StringFormatter(
         template=[
             TemplateComponent(type='string', content='<|im_start|>user\n{{content}}<|im_end|>\n')
@@ -20,5 +20,6 @@ CHATML_TEMPLATE = ConversationTemplate(
         template=[
             TemplateComponent(type='string', content='<|im_start|>system\n{{content}}<|im_end|>\n')
         ]
-    )
+    ),
+    special_starter=TemplateComponent(type='token', content='bos_token')
 )
