@@ -94,38 +94,36 @@ This template is not preseted in LMFlow currently. We are working on it and will
 
 
 ## InternLM2  
-.. dropdown:: InternLM2 Template
+**With a system message** 
+```
+<s><|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n
+```
 
-    **With a system message** 
-    ```
-    <s><|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n
-    ```
+**Without a system message**
+```
+<s><|im_start|>user\n{{user_message_0}}<|im_end|>\n
+```
 
-    **Without a system message**
-    ```
-    <s><|im_start|>user\n{{user_message_0}}<|im_end|>\n
-    ```
+**A complete conversation**
+```
+<s><|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n
+```
 
-    **A complete conversation**
-    ```
-    <s><|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n
-    ```
+**Multiple rounds**
+```
+<s><|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n<|im_start|>user\n{{user_message_1}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_1}}<|im_end|>\n
+```
 
-    **Multiple rounds**
-    ```
-    <s><|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n<|im_start|>user\n{{user_message_1}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_1}}<|im_end|>\n
-    ```
+**jinja template**  
+[[Reference](https://huggingface.co/internlm/internlm2-chat-20b/blob/477d4748322a8a3b28f62b33f0f6dd353cd0b66d/tokenizer_config.json#L93)]
+```
+{{ bos_token }}{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}
+```
 
-    **jinja template**  
-    [[Reference](https://huggingface.co/internlm/internlm2-chat-20b/blob/477d4748322a8a3b28f62b33f0f6dd353cd0b66d/tokenizer_config.json#L93)]
-    ```
-    {{ bos_token }}{% for message in messages %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}
-    ```
-
-    **Filled Example**
-    ```
-    <s><|im_start|>system\nYou are a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nWho are you?<|im_end|>\n<|im_start|>assistant\nI am a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nHow old are you?<|im_end|>\n<|im_start|>assistant\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<|im_end|>\n
-    ```
+**Filled Example**
+```
+<s><|im_start|>system\nYou are a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nWho are you?<|im_end|>\n<|im_start|>assistant\nI am a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nHow old are you?<|im_end|>\n<|im_start|>assistant\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<|im_end|>\n
+```
 
 
 ## Llama-2
