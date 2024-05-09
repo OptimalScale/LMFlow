@@ -93,12 +93,7 @@ This template is not preseted in LMFlow currently. We are working on it and will
 ```
 
 
-## InternLM2
-```{admonition} **Work in Progress**
-:class: info
-
-This template is not preseted in LMFlow currently. We are working on it and will update it soon.  
-```
+## InternLM2  
 .. dropdown:: InternLM2 Template
 
     **With a system message** 
