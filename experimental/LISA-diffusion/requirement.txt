@@ -1,0 +1,10 @@
+accelerate>=0.16.0
+torchvision
+transformers>=4.25.1
+ftfy
+peft
+wandb
+tensorboard
+Jinja2
+webdataset
+datasets
