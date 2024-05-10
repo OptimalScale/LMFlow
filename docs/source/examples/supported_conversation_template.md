@@ -20,10 +20,35 @@
 
 This template is not preseted in LMFlow currently. We are working on it and will update it soon.  
 ```
+**With a system message**
+```
+[gMASK]sop<|system|>\n {{system_message}}<|user|>\n {{user_message_0}}
+```
+
+**Without a system message**
+```
+[gMASK]sop<|user|>\n {{user_message_0}}
+```
+
+**A complete conversation**
+```
+[gMASK]sop<|system|>\n {{system_message}}<|user|>\n {{user_message_0}}<|assistant|>\n {{assistant_reply_0}}
+```
+
+**Multiple rounds**
+```
+[gMASK]sop<|system|>\n {{system_message}}<|user|>\n {{user_message_0}}<|assistant|>\n {{assistant_reply_0}}<|user|>\n {{user_message_1}}<|assistant|>\n {{assistant_reply_1}}
+```
+
 **jinja template**  
 [[Reference](https://huggingface.co/THUDM/chatglm3-6b/blob/103caa40027ebfd8450289ca2f278eac4ff26405/tokenizer_config.json#L42)]
 ```
 {% for message in messages %}{% if loop.first %}[gMASK]sop<|{{ message['role'] }}|>\n {{ message['content'] }}{% else %}<|{{ message['role'] }}|>\n {{ message['content'] }}{% endif %}{% endfor %}{% if add_generation_prompt %}<|assistant|>{% endif %}
+```
+
+**Filled Example**
+```
+[gMASK]sop<|system|>\n You are a chatbot developed by LMFlow team.<|user|>\n Who are you?<|assistant|>\n I am a chatbot developed by LMFlow team.<|user|>\n How old are you?<|assistant|>\n I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.
 ```
 
 
