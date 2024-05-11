@@ -67,6 +67,13 @@ CONVERSATION_SINGLETURN_LLAMA2 = {
     ]
 }
 
+CONVERSATION_SINGLETURN_CHATGLM3_IDS = [
+    (
+        [64790, 64792, 906, 31007, 13361, 31007, 30994, 13, 15184, 6607, 64795, 30910, 13, 13755, ],
+        [64796, 30910, 13, 8686, 30992,]        
+    )
+]
+
 CONVERSATION_SINGLETURN_DEEPSEEK_IDS = [
     (
         [100000, 10183, 4904, 185, 185, 5726, 25, 37727, 185, 185],
@@ -155,6 +162,17 @@ CONVERSATION_MULTITURN_DEEPSEEK_IDS = [
     (
         [5726, 25, 1724, 418, 340, 30, 185, 185],
         [77398, 25, 304, 6, 76, 1207, 11, 7749, 0, 100001]
+    )
+]
+
+CONVERSATION_MULTITURN_CHATGLM3_IDS = [
+    (
+        [64790, 64792, 906, 31007, 13361, 31007, 30994, 13, 15184, 6607, 64795, 30910, 13, 13755, ],
+        [64796, 30910, 13, 8686, 30992,]        
+    ),
+    (
+        [64795, 30910, 13, 1072, 383, 344, 30987, ],
+        [64796, 30910, 13, 307, 30953, 30924, 878, 30932, 4772, 30992]
     )
 ]
 
@@ -404,6 +422,14 @@ class HFDecoderModelTest(unittest.TestCase):
             trust_remote_code=True
         )
         
+        self._test_tokenize(
+            model_name='THUDM/chatglm3-6b',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_CHATGLM3_IDS]),
+            conversation_template=PRESET_TEMPLATES['chatglm3'],
+            trust_remote_code=True
+        )
+        
         
     def test_tokenize_conversation_multiple(self):
         conversation_dataset = {
@@ -489,6 +515,14 @@ class HFDecoderModelTest(unittest.TestCase):
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_INTERNLM2_IDS]),
             conversation_template=PRESET_TEMPLATES['internlm2'],
+            trust_remote_code=True
+        )
+        
+        self._test_tokenize(
+            model_name='THUDM/chatglm3-6b',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_CHATGLM3_IDS]),
+            conversation_template=PRESET_TEMPLATES['chatglm3'],
             trust_remote_code=True
         )
 
