@@ -2,6 +2,7 @@
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 from .base import EMPTY_TEMPLATE, EMPTY_NO_SPECIAL_TOKENS_TEMPLATE, ConversationTemplate
+from .chatglm import CHATGLM3_TEMPLATE
 from .chatml import CHATML_TEMPLATE
 from .deepseek import DEEPSEEK_TEMPLATE
 from .internlm import INTERNLM2_TEMPLATE
@@ -11,6 +12,7 @@ from .qwen import QWEN2_TEMPLATE
 
 
 PRESET_TEMPLATES = {
+    'chatglm3': CHATGLM3_TEMPLATE,
     'chatml': CHATML_TEMPLATE,
     'deepseek': DEEPSEEK_TEMPLATE,
     'empty': EMPTY_TEMPLATE,
