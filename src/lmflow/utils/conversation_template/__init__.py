@@ -9,6 +9,7 @@ from .internlm import INTERNLM2_TEMPLATE
 from .llama import LLAMA2_TEMPLATE, LLAMA3_TEMPLATE
 from .phi import PHI3_TEMPLATE
 from .qwen import QWEN2_TEMPLATE
+from .yi import YI1_5_TEMPLATE
 
 
 PRESET_TEMPLATES = {
@@ -22,4 +23,6 @@ PRESET_TEMPLATES = {
     'llama3': LLAMA3_TEMPLATE,
     'phi3': PHI3_TEMPLATE,
     'qwen2': QWEN2_TEMPLATE,
+    'yi': CHATML_TEMPLATE,
+    'yi1_5': YI1_5_TEMPLATE
 }

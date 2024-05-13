@@ -111,6 +111,13 @@ CONVERSATION_SINGLETURN_PHI3_IDS = [
     )
 ]
 
+CONVERSATION_SINGLETURN_YI1_5_IDS = [
+    (
+        [15692, 5885, 59666, 59705, 622, 59593, 5858, 46826, 3903, 144, 25102, 59666, 59705, 622, 59593, 701, 46826, 144 ],
+        [59666, 59705, 622, 59593, 5858, 46826, 765, 13611, 144, 25070, 99, 59666, 59705, 622, 59593, 701, 46826, 144, ]        
+    )
+]
+
 CONVERSATION_MULTITURN = {
     "system": "sysinfo",
     "messages": [
@@ -219,6 +226,17 @@ CONVERSATION_MULTITURN_PHI3_IDS = [
     (
         [32010, 1128, 526, 366, 29973, 32007],
         [32001, 306, 29915, 29885, 1781, 29892, 3969, 29991, 32007, 32000]
+    )
+]
+
+CONVERSATION_MULTITURN_YI1_5_IDS = [
+    (
+        [15692, 5885, 59666, 59705, 622, 59593, 5858, 46826, 3903, 144, 25102, 59666, 59705, 622, 59593, 701, 46826, 144 ],
+        [59666, 59705, 622, 59593, 5858, 46826, 765, 13611, 144, 25070, 99, 59666, 59705, 622, 59593, 701, 46826, 144, ]        
+    ),
+    (
+        [59666, 59705, 622, 59593, 5858, 46826, 3903, 144, 6546, 678, 641, 100, 59666, 59705, 622, 59593, 701, 46826, 144,],
+        [59666, 59705, 622, 59593, 5858, 46826, 765, 13611, 144, 59597, 59610, 59583, 1226, 97, 5867, 99, 59666, 59705, 622, 59593, 701, 46826, 144]
     )
 ]
 
@@ -430,6 +448,13 @@ class HFDecoderModelTest(unittest.TestCase):
             trust_remote_code=True
         )
         
+        self._test_tokenize(
+            model_name='01-ai/Yi-1.5-6B',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_YI1_5_IDS]),
+            conversation_template=PRESET_TEMPLATES['yi1_5'],
+        )
+        
         
     def test_tokenize_conversation_multiple(self):
         conversation_dataset = {
@@ -524,6 +549,13 @@ class HFDecoderModelTest(unittest.TestCase):
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_CHATGLM3_IDS]),
             conversation_template=PRESET_TEMPLATES['chatglm3'],
             trust_remote_code=True
+        )
+        
+        self._test_tokenize(
+            model_name='01-ai/Yi-1.5-6B',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_YI1_5_IDS]),
+            conversation_template=PRESET_TEMPLATES['yi1_5'],
         )
 
 
