@@ -84,24 +84,5 @@ class RewardModelingTuner(BaseTuner):
     def tune(
         self,
         model,
-        train_dataset,
-        eval_dataset,
-        data_collator
     ):
-        if self.rmtuner_args.do_train:
-            model.config.use_cache = not self.rmtuner_args.gradient_checkpointing
-            trainer = RewardTrainer(
-                model=model,
-                args=self.rmtuner_args,
-                train_dataset=train_dataset,
-                eval_dataset=eval_dataset,
-                compute_metrics=compute_metrics,
-                data_collator=data_collator,
-            )
-            train_result = trainer.train()
-            
-            trainer.log_metrics("train", train_result.metrics)
-            trainer.save_metrics("train", train_result.metrics)
-            trainer.save_state()
-            trainer.save_model(self.rmtuner_args.output_dir + "/last_checkpoint")
-            data_collator.tokenizer.save_pretrained(self.rmtuner_args.output_dir + "/last_checkpoint")
+        pass
