@@ -12,14 +12,10 @@
   - [Phi-3](#phi-3)
   - [Qwen-2](#qwen-2)
   - [Yi](#yi)
+  - [Yi-1.5](#yi-15)
 
 
 ## ChatGLM-3
-```{admonition} **Work in Progress**
-:class: info
-
-This template is not preseted in LMFlow currently. We are working on it and will update it soon.  
-```
 **With a system message**
 ```
 [gMASK]sop<|system|>\n {{system_message}}<|user|>\n {{user_message_0}}
@@ -322,11 +318,6 @@ The conversation template for Mixtral 8x7B is slightly different from the templa
 
 
 ## Yi
-```{admonition} **Work in Progress**
-:class: info
-
-This template is not preseted in LMFlow currently. We are working on it and will update it soon.  
-```
 **With a system message**
 ```
 <|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n
@@ -359,3 +350,34 @@ This template is not preseted in LMFlow currently. We are working on it and will
 ```
 
 
+## Yi-1.5
+**With a system message**
+```
+{{system_message}}<|im_start|>user\n{{user_message_0}}<|im_end|>\n
+```
+
+**Without a system message**
+```
+<|im_start|>user\n{{user_message_0}}<|im_end|>\n
+```
+
+**A complete conversation**
+```
+{{system_message}}<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n
+```
+
+**Multiple rounds**
+```
+{{system_message}}<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n<|im_start|>user\n{{user_message_1}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_1}}<|im_end|>\n
+```
+
+**jinja template**  
+[[Reference](https://huggingface.co/01-ai/Yi-1.5-6B-Chat/blob/d68dab90947a3c869e28c9cb2806996af99a6080/tokenizer_config.json#L40)]
+```
+{% if messages[0]['role'] == 'system' %}{% set system_message = messages[0]['content'] %}{% endif %}{% if system_message is defined %}{{ system_message }}{% endif %}{% for message in messages %}{% set content = message['content'] %}{% if message['role'] == 'user' %}{{ '<|im_start|>user\\n' + content + '<|im_end|>\\n<|im_start|>assistant\\n' }}{% elif message['role'] == 'assistant' %}{{ content + '<|im_end|>' + '\\n' }}{% endif %}{% endfor %}
+```
+
+**Filled Example**
+```
+You are a chatbot developed by LMFlow team.<|im_start|>user\nWho are you?<|im_end|>\n<|im_start|>assistant\nI am a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nHow old are you?<|im_end|>\n<|im_start|>assistant\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<|im_end|>\n
+```
