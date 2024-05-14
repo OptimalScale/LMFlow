@@ -81,6 +81,13 @@ CONVERSATION_SINGLETURN_DEEPSEEK_IDS = [
     )
 ]
 
+CONVERSATION_SINGLETURN_GEMMA_IDS = [
+    (
+        [2, 9052, 3296, 106, 1645, 108, 4521, 107, 108],
+        [106, 2516, 108, 2151, 235341, 107, 108]        
+    )
+]
+
 CONVERSATION_SINGLETURN_INTERNLM2_IDS = [
     (
         [1, 333, 352, 449, 5064, 352, 330, 9081, 364, 7930, 2896, 333, 352, 449, 6368, 352, 527, 
@@ -180,6 +187,17 @@ CONVERSATION_MULTITURN_CHATGLM3_IDS = [
     (
         [64795, 30910, 13, 1072, 383, 344, 30987, ],
         [64796, 30910, 13, 307, 30953, 30924, 878, 30932, 4772, 30992]
+    )
+]
+
+CONVERSATION_MULTITURN_GEMMA_IDS = [
+    (
+        [2, 9052, 3296, 106, 1645, 108, 4521, 107, 108],
+        [106, 2516, 108, 2151, 235341, 107, 108]        
+    ),
+    (
+        [106, 1645, 108, 2299, 708, 692, 235336, 107, 108],
+        [106, 2516, 108, 235285, 235303, 235262, 1426, 235269, 6402, 235341, 107, 108]
     )
 ]
 
@@ -455,6 +473,13 @@ class HFDecoderModelTest(unittest.TestCase):
             conversation_template=PRESET_TEMPLATES['yi1_5'],
         )
         
+        self._test_tokenize(
+            model_name='google/gemma-1.1-2b-it',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_GEMMA_IDS]),
+            conversation_template=PRESET_TEMPLATES['gemma'],
+        )
+        
         
     def test_tokenize_conversation_multiple(self):
         conversation_dataset = {
@@ -556,6 +581,13 @@ class HFDecoderModelTest(unittest.TestCase):
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_YI1_5_IDS]),
             conversation_template=PRESET_TEMPLATES['yi1_5'],
+        )
+        
+        self._test_tokenize(
+            model_name='google/gemma-1.1-2b-it',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_GEMMA_IDS]),
+            conversation_template=PRESET_TEMPLATES['gemma'],
         )
 
 
