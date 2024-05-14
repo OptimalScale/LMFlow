@@ -1,37 +1,18 @@
 import sys
 import logging
 
-import torch
-import torch.nn as nn
+import numpy as np
 import datasets
 import transformers
-from transformers import (
-    set_seed,
-    Trainer
-)
+from transformers import set_seed
 from transformers.utils import send_example_telemetry
 
 from lmflow.pipeline.base_tuner import BaseTuner
+from lmflow.pipeline.utils.reward_trainer import compute_metrics, RewardTrainer
+from lmflow.pipeline.utils.reward_dataprocessor import RewardDataCollatorWithPadding
 
 
 logger = logging.getLogger(__name__)
-
-
-class RewardTrainer(Trainer):
-    def compute_loss(self, model, inputs, return_outputs=False):
-        rewards = model(
-            input_ids=inputs["input_ids"], 
-            attention_mask=inputs["attention_mask"]
-        )[0]
-        bsz = rewards.size(0)
-        jidx = torch.arange(0, bsz, 2)
-        kidx = jidx + 1
-        rewards_j = rewards[jidx]
-        rewards_k = rewards[kidx]
-        loss = -nn.functional.logsigmoid(rewards_j - rewards_k).mean()
-        if return_outputs:
-            return loss, {"rewards_j": rewards_j, "rewards_k": rewards_k}
-        return loss
 
 
 class RewardModelingTuner(BaseTuner):
@@ -103,9 +84,12 @@ class RewardModelingTuner(BaseTuner):
     def tune(
         self,
         model,
-        data_collator=None
+        train_dataset,
+        eval_dataset,
+        data_collator
     ):
         if self.rmtuner_args.do_train:
+            model.config.use_cache = not self.rmtuner_args.gradient_checkpointing
             trainer = RewardTrainer(
                 model=model,
                 args=self.rmtuner_args,
@@ -114,11 +98,10 @@ class RewardModelingTuner(BaseTuner):
                 compute_metrics=compute_metrics,
                 data_collator=data_collator,
             )
-                
             train_result = trainer.train()
             
             trainer.log_metrics("train", train_result.metrics)
             trainer.save_metrics("train", train_result.metrics)
             trainer.save_state()
-            trainer.save_model()
-            tokenizer.save_pretrained(output_name)
+            trainer.save_model(self.rmtuner_args.output_dir + "/last_checkpoint")
+            data_collator.tokenizer.save_pretrained(self.rmtuner_args.output_dir + "/last_checkpoint")

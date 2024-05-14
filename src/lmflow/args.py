@@ -622,8 +622,43 @@ class FinetunerArguments(TrainingArguments):
     
 @dataclass
 class RewardModelingArguments(TrainingArguments):
-    pass
+    """
+    Arguments for reward modeling.
 
+    
+    train_dataset_path : str
+        The path of the train dataset.
+        
+    eval_dataset_path : str
+        The path of the eval dataset.
+        
+    model_max_length : int
+        The maximum length of the model.
+        
+    truncation_side : str
+        The side on which the model should have truncation applied.
+    """
+    train_dataset_path: Optional[str] = field(
+        default=None, metadata={"help": "The path of the train dataset."}
+    )
+    
+    eval_dataset_path: Optional[str] = field(
+        default=None, metadata={"help": "The path of the eval dataset."}
+    )
+        
+    model_max_length: Optional[int] = field(
+        default=4096,
+        metadata={"help": "The maximum length of the model."}
+    )
+    
+    truncation_side: str = field(
+        default='left',
+        metadata={
+            "help": ("The side on which the model should have truncation applied. "),
+            "choices": ["left", "right"],
+        },
+    )
+    
 
 @dataclass
 class EvaluatorArguments:
@@ -1121,6 +1156,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
+    "rm_tuner": RewardModelingArguments
 }
 
 
