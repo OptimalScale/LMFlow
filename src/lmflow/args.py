@@ -618,6 +618,11 @@ class FinetunerArguments(TrainingArguments):
             "help": "where the layer attribute stores, e.g. model.model.layers"
         }
     )
+    
+    
+@dataclass
+class RewardModelingArguments(TrainingArguments):
+    pass
 
 
 @dataclass
