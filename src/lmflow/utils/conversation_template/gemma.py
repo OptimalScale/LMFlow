@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class GemmaConversationTemplate(ConversationTemplate):
-    def encode_conversation(self, **kwargs):
+    def encode_conversation(self, *args, **kwargs):
         if kwargs.get('system'):
             logger.warning(
                 'As of now, Gemma does not support system messages officially. '
@@ -21,7 +21,7 @@ class GemmaConversationTemplate(ConversationTemplate):
                 'For more details, please refer to the [official template]'
                 '(https://huggingface.co/google/gemma-1.1-2b-it/blob/bf4924f313df5166dee1467161e886e55f2eb4d4/tokenizer_config.json#L1507).'
             )
-        super().encode_conversation(**kwargs)
+        return super().encode_conversation(*args, **kwargs)
         
 
 GEMMA_TEMPLATE = GemmaConversationTemplate(
