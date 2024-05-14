@@ -103,44 +103,22 @@ class RewardModelingTuner(BaseTuner):
     def tune(
         self,
         model,
+        data_collator=None
     ):
         if self.rmtuner_args.do_train:
-            rm_training_args = TrainingArguments(
-                output_dir=output_name,
-                learning_rate=script_args.learning_rate,
-                per_device_train_batch_size=script_args.per_device_train_batch_size,
-                per_device_eval_batch_size=script_args.per_device_eval_batch_size,
-                num_train_epochs=script_args.num_train_epochs,
-                weight_decay=script_args.weight_decay,
-                evaluation_strategy="steps",
-                eval_steps=script_args.eval_every_steps,
-                save_strategy="steps",
-                save_steps=script_args.save_every_steps,
-                gradient_accumulation_steps=script_args.gradient_accumulation_steps,
-                gradient_checkpointing=script_args.gradient_checkpointing,
-                deepspeed=script_args.deepspeed,
-                local_rank=script_args.local_rank,
-                remove_unused_columns=False,
-                label_names=[],
-                bf16=script_args.bf16,
-                logging_strategy="steps",
-                logging_steps=10,
-                optim=script_args.optim,
-                lr_scheduler_type=script_args.lr_scheduler_type,
-                warmup_ratio=0.03,
-                report_to='wandb'
-            )
-
             trainer = RewardTrainer(
                 model=model,
-                args=rm_training_args,
+                args=self.rmtuner_args,
                 train_dataset=train_dataset,
                 eval_dataset=eval_dataset,
                 compute_metrics=compute_metrics,
-                data_collator=RewardDataCollatorWithPadding(
-                    tokenizer=tokenizer, 
-                    max_length=script_args.max_length
-                ),
+                data_collator=data_collator,
             )
                 
-            trainer.train()
+            train_result = trainer.train()
+            
+            trainer.log_metrics("train", train_result.metrics)
+            trainer.save_metrics("train", train_result.metrics)
+            trainer.save_state()
+            trainer.save_model()
+            tokenizer.save_pretrained(output_name)
