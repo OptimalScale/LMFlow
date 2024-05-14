@@ -4,6 +4,7 @@
   - [ChatGLM-3](#chatglm-3)
   - [ChatML](#chatml)
   - [DeepSeek](#deepseek)
+  - [Gemma](#gemma)
   - [InternLM2](#internlm2)
   - [Llama-2](#llama-2)
   - [Llama-3](#llama-3)
@@ -111,6 +112,44 @@
 **Filled Example**
 ```
 <｜begin▁of▁sentence｜>You are a chatbot developed by LMFlow team.\n\nUser: Who are you?\n\nAssistant: I am a chatbot developed by LMFlow team.<｜end▁of▁sentence｜>User: How old are you?\n\nAssistant: I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<｜end▁of▁sentence｜>
+```
+
+
+## Gemma
+**With a system message** 
+```{admonition} NOTICE
+:class: warning
+
+As of now, Gemma does not support system messages officially. `ConversationTemplate` will add your system messages right after the bos token and before the user message without any special formatting. For more details, please refer to the [official template](https://huggingface.co/google/gemma-1.1-2b-it/blob/bf4924f313df5166dee1467161e886e55f2eb4d4/tokenizer_config.json#L1507).
+```
+```
+<bos>{{system_message}}<start_of_turn>user\n{{user_message_0}}<end_of_turn>\n
+```
+
+**Without a system message**
+```
+<bos><start_of_turn>user\n{{user_message_0}}<end_of_turn>\n
+```
+
+**A complete conversation**
+```
+<bos>{{system_message}}<start_of_turn>user\n{{user_message_0}}<end_of_turn>\n<start_of_turn>model\n{{assistant_reply_0}}<end_of_turn>\n
+```
+
+**Multiple rounds**
+```
+<bos>{{system_message}}<start_of_turn>user\n{{user_message_0}}<end_of_turn>\n<start_of_turn>model\n{{assistant_reply_0}}<end_of_turn>\n<start_of_turn>user\n{{user_message_1}}<end_of_turn>\n<start_of_turn>model\n{{assistant_reply_1}}<end_of_turn>\n
+```
+
+**jinja template**  
+[[Reference](https://huggingface.co/google/gemma-1.1-2b-it/blob/bf4924f313df5166dee1467161e886e55f2eb4d4/tokenizer_config.json#L1507)]
+```
+{{ bos_token }}{% if messages[0]['role'] == 'system' %}{{ raise_exception('System role not supported') }}{% endif %}{% for message in messages %}{% if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('Conversation roles must alternate user/assistant/user/assistant/...') }}{% endif %}{% if (message['role'] == 'assistant') %}{% set role = 'model' %}{% else %}{% set role = message['role'] %}{% endif %}{{ '<start_of_turn>' + role + '\n' + message['content'] | trim + '<end_of_turn>\n' }}{% endfor %}{% if add_generation_prompt %}{{'<start_of_turn>model\n'}}{% endif %}
+```
+
+**Filled Example**
+```
+<bos>You are a chatbot developed by LMFlow team.<start_of_turn>user\nWho are you?<end_of_turn>\n<start_of_turn>model\nI am a chatbot developed by LMFlow team.<end_of_turn>\n<start_of_turn>user\nHow old are you?<end_of_turn>\n<start_of_turn>model\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<end_of_turn>\n
 ```
 
 
