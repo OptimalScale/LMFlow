@@ -84,5 +84,22 @@ class RewardModelingTuner(BaseTuner):
     def tune(
         self,
         model,
+        data_collator=None
     ):
-        pass
+        if self.rmtuner_args.do_train:
+            trainer = RewardTrainer(
+                model=model,
+                args=self.rmtuner_args,
+                train_dataset=train_dataset,
+                eval_dataset=eval_dataset,
+                compute_metrics=compute_metrics,
+                data_collator=data_collator,
+            )
+                
+            train_result = trainer.train()
+            
+            trainer.log_metrics("train", train_result.metrics)
+            trainer.save_metrics("train", train_result.metrics)
+            trainer.save_state()
+            trainer.save_model()
+            tokenizer.save_pretrained(output_name)
