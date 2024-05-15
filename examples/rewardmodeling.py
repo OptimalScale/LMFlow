@@ -72,7 +72,7 @@ def main():
         train_path=pipeline_args.train_dataset_path,
         eval_path=pipeline_args.eval_dataset_path
     )
-    logger.warning("Training set: ", len(train_dataset), " Eval set: ", len(eval_dataset))
+    logger.warning(f"Training set: {len(train_dataset)}, Eval set: {len(eval_dataset)}")
     
     # Finetuning
     tuned_model = finetuner.tune(
