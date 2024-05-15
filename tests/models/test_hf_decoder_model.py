@@ -125,6 +125,13 @@ CONVERSATION_SINGLETURN_YI1_5_IDS = [
     )
 ]
 
+CONVERSATION_SINGLETURN_ZEPHYR_IDS = [
+    (
+        [523, 28766, 6574, 28766, 28767, 13, 6609, 1817, 2, 28705, 13, 28789, 28766, 1838, 28766, 28767, 13, 16230, 2],
+        [28705, 13, 28789, 28766, 489, 11143, 28766, 28767, 13, 23809, 28808, 2]
+    )
+]
+
 CONVERSATION_MULTITURN = {
     "system": "sysinfo",
     "messages": [
@@ -255,6 +262,17 @@ CONVERSATION_MULTITURN_YI1_5_IDS = [
     (
         [59666, 59705, 622, 59593, 5858, 46826, 3903, 144, 6546, 678, 641, 100, 59666, 59705, 622, 59593, 701, 46826, 144,],
         [59666, 59705, 622, 59593, 5858, 46826, 765, 13611, 144, 59597, 59610, 59583, 1226, 97, 5867, 99, 59666, 59705, 622, 59593, 701, 46826, 144]
+    )
+]
+
+CONVERSATION_MULTITURN_ZEPHYR_IDS = [
+    (
+        [523, 28766, 6574, 28766, 28767, 13, 6609, 1817, 2, 28705, 13, 28789, 28766, 1838, 28766, 28767, 13, 16230, 2],
+        [28705, 13, 28789, 28766, 489, 11143, 28766, 28767, 13, 23809, 28808, 2]
+    ),
+    (
+        [28705, 13, 28789, 28766, 1838, 28766, 28767, 13, 5660, 460, 368, 28804, 2],
+        [28705, 13, 28789, 28766, 489, 11143, 28766, 28767, 13, 28737, 28742, 28719, 1179, 28725, 8196, 28808, 2]
     )
 ]
 
@@ -480,6 +498,13 @@ class HFDecoderModelTest(unittest.TestCase):
             conversation_template=PRESET_TEMPLATES['gemma'],
         )
         
+        self._test_tokenize(
+            model_name='HuggingFaceH4/zephyr-7b-beta',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_ZEPHYR_IDS]),
+            conversation_template=PRESET_TEMPLATES['zephyr'],
+        )
+        
         
     def test_tokenize_conversation_multiple(self):
         conversation_dataset = {
@@ -588,6 +613,13 @@ class HFDecoderModelTest(unittest.TestCase):
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_GEMMA_IDS]),
             conversation_template=PRESET_TEMPLATES['gemma'],
+        )
+
+        self._test_tokenize(
+            model_name='HuggingFaceH4/zephyr-7b-beta',
+            groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
+            groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_ZEPHYR_IDS]),
+            conversation_template=PRESET_TEMPLATES['zephyr'],
         )
 
 

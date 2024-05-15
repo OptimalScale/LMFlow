@@ -426,22 +426,22 @@ You are a chatbot developed by LMFlow team.<|im_start|>user\nWho are you?<|im_en
 ## Zephyr
 **With a system message**
 ```
-<|system|>\n{{system_message}}</s><|user|>\n{{user_message_0}}</s>
+<|system|>\n{{system_message}}</s>\n<|user|>\n{{user_message_0}}</s>\n
 ```
 
 **Without a system message**
 ```
-<|user|>\n{{user_message_0}}</s>
+<|user|>\n{{user_message_0}}</s>\n
 ```
 
 **A complete conversation**
 ```
-<|system|>\n{{system_message}}</s><|user|>\n{{user_message_0}}</s><|assistant|>\n{{assistant_reply_0}}</s>
+<|system|>\n{{system_message}}</s>\n<|user|>\n{{user_message_0}}</s>\n<|assistant|>\n{{assistant_reply_0}}</s>\n
 ```
 
 **Multiple rounds**
 ```
-<|system|>\n{{system_message}}</s><|user|>\n{{user_message_0}}</s><|assistant|>\n{{assistant_reply_0}}</s><|user|>\n{{user_message_1}}</s><|assistant|>\n{{assistant_reply_1}}</s>
+<|system|>\n{{system_message}}</s>\n<|user|>\n{{user_message_0}}</s>\n<|assistant|>\n{{assistant_reply_0}}</s>\n<|user|>\n{{user_message_1}}</s>\n<|assistant|>\n{{assistant_reply_1}}</s>\n
 ```
 
 **jinja template**  
@@ -452,5 +452,5 @@ You are a chatbot developed by LMFlow team.<|im_start|>user\nWho are you?<|im_en
 
 **Filled Example**
 ```
-<|system|>\nYou are a chatbot developed by LMFlow team.</s><|user|>\nWho are you?</s><|assistant|>\nI am a chatbot developed by LMFlow team.</s><|user|>\nHow old are you?</s><|assistant|>\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>
+<|system|>\nYou are a chatbot developed by LMFlow team.</s>\n<|user|>\nWho are you?</s>\n<|assistant|>\nI am a chatbot developed by LMFlow team.</s>\n<|user|>\nHow old are you?</s>\n<|assistant|>\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>\n
 ```
