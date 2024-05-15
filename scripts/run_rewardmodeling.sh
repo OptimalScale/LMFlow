@@ -7,7 +7,7 @@ train_dataset_path=weqweasdas/preference_dataset_mix2
 eval_dataset_path=weqweasdas/preference_dataset_mix2
 output_dir=output_models/rewardmodeling
 deepspeed_args="--master_port=11000"
-conversation_template=llama2
+conversation_template=llama2 # currently not applicable
 
 # Safety related arguments
 trust_remote_code=0
@@ -67,7 +67,7 @@ deepspeed ${deepspeed_args} \
         --learning_rate 1e-5 \
         --per_device_train_batch_size 1 \
         --per_device_eval_batch_size 1 \
-        --num_train_epochs 1 \
+        --num_train_epochs 0.001 \
         --weight_decay 0.001 \
         --evaluation_strategy "steps" \
         --eval_steps 999999 \
