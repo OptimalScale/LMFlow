@@ -14,6 +14,7 @@
   - [Qwen-2](#qwen-2)
   - [Yi](#yi)
   - [Yi-1.5](#yi-15)
+  - [Zephyr](#zephyr)
 
 
 ## ChatGLM-3
@@ -419,4 +420,37 @@ The conversation template for Mixtral 8x7B is slightly different from the templa
 **Filled Example**
 ```
 You are a chatbot developed by LMFlow team.<|im_start|>user\nWho are you?<|im_end|>\n<|im_start|>assistant\nI am a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nHow old are you?<|im_end|>\n<|im_start|>assistant\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<|im_end|>\n
+```
+
+
+## Zephyr
+**With a system message**
+```
+<|system|>\n{{system_message}}</s>\n<|user|>\n{{user_message_0}}</s>\n
+```
+
+**Without a system message**
+```
+<|user|>\n{{user_message_0}}</s>\n
+```
+
+**A complete conversation**
+```
+<|system|>\n{{system_message}}</s>\n<|user|>\n{{user_message_0}}</s>\n<|assistant|>\n{{assistant_reply_0}}</s>\n
+```
+
+**Multiple rounds**
+```
+<|system|>\n{{system_message}}</s>\n<|user|>\n{{user_message_0}}</s>\n<|assistant|>\n{{assistant_reply_0}}</s>\n<|user|>\n{{user_message_1}}</s>\n<|assistant|>\n{{assistant_reply_1}}</s>\n
+```
+
+**jinja template**  
+[[Reference](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta/blob/b70e0c9a2d9e14bd1e812d3c398e5f313e93b473/tokenizer_config.json#L34)]
+```
+{% for message in messages %}\n{% if message['role'] == 'user' %}\n{{ '<|user|>\n' + message['content'] + eos_token }}\n{% elif message['role'] == 'system' %}\n{{ '<|system|>\n' + message['content'] + eos_token }}\n{% elif message['role'] == 'assistant' %}\n{{ '<|assistant|>\n'  + message['content'] + eos_token }}\n{% endif %}\n{% if loop.last and add_generation_prompt %}\n{{ '<|assistant|>' }}\n{% endif %}\n{% endfor %}
+```
+
+**Filled Example**
+```
+<|system|>\nYou are a chatbot developed by LMFlow team.</s>\n<|user|>\nWho are you?</s>\n<|assistant|>\nI am a chatbot developed by LMFlow team.</s>\n<|user|>\nHow old are you?</s>\n<|assistant|>\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>\n
 ```
