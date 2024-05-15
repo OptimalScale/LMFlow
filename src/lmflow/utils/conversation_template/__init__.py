@@ -11,6 +11,7 @@ from .llama import LLAMA2_TEMPLATE, LLAMA3_TEMPLATE
 from .phi import PHI3_TEMPLATE
 from .qwen import QWEN2_TEMPLATE
 from .yi import YI1_5_TEMPLATE
+from .zephyr import ZEPHYR_TEMPLATE
 
 
 PRESET_TEMPLATES = {
@@ -26,5 +27,6 @@ PRESET_TEMPLATES = {
     'phi3': PHI3_TEMPLATE,
     'qwen2': QWEN2_TEMPLATE,
     'yi': CHATML_TEMPLATE,
-    'yi1_5': YI1_5_TEMPLATE
+    'yi1_5': YI1_5_TEMPLATE,
+    'zephyr': ZEPHYR_TEMPLATE
 }
