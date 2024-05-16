@@ -15,6 +15,38 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TemplateComponent:
+    """The minimal unit of a template, which can be a token, a string, or a list of tools.
+
+    Parameters
+    ----------
+    type : Literal['token', 'token_id', 'string', 'tools']
+        - Type of the component.  
+        
+        - When the component is a token or a string, the content should be `string`. 
+        The difference between the two is that token will be converted to token ids 
+        by the tokenizer.convert_tokens_to_ids() method, while string will be directly 
+        encoded by the tokenizer.encode() method. Specially, since the bos token and eos
+        token are frequently used across different templates, we provide the convenience
+        to use `'bos_token'` and `'eos_token'` to represent the actual bos and eos tokens when
+        `type` of the `TemplateComponent` is `token`. For example:  
+        
+        ```python
+        TemplateComponent(type='token', content='bos_token')
+        ```
+        
+        After encoding, the content will be replaced by the actual token id of the bos token.
+        Please do remember that if you set the `type` to `string`, the tokenizer will try to 
+        encode the string 'bos_token' instead of providing the actual bos token.
+        
+        - When the component is token_id, the content should be `int` or `List[int]`, and 
+        will be directly appended to the encoded token ids.
+        
+        - Tools are not supported yet.
+        
+    content : Union[str, int, List[str], List[int]]
+        Content of the component.
+
+    """
     type: Literal['token', 'token_id', 'string', 'tools']
     content: Union[str, int, List[str], List[int]]
     mask: Optional[bool] = True # for token specific masking, work in progress
