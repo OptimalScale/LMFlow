@@ -17,12 +17,12 @@ cd data && ./download.sh alpaca && cd -
 For conversation dataset, specify a conversation template for better performance by adding `--conversation_template` to the command. 
 
 .. dropdown:: Llama-3-8B conversation dataset example
-   :color: success
-   :icon: hint
-
+    :color: success
+    :icon: hint
+    
     ```bash
     cd data && ./download.sh alpaca && cd -
-
+    
     ./scripts/run_finetune.sh \
     --model_name_or_path meta-llama/Meta-Llama-3-8B \
     --dataset_path data/alpaca/train_conversation \
