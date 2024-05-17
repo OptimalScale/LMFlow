@@ -1,46 +1,87 @@
-#!/bin/bash
-# Please run this script under ${project_id} in project directory of
-#   https://github.com/shizhediao/llm-ft
-#     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
+#!/usr/bin/env python
+# coding=utf-8
+# Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
+# Parses arguments
+model_name_or_path=google/gemma-2b-it
+train_dataset_path=weqweasdas/preference_dataset_mix2
+eval_dataset_path=weqweasdas/preference_dataset_mix2
+output_dir=output_models/rewardmodeling
+deepspeed_args="--master_port=11000"
+conversation_template=llama2 # currently not applicable
 
-deepspeed_args="--master_port=11000"      # Default argument
-if [ $# -ge 1 ]; then
-  deepspeed_args="$1"
-fi
+# Safety related arguments
+trust_remote_code=0
 
-exp_id=rm
+while [[ $# -ge 1 ]]; do
+  key="$1"
+  case ${key} in
+    -m|--model_name_or_path)
+      model_name_or_path="$2"
+      shift
+      ;;
+    --train_dataset_path)
+      train_dataset_path="$2"
+      shift
+      ;;
+    --eval_dataset_path)
+      eval_dataset_path="$2"
+      shift
+      ;;
+    -o|--output_model_path)
+      output_dir="$2"
+      shift
+      ;;
+    --conversation_template)
+      conversation_template="$2"
+      shift
+      ;;
+    --deepspeed_args)
+      deepspeed_args="$2"
+      shift
+      ;;
+    --trust_remote_code)
+      trust_remote_code="$2"
+      shift
+      ;;
+    *)
+      echo "error: unknown option \"${key}\"" 1>&2
+      exit 1
+  esac
+  shift
+done
+
+# Finetune
+exp_id=rewardmodeling
 project_dir=$(cd "$(dirname $0)"/..; pwd)
-output_dir=${project_dir}/output_models/${exp_id}
 log_dir=${project_dir}/log/${exp_id}
-
-dataset_path=${project_dir}/data/hh_rlhf/rm/hh_rlhf_rm_training.json
-if [ ! -d data/hh_rlhf ]; then
-  cd data && ./download.sh hh_rlhf && cd -
-fi
-
 mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
-  examples/reward_modeling.py \
-    --model_name_or_path gpt2 \
-    --dataset_path ${dataset_path} \
-    --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 1 \
-    --learning_rate 3e-5 \
-    --block_size 512 \
-    --per_device_train_batch_size 1 \
-    --per_device_eval_batch_size 1\
-    --deepspeed configs/ds_config_zero2.json \
-    --bf16 \
-    --run_name rm_test \
-    --validation_split_percentage 10 \
-    --logging_steps 10 \
-    --do_train \
-    --ddp_timeout 72000 \
-    --save_steps 999999 \
-    --evaluation_strategy steps\
-    --eval_steps 100\
-    --weight_decay 0.001\
-    --dataloader_num_workers 1 \
-    | tee ${log_dir}/train.log \
-    2> ${log_dir}/train.err
+    examples/rewardmodeling.py \
+        --deepspeed configs/ds_config_zero3.json \
+        --model_name_or_path ${model_name_or_path} \
+        --train_dataset_path ${train_dataset_path} \
+        --eval_dataset_path ${eval_dataset_path} \
+        --output_dir ${output_dir}  \
+        --do_train True \
+        --learning_rate 1e-5 \
+        --per_device_train_batch_size 1 \
+        --per_device_eval_batch_size 1 \
+        --num_train_epochs 0.001 \
+        --weight_decay 0.001 \
+        --evaluation_strategy "steps" \
+        --eval_steps 999999 \
+        --save_strategy "steps" \
+        --save_steps 999999 \
+        --gradient_accumulation_steps 32 \
+        --gradient_checkpointing True \
+        --remove_unused_columns False \
+        --bf16 True \
+        --logging_strategy "steps" \
+        --logging_steps 10 \
+        --optim "paged_adamw_32bit" \
+        --lr_scheduler_type "cosine" \
+        --warmup_ratio 0.03 \
+        --report_to 'wandb' \
+        | tee ${log_dir}/train.log \
+        2> ${log_dir}/train.err
