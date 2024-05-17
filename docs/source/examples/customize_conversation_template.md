@@ -1,43 +1,36 @@
 # Customize Conversation Template
 
-```{admonition} **Work in Progress**
-:class: info
-
-We are rapidly working on this page.  
-```
-
 > For beginners: Why template?   
 > Almost all LLMs today do a simple job - predict the next "word". To make the interaction between user and model smoother, developers use tricks: they add special "words" to the input text (at back-end, thus invisible to the user when using services like ChatGPT) to "tell" the model what user had said before, and ask the model to respond like an assistant. These "hidden words" are called "template".
 
 We provide the flexibility to customize the conversation template. You can customize your own conversation template by following the steps below:
 
-## Knowing the conversation template of your model
+### 1. Decompose your conversations
+Say you want to make the conversations between user and assistant look like:  
 
-The conversation template varies according to the model you are using. For example:  
-
-The template for Llama-2 looks like:  
 ```
-<s>[INST] <<SYS>>\n{{system_message}}\n<</SYS>>\n\n{{user_message_0}} [/INST] {{assistant_reply_0}}</s>
+<bos>System:
+You are a chatbot developed by LMFlow team.
+
+User:
+Who are you?
+
+Assistant:
+I am a chatbot developed by LMFlow team.<eos>
+
+User:
+How old are you?
+
+Assistant:
+I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<eos>
 ```
 
-Find more templates [here](./supported_conversation_template.md).
+It is easy to abstract the format for each message:
+- System message: `System:\n{{content}}\n\n`  
+- User message: `User:\n{{content}}\n\n`  
+- Assistant message: `Assistant:\n{{content}}\n\n<eos>`  
 
-
-## Make your own template
-
-`TemplateComponent`s to a conversation template is just like bricks to a LEGO house. You can build your own template by combining different components.
-
-The following provides an example of building a conversation template for the ChatML format:
-
-### 1. Decompose the official template
-The official template looks like:
-```
-<|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_0}}<|im_end|>\n<|im_start|>user\n{{user_message_1}}<|im_end|>\n<|im_start|>assistant\n{{assistant_reply_1}}<|im_end|>\n
-```
-It is easy to recognize the format for each message:
-- System message: `<|im_start|>system\n{{system_message}}<|im_end|>\n`  
-- User message: `<|im_start|>user\n{{user_message}}<|im_end|>\n`  
-- Assistant message: `<|im_start|>assistant\n{{assistant_reply}}<|im_end|>\n`  
+Also, we have a bos token at the beginning of the conversation session.
 
 ###  2. Choose proper `Formatter`  
 Recall the requirements for a conversation dataset:  
@@ -87,9 +80,10 @@ YOUR_TEMPLATE = ConversationTemplate(
     #   v.s.
     #   llama-3: <|begin_of_text|> only at the beginning of a session
     special_starter=TemplateComponent(type='token', content='bos_token'),
-    # Similar to the special starter...
-    special_stopper=TemplateComponent(type='token', content='eos_token')
 
+    # Similar to the special starter... (just for illustration, commented out 
+    # since it is not necessary for our purposed template above)
+    # special_stopper=TemplateComponent(type='token', content='eos_token')
 )
 ```
 
