@@ -14,21 +14,25 @@ cd data && ./download.sh alpaca && cd -
   --output_model_path output_models/finetuned_gpt2
 ```
 
+
+:::{hint}
+
 For conversation dataset, specify a conversation template for better performance by adding `--conversation_template` to the command. 
 
-.. dropdown:: Llama-3-8B conversation dataset example
-    :color: success
-    :icon: hint
-    
-    ```bash
-    cd data && ./download.sh alpaca && cd -
-    
-    ./scripts/run_finetune.sh \
+<details><summary>Llama-3-8B conversation dataset example</summary>  
+ 
+```bash
+cd data && ./download.sh alpaca && cd -
+
+./scripts/run_finetune.sh \
     --model_name_or_path meta-llama/Meta-Llama-3-8B \
     --dataset_path data/alpaca/train_conversation \
     --conversation_template llama3 \
     --output_model_path output_models/finetuned_llama3_8b
-    ```
+```
+</details>
+
+:::
 
 
 ## Layerwise Importance Sampled AdamW (LISA)
