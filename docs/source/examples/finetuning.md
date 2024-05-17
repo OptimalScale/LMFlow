@@ -2,6 +2,7 @@
 
 
 ## Full Parameters
+
 :::{hint}
 
 For a simple site (no extra languages or versions), ensure `sphinx-sitemap`
@@ -16,6 +17,7 @@ is installed in your documentation environment, and modify your `conf.py`:
 ```
 
 :::
+
 Full training updates all the parameters to finetune a language model.
 Here is an example to finetune a GPT-2 base model.
 
