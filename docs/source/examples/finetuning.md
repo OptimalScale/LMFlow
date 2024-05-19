@@ -20,8 +20,8 @@ Here is an example to finetune a GPT-2 base model.
 For conversation dataset, specify a conversation template for better performance by adding `--conversation_template` to the command.  
 ```
 
-```{tip} Llama-3-8B conversation dataset example
-:class: dropdown
+```{dropdown} Llama-3-8B conversation dataset example
+:icon: hint
 
     ```bash
     cd data && ./download.sh alpaca && cd -
