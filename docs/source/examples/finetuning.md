@@ -9,9 +9,9 @@ Here is an example to finetune a GPT-2 base model.
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune.sh \
---model_name_or_path gpt2 \
---dataset_path data/alpaca/train_conversation \
---output_model_path output_models/finetuned_gpt2
+    --model_name_or_path gpt2 \
+    --dataset_path data/alpaca/train_conversation \
+    --output_model_path output_models/finetuned_gpt2
 ```
 
 ```{admonition} Conversation Template
@@ -41,11 +41,11 @@ cd data && ./download.sh alpaca && cd -
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune_with_lisa.sh \
---model_name_or_path meta-llama/Llama-2-7b-hf \
---dataset_path data/alpaca/train_conversation \
---output_model_path output_models/finetuned_llama2_7b \
---lisa_activated_layers 1 \
---lisa_interval_steps 20
+    --model_name_or_path meta-llama/Llama-2-7b-hf \
+    --dataset_path data/alpaca/train_conversation \
+    --output_model_path output_models/finetuned_llama2_7b \
+    --lisa_activated_layers 1 \
+    --lisa_interval_steps 20
 ```
 
 ````{dropdown} Llama-2-7B conversation dataset example
@@ -53,12 +53,12 @@ cd data && ./download.sh alpaca && cd -
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune_with_lisa.sh \
---model_name_or_path meta-llama/Llama-2-7b-hf \
---dataset_path data/alpaca/train_conversation \
---conversation_template llama2 \
---output_model_path output_models/finetuned_llama2_7b_lisa \
---lisa_activated_layers 1 \
---lisa_interval_steps 20
+    --model_name_or_path meta-llama/Llama-2-7b-hf \
+    --dataset_path data/alpaca/train_conversation \
+    --conversation_template llama2 \
+    --output_model_path output_models/finetuned_llama2_7b_lisa \
+    --lisa_activated_layers 1 \
+    --lisa_interval_steps 20
 ```
 ````
 
@@ -71,9 +71,9 @@ LoRA is a parameter-efficient finetuning algorithm and is more efficient than fu
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune_with_lora.sh \
---model_name_or_path facebook/galactica-1.3b \
---dataset_path data/alpaca/train_conversation \
---output_lora_path output_models/finetuned_galactica_lora
+    --model_name_or_path facebook/galactica-1.3b \
+    --dataset_path data/alpaca/train_conversation \
+    --output_lora_path output_models/finetuned_galactica_lora
 ```
 
 ````{admonition} Merge LoRA Weight
@@ -82,9 +82,9 @@ cd data && ./download.sh alpaca && cd -
 Merge LoRA weight and the base model into one using:  
 ```sh
 ./scripts/run_merge_lora.sh \
---model_name_or_path Qwen/Qwen1.5-1.8B \
---lora_model_path output_models/lora \
---output_model_path output_models/lora_merged \
+    --model_name_or_path Qwen/Qwen1.5-1.8B \
+    --lora_model_path output_models/lora \
+    --output_model_path output_models/lora_merged \
 ```
 ````
 
@@ -93,9 +93,9 @@ Merge LoRA weight and the base model into one using:
 cd data && ./download.sh alpaca && cd -
 
 ./scripts/run_finetune_with_lora.sh \
---model_name_or_path meta-llama/Llama-2-7b-hf \
---dataset_path data/alpaca/train_conversation \
---conversation_template llama2 \
---output_model_path output_models/finetuned_llama2_7b_lora \
+    --model_name_or_path meta-llama/Llama-2-7b-hf \
+    --dataset_path data/alpaca/train_conversation \
+    --conversation_template llama2 \
+    --output_model_path output_models/finetuned_llama2_7b_lora \
 ```
 ````
