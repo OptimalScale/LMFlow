@@ -1,22 +1,6 @@
 # Finetuning 
 
-
 ## Full Parameters
-
-:::{hint}
-
-For a simple site (no extra languages or versions), ensure `sphinx-sitemap`
-is installed in your documentation environment, and modify your `conf.py`:
-
-```python
-    extensions += ["sphinx_sitemap"]
-
-    html_baseurl = os.environ.get("SPHINX_HTML_BASE_URL", "http://127.0.0.1:8000/")
-    sitemap_locales = [None]
-    sitemap_url_scheme = "{link}"
-```
-
-:::
 
 Full training updates all the parameters to finetune a language model.
 Here is an example to finetune a GPT-2 base model.
@@ -30,13 +14,13 @@ cd data && ./download.sh alpaca && cd -
   --output_model_path output_models/finetuned_gpt2
 ```
 
-
-:::{hint}
+```{admonition} Conversation Template
+:class: tip
 
 For conversation dataset, specify a conversation template for better performance by adding `--conversation_template` to the command. 
 
 <details><summary>Llama-3-8B conversation dataset example</summary>  
- 
+
 ```bash
 cd data && ./download.sh alpaca && cd -
 
@@ -48,7 +32,7 @@ cd data && ./download.sh alpaca && cd -
 ```
 </details>
 
-:::
+```
 
 
 ## Layerwise Importance Sampled AdamW (LISA)
