@@ -14,12 +14,14 @@ Here is an example to finetune a GPT-2 base model.
     --output_model_path output_models/finetuned_gpt2
     ```
 
-```{dropdown} Tip: Conversation Template
+```{admonition} Conversation Template
 :class: tip
 
 For conversation dataset, specify a conversation template for better performance by adding `--conversation_template` to the command.  
+```
 
-<details><summary>Llama-3-8B conversation dataset example</summary>  
+```{tip} Llama-3-8B conversation dataset example
+:class: dropdown
 
     ```bash
     cd data && ./download.sh alpaca && cd -
@@ -31,13 +33,12 @@ For conversation dataset, specify a conversation template for better performance
         --output_model_path output_models/finetuned_llama3_8b
     ```
 
-</details>
 ```
 
 
 ## Layerwise Importance Sampled AdamW (LISA)
 
-[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile:
+[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates!
 
     ```sh
     cd data && ./download.sh alpaca && cd -
@@ -50,11 +51,8 @@ For conversation dataset, specify a conversation template for better performance
     --lisa_interval_steps 20
     ```
 
-```{dropdown} Tip: Conversation Template
-:color: secondary
-:icon: tip
-
-<details><summary>Llama-2-7B conversation dataset example</summary>  
+```{tip} Llama-2-7B conversation dataset example
+:class: dropdown
 
     ```bash
     cd data && ./download.sh alpaca && cd -
@@ -67,43 +65,47 @@ For conversation dataset, specify a conversation template for better performance
     --lisa_activated_layers 1 \
     --lisa_interval_steps 20
     ```
-</details>
 
 ```
 
 
 ## Low-Rank Adaptation (LoRA)
-LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
-```sh
-cd data && ./download.sh alpaca && cd -
 
-./scripts/run_finetune_with_lora.sh \
-  --model_name_or_path facebook/galactica-1.3b \
-  --dataset_path data/alpaca/train_conversation \
-  --output_lora_path output_models/finetuned_galactica_lora
+LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
+
+    ```sh
+    cd data && ./download.sh alpaca && cd -
+
+    ./scripts/run_finetune_with_lora.sh \
+    --model_name_or_path facebook/galactica-1.3b \
+    --dataset_path data/alpaca/train_conversation \
+    --output_lora_path output_models/finetuned_galactica_lora
+    ```
+
+```{tip} Llama-2-7B conversation dataset example
+:class: dropdown
+
+    ```bash
+    cd data && ./download.sh alpaca && cd -
+
+    ./scripts/run_finetune_with_lora.sh \
+    --model_name_or_path meta-llama/Llama-2-7b-hf \
+    --dataset_path data/alpaca/train_conversation \
+    --conversation_template llama2 \
+    --output_model_path output_models/finetuned_llama2_7b_lora \
+    ```
+
 ```
 
-> [!TIP]
-> <details><summary>Llama-2-7B conversation dataset example</summary>  
-> 
->```bash
->cd data && ./download.sh alpaca && cd -
->
->./scripts/run_finetune_with_lora.sh \
->  --model_name_or_path meta-llama/Llama-2-7b-hf \
->  --dataset_path data/alpaca/train_conversation \
->  --conversation_template llama2 \
->  --output_model_path output_models/finetuned_llama2_7b_lora \
->```
-> </details>
->
-> <details><summary>Merge LoRA Weight</summary>
->
->Merge LoRA weight and the base model into one using:  
->```sh
->./scripts/run_merge_lora.sh \
->  --model_name_or_path Qwen/Qwen1.5-1.8B \
->  --lora_model_path output_models/lora \
->  --output_model_path output_models/lora_merged \
->```
-></details>
+```{tip} Merge LoRA Weight
+:class: dropdown
+
+Merge LoRA weight and the base model into one using:  
+
+    ```sh
+    ./scripts/run_merge_lora.sh \
+    --model_name_or_path Qwen/Qwen1.5-1.8B \
+    --lora_model_path output_models/lora \
+    --output_model_path output_models/lora_merged \
+    ```
+```
