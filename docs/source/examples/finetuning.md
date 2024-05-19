@@ -81,8 +81,10 @@ LoRA is a parameter-efficient finetuning algorithm and is more efficient than fu
     --output_lora_path output_models/finetuned_galactica_lora
     ```
 
-```{admonition} Llama-2-7B conversation dataset example
-:class: dropdown tip
+````{admonition} Llama-2-7B conversation dataset example
+:class: dropdown
+
+```{tip}
 
     ```bash
     cd data && ./download.sh alpaca && cd -
@@ -93,8 +95,48 @@ LoRA is a parameter-efficient finetuning algorithm and is more efficient than fu
     --conversation_template llama2 \
     --output_model_path output_models/finetuned_llama2_7b_lora \
     ```
-
+    
 ```
+
+````
+
+````{admonition} Llama-2-7B conversation dataset example
+:class: dropdown admonition-tip
+
+```{tip}
+
+    ```bash
+    cd data && ./download.sh alpaca && cd -
+
+    ./scripts/run_finetune_with_lora.sh \
+    --model_name_or_path meta-llama/Llama-2-7b-hf \
+    --dataset_path data/alpaca/train_conversation \
+    --conversation_template llama2 \
+    --output_model_path output_models/finetuned_llama2_7b_lora \
+    ```
+    
+```
+
+````
+
+````{admonition} Llama-2-7B conversation dataset example
+:class: dropdown tip
+
+```{tip}
+
+    ```bash
+    cd data && ./download.sh alpaca && cd -
+
+    ./scripts/run_finetune_with_lora.sh \
+    --model_name_or_path meta-llama/Llama-2-7b-hf \
+    --dataset_path data/alpaca/train_conversation \
+    --conversation_template llama2 \
+    --output_model_path output_models/finetuned_llama2_7b_lora \
+    ```
+    
+```
+
+````
 
 ```{admonition} Merge LoRA Weight
 :class: tip
