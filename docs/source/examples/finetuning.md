@@ -51,8 +51,7 @@ For conversation dataset, specify a conversation template for better performance
     --lisa_interval_steps 20
     ```
 
-```{tip} Llama-2-7B conversation dataset example
-:class: dropdown
+```{toggle} Llama-2-7B conversation dataset example
 
     ```bash
     cd data && ./download.sh alpaca && cd -
@@ -82,8 +81,8 @@ LoRA is a parameter-efficient finetuning algorithm and is more efficient than fu
     --output_lora_path output_models/finetuned_galactica_lora
     ```
 
-```{tip} Llama-2-7B conversation dataset example
-:class: dropdown
+```{admonition} Llama-2-7B conversation dataset example
+:class: dropdown tip
 
     ```bash
     cd data && ./download.sh alpaca && cd -
@@ -97,8 +96,8 @@ LoRA is a parameter-efficient finetuning algorithm and is more efficient than fu
 
 ```
 
-```{tip} Merge LoRA Weight
-:class: dropdown
+```{admonition} Merge LoRA Weight
+:class: tip
 
 Merge LoRA weight and the base model into one using:  
 
