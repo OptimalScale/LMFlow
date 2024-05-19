@@ -21,8 +21,6 @@ For conversation dataset, specify a conversation template for better performance
 ```
 
 ````{dropdown} Llama-3-8B conversation dataset example
-:icon: bulb
-
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -32,7 +30,6 @@ cd data && ./download.sh alpaca && cd -
     --conversation_template llama3 \
     --output_model_path output_models/finetuned_llama3_8b
 ```
-
 ````
 
 
@@ -52,7 +49,6 @@ cd data && ./download.sh alpaca && cd -
 ```
 
 ````{dropdown} Llama-2-7B conversation dataset example
-
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -64,7 +60,6 @@ cd data && ./download.sh alpaca && cd -
 --lisa_activated_layers 1 \
 --lisa_interval_steps 20
 ```
-
 ````
 
 
@@ -85,17 +80,15 @@ cd data && ./download.sh alpaca && cd -
 :class: tip
 
 Merge LoRA weight and the base model into one using:  
-
-    ```sh
-    ./scripts/run_merge_lora.sh \
-    --model_name_or_path Qwen/Qwen1.5-1.8B \
-    --lora_model_path output_models/lora \
-    --output_model_path output_models/lora_merged \
-    ```
+```sh
+./scripts/run_merge_lora.sh \
+--model_name_or_path Qwen/Qwen1.5-1.8B \
+--lora_model_path output_models/lora \
+--output_model_path output_models/lora_merged \
+```
 ````
 
 ````{dropdown} Llama-2-7B conversation dataset example
-
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -105,5 +98,4 @@ cd data && ./download.sh alpaca && cd -
 --conversation_template llama2 \
 --output_model_path output_models/finetuned_llama2_7b_lora \
 ```
-
 ````
