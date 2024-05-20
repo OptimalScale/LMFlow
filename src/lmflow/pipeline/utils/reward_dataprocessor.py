@@ -19,14 +19,14 @@ class RewardDataCollatorWithPadding:
         for feature in features:
             merged_features.append(
                 {
-                    "input_ids": feature["input_ids_j"],
-                    "attention_mask": feature["attention_mask_j"],
+                    "input_ids": feature["input_ids_chosen"],
+                    "attention_mask": feature["attention_mask_chosen"],
                 }
             )
             merged_features.append(
                 {
-                    "input_ids": feature["input_ids_k"],
-                    "attention_mask": feature["attention_mask_k"],
+                    "input_ids": feature["input_ids_rejected"],
+                    "attention_mask": feature["attention_mask_rejected"],
                 }
             )
         batch = self.tokenizer.pad(
