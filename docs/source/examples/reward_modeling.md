@@ -35,7 +35,7 @@ We prepare the dataset used for supervised finetuning by adding a prefix to the 
 }
 ```
 
-See [Finetuning (Full)](../../../README.md#finetuning-full), [Finetuning (LISA)](../../../README.md#finetuning-lisa), and [Finetuning (LoRA)](../../../README.md#finetuning-lora) for more details on the finetuning process.
+See [Finetuning (Full)](./finetuning.md#full-parameters), [Finetuning (LISA)](./finetuning.md#layerwise-importance-sampled-adamw-lisa), and [Finetuning (LoRA)](./finetuning.md#low-rank-adaptation-lora) for more details on the finetuning process.
 
 ## Step 2 Reward Modeling
 

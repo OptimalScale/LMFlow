@@ -18,7 +18,13 @@ checkpoints
 
 ## Finetuning
 
-For SFT, Refer to [examples](https://github.com/OptimalScale/LMFlow/blob/main/examples).
+For SFT,
+
+```{toctree}
+:maxdepth: 3
+
+finetuning
+```
 
 
 For alignment process, 
