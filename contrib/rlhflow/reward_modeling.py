@@ -96,7 +96,7 @@ def build_dataset(tokenizer, config):
 
 train_dataset, eval_dataset = build_dataset(tokenizer, data_args)
 if not eval_dataset and pipeline_args.eval_steps > 0:
-    raise valueerror("Cannot evaluate on an empty eval set")
+    raise ValueError("Cannot evaluate on an empty eval set")
 print("Training set: ", len(train_dataset), " Eval set: ", len(eval_dataset))
 
 ## Define the trainer

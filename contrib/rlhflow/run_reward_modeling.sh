@@ -21,7 +21,7 @@ fi
 mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
-  examples/reward_modeling.py \
+  contrib/rlhflow/reward_modeling.py \
     --model_name_or_path gpt2 \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
