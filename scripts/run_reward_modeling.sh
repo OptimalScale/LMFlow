@@ -60,9 +60,11 @@ deepspeed ${deepspeed_args} \
     examples/rewardmodeling.py \
         --deepspeed configs/ds_config_zero3.json \
         --model_name_or_path ${model_name_or_path} \
+        --arch_type "text_regression" \
         --train_dataset_path ${train_dataset_path} \
         --eval_dataset_path ${eval_dataset_path} \
         --output_dir ${output_dir}  \
+        --use_flash_attention True \
         --do_train True \
         --learning_rate 1e-5 \
         --per_device_train_batch_size 1 \

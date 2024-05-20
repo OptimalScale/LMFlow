@@ -8,6 +8,8 @@ from transformers import (
     Trainer
 )
 
+from .peft_trainer import PeftTrainer
+
 
 def compute_metrics(eval_pred):
     result = {}
@@ -20,6 +22,23 @@ def compute_metrics(eval_pred):
 
 
 class RewardTrainer(Trainer):
+    def compute_loss(self, model, inputs, return_outputs=False):
+        rewards = model(
+            input_ids=inputs["input_ids"], 
+            attention_mask=inputs["attention_mask"]
+        )[0]
+        bsz = rewards.size(0)
+        jidx = torch.arange(0, bsz, 2)
+        kidx = jidx + 1
+        rewards_j = rewards[jidx]
+        rewards_k = rewards[kidx]
+        loss = -nn.functional.logsigmoid(rewards_j - rewards_k).mean()
+        if return_outputs:
+            return loss, {"rewards_j": rewards_j, "rewards_k": rewards_k}
+        return loss
+    
+
+class PeftRewardTrainer(PeftTrainer):
     def compute_loss(self, model, inputs, return_outputs=False):
         rewards = model(
             input_ids=inputs["input_ids"], 

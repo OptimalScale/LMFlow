@@ -36,6 +36,8 @@ DATASET_TYPES = [
     "text2text",
     "float_only",
     "image_text",
+    "conversation",
+    "paired_conversation"
 ]
 
 KEY_TYPE = "type"

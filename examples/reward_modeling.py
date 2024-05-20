@@ -8,9 +8,7 @@ sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 import torch
 from transformers import (
-    HfArgumentParser,
-    AutoTokenizer,
-    AutoModelForSequenceClassification
+    HfArgumentParser
 )
 
 from lmflow.args import (
@@ -18,7 +16,9 @@ from lmflow.args import (
     DatasetArguments,
     AutoArguments,
 )
+from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.datasets.dataset import Dataset
+from lmflow.models.auto_model import AutoModel
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.pipeline.utils.reward_dataprocessor import (
     build_dataset,
@@ -49,37 +49,11 @@ def main():
         data_args=data_args,
         pipeline_args=pipeline_args,
     )
-    
-    model = AutoModelForSequenceClassification.from_pretrained(
-        pretrained_model_name_or_path=model_args.model_name_or_path,
-        num_labels=1, 
-        torch_dtype=torch.bfloat16, 
-        use_flash_attention_2=True,
-    )
-    tokenizer = AutoTokenizer.from_pretrained(
-        pretrained_model_name_or_path=model_args.model_name_or_path,
-        use_auth_token=True
-    )
-    tokenizer.truncation_side = pipeline_args.truncation_side
-    tokenizer.model_max_length = pipeline_args.model_max_length
+    dataset = Dataset(data_args)
+    model = AutoModel.get_model(model_args)
         
-    data_collator = RewardDataCollatorWithPadding(
-        tokenizer=tokenizer, 
-        max_length=pipeline_args.model_max_length
-    )
-    train_dataset, eval_dataset = build_dataset(
-        tokenizer=tokenizer, 
-        train_path=pipeline_args.train_dataset_path,
-        eval_path=pipeline_args.eval_dataset_path
-    )
-    logger.warning(f"Training set: {len(train_dataset)}, Eval set: {len(eval_dataset)}")
-    
     # Finetuning
-    tuned_model = finetuner.tune(
-        model=model, 
-        train_dataset=train_dataset,
-        eval_dataset=eval_dataset,
-        data_collator=data_collator)
+    tuned_model = finetuner.tune(model=model, dataset=dataset)
 
 
 if __name__ == '__main__':
