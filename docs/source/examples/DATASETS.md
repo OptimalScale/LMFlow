@@ -1,5 +1,15 @@
 # Dataset
 
+- [Dataset](#dataset)
+  - [Dataset Format in General](#dataset-format-in-general)
+  - [Supported Dataset and Detailed Formats](#supported-dataset-and-detailed-formats)
+    - [Conversation](#conversation)
+      - [Data Format](#data-format)
+      - [Conversation Template](#conversation-template)
+      - [Customize Conversation Template](#customize-conversation-template)
+    - [TextOnly](#textonly)
+    - [Text2Text](#text2text)
+
 We provide several available datasets under `data`. You may download them all by running: 
 ```sh
 cd data && ./download.sh all && cd -
@@ -63,12 +73,6 @@ supported types are listed as follows.
 ## Supported Dataset and Detailed Formats
 
 ### Conversation
-
-```{admonition} **Work in Progress**
-:class: info
-
-We are rapidly working on this data format.  
-```
 
 #### Data Format
 
@@ -167,10 +171,11 @@ deepspeed ${deepspeed_args} \
 # ...
 ```
 
-```{admonition} Formatted Dataset
+`````{admonition} Formatted Dataset
 :class: info
 
 For dataset that system prompts, tool prompts and templates are already applied (like the one below), user can run the finetune shell by passing `empty` or `empty_no_special_tokens` to the `--conversation_template` argument. `empty` template will add a bos token to the beginning of every round of conversation as well as a eos token to the end of every round of conversation. `empty_no_special_tokens` will not add any special tokens to the conversation, just concatenates the user and assistant messages. 
+````{dropdown} A formatted dataset
 ```json
 {
   "type": "conversation",
@@ -210,6 +215,8 @@ For dataset that system prompts, tool prompts and templates are already applied 
   ]
 }
 ```
+````
+`````
 
 #### Customize Conversation Template
 
