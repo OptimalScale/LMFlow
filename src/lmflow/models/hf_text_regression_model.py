@@ -382,7 +382,7 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
         model_args = self.model_args
         raw_datasets = dataset
         hf_raw_datasets = dataset.get_backend_dataset()
-        column_names = list(hf_raw_datasets.features)
+        column_names = list(hf_raw_datasets.features) # in paired conversation, for example, would be 'chosen' and 'rejected'
 
         # since this will be pickled to avoid _LazyModule error in Hasher force
         # logger loading before tokenize_function
@@ -390,18 +390,6 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
 
         data_args = raw_datasets.get_data_args()
 
-        # Requires three types of information for tokenizing different datasets
-        #   1) Which fields require tokenization, e.g.
-        #        "text2float": "text", but not "float"
-        #        "text2text": both "input" and "output"
-        #   2) How will there tokenized sequence concatenated together, e.g.
-        #        "text_only": "text" -> "text"
-        #        "text2text": "input", "output" -> "input" + "output"
-        #   3) Which fields require loss in final computation, e.g.
-        #        "text_only": "text"
-        #        "text2text": "output" only
-        tokenized_column_order = None       # Handles 1) and 2)
-        label_columns = None                # Handles 3)
         if dataset_type == "paired_conversation":
             conversation_template: ConversationTemplate = kwargs.get("conversation_template")
             if conversation_template:
@@ -412,13 +400,6 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
                 if data_args.conversation_template:
                     if data_args.conversation_template in PRESET_TEMPLATES.keys():
                         conversation_template = PRESET_TEMPLATES[data_args.conversation_template]
-                    elif data_args.conversation_template == 'disable':
-                        raise ValueError(
-                            "You are using a conversation dataset but conversation_template is set to 'disable'. "
-                            "If you don't want to apply any conversation template to your dataset, please consider "
-                            "using 'empty' or 'empty_no_special_tokens' template instead. For more information, "
-                            "please refer to the documentation."
-                        )
                     else:
                         raise NotImplementedError(
                             f"Conversation template {data_args.conversation_template} is not supported yet."
@@ -442,63 +423,62 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
                            
         def tokenize_function(examples):
             num_example = len(examples[column_names[0]])
-            token_dict = {
-                "input_ids": [[] for _ in range(num_example)],
-                "attention_mask": [[] for _ in range(num_example)]
-            }
+            token_dict = {}
+            for column_name in column_names:
+                token_dict[f"input_ids_{column_name}"] = [[] for _ in range(num_example)]
+                token_dict[f"attention_mask_{column_name}"] = [[] for _ in range(num_example)]
+                
             with CaptureLogger(tok_logger) as cl:
                 if dataset_type == "paired_conversation":
-                    for i, example in enumerate(examples["chosen"]):
-                        messages = example["messages"]
-                        system = example.get("system", [None] * num_example)
-                        tools = example.get("tools", [None] * num_example)
-                        if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
-                            tok_logger.warning(
-                                "Invalid instance encountered. Either the conversation has less than "
-                                "one round or the first message is not from the user."
-                            )
-                            continue
-                    
-                        if len(messages) % 2 != 0:
-                            logger.warning(
-                                "The number of messages is not even, the last message will be ignored."
-                            )
-                            messages = messages[:-1]
+                    for i in range(len(num_example)):
+                        for column_name in column_names:
+                            messages = examples[column_name][i]["messages"]
+                            system = examples[column_name][i].get("system", [None] * num_example)
+                            tools = examples[column_name][i].get("tools", [None] * num_example)
+                            if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
+                                tok_logger.warning(
+                                    "Invalid instance encountered. Either the conversation has less than "
+                                    "one round or the first message is not from the user."
+                                )
+                                continue
                         
-                        encoded_conversation = conversation_template.encode_conversation(
-                            tokenizer=self.tokenizer,
-                            messages=messages,
-                            system=system,
-                            tools=tools,
-                        )
-
-                        input_ids = []
-                        for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
-                            input_ids += user_input + assistant_result
+                            if len(messages) % 2 != 0:
+                                logger.warning(
+                                    "The number of messages is not even, the last message will be ignored."
+                                )
+                                messages = messages[:-1]
                             
-                        token_dict["input_ids"][i].extend(input_ids)
-                        token_dict["attention_mask"][i].extend([1] * len(input_ids))
+                            encoded_conversation = conversation_template.encode_conversation(
+                                tokenizer=self.tokenizer,
+                                messages=messages,
+                                system=system,
+                                tools=tools,
+                            )
+
+                            input_ids = []
+                            for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
+                                input_ids += user_input + assistant_result
+                                
+                            token_dict[f"input_ids_{column_name}"][i].extend(input_ids)
+                            token_dict[f"attention_mask_{column_name}"][i].extend([1] * len(input_ids))
 
                 else:
                     raise NotImplementedError(
-                        f"Conversation template {data_args.conversation_template} is not supported yet."
+                        f"Dataset type {dataset_type} is not supported yet."
                     )
                     
 
             if data_args.disable_group_texts:
+                block_size_warning_num = 0
                 for i in range(num_example):
                     block_size = data_args.block_size
                     max_length = min(block_size, self.get_max_length())
                     pad_length = max_length - len(token_dict["input_ids"][i])
                     if block_size < self.get_max_length():
-                        logger.warning(
-                            f"block_size {block_size} < model_max_length"
-                            f" {self.get_max_length()}, use block_size"
-                            " for maximum tokenized sequence length"
-                        )
+                        block_size_warning_num += 1
                     if pad_length < 0:
                         # Truncates too long samples
-                        for key in ["input_ids", "attention_mask", "labels"]:
+                        for key in ["input_ids", "attention_mask"]:
                             token_dict[key][i] = token_dict[key][i][:pad_length]
                     else:
                         # Pads too short samples
@@ -509,9 +489,13 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
                         token_dict["attention_mask"][i].extend(
                             [0 for _ in range(pad_length)]
                         )
-                        token_dict["labels"][i].extend(
-                            [-100 for _ in range(pad_length)]
-                        )
+                if block_size_warning_num > 0:
+                    logger.warning(
+                        f"There are {block_size_warning_num} of {num_example} samples where"
+                        f"block_size {block_size} < model_max_length"
+                        f" {self.get_max_length()}, use block_size"
+                        " for maximum tokenized sequence length"
+                    )
 
             # clm input could be much much longer than block_size
             if "Token indices sequence length is longer than the" in cl.out:
@@ -527,7 +511,7 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
                 (
                     fingerprint
                     + str(self.tokenizer)
-                    + str(conversation_template) if dataset_type == "conversation" else ""
+                    + str(conversation_template) if "conversation" in dataset_type else ""
                     + f'###disable_group_texts={data_args.disable_group_texts}'
                     + f'###block_size={data_args.block_size}'
                 ).encode("utf-8")

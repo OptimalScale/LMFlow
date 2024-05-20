@@ -17,6 +17,7 @@ PRESET_TEMPLATES = {
     'chatglm3': CHATGLM3_TEMPLATE,
     'chatml': CHATML_TEMPLATE,
     'deepseek': DEEPSEEK_TEMPLATE,
+    'disable': EMPTY_TEMPLATE,
     'empty': EMPTY_TEMPLATE,
     'empty_no_special_tokens': EMPTY_NO_SPECIAL_TOKENS_TEMPLATE,
     'gemma': GEMMA_TEMPLATE,

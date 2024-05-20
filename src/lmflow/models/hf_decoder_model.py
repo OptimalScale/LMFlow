@@ -462,13 +462,6 @@ class HFDecoderModel(DecoderModel, Tunable):
                 if data_args.conversation_template:
                     if data_args.conversation_template in PRESET_TEMPLATES.keys():
                         conversation_template = PRESET_TEMPLATES[data_args.conversation_template]
-                    elif data_args.conversation_template == 'disable':
-                        raise ValueError(
-                            "You are using a conversation dataset but conversation_template is set to 'disable'. "
-                            "If you don't want to apply any conversation template to your dataset, please consider "
-                            "using 'empty' or 'empty_no_special_tokens' template instead. For more information, "
-                            "please refer to the documentation."
-                        )
                     else:
                         raise NotImplementedError(
                             f"Conversation template {data_args.conversation_template} is not supported yet."
@@ -564,16 +557,13 @@ class HFDecoderModel(DecoderModel, Tunable):
                             token_dict["labels"][i].extend(labels[i])
 
             if data_args.disable_group_texts:
+                block_size_warning_num = 0
                 for i in range(num_example):
                     block_size = data_args.block_size
                     max_length = min(block_size, self.get_max_length())
                     pad_length = max_length - len(token_dict["input_ids"][i])
                     if block_size < self.get_max_length():
-                        logger.warning(
-                            f"block_size {block_size} < model_max_length"
-                            f" {self.get_max_length()}, use block_size"
-                            " for maximum tokenized sequence length"
-                        )
+                        block_size_warning_num += 1
                     if pad_length < 0:
                         # Truncates too long samples
                         for key in ["input_ids", "attention_mask", "labels"]:
@@ -590,6 +580,13 @@ class HFDecoderModel(DecoderModel, Tunable):
                         token_dict["labels"][i].extend(
                             [-100 for _ in range(pad_length)]
                         )
+                if block_size_warning_num > 0:
+                    logger.warning(
+                        f"There are {block_size_warning_num} of {num_example} samples where"
+                        f"block_size {block_size} < model_max_length"
+                        f" {self.get_max_length()}, use block_size"
+                        " for maximum tokenized sequence length"
+                    )
 
             # clm input could be much much longer than block_size
             if "Token indices sequence length is longer than the" in cl.out:
@@ -605,7 +602,7 @@ class HFDecoderModel(DecoderModel, Tunable):
                 (
                     fingerprint
                     + str(self.tokenizer)
-                    + str(conversation_template) if dataset_type == "conversation" else ""
+                    + str(conversation_template) if "conversation" in dataset_type else ""
                     + f'###disable_group_texts={data_args.disable_group_texts}'
                     + f'###block_size={data_args.block_size}'
                 ).encode("utf-8")
