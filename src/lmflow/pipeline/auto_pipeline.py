@@ -18,11 +18,13 @@ from lmflow.pipeline.evaluator import Evaluator
 from lmflow.pipeline.finetuner import Finetuner
 from lmflow.pipeline.inferencer import Inferencer
 from lmflow.pipeline.dpo_aligner import DPOAligner
+from lmflow.pipeline.rm_tuner import RewardModelingTuner
 PIPELINE_MAPPING = {
     "evaluator": Evaluator,
     "finetuner": Finetuner,
     "inferencer": Inferencer,
     "dpo_aligner": DPOAligner,
+    "rm_tuner": RewardModelingTuner,
 }
 
 if not is_package_version_at_least('transformers', '4.35.0'):

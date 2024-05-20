@@ -129,6 +129,67 @@ CONVERSATION_DATASET_DESCRIPTION = (
 ).lstrip("\n")
 
 
+PAIRED_CONVERSATION_DATASET_DESCRIPTION = (
+"""
+"paired_conversation": a dataset with paired conversation instances, with following format:
+
+    {
+        "type": "paired_conversation",
+        "instances": [
+            {
+                "chosen": {
+                    "conversation_id": "CONVERSATION_ID",
+                    "system": "SYSTEM_PROPMT",
+                    "tools": ["TOOL_DESCRIPTION_1","TOOL_DESCRIPTION_2","TOOL_DESCRIPTION_3"],
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "USER_INPUT_1"
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "ASSISTANT_RESPONSE_1_GOOD"
+                        },
+                        {
+                            "role": "user",
+                            "content": "USER_INPUT_2"
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "ASSISTANT_RESPONSE_2_GOOD"
+                        }
+                    ]
+                },
+                "rejected": {
+                    "conversation_id": "CONVERSATION_ID",
+                    "system": "SYSTEM_PROPMT",
+                    "tools": ["TOOL_DESCRIPTION_1","TOOL_DESCRIPTION_2","TOOL_DESCRIPTION_3"],
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "USER_INPUT_1"
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "ASSISTANT_RESPONSE_1_BAD"
+                        },
+                        {
+                            "role": "user",
+                            "content": "USER_INPUT_2"
+                        },
+                        {
+                            "role": "assistant",
+                            "content": "ASSISTANT_RESPONSE_2_BAD"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+"""
+).lstrip("\n")
+
+
 TEXT2TEXT_DATASET_DETAILS = (
 """
     For example,
@@ -218,6 +279,7 @@ INSTANCE_FIELDS_MAP = {
     "text_only": ["text"],
     "text2text": ["input", "output"],
     "conversation": ["messages"], # system, tools and conversation_id are optional
+    "paired_conversation": ["chosen", "rejected"],
     "float_only": ["value"],
     "image_text": ["images", "text"],
 }
