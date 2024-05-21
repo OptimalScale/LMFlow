@@ -16,6 +16,14 @@ function main() {
         rm ${filename}
     fi
 
+    if [ "$1" = "ultrafeedback-binarized-preferences-cleaned" -o "$1" = "all" -o "$1" = "ubpc" ]; then
+        echo "downloading ultrafeedback-binarized-preferences-cleaned"
+        filename='ultrafeedback-binarized-preferences-cleaned.tar.gz'
+        wget ${public_server}/${filename}
+        tar zxvf ${filename}
+        rm ${filename}
+    fi
+
     if [ "$1" = "dpo-mix-7k" -o "$1" = "all" ]; then
         echo "downloading dpo-mix-7k"
         filename='dpo-mix-7k.tar.gz'
