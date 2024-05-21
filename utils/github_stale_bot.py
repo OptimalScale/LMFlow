@@ -1,4 +1,4 @@
-# Copyright 2024 Copyright 2024 Statistics and Machine Learning Research Group.
+# Copyright 2024 Copyright 2024 Statistics and Machine Learning Research Group,
 # The HuggingFace Team, the AllenNLP library authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,8 @@
 # limitations under the License.
 """
 Script to close stale issue. Taken in part from the AllenNLP repository, and huggingface peft repository.
-https://github.com/allenai/allennlp.
-https://github.com/huggingface/peft/blob/main/scripts/stale.py.
+https://github.com/allenai/allennlp
+https://github.com/huggingface/peft/blob/main/scripts/stale.py
 """
 
 import os
