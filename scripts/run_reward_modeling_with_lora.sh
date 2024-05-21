@@ -3,8 +3,8 @@
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 # Parses arguments
 model_name_or_path=google/gemma-2b-it
-train_dataset_path=data/
-eval_dataset_path=data/
+train_dataset_path=data/ultrafeedback-binarized-preferences-cleaned/train
+eval_dataset_path=data/ultrafeedback-binarized-preferences-cleaned/train
 output_dir=output_models/reward_modeling_lora
 deepspeed_args="--master_port=11345 --include localhost:6"
 conversation_template=gemma
