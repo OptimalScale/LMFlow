@@ -283,6 +283,12 @@ For example, `data/example_dataset/test/test_13.json` has the aboved format.
 
 ### Paired Conversation
 
+```{admonition} **Work in Progress**
+:class: info
+
+We are working on paired conversation dataset and will update it soon.  
+```
+
 This type of dataset are commonly used for alignment such as [reward modeling](https://arxiv.org/abs/2203.02155), 
 [Direct Preference Optimization (DPO)](https://arxiv.org/abs/2305.18290), etc. For requirements of the conversations,
 please refer to [conversation data](#conversation).
