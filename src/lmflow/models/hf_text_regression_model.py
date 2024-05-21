@@ -434,8 +434,8 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
                     for i in range(num_example):
                         for column_name in column_names:
                             messages = examples[column_name][i]["messages"]
-                            system = examples[column_name][i].get("system", [None] * num_example)
-                            tools = examples[column_name][i].get("tools", [None] * num_example)
+                            system = examples[column_name][i].get("system", None)
+                            tools = examples[column_name][i].get("tools", None)
                             if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
                                 tok_logger.warning(
                                     "Invalid instance encountered. Either the conversation has less than "
