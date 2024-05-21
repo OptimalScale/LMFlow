@@ -16,11 +16,9 @@ from lmflow.args import (
     DatasetArguments,
     AutoArguments,
 )
-from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.auto_model import AutoModel
 from lmflow.pipeline.auto_pipeline import AutoPipeline
-from lmflow.pipeline.utils.rm_dataprocessor import RewardDataCollatorWithPadding
 
 
 logger = logging.getLogger(__name__)

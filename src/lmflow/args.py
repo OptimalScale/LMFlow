@@ -532,7 +532,7 @@ class DatasetArguments:
         metadata={"help": "Whether to train on prompt for conversation datasets such as ShareGPT."}
     )
     conversation_template: Optional[str] = field(
-        default='empty',
+        default=None,
         metadata={"help": "The template for conversation datasets."}
     )
 

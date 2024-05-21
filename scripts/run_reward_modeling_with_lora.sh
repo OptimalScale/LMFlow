@@ -5,7 +5,7 @@
 model_name_or_path=google/gemma-2b-it
 train_dataset_path=data/
 eval_dataset_path=data/
-output_dir=output_models/reward_modeling
+output_dir=output_models/reward_modeling_lora
 deepspeed_args="--master_port=11345 --include localhost:6"
 conversation_template=gemma
 
@@ -70,7 +70,7 @@ deepspeed ${deepspeed_args} \
         --learning_rate 1e-5 \
         --per_device_train_batch_size 1 \
         --per_device_eval_batch_size 1 \
-        --num_train_epochs 0.001 \
+        --num_train_epochs 2 \
         --weight_decay 0.001 \
         --evaluation_strategy "steps" \
         --save_strategy "steps" \
@@ -89,5 +89,7 @@ deepspeed ${deepspeed_args} \
         --do_eval True \
         --eval_dataset_path ${eval_dataset_path} \
         --eval_steps 999999 \
+        --use_lora True \
+        --lora_r 8 \
         | tee ${log_dir}/train.log \
         2> ${log_dir}/train.err

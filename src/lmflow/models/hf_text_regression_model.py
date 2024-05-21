@@ -238,6 +238,7 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
                     lora_dropout=model_args.lora_dropout,
                     target_modules=lora_target_modules,
                 )
+                model.enable_input_require_grads()
                 model = get_peft_model(model, peft_config)
                 model.print_trainable_parameters()
 
@@ -430,7 +431,7 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
                 
             with CaptureLogger(tok_logger) as cl:
                 if dataset_type == "paired_conversation":
-                    for i in range(len(num_example)):
+                    for i in range(num_example):
                         for column_name in column_names:
                             messages = examples[column_name][i]["messages"]
                             system = examples[column_name][i].get("system", [None] * num_example)
@@ -471,24 +472,25 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
             if data_args.disable_group_texts:
                 block_size_warning_num = 0
                 for i in range(num_example):
-                    block_size = data_args.block_size
-                    max_length = min(block_size, self.get_max_length())
-                    pad_length = max_length - len(token_dict["input_ids"][i])
-                    if block_size < self.get_max_length():
-                        block_size_warning_num += 1
-                    if pad_length < 0:
-                        # Truncates too long samples
-                        for key in ["input_ids", "attention_mask"]:
-                            token_dict[key][i] = token_dict[key][i][:pad_length]
-                    else:
-                        # Pads too short samples
-                        pad_token_id = self.tokenizer.pad_token_id
-                        token_dict["input_ids"][i].extend(
-                            [pad_token_id for _ in range(pad_length)]
-                        )
-                        token_dict["attention_mask"][i].extend(
-                            [0 for _ in range(pad_length)]
-                        )
+                    for column_name in column_names:
+                        block_size = data_args.block_size
+                        max_length = min(block_size, self.get_max_length())
+                        pad_length = max_length - len(token_dict[f"input_ids_{column_name}"][i])
+                        if block_size < self.get_max_length():
+                            block_size_warning_num += 1
+                        if pad_length < 0:
+                            # Truncates too long samples
+                            for key in [f"input_ids_{column_name}", f"attention_mask_{column_name}"]:
+                                token_dict[key][i] = token_dict[key][i][:pad_length]
+                        else:
+                            # Pads too short samples
+                            pad_token_id = self.tokenizer.pad_token_id
+                            token_dict[f"input_ids_{column_name}"][i].extend(
+                                [pad_token_id for _ in range(pad_length)]
+                            )
+                            token_dict[f"attention_mask_{column_name}"][i].extend(
+                                [0 for _ in range(pad_length)]
+                            )
                 if block_size_warning_num > 0:
                     logger.warning(
                         f"There are {block_size_warning_num} of {num_example} samples where"

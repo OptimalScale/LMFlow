@@ -102,7 +102,7 @@ class RewardModelingTuner(Finetuner):
         if data_collator is None:
             data_collator = RewardDataCollatorWithPadding(
                 tokenizer=model.get_tokenizer(),
-                max_length=self.finetuner_args.model_max_length
+                max_length=self.model_args.model_max_length
             )
             
         # 2. prepare trainer
@@ -218,7 +218,7 @@ class RewardModelingTuner(Finetuner):
             else:
                 kwargs["dataset"] = self.data_args.dataset_name
 
-        if self.training_args.push_to_hub:
+        if self.finetuner_args.push_to_hub:
             trainer.push_to_hub(**kwargs)
         else:
             trainer.create_model_card(**kwargs)
