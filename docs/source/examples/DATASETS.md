@@ -9,6 +9,7 @@
       - [Customize Conversation Template](#customize-conversation-template)
     - [TextOnly](#textonly)
     - [Text2Text](#text2text)
+    - [Paired Conversation](#paired-conversation)
 
 We provide several available datasets under `data`. You may download them all by running: 
 ```sh
@@ -78,6 +79,7 @@ supported types are listed as follows.
 
 Conversational data are commonly used in sft process. We currently support conversational data in ShareGPT format:
 
+````{dropdown} A conversation dataset
 ```json
 {
   "type": "conversation",
@@ -123,6 +125,7 @@ Conversational data are commonly used in sft process. We currently support conve
   ]
 }
 ```
+````
 Data types:
 - `conversation_id`: `Optional[Any]`. An identifier for the conversation. `conversation_id` is only for convience of tracking the conversation and will not be used in the pipeline.
 - `system`: `Optional[string]`. A system prompt that is used to start the conversation.
@@ -230,6 +233,7 @@ sample. This type of dataset can be used as the training set for text decoder
 models, or the input of decoder models / encoder-decoder models. Its format is
 as follows (three instances for example),
 
+````{dropdown} A textonly dataset
 ```json
 {
   "type": "text_only",
@@ -240,6 +244,7 @@ as follows (three instances for example),
   ]
 }
 ```
+````
 
 For example, `data/example_dataset/train/train_50.json` has the aboved format.
 
@@ -249,8 +254,9 @@ For example, `data/example_dataset/train/train_50.json` has the aboved format.
 This is the dataset type mostly used for inferencing, which contains a pair of
 texts in each sample. This type of dataset can be used as the training set for
 text encoder-decoder models, or question-answer pair for evaluating model
-inferences. Its format is as follows (three instances for example),
+inferences. Its format is as follows (three instances for example):
 
+````{dropdown} A text2text dataset
 ```json
 {
   "type": "text2text",
@@ -270,5 +276,103 @@ inferences. Its format is as follows (three instances for example),
   ]
 }
 ```
+````
 
 For example, `data/example_dataset/test/test_13.json` has the aboved format.
+
+
+### Paired Conversation
+
+This type of dataset are commonly used for alignment such as [reward modeling](https://arxiv.org/abs/2203.02155), 
+[Direct Preference Optimization (DPO)](https://arxiv.org/abs/2305.18290), etc. For requirements of the conversations,
+please refer to [conversation data](#conversation).
+
+````{dropdown} A paired conversation dataset
+```json
+{
+    "type": "paired_conversation",
+    "instances": [
+        {
+            "chosen": {
+                "conversation_id": "CONVERSATION_ID",
+                "system": "SYSTEM_PROPMT",
+                "tools": ["TOOL_DESCRIPTION_1","TOOL_DESCRIPTION_2","TOOL_DESCRIPTION_3"],
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "USER_INPUT_1"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "ASSISTANT_RESPONSE_1_GOOD"
+                    },
+                    {
+                        "role": "user",
+                        "content": "USER_INPUT_2"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "ASSISTANT_RESPONSE_2_GOOD"
+                    }
+                ]
+            },
+            "rejected": {
+                "conversation_id": "CONVERSATION_ID",
+                "system": "SYSTEM_PROPMT",
+                "tools": ["TOOL_DESCRIPTION_1","TOOL_DESCRIPTION_2","TOOL_DESCRIPTION_3"],
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "USER_INPUT_1"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "ASSISTANT_RESPONSE_1_BAD"
+                    },
+                    {
+                        "role": "user",
+                        "content": "USER_INPUT_2"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "ASSISTANT_RESPONSE_2_BAD"
+                    }
+                ]
+            }
+        },
+        {
+            "chosen": {
+                "conversation_id": "CONVERSATION_ID",
+                "system": "SYSTEM_PROPMT",
+                "tools": ["TOOL_DESCRIPTION_1"],
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "USER_INPUT_1"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "ASSISTANT_RESPONSE_1_GOOD"
+                    }
+                ]
+            },
+            "rejected": {
+                "conversation_id": "CONVERSATION_ID",
+                "system": "SYSTEM_PROPMT",
+                "tools": ["TOOL_DESCRIPTION_1"],
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "USER_INPUT_1"
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "ASSISTANT_RESPONSE_1_BAD"
+                    }
+                ]
+            }
+        }
+    ]
+}
+```
+````
