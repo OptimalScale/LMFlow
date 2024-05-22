@@ -83,7 +83,6 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 |  Model  | Conversation Template (Details) |
 |  :---:  | :-------------------: |
-| [ChatGLM-3](https://huggingface.co/THUDM) | `chatglm3` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#chatglm-3)) |
 | [DeepSeek](https://huggingface.co/deepseek-ai) | `deepseek` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#deepseek)) |
 | [Gemma](https://huggingface.co/google) | `gemma` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#gemma)) |
 | [InternLM2](https://huggingface.co/internlm) | `internlm2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#internlm2)) |
