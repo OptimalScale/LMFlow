@@ -64,6 +64,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 - [LMFlow](#lmflow)
   - [Latest News](#latest-news)
   - [Table of Contents](#table-of-contents)
+  - [Supported Models](#supported-models)
   - [Quick Start](#quick-start)
     - [Setup](#setup)
     - [Prepare Dataset](#prepare-dataset)
@@ -77,6 +78,24 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
   - [Support](#support)
   - [License](#license)
   - [Citation](#citation)
+
+## Supported Models
+
+|  Model  | Conversation Template (Details) |
+|  :---:  | :-------------------: |
+| [ChatGLM-3](https://huggingface.co/THUDM) | `chatglm3` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#chatglm-3)) |
+| [DeepSeek](https://huggingface.co/deepseek-ai) | `deepseek` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#deepseek)) |
+| [Gemma](https://huggingface.co/google) | `gemma` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#gemma)) |
+| [InternLM2](https://huggingface.co/internlm) | `internlm2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#internlm2)) |
+| [LLaMA-2](https://huggingface.co/meta-llama) | `llama2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#llama-2)) |
+| [LLaMA-3](https://huggingface.co/meta-llama) | `llama3` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#llama-3)) |
+| [Phi-3](https://huggingface.co/microsoft) | `phi3` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#phi-3)) |
+| [Qwen1.5](https://huggingface.co/Qwen) | `qwen2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#qwen-2)) |
+| [Yi](https://huggingface.co/01-ai) | `chatml` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#yi)) |
+| [Yi-1.5](https://huggingface.co/01-ai) | `yi1_5` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#yi-15)) |
+| [Zephyr](https://huggingface.co/HuggingFaceH4) | `zephyr` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#zephyr)) |
+
+
 ## Quick Start
 
 ### Setup
