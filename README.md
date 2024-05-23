@@ -68,9 +68,10 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
   - [Quick Start](#quick-start)
     - [Setup](#setup)
     - [Prepare Dataset](#prepare-dataset)
-    - [Finetuning (Full)](#finetuning-full)
-    - [Finetuning (LISA)](#finetuning-lisa)
-    - [Finetuning (LoRA)](#finetuning-lora)
+    - [Finetuning](#finetuning)
+      - [Full Finetuning](#full-finetuning)
+      - [LISA](#lisa)
+      - [LoRA](#lora)
     - [Inference](#inference)
     - [Deployment](#deployment)
     - [Evaluation](#evaluation)
@@ -116,7 +117,10 @@ bash install.sh
 
 Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
-### Finetuning (Full)
+### Finetuning
+
+#### Full Finetuning
+
 Full training updates all the parameters to finetune a language model.
 Here is an example to finetune a GPT-2 base model.
 
@@ -145,7 +149,8 @@ cd data && ./download.sh alpaca && cd -
 >```
 > </details>
 
-### Finetuning (LISA)
+#### LISA
+
 [LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile:
 ```sh
 cd data && ./download.sh alpaca && cd -
@@ -174,7 +179,8 @@ cd data && ./download.sh alpaca && cd -
 >```
 > </details>
 
-### Finetuning (LoRA)
+#### LoRA
+
 LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
 ```sh
 cd data && ./download.sh alpaca && cd -
