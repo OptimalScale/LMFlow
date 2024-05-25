@@ -76,29 +76,17 @@ if __name__ == "__main__":
     ################
     # Dataset
     ################
-    # train_files = ['/home/wenhesun/.cache/huggingface/datasets/downsampled_below16k_ccdv___arxiv-summarization/train/data-00000-of-00003.arrow',
-    #            '/home/wenhesun/.cache/huggingface/datasets/downsampled_below16k_ccdv___arxiv-summarization/train/data-00001-of-00003.arrow',
-    #            '/home/wenhesun/.cache/huggingface/datasets/downsampled_below16k_ccdv___arxiv-summarization/train/data-00002-of-00003.arrow']
-
-    # test_files = ['/home/wenhesun/.cache/huggingface/datasets/downsampled_below16k_ccdv___arxiv-summarization/test/data-00000-of-00001.arrow']
-
-    # val_files = ['/home/wenhesun/.cache/huggingface/datasets/downsampled_below16k_ccdv___arxiv-summarization/validation/data-00000-of-00001.arrow']
-
-    # arxiv_data_set = load_dataset('arrow', data_files={'train': train_files, 'test': test_files, 'validation': val_files})
-
-    # train_dataset = arxiv_data_set['train']
-    # test_dataset = arxiv_data_set['test']
-    # val_dataset = arxiv_data_set['validation']
 
     train_dataset = load_dataset("LukaMagic077/downsampled_below10k_arxiv_dataset_on_hub", split='train')
     val_dataset = load_dataset("LukaMagic077/downsampled_below10k_arxiv_dataset_on_hub", split='validation')
     # test_dataset = load_dataset("LukaMagic077/downsampled_below10k_arxiv_dataset_on_hub", split='test')
+    
     # Get the size of training dataset
     train_dataset_size = len(train_dataset)
     # Get the size of validation dataset
     val_dataset_size = len(val_dataset)
 
-    # 打印数据集的大小
+    # Print the size of dataset
     print(f"Training dataset size: {train_dataset_size}")
     print(f"Validation dataset size: {val_dataset_size}")
 
