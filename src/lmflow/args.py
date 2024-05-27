@@ -79,6 +79,10 @@ class ModelArguments:
         a boolean indicating whether to load int8 quantization for inference.
     load_in_4bit : bool
         whether to load the model in 4bit
+    model_max_length : int
+        The maximum length of the model.
+    truncation_side : str
+        The side on which the model should have truncation applied.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -105,7 +109,7 @@ class ModelArguments:
     )
     arch_type: Optional[str] = field(
         default="decoder_only",
-        metadata={"help": "The architecture type of the model. Currently supported decoder_only or encoder_decoder"}
+        metadata={"help": "The architecture type of the model. Currently supported decoder_only, encoder_decoder, and text_regression"}
     )
     config_overrides: Optional[str] = field(
         default=None,
@@ -273,6 +277,17 @@ class ModelArguments:
             "help": "whether to load the model in 4bit"
         },
     )
+    model_max_length: Optional[int] = field(
+        default=4096,
+        metadata={"help": "The maximum length of the model."}
+    )
+    truncation_side: str = field(
+        default='left',
+        metadata={
+            "help": ("The side on which the model should have truncation applied. "),
+            "choices": ["left", "right"],
+        },
+    )
 
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
@@ -401,12 +416,6 @@ class DatasetArguments:
     train_on_prompt: bool
         a boolean indicating whether to train on prompt for conversation datasets such as ShareGPT.
 
-    disable_conversation_bos_token: bool
-        [DEPRECATE SOON] a boolean indicating whether to disable the bos token for conversation datasets.
-        
-    disable_conversation_eos_token: bool
-        [DEPRECATE SOON] a boolean indicating whether to disable the eos token for conversation datasets.
-
     conversation_template: str
         a string representing the template for conversation datasets.
 
@@ -522,16 +531,8 @@ class DatasetArguments:
         default=False,
         metadata={"help": "Whether to train on prompt for conversation datasets such as ShareGPT."}
     )
-    disable_conversation_bos_token: bool = field(
-        default=False,
-        metadata={"help": "Whether to disable the bos token for conversation datasets."}
-    )
-    disable_conversation_eos_token: bool = field(
-        default=False,
-        metadata={"help": "Whether to disable the eos token for conversation datasets."}
-    )
     conversation_template: Optional[str] = field(
-        default='empty',
+        default=None,
         metadata={"help": "The template for conversation datasets."}
     )
 
@@ -618,6 +619,14 @@ class FinetunerArguments(TrainingArguments):
             "help": "where the layer attribute stores, e.g. model.model.layers"
         }
     )
+    
+    
+@dataclass
+class RewardModelingArguments(FinetunerArguments):
+    """
+    Arguments for reward modeling.
+    """
+    pass
 
 
 @dataclass
@@ -1116,6 +1125,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
+    "rm_tuner": RewardModelingArguments
 }
 
 
