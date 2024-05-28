@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+# coding=utf-8
 import logging
 import os,sys
 # os.environ['CUDA_VISIBLE_DEVICES'] = "6"
 from transformers.trainer_callback import TrainerControl, TrainerState
 import wandb
 from colorama import Fore,init
-init(autoreset=True)
+
 
 from trl.commands.cli_utils import TrlParser
 import torch
@@ -21,23 +23,28 @@ from trl import (
     get_quantization_config,
     get_kbit_device_map,
 )
-tqdm.pandas()
+
 
 
 if __name__ == "__main__":
-    # initialize wandb
-    wandb.login(key='88bd7de7f3b87f2354afdc42c30ae6cacba5ff0b') # replace your own wandb key if there are multiple wandb accounts in your server
+    # Initialize logging, tqdm and init
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    tqdm.pandas()
+    init(autoreset=True)
+
+    # Initialize wandb
+    wandb.login(key='xxxxxxxxxx') # replace your own wandb key if there are multiple wandb accounts in your server
     wandb.init(project="huggingface_sft_summarizer")
 
     parser = TrlParser((SFTConfig, ModelConfig))
     sft_config, model_config = parser.parse_args_and_config()
     # https://huggingface.co/docs/transformers/en/main_classes/trainer#transformers.TrainingArguments
-    print(sft_config)
-    print('-' * 50)
-    print(model_config)
-    print('-' * 50)
-    # sys.exit()
-    print('cuda===>', os.environ['CUDA_VISIBLE_DEVICES'])
+    logging.debug(sft_config)
+    logging.debug('-' * 50)
+    logging.debug(model_config)
+    logging.debug('-' * 50)
+    logging.debug('cuda===> %s', os.environ['CUDA_VISIBLE_DEVICES'])
+
 
     if model_config.use_peft:
         use_peft = 'peft'
@@ -53,12 +60,12 @@ if __name__ == "__main__":
         if model_config.torch_dtype in ["auto", None]
         else getattr(torch, model_config.torch_dtype)
     )
-    print("torch_dtype===>", torch_dtype)
+    logging.debug("torch_dtype===> %s", torch_dtype)
     if model_config.use_peft:
         quantization_config = None 
     else:
         quantization_config = get_quantization_config(model_config)
-    print("quantization_config===>", quantization_config)
+    logging.debug("quantization_config===> %s", quantization_config)
     model_kwargs = dict(
         revision=model_config.model_revision,
         trust_remote_code=model_config.trust_remote_code,
@@ -69,7 +76,7 @@ if __name__ == "__main__":
         quantization_config=quantization_config,
         local_files_only=True
     )
-    print("model_kwargs:", model_kwargs)
+    logging.debug("model_kwargs: %s", model_kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_config.model_name_or_path, use_fast=True, local_files_only=True)
     tokenizer.pad_token = tokenizer.eos_token
 
@@ -87,8 +94,8 @@ if __name__ == "__main__":
     val_dataset_size = len(val_dataset)
 
     # Print the size of dataset
-    print(f"Training dataset size: {train_dataset_size}")
-    print(f"Validation dataset size: {val_dataset_size}")
+    logging.debug(f"Training dataset size: {train_dataset_size}")
+    logging.debug(f"Validation dataset size: {val_dataset_size}")
 
     ################
     # Training
@@ -96,21 +103,21 @@ if __name__ == "__main__":
     
     # Define datacollector
     data_collector = DataCollatorForCompletionOnlyLM(
-    instruction_template="article",
-    response_template="abstract",
-    tokenizer=tokenizer,
-    mlm=False)
+        instruction_template="article",
+        response_template="abstract",
+        tokenizer=tokenizer,
+        mlm=False
+    )
 
     class WandbCallback(TrainerCallback):
         def __init__(self, trainer):
             # trainer.model.to("cuda:0")
             self.model, self.tokenizer = trainer.model, trainer.tokenizer
             self.tokenizer.pad_token = self.tokenizer.eos_token
-            print(Fore.GREEN + "entering callback=====>")
-            print(self.tokenizer)
+            logging.debug(Fore.GREEN + "entering callback=====>")
+            logging.debug(self.tokenizer)
         def on_save(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
-            print("current step", state.global_step)
-
+            logging.debug("current step %s", state.global_step)
             return super().on_save(args, state, control, **kwargs)
 
 

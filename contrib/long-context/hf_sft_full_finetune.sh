@@ -1,14 +1,15 @@
+#!/bin/bash
 # accelerate launch --main_process_port 0 ...
-export CUDA_VISIBLE_DEVICES=6
-# CUDA_VISIBLE_DEVICES=4  trl sft \
+
+# Finetune
 python sft_summarizer.py    \
-    --model_name_or_path "/home/wenhesun/.cache/huggingface/hub/models--microsoft--Phi-3-mini-4k-instruct/snapshots/920b6cf52a79ecff578cc33f61922b23cbc88115"     \
+    --model_name_or_path microsoft/Phi-3-vision-128k-instruct     \
     --learning_rate 1e-3 \
     --per_device_train_batch_size 1 \
     --per_device_eval_batch_size 1 \
     --gradient_accumulation_steps 1 \
     --trust_remote_code \
-    --output_dir="/home/wenhesun/LMFlow/output_models/finetuned_Phi3" \
+    --output_dir output_models/finetuned_Phi3 \
     --logging_steps 1 \
     --num_train_epochs 1 \
     --save_strategy "steps" \
