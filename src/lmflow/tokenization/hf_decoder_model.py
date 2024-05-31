@@ -170,7 +170,12 @@ def conversation_tokenize_function(
             token_dict["labels"][i].extend(labels)
 
     if data_args.disable_group_texts:
-        token_dict = blocking(token_dict)
+        token_dict = blocking(
+            token_dict=token_dict,
+            block_size=data_args.block_size,
+            model_max_length=tokenizer.model_max_length,
+            pad_token_id=tokenizer.pad_token_id,
+        )
 
     # clm input could be much much longer than block_size
     if "Token indices sequence length is longer than the" in cl.out:
