@@ -20,12 +20,22 @@ and question answering.
 
 import hashlib
 import logging
-from typing import List, Union
 import os, shutil
-import deepspeed
-
+from typing import List, Union
 from pathlib import Path
 
+import torch
+import transformers
+import bitsandbytes
+import deepspeed
+from transformers.deepspeed import HfDeepSpeedConfig
+from transformers import BitsAndBytesConfig
+from transformers import (
+    CONFIG_MAPPING,
+    AutoConfig,
+    AutoTokenizer,
+    AutoModelForCausalLM,
+)
 from peft import (
     LoraConfig,
     PeftModel,
@@ -33,22 +43,6 @@ from peft import (
     get_peft_config,
     get_peft_model,
     prepare_model_for_kbit_training
-)
-
-import torch
-import transformers
-from transformers.deepspeed import HfDeepSpeedConfig
-
-from transformers.testing_utils import CaptureLogger
-
-from transformers import BitsAndBytesConfig
-import bitsandbytes
-
-from transformers import (
-    CONFIG_MAPPING,
-    AutoConfig,
-    AutoTokenizer,
-    AutoModelForCausalLM,
 )
 
 from lmflow.datasets.dataset import Dataset
@@ -60,7 +54,10 @@ from lmflow.utils.constants import (
     CONVERSATION_DATASET_DESCRIPTION
 )
 from lmflow.utils.conversation_template import ConversationTemplate, PRESET_TEMPLATES
-from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
+from lmflow.tokenization.hf_decoder_model import (
+    tokenize_function, 
+    conversation_tokenize_function
+)
 
 
 logger = logging.getLogger(__name__)
@@ -426,11 +423,6 @@ class HFDecoderModel(DecoderModel, Tunable):
         raw_datasets = dataset
         hf_raw_datasets = dataset.get_backend_dataset()
         column_names = list(hf_raw_datasets.features)
-
-        # since this will be pickled to avoid _LazyModule error in Hasher force
-        # logger loading before tokenize_function
-        tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
-
         data_args = raw_datasets.get_data_args()
 
         # Requires three types of information for tokenizing different datasets
@@ -453,22 +445,16 @@ class HFDecoderModel(DecoderModel, Tunable):
             label_columns = ["output"]
             add_special_tokens = False
         elif dataset_type == "conversation":
-            conversation_template: ConversationTemplate = kwargs.get("conversation_template")
-            if conversation_template:
-                if data_args.conversation_template:
-                    logger.warning("You specified conversation_template in both model.tokenize() and data_args. "
-                                   "Template in model.tokenize() will be used.")
-            else:
-                if data_args.conversation_template:
-                    if data_args.conversation_template in PRESET_TEMPLATES.keys():
-                        conversation_template = PRESET_TEMPLATES[data_args.conversation_template]
-                    else:
-                        raise NotImplementedError(
-                            f"Conversation template {data_args.conversation_template} is not supported yet."
-                        )
+            if data_args.conversation_template:
+                if data_args.conversation_template in PRESET_TEMPLATES.keys():
+                    conversation_template = PRESET_TEMPLATES[data_args.conversation_template]
                 else:
-                    logger.warning("No conversation template provided. Using default template.")
-                    conversation_template = PRESET_TEMPLATES['empty']
+                    raise NotImplementedError(
+                        f"Conversation template {data_args.conversation_template} is not supported yet."
+                    )
+            else:
+                logger.warning("No conversation template provided. Using default template.")
+                conversation_template = PRESET_TEMPLATES['empty']
                         
             logger.warning(f"Conversation template: {conversation_template}")
         else:
@@ -484,145 +470,47 @@ class HFDecoderModel(DecoderModel, Tunable):
         use_truncation = False
         if model_args.use_lora or data_args.disable_group_texts:
             use_truncation = True
+        
+        tokenize_fn = conversation_tokenize_function if "conversation" in dataset_type else tokenize_function
+        tokenize_fn_kwargs = {
+            "data_args": data_args,
+            "tokenizer": self.tokenizer,
+            "column_names": column_names,
+        }
+        if "conversation" in dataset_type:
+            tokenize_fn_kwargs["conversation_template"] = conversation_template
+        else:
+            tokenize_fn_kwargs["label_columns"] = label_columns
+            tokenize_fn_kwargs["tokenized_column_order"] = tokenized_column_order
+            tokenize_fn_kwargs["add_special_tokens"] = add_special_tokens
+            tokenize_fn_kwargs["use_truncation"] = use_truncation
                            
-        def tokenize_function(examples):
-            num_example = len(examples[column_names[0]])
-            token_dict = {
-                "input_ids": [[] for _ in range(num_example)],
-                "attention_mask": [[] for _ in range(num_example)],
-                "labels": [[] for _ in range(num_example)],
-            }
-            with CaptureLogger(tok_logger) as cl:
-                if dataset_type == "conversation":
-                    for i in range(len(examples["messages"])):
-                        messages = examples["messages"][i]
-                        system = examples.get("system", [None] * num_example)[i]
-                        tools = examples.get("tools", [None] * num_example)[i]
-                        if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
-                            tok_logger.warning(
-                                "Invalid instance encountered. Either the conversation has less than "
-                                "one round or the first message is not from the user."
-                            )
-                            continue
-                    
-                        if len(messages) % 2 != 0:
-                            logger.warning(
-                                "The number of messages is not even, the last message will be ignored."
-                            )
-                            messages = messages[:-1]
-                            
-                        encoded_conversation = conversation_template.encode_conversation(
-                            tokenizer=self.tokenizer,
-                            messages=messages,
-                            system=system,
-                            tools=tools,
-                        )
-
-                        input_ids, labels = [], []
-                        for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
-                            input_ids += user_input + assistant_result
-                            
-                            if data_args.train_on_prompt:
-                                labels += user_input + assistant_result
-                            else:
-                                labels += [-100] * len(user_input) + assistant_result
-                            
-                        token_dict["input_ids"][i].extend(input_ids)
-                        token_dict["attention_mask"][i].extend([1] * len(input_ids))
-                        token_dict["labels"][i].extend(labels)
-
-                else:
-                    for column_name in tokenized_column_order:
-                        encoding = self.tokenizer(
-                            examples[column_name],
-                            add_special_tokens=add_special_tokens,
-                            truncation=use_truncation,
-                        )
-
-                        if column_name in label_columns:
-                            labels = encoding["input_ids"].copy()
-                        else:
-                            labels = [
-                                [-100] * len(encoding["input_ids"][i])
-                                for i in range(num_example)
-                            ]
-
-                        for i in range(num_example):
-                            token_dict["input_ids"][i].extend(
-                                encoding["input_ids"][i]
-                            )
-                            token_dict["attention_mask"][i].extend(
-                                encoding["attention_mask"][i]
-                            )
-                            token_dict["labels"][i].extend(labels[i])
-
-            if data_args.disable_group_texts:
-                block_size_warning_num = 0
-                for i in range(num_example):
-                    block_size = data_args.block_size
-                    max_length = min(block_size, self.get_max_length())
-                    pad_length = max_length - len(token_dict["input_ids"][i])
-                    if block_size < self.get_max_length():
-                        block_size_warning_num += 1
-                    if pad_length < 0:
-                        # Truncates too long samples
-                        for key in ["input_ids", "attention_mask", "labels"]:
-                            token_dict[key][i] = token_dict[key][i][:pad_length]
-                    else:
-                        # Pads too short samples
-                        pad_token_id = self.tokenizer.pad_token_id
-                        token_dict["input_ids"][i].extend(
-                            [pad_token_id for _ in range(pad_length)]
-                        )
-                        token_dict["attention_mask"][i].extend(
-                            [0 for _ in range(pad_length)]
-                        )
-                        token_dict["labels"][i].extend(
-                            [-100 for _ in range(pad_length)]
-                        )
-                if block_size_warning_num > 0:
-                    logger.warning(
-                        f"There are {block_size_warning_num} of {num_example} samples where"
-                        f"block_size {block_size} < model_max_length"
-                        f" {self.get_max_length()}, use block_size"
-                        " for maximum tokenized sequence length"
-                    )
-
-            # clm input could be much much longer than block_size
-            if "Token indices sequence length is longer than the" in cl.out:
-                tok_logger.warning(
-                    "^^^^^^^^^^^^^^^^ Please ignore the warning above - this long input will be chunked into smaller bits"
-                    " before being passed to the model."
-                )
-            return token_dict
-
+        tokenize_kwargs = {}
         if not data_args.streaming:
-            fingerprint = raw_datasets.get_fingerprint()
-            new_fingerprint = hashlib.md5(
+            fingerprint = hashlib.md5(
                 (
-                    fingerprint
+                    raw_datasets.get_fingerprint()
                     + str(self.tokenizer)
                     + str(conversation_template) if "conversation" in dataset_type else ""
                     + f'###disable_group_texts={data_args.disable_group_texts}'
                     + f'###block_size={data_args.block_size}'
                 ).encode("utf-8")
             ).hexdigest()
+            tokenize_kwargs = {
+                "num_proc": data_args.preprocessing_num_workers,
+                "load_from_cache_file": not data_args.overwrite_cache,
+                "desc": "Running tokenizer on dataset",
+                "new_fingerprint": fingerprint,
+            }
 
-            tokenized_datasets = raw_datasets.map(
-                tokenize_function,
-                batched=True,
-                num_proc=data_args.preprocessing_num_workers,
-                remove_columns=column_names,
-                load_from_cache_file=not data_args.overwrite_cache,
-                desc="Running tokenizer on dataset",
-                new_fingerprint=new_fingerprint,
-            )
-        else:
-            tokenized_datasets = raw_datasets.map(
-                tokenize_function,
-                batched=True,
-                remove_columns=column_names,
-            )
+        tokenized_datasets = raw_datasets.map(
+            tokenize_fn,
+            batched=True,
+            remove_columns=column_names,
+            fn_kwargs=tokenize_fn_kwargs,
+            **tokenize_kwargs
+        )
+
         return tokenized_datasets
 
 
