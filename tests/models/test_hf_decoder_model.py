@@ -316,7 +316,11 @@ class HFDecoderModelTest(unittest.TestCase):
         groundtruth_tokenized_dataset,
         **kwargs
     ):
-        data_args = DatasetArguments(dataset_path=None, disable_group_texts=False)
+        data_args = DatasetArguments(
+            dataset_path=None, 
+            disable_group_texts=False,
+            conversation_template=kwargs.get("conversation_template", None),
+        )
         dataset = Dataset(data_args, backend="huggingface")
         dataset = dataset.from_dict(groundtruth_dataset)
 
@@ -429,35 +433,35 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name="gpt2",
             groundtruth_dataset=conversation_dataset,
             groundtruth_tokenized_dataset=conversation_tokenized_dataset,
-            conversation_template=PRESET_TEMPLATES['empty_no_special_tokens']
+            conversation_template='empty_no_special_tokens'
         )
         
         self._test_tokenize(
             model_name='meta-llama/Llama-2-7b-hf',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN_LLAMA2]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA2_IDS]),
-            conversation_template=PRESET_TEMPLATES['empty']
+            conversation_template='empty'
         )
         
         self._test_tokenize(
             model_name='meta-llama/Llama-2-7b-hf',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA2_IDS]),
-            conversation_template=PRESET_TEMPLATES['llama2']
+            conversation_template='llama2'
         )
         
         self._test_tokenize(
             model_name='meta-llama/Meta-Llama-3-8B-Instruct',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_LLAMA3_IDS]),
-            conversation_template=PRESET_TEMPLATES['llama3']
+            conversation_template='llama3'
         )
 
         self._test_tokenize(
             model_name='microsoft/Phi-3-mini-4k-instruct',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_PHI3_IDS]),
-            conversation_template=PRESET_TEMPLATES['phi3'],
+            conversation_template='phi3',
             trust_remote_code=True
         )
         
@@ -465,14 +469,14 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name='deepseek-ai/deepseek-llm-7b-base',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_DEEPSEEK_IDS]),
-            conversation_template=PRESET_TEMPLATES['deepseek']
+            conversation_template='deepseek'
         )
         
         self._test_tokenize(
             model_name='internlm/internlm2-1_8b',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_INTERNLM2_IDS]),
-            conversation_template=PRESET_TEMPLATES['internlm2'],
+            conversation_template='internlm2',
             trust_remote_code=True
         )
         
@@ -480,7 +484,7 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name='THUDM/chatglm3-6b',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_CHATGLM3_IDS]),
-            conversation_template=PRESET_TEMPLATES['chatglm3'],
+            conversation_template='chatglm3',
             trust_remote_code=True
         )
         
@@ -488,21 +492,21 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name='01-ai/Yi-1.5-6B',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_YI1_5_IDS]),
-            conversation_template=PRESET_TEMPLATES['yi1_5'],
+            conversation_template='yi1_5',
         )
         
         self._test_tokenize(
             model_name='google/gemma-1.1-2b-it',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_GEMMA_IDS]),
-            conversation_template=PRESET_TEMPLATES['gemma'],
+            conversation_template='gemma',
         )
         
         self._test_tokenize(
             model_name='HuggingFaceH4/zephyr-7b-beta',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_SINGLETURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_SINGLETURN_ZEPHYR_IDS]),
-            conversation_template=PRESET_TEMPLATES['zephyr'],
+            conversation_template='zephyr',
         )
         
         
@@ -546,35 +550,35 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name="gpt2",
             groundtruth_dataset=conversation_dataset,
             groundtruth_tokenized_dataset=conversation_tokenized_dataset,
-            conversation_template=PRESET_TEMPLATES['empty_no_special_tokens']
+            conversation_template='empty_no_special_tokens'
         )
         
         self._test_tokenize(
             model_name='meta-llama/Llama-2-7b-hf',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN_LLAMA2]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA2_IDS]),
-            conversation_template=PRESET_TEMPLATES['empty']
+            conversation_template='empty'
         )
         
         self._test_tokenize(
             model_name='meta-llama/Llama-2-7b-hf',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA2_IDS]),
-            conversation_template=PRESET_TEMPLATES['llama2']
+            conversation_template='llama2'
         )
 
         self._test_tokenize(
             model_name='meta-llama/Meta-Llama-3-8B-Instruct',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_LLAMA3_IDS]),
-            conversation_template=PRESET_TEMPLATES['llama3']
+            conversation_template='llama3'
         )
 
         self._test_tokenize(
             model_name='microsoft/Phi-3-mini-4k-instruct',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_PHI3_IDS]),
-            conversation_template=PRESET_TEMPLATES['phi3'],
+            conversation_template='phi3',
             trust_remote_code=True
         )
         
@@ -582,14 +586,14 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name='deepseek-ai/deepseek-llm-7b-base',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_DEEPSEEK_IDS]),
-            conversation_template=PRESET_TEMPLATES['deepseek'],
+            conversation_template='deepseek',
         )
         
         self._test_tokenize(
             model_name='internlm/internlm2-1_8b',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_INTERNLM2_IDS]),
-            conversation_template=PRESET_TEMPLATES['internlm2'],
+            conversation_template='internlm2',
             trust_remote_code=True
         )
         
@@ -597,7 +601,7 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name='THUDM/chatglm3-6b',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_CHATGLM3_IDS]),
-            conversation_template=PRESET_TEMPLATES['chatglm3'],
+            conversation_template='chatglm3',
             trust_remote_code=True
         )
         
@@ -605,21 +609,21 @@ class HFDecoderModelTest(unittest.TestCase):
             model_name='01-ai/Yi-1.5-6B',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_YI1_5_IDS]),
-            conversation_template=PRESET_TEMPLATES['yi1_5'],
+            conversation_template='yi1_5',
         )
         
         self._test_tokenize(
             model_name='google/gemma-1.1-2b-it',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_GEMMA_IDS]),
-            conversation_template=PRESET_TEMPLATES['gemma'],
+            conversation_template='gemma',
         )
 
         self._test_tokenize(
             model_name='HuggingFaceH4/zephyr-7b-beta',
             groundtruth_dataset={"type": "conversation", "instances": [CONVERSATION_MULTITURN]},
             groundtruth_tokenized_dataset=make_gt_from_conversation_ids_batch([CONVERSATION_MULTITURN_ZEPHYR_IDS]),
-            conversation_template=PRESET_TEMPLATES['zephyr'],
+            conversation_template='zephyr',
         )
 
 
