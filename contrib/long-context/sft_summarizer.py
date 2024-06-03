@@ -6,12 +6,12 @@ import os,sys
 from transformers.trainer_callback import TrainerControl, TrainerState
 import wandb
 from colorama import Fore,init
-
+from typing import Optional, List
 
 from trl.commands.cli_utils import TrlParser
 import torch
 from datasets import load_dataset
-
+from dataclasses import dataclass, field
 from tqdm.rich import tqdm
 from transformers import AutoTokenizer, TrainingArguments, TrainerCallback
 from trl import (
@@ -24,7 +24,14 @@ from trl import (
     get_kbit_device_map,
 )
 
-
+@dataclass
+class UserArguments:
+    wandb_key: Optional[str] = field(
+        default=None, metadata={"help": "User's own wandb key if there are multiple wandb accounts in your server"}
+    )
+    wandb_projectname: Optional[str] = field(
+        default="huggingface_sft_summarizer", metadata={"help": "The name of project saved in wandb"}
+    )
 
 if __name__ == "__main__":
     # Initialize logging, tqdm and init
@@ -32,12 +39,16 @@ if __name__ == "__main__":
     tqdm.pandas()
     init(autoreset=True)
 
+    parser = TrlParser((UserArguments, SFTConfig, ModelConfig))
+    user_args, sft_config, model_config = parser.parse_args_and_config()
+    
     # Initialize wandb
-    wandb.login(key='xxxxxxxxxx') # replace your own wandb key if there are multiple wandb accounts in your server
-    wandb.init(project="huggingface_sft_summarizer")
+    if user_args.wandb_key:
+        wandb.login(key=user_args.wandb_key) # replace your own wandb key if there are multiple wandb accounts in your server
+    else:
+        wandb.init(mode="offline")
+    wandb.init(project=user_args.wandb_projectname)
 
-    parser = TrlParser((SFTConfig, ModelConfig))
-    sft_config, model_config = parser.parse_args_and_config()
     # https://huggingface.co/docs/transformers/en/main_classes/trainer#transformers.TrainingArguments
     logging.debug(sft_config)
     logging.debug('-' * 50)
