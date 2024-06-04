@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+# coding=utf-8
+# Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
+
+import logging
+from logging import Logger
+from typing import Dict, List
+
+import transformers
+from transformers.testing_utils import CaptureLogger
+
+from lmflow.utils.conversation_template import ConversationTemplate
+from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
+
+
+logger = logging.getLogger(__name__)
+tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
+
+
+def tokenize_function(
+    examples, 
+    data_args,
+    tokenizer, 
+    column_names,
+    conversation_template: ConversationTemplate,
+) -> Dict:
+    num_example = len(examples[column_names[0]])
+    token_dict = {}
+    for column_name in column_names:
+        token_dict[f"input_ids_{column_name}"] = [[] for _ in range(num_example)]
+        token_dict[f"attention_mask_{column_name}"] = [[] for _ in range(num_example)]
+        
+    with CaptureLogger(tok_logger) as cl:
+        for i in range(num_example):
+            for column_name in column_names:
+                messages = examples[column_name][i]["messages"]
+                system = examples[column_name][i].get("system", None)
+                tools = examples[column_name][i].get("tools", None)
+                if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
+                    tok_logger.warning(
+                        "Invalid instance encountered. Either the conversation has less than "
+                        "one round or the first message is not from the user."
+                    )
+                    continue
+            
+                if len(messages) % 2 != 0:
+                    logger.warning(
+                        "The number of messages is not even, the last message will be ignored."
+                    )
+                    messages = messages[:-1]
+                
+                encoded_conversation = conversation_template.encode_conversation(
+                    tokenizer=tokenizer,
+                    messages=messages,
+                    system=system,
+                    tools=tools,
+                )
+
+                input_ids = []
+                for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
+                    input_ids += user_input + assistant_result
+                    
+                token_dict[f"input_ids_{column_name}"][i].extend(input_ids)
+                token_dict[f"attention_mask_{column_name}"][i].extend([1] * len(input_ids))
+                
+    if data_args.disable_group_texts:
+        token_dict = blocking_paired(
+            token_dict=token_dict,
+            column_names=column_names,
+            block_size=data_args.block_size,
+            model_max_length=tokenizer.model_max_length,
+            pad_token_id=tokenizer.pad_token_id
+        )
+
+    # clm input could be much much longer than block_size
+    if "Token indices sequence length is longer than the" in cl.out:
+        tok_logger.warning(
+            "^^^^^^^^^^^^^^^^ Please ignore the warning above - this long input will be chunked into smaller bits"
+            " before being passed to the model."
+        )
+    return token_dict
+
+            
+def blocking_paired(
+    token_dict: Dict, 
+    column_names: List,
+    block_size: int, 
+    model_max_length: int,
+    pad_token_id: int,
+) -> Dict:
+    block_size_warning_num = 0
+    num_example = len(token_dict[list(token_dict.keys())[0]])
+    for i in range(num_example):
+        for column_name in column_names:
+            max_length = min(block_size, model_max_length)
+            pad_length = max_length - len(token_dict[f"input_ids_{column_name}"][i])
+            if block_size < model_max_length:
+                block_size_warning_num += 1
+            if pad_length < 0:
+                # Truncates too long samples
+                for key in [f"input_ids_{column_name}", f"attention_mask_{column_name}"]:
+                    token_dict[key][i] = token_dict[key][i][:pad_length]
+            else:
+                # Pads too short samples
+                token_dict[f"input_ids_{column_name}"][i].extend(
+                    [pad_token_id for _ in range(pad_length)]
+                )
+                token_dict[f"attention_mask_{column_name}"][i].extend(
+                    [0 for _ in range(pad_length)]
+                )
+    if block_size_warning_num > 0:
+        logger.warning(
+            f"There are {block_size_warning_num} of {num_example} samples where"
+            f"block_size {block_size} < model_max_length"
+            f" {model_max_length}, use block_size"
+            " for maximum tokenized sequence length"
+        )
+        
+    return token_dict
