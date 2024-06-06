@@ -18,7 +18,6 @@ from langchain_openai import OpenAIEmbeddings
 import re
 import os
 import argparse
-from getpass import getpass
 
 
 class LangchainChatbot:
