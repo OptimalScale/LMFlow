@@ -30,6 +30,7 @@ class LangchainChatbot:
                 SystemMessage(content="You are a helpful chatbot."),
                 MessagesPlaceholder(variable_name="history"),
                 HumanMessagePromptTemplate.from_template("{input}"),
+                MessagesPlaceholder(variable_name="retriever", optional=True)
             ]
         )
         self.model_name_or_path = model_name_or_path
@@ -72,11 +73,15 @@ class LangchainChatbot:
         return model
 
     def chat_with_chatbot(self, human_input):
-        if self.retriever is not None:
+        if self.retriever:
             retriever_search = self.retrieve_by_retriever(human_input)
-            human_input = f'{human_input}\nWeb Retriever: {retriever_search}'
-        return self.llm_chain.invoke({"input": human_input},
-                                     config={"configurable": {"session_id": "abc123"}}).content
+            response = self.llm_chain.invoke({"input": human_input,
+                                              "retriever": [retriever_search]},
+                                             config={"configurable": {"session_id": "abc123"}}).content
+        else:
+            response = self.llm_chain.invoke({"input": human_input},
+                                             config={"configurable": {"session_id": "abc123"}}).content
+        return response
 
     def retrieve_by_retriever(self, query):
         return '\n'.join(re.sub('\n+', '\n', dict(result)['page_content']) for result in self.retriever.invoke(query))
