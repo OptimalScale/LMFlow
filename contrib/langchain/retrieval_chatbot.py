@@ -1,5 +1,3 @@
-import os
-
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -18,12 +16,13 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 
 import re
+import os
 import argparse
+from getpass import getpass
 
 
 class LangchainChatbot:
     def __init__(self,
-                 api_key,
                  model_name_or_path='gpt-3.5-turbo'):
         self.prompt = ChatPromptTemplate.from_messages(
             [
@@ -34,7 +33,6 @@ class LangchainChatbot:
             ]
         )
         self.model_name_or_path = model_name_or_path
-        self.api_key = api_key
         self.model = self.get_model()
         self.retriever = None
         self.memory = {}
@@ -56,19 +54,14 @@ class LangchainChatbot:
 
     def get_model(self):
         model_name_or_path = self.model_name_or_path
-        api_key = self.api_key
         if 'gpt' in model_name_or_path:
-            model = ChatOpenAI(model=model_name_or_path,
-                               openai_api_key=api_key)
+            model = ChatOpenAI(model=model_name_or_path)
         elif 'claude' in model_name_or_path:
-            model = ChatAnthropic(model=model_name_or_path,
-                                  anthropic_api_key=api_key)
+            model = ChatAnthropic(model=model_name_or_path)
         elif 'gemini' in model_name_or_path:
-            model = ChatGoogleGenerativeAI(model=model_name_or_path,
-                                           google_api_key=api_key)
+            model = ChatGoogleGenerativeAI(model=model_name_or_path)
         else:
-            llm = HuggingFaceHub(repo_id=model_name_or_path,
-                                 huggingfacehub_api_token=api_key)
+            llm = HuggingFaceHub(repo_id=model_name_or_path)
             model = ChatHuggingFace(llm=llm)
         return model
 
@@ -103,9 +96,6 @@ def get_cli() -> argparse.ArgumentParser:
         "--model-name-or-path", type=str, help="Model name"
     )
     parser.add_argument(
-        "--api-key", type=str, help="Api key for inference"
-    )
-    parser.add_argument(
         "--set-url", action="store_true", help="URL for retrieval"
     )
     parser.add_argument(
@@ -115,12 +105,10 @@ def get_cli() -> argparse.ArgumentParser:
 
 
 def main(model_name_or_path: str,
-         api_key: str,
          set_url: bool ,
          save_history: bool
          ):
-    chatbot = LangchainChatbot(api_key=api_key,
-                               model_name_or_path=model_name_or_path)
+    chatbot = LangchainChatbot(model_name_or_path=model_name_or_path)
     if set_url:
         url = input("Please set your url: ")
         chatbot.set_retriever_url(url)
