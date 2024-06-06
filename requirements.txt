@@ -6,7 +6,7 @@ peft>=0.10.0
 torch>=2.0.1
 wandb==0.14.0
 deepspeed==0.10.0
-trl>=0.7.11
+trl>=0.9.3
 sentencepiece
 transformers>=4.31.0
 flask

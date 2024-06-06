@@ -11,16 +11,16 @@ MODEL_CONFIG_CLASSES is assigned a list of the model config classes from
 MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types
 extracted from the MODEL_CONFIG_CLASSES.
 """
-
+import os
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, List, Literal
 
 from transformers.utils.versions import require_version
-
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
     TrainingArguments,
 )
+from trl.trainer.utils import OnpolicyRuntimeConfig
 
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_CAUSAL_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
@@ -107,10 +107,6 @@ class ModelArguments:
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
     )
-    arch_type: Optional[str] = field(
-        default="decoder_only",
-        metadata={"help": "The architecture type of the model. Currently supported decoder_only, encoder_decoder, and text_regression"}
-    )
     config_overrides: Optional[str] = field(
         default=None,
         metadata={
@@ -123,10 +119,7 @@ class ModelArguments:
     arch_type: Optional[str] = field(
         default="decoder_only",
         metadata={
-            "help": (
-                "Model architecture type, e.g. \"decoder_only\","
-                " \"encoder_decoder\""
-            ),
+            "help": ("Model architecture type."),
             "choices": ["decoder_only", "encoder_decoder", "text_regression", "vision_encoder_decoder"],
         },
     )
@@ -207,8 +200,7 @@ class ModelArguments:
             "help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
     )
     lora_target_modules: List[str] = field(
-        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",
-                                }
+        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",}
     )
     lora_dropout: float = field(
         default=0.1,
@@ -627,6 +619,69 @@ class RewardModelingArguments(FinetunerArguments):
     Arguments for reward modeling.
     """
     pass
+
+
+@dataclass
+class PPOArguments(OnpolicyRuntimeConfig, FinetunerArguments):
+    """
+    Arguments for PPO training, from 
+    [trl.trainer.ppov2_config.py](https://github.com/huggingface/trl/blob/main/trl/trainer/ppov2_config.py).
+    """
+    # common config
+    exp_name: str = os.path.basename(__file__)[: -len(".py")]
+    """the name of this experiment"""
+    run_name: Optional[str] = None
+    """a unique name of this run"""
+    sanity_check: bool = False
+    """wether to run in debug mode"""
+
+    # batch size related config
+    num_mini_batches: int = 1
+    """Number of minibatches to split a batch into"""
+    total_episodes: Optional[int] = None
+    """The total number of episodes in the dataset"""
+    local_rollout_forward_batch_size: int = 64
+    """per rank no grad forward pass in the rollout phase"""
+    num_sample_generations: int = 10
+    """the number of debugging samples generations (i.e., `generate_completions` calls) throughout training"""
+
+    # other config
+    base_model: str = "EleutherAI/pythia-160m"
+    """the name of the pretrained model to use"""
+    response_length: int = 53
+    """the length of the response"""
+    stop_token: Optional[Literal["eos"]] = None
+    """the stop token"""
+    stop_token_id: Optional[int] = None
+    """the truncation token id"""
+    temperature: float = 0.7
+    """the sampling temperature"""
+    penalty_reward_value: int = -1
+    """the reward value for responses that do not contain `stop_token_id`"""
+    non_eos_penalty: bool = False
+    """whether to penalize responses that do not contain `stop_token_id`"""
+    reward_model_path: str = "EleutherAI/pythia-160m"
+    """the path to the reward model"""
+    sft_model_path: str = "EleutherAI/pythia-160m"
+    """the path to the sft model"""
+
+    # ppo config
+    num_ppo_epochs: int = 4
+    """the number of epochs to train"""
+    vf_coef: float = 0.1
+    """the value function coefficient"""
+    cliprange: float = 0.2
+    """the clip range"""
+    cliprange_value: float = 0.2
+    """the clip range for the value function"""
+    gamma: float = 1
+    """the discount factor"""
+    lam: float = 0.95
+    """the lambda value for GAE"""
+    whiten_rewards: bool = False
+    """whether to whiten the rewards"""
+    kl_coef: float = 0.05
+    """the KL coefficient"""
 
 
 @dataclass
