@@ -90,7 +90,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 | [LLaMA-2](https://huggingface.co/meta-llama) | `llama2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#llama-2)) |
 | [LLaMA-3](https://huggingface.co/meta-llama) | `llama3` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#llama-3)) |
 | [Phi-3](https://huggingface.co/microsoft) | `phi3` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#phi-3)) |
-| [Qwen1.5](https://huggingface.co/Qwen) | `qwen2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#qwen-2)) |
+| [Qwen1.5 <br> Qwen2](https://huggingface.co/Qwen) | `qwen2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#qwen-2)) |
 | [Yi](https://huggingface.co/01-ai) | `chatml` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#yi)) |
 | [Yi-1.5](https://huggingface.co/01-ai) | `yi1_5` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#yi-15)) |
 | [Zephyr](https://huggingface.co/HuggingFaceH4) | `zephyr` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#zephyr)) |
