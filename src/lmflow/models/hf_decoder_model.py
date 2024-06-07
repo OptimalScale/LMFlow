@@ -283,8 +283,10 @@ class HFDecoderModel(DecoderModel, Tunable):
                 if model_args.lora_target_modules:
                     lora_target_modules = model_args.lora_target_modules
                 else:
-                    model_type = getattr(model, "config", {"model_type": "custom"}).model_type
-                    lora_target_modules = LORA_TARGET_MODULES_MAPPING_MIXIN.get(model_type, None)
+                    model_config = getattr(model, "config", {"model_type": "custom"})
+                    if hasattr(model_config, "to_dict"):
+                        model_config = model_config.to_dict()                    
+                    lora_target_modules = LORA_TARGET_MODULES_MAPPING_MIXIN.get(model_config["model_type"], None)
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
