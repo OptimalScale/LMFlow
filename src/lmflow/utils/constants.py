@@ -305,3 +305,12 @@ DEFAULT_IMAGE_TOKEN = "<image>"
 DEFAULT_IMAGE_PATCH_TOKEN = "<im_patch>"
 DEFAULT_IM_START_TOKEN = "<im_start>"
 DEFAULT_IM_END_TOKEN = "<im_end>"
+
+# Lora
+# NOTE: Be careful, when passing lora_target_modules through arg parser, the 
+# value should be like'--lora_target_modules q_proj, v_proj \', while specifying
+# here, it should be in list format.
+LMFLOW_LORA_TARGET_MODULES_MAPPING = {
+    'qwen2': ["q_proj", "v_proj"],
+    'internlm2': ["wqkv"],
+}

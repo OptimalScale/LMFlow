@@ -44,6 +44,7 @@ from peft import (
     get_peft_model,
     prepare_model_for_kbit_training
 )
+from peft.utils.constants import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.decoder_model import DecoderModel
@@ -51,7 +52,8 @@ from lmflow.models.interfaces.tunable import Tunable
 from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
-    CONVERSATION_DATASET_DESCRIPTION
+    CONVERSATION_DATASET_DESCRIPTION,
+    LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
 from lmflow.utils.conversation_template import ConversationTemplate, PRESET_TEMPLATES
 from lmflow.tokenization.hf_decoder_model import (
@@ -61,6 +63,12 @@ from lmflow.tokenization.hf_decoder_model import (
 
 
 logger = logging.getLogger(__name__)
+
+
+LORA_TARGET_MODULES_MAPPING_MIXIN = {
+    k: TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING.get(k, LMFLOW_LORA_TARGET_MODULES_MAPPING.get(k)) 
+    for k in set(TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING) | set(LMFLOW_LORA_TARGET_MODULES_MAPPING)
+}
 
 MODELS_SUPPORT_FLASH_ATTENTION = [
     "LlamaForCausalLM",
@@ -275,7 +283,8 @@ class HFDecoderModel(DecoderModel, Tunable):
                 if model_args.lora_target_modules:
                     lora_target_modules = model_args.lora_target_modules
                 else:
-                    lora_target_modules = None
+                    model_type = getattr(model, "config", {"model_type": "custom"}).model_type
+                    lora_target_modules = LORA_TARGET_MODULES_MAPPING_MIXIN.get(model_type, None)
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
