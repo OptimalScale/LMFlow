@@ -325,6 +325,9 @@ The conversation template for Mixtral 8x7B is slightly different from the templa
 
 
 ## Qwen-2
+
+(Also Qwen-1.5)
+
 **With a system message**
 ```
 <|im_start|>system\n{{system_message}}<|im_end|>\n<|im_start|>user\n{{user_message_0}}<|im_end|>\n
@@ -346,7 +349,7 @@ The conversation template for Mixtral 8x7B is slightly different from the templa
 ```
 
 **jinja template**  
-[[Reference](https://huggingface.co/Qwen/Qwen1.5-72B/blob/93bac0d1ae83d50c43b1793e2d74a00dc43a4c36/tokenizer_config.json#L31)]
+[[Reference](https://huggingface.co/Qwen/Qwen2-72B-Instruct/blob/1af63c698f59c4235668ec9c1395468cb7cd7e79/tokenizer_config.json#L31)]
 ```
 {% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}
 ```

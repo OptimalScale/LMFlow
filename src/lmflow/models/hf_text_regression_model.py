@@ -17,6 +17,7 @@ from peft import (
     get_peft_model,
     prepare_model_for_kbit_training
 )
+from peft.utils.constants import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
 from transformers import (
     BitsAndBytesConfig,
     CONFIG_MAPPING,
@@ -32,10 +33,20 @@ from lmflow.models.interfaces.tunable import Tunable
 from lmflow.models.text_regression_model import TextRegressionModel
 from lmflow.tokenization.hf_text_regression_model import tokenize_function
 from lmflow.utils.conversation_template import ConversationTemplate, PRESET_TEMPLATES
-from lmflow.utils.constants import PAIRED_CONVERSATION_DATASET_DESCRIPTION, CONVERSATION_ROLE_NAMES
+from lmflow.utils.constants import (
+    PAIRED_CONVERSATION_DATASET_DESCRIPTION, 
+    CONVERSATION_ROLE_NAMES, 
+    LMFLOW_LORA_TARGET_MODULES_MAPPING
+)
 
 
 logger = logging.getLogger(__name__)
+
+
+LORA_TARGET_MODULES_MAPPING_MIXIN = {
+    k: TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING.get(k, LMFLOW_LORA_TARGET_MODULES_MAPPING.get(k)) 
+    for k in set(TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING) | set(LMFLOW_LORA_TARGET_MODULES_MAPPING)
+}
 
 
 class HFTextRegressionModel(TextRegressionModel, Tunable):
@@ -230,7 +241,10 @@ class HFTextRegressionModel(TextRegressionModel, Tunable):
                 if model_args.lora_target_modules:
                     lora_target_modules = model_args.lora_target_modules
                 else:
-                    lora_target_modules = None
+                    model_config = getattr(model, "config", {"model_type": "custom"})
+                    if hasattr(model_config, "to_dict"):
+                        model_config = model_config.to_dict()                    
+                    lora_target_modules = LORA_TARGET_MODULES_MAPPING_MIXIN.get(model_config["model_type"], None)
                 peft_config = LoraConfig(
                     task_type=TaskType.CAUSAL_LM,
                     inference_mode=False,
