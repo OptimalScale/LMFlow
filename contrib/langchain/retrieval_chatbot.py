@@ -5,6 +5,7 @@ from langchain_community.llms import HuggingFaceHub
 from langchain_huggingface import ChatHuggingFace
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.runnables import Runnable
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, MessagesPlaceholder
 from langchain_core.messages import SystemMessage
@@ -18,7 +19,8 @@ from langchain_openai import OpenAIEmbeddings
 import re
 import os
 import argparse
-
+import logging
+logging.getLogger().setLevel(logging.ERROR) # hide warning log
 
 class LangchainChatbot:
     def __init__(self,
@@ -35,7 +37,7 @@ class LangchainChatbot:
         self.model = self.get_model()
         self.retriever = None
         self.memory = {}
-        self.runnable = self.prompt | self.model
+        self.runnable: Runnable = self.prompt | self.model
         self.llm_chain = RunnableWithMessageHistory(
             self.runnable,
             self.get_session_history,
