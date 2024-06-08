@@ -132,7 +132,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         :param tune_strategy: tuning strategy: normal, none, lora or adapter
         :param ds_config: deepspeed configuration for distributed training
         """
-        super(HFModelMixin, self).__init__(
+        HFModelMixin.__init__(
+            self,
             model_args=model_args,
             do_train=True if tune_strategy == "normal" else False,
             ds_config=ds_config,
