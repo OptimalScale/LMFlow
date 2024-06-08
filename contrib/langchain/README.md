@@ -4,7 +4,7 @@
 
 ```
 pip install langchain
-pip install langchain-openai langchain-anthropic langchain-google-genai langchain-huggingface langchain-chroma langchain-community
+pip install langchain-openai langchain-anthropic langchain-google-genai langchain-chroma langchain-community bs4
 ```
      
 ### Run Chatbot
