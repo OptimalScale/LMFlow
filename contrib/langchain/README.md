@@ -18,7 +18,8 @@ python contrib/langchain/retrieval_chatbot.py [options]
 ### Command-Line Arguments
 - `--model-name-or-path` - Specifies the name or path of the model used for generating responses.
 - `--provider` - Supports the following providers: `openai`, `anthropic`, `google`, and `huggingface`.
-- `--set-url` - The chatbot to retrieve content from a specified URL if enabled.
+- `--set-url` - Retrieve content from a specified URL if enabled.
+- `--set-txt` - Retrieve content from a local txt file if enabled.
 - `--save-history` - Saves the chat history in the `chat_history` directory if enabled.
 
 ### Example Usage

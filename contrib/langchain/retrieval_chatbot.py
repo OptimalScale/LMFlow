@@ -1,7 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_community.llms import HuggingFaceEndpoint
+from langchain_community.llms import HuggingFacePipeline
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables import Runnable
@@ -10,7 +10,7 @@ from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplat
 from langchain_core.messages import SystemMessage
 
 # retriever usage
-from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.document_loaders import WebBaseLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
@@ -19,7 +19,7 @@ import re
 import os
 import argparse
 import logging
-logging.getLogger().setLevel(logging.ERROR) # hide warning log
+logging.getLogger().setLevel(logging.ERROR)  # hide warning log
 
 
 class LangchainChatbot:
@@ -30,15 +30,16 @@ class LangchainChatbot:
             [
                 SystemMessage(content="You are a helpful chatbot."),
                 MessagesPlaceholder(variable_name="history"),
-                HumanMessagePromptTemplate.from_template("{input}"),
-                MessagesPlaceholder(variable_name="retriever", optional=True)
+                MessagesPlaceholder(variable_name="retriever", optional=True),
+                HumanMessagePromptTemplate.from_template("{input}")
             ]
         )
         self.model_name_or_path = model_name_or_path
         self.provider = provider
         self.check_valid_provider()
         self.model = self.get_model()
-        self.retriever = None
+        self.retriever_url = None
+        self.retriever_file = None
         self.memory = {}
         self.runnable: Runnable = self.prompt | self.model
         self.llm_chain = RunnableWithMessageHistory(
@@ -52,22 +53,19 @@ class LangchainChatbot:
         provider = self.provider
         model_name_or_path = self.model_name_or_path
         if provider == "openai" and 'gpt' in model_name_or_path:
-            if os.getenv("OPENAI_API_KEY"):
-                return
-            raise OSError("OPENAI_API_KEY environment variable is not set.")
+            if os.getenv("OPENAI_API_KEY") is None:
+                raise OSError("OPENAI_API_KEY environment variable is not set.")
         elif provider == "anthropic" and 'claude' in model_name_or_path:
-            if os.getenv("ANTHROPIC_API_KEY"):
-                return
-            raise OSError("ANTHROPIC_API_KEY environment variable is not set.")
+            if os.getenv("ANTHROPIC_API_KEY") is None:
+                raise OSError("ANTHROPIC_API_KEY environment variable is not set.")
         elif provider == "google" and 'gemini' in model_name_or_path:
-            if os.getenv("GOOGLE_API_KEY"):
-                return
-            raise OSError("GOOGLE_API_KEY environment variable is not set.")
+            if os.getenv("GOOGLE_API_KEY") is None:
+                raise OSError("GOOGLE_API_KEY environment variable is not set.")
         elif provider == "huggingface":
-            if os.getenv("HUGGINGFACEHUB_API_TOKEN"):
-                return
-            raise OSError("HUGGINGFACEHUB_API_TOKEN environment variable is not set.")
-        raise ValueError("Invalid provider or model_name_or_path.")
+            if os.getenv("HUGGINGFACEHUB_API_TOKEN") is None:
+                raise OSError("HUGGINGFACEHUB_API_TOKEN environment variable is not set.")
+        else:
+            raise ValueError("Invalid provider or model_name_or_path.")
 
     def set_retriever_url(self, url):
         loader = WebBaseLoader(url)
@@ -75,7 +73,15 @@ class LangchainChatbot:
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
         all_splits = text_splitter.split_documents(data)
         vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
-        self.retriever = vectorstore.as_retriever(k=4)
+        self.retriever_url = vectorstore.as_retriever(k=4)
+
+    def set_retriever_file(self, file):
+        loader = TextLoader(file, encoding='utf-8')
+        data = loader.load()
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
+        all_splits = text_splitter.split_documents(data)
+        vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
+        self.retriever_file = vectorstore.as_retriever(k=4)
 
     def get_model(self):
         provider = self.provider
@@ -86,26 +92,30 @@ class LangchainChatbot:
             model = ChatAnthropic(model=model_name_or_path)
         elif provider == "google":
             model = ChatGoogleGenerativeAI(model=model_name_or_path)
+        elif provider == "huggingface":
+            model = HuggingFacePipeline.from_model_id(model_id=model_name_or_path, task="text-generation")
+            # model = HuggingFaceEndpoint(repo_id=model_name_or_path)
         else:
-            model = HuggingFaceEndpoint(repo_id=model_name_or_path)
+            raise ValueError("Invalid provider.")
         return model
 
     def chat_with_chatbot(self, human_input):
-        if self.retriever:
-            retriever_search = self.retrieve_by_retriever(human_input)
-            response = self.llm_chain.invoke({"input": human_input,
-                                              "retriever": [retriever_search]},
-                                             config={"configurable": {"session_id": "abc123"}})
-        else:
-            response = self.llm_chain.invoke({"input": human_input},
-                                             config={"configurable": {"session_id": "abc123"}})
+        retriever_search = []
+        if self.retriever_url:
+            retriever_search.extend(self.retrieve_by_url(human_input))
+        if self.retriever_file:
+            retriever_search.extend(self.retrieve_by_file(human_input))
+
+        response = self.llm_chain.invoke({"input": human_input,
+                                          "retriever": retriever_search},
+                                         config={"configurable": {"session_id": "abc123"}})
         return response if self.provider == "huggingface" else response.content
 
-    def retrieve_by_retriever(self, query):
-        return '\n'.join(re.sub('\n+', '\n', dict(result)['page_content']) for result in self.retriever.invoke(query))
+    def retrieve_by_url(self, query):
+        return [re.sub('\n+', '\n', dict(result)['page_content']) for result in self.retriever_url.invoke(query)]
 
-    def retrieve_by_memory(self, keyword):
-        return [msg.content for msg in self.memory.chat_memory.messages if keyword in msg.content]
+    def retrieve_by_file(self, query):
+        return [re.sub('\n+', '\n', dict(result)['page_content']) for result in self.retriever_file.invoke(query)]
 
     def get_session_history(self, session_id: str) -> BaseChatMessageHistory:
         if session_id not in self.memory:
@@ -127,6 +137,9 @@ def get_cli() -> argparse.ArgumentParser:
         "--set-url", action="store_true", help="URL for retrieval"
     )
     parser.add_argument(
+        "--set-txt", action="store_true", help="Text file for retrieval"
+    )
+    parser.add_argument(
         "--save-history", action="store_true", help="Save chat history if enabled"
     )
     return parser
@@ -134,7 +147,8 @@ def get_cli() -> argparse.ArgumentParser:
 
 def main(model_name_or_path: str,
          provider: str,
-         set_url: bool ,
+         set_url: bool,
+         set_txt: bool,
          save_history: bool
          ):
     chatbot = LangchainChatbot(model_name_or_path=model_name_or_path,
@@ -142,12 +156,15 @@ def main(model_name_or_path: str,
     if set_url:
         url = input("Please set your url: ")
         chatbot.set_retriever_url(url)
+    if set_txt:
+        file = input("Please set your text file path: ")
+        chatbot.set_retriever_file(file)
     while True:
         human_input = input("user: ")
         if human_input == "exit":
             break
         response = chatbot.chat_with_chatbot(human_input)
-        print(f"chatbot: {response}")
+        print(f"Chatbot: {response}")
     if save_history:
         if '/' in model_name_or_path:
             model_name_or_path = model_name_or_path.split('/')[1]
