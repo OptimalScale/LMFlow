@@ -1,8 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_community.llms import HuggingFaceHub
-from langchain_huggingface import ChatHuggingFace
+from langchain_community.llms import HuggingFaceEndpoint
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables import Runnable
@@ -22,9 +21,11 @@ import argparse
 import logging
 logging.getLogger().setLevel(logging.ERROR) # hide warning log
 
+
 class LangchainChatbot:
     def __init__(self,
-                 model_name_or_path='gpt-3.5-turbo'):
+                 model_name_or_path: str,
+                 provider: str):
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 SystemMessage(content="You are a helpful chatbot."),
@@ -34,6 +35,8 @@ class LangchainChatbot:
             ]
         )
         self.model_name_or_path = model_name_or_path
+        self.provider = provider
+        self.check_valid_provider()
         self.model = self.get_model()
         self.retriever = None
         self.memory = {}
@@ -45,6 +48,27 @@ class LangchainChatbot:
             history_messages_key="history",
         )
 
+    def check_valid_provider(self):
+        provider = self.provider
+        model_name_or_path = self.model_name_or_path
+        if provider == "openai" and 'gpt' in model_name_or_path:
+            if os.getenv("OPENAI_API_KEY"):
+                return
+            raise OSError("OPENAI_API_KEY environment variable is not set.")
+        elif provider == "anthropic" and 'claude' in model_name_or_path:
+            if os.getenv("ANTHROPIC_API_KEY"):
+                return
+            raise OSError("ANTHROPIC_API_KEY environment variable is not set.")
+        elif provider == "google" and 'gemini' in model_name_or_path:
+            if os.getenv("GOOGLE_API_KEY"):
+                return
+            raise OSError("GOOGLE_API_KEY environment variable is not set.")
+        elif provider == "huggingface":
+            if os.getenv("HUGGINGFACEHUB_API_TOKEN"):
+                return
+            raise OSError("HUGGINGFACEHUB_API_TOKEN environment variable is not set.")
+        raise ValueError("Invalid provider or model_name_or_path.")
+
     def set_retriever_url(self, url):
         loader = WebBaseLoader(url)
         data = loader.load()
@@ -54,16 +78,16 @@ class LangchainChatbot:
         self.retriever = vectorstore.as_retriever(k=4)
 
     def get_model(self):
+        provider = self.provider
         model_name_or_path = self.model_name_or_path
-        if 'gpt' in model_name_or_path:
+        if provider == "openai":
             model = ChatOpenAI(model=model_name_or_path)
-        elif 'claude' in model_name_or_path:
+        elif provider == "anthropic":
             model = ChatAnthropic(model=model_name_or_path)
-        elif 'gemini' in model_name_or_path:
+        elif provider == "google":
             model = ChatGoogleGenerativeAI(model=model_name_or_path)
         else:
-            llm = HuggingFaceHub(repo_id=model_name_or_path)
-            model = ChatHuggingFace(llm=llm)
+            model = HuggingFaceEndpoint(repo_id=model_name_or_path)
         return model
 
     def chat_with_chatbot(self, human_input):
@@ -71,11 +95,11 @@ class LangchainChatbot:
             retriever_search = self.retrieve_by_retriever(human_input)
             response = self.llm_chain.invoke({"input": human_input,
                                               "retriever": [retriever_search]},
-                                             config={"configurable": {"session_id": "abc123"}}).content
+                                             config={"configurable": {"session_id": "abc123"}})
         else:
             response = self.llm_chain.invoke({"input": human_input},
-                                             config={"configurable": {"session_id": "abc123"}}).content
-        return response
+                                             config={"configurable": {"session_id": "abc123"}})
+        return response if self.provider == "huggingface" else response.content
 
     def retrieve_by_retriever(self, query):
         return '\n'.join(re.sub('\n+', '\n', dict(result)['page_content']) for result in self.retriever.invoke(query))
@@ -97,6 +121,9 @@ def get_cli() -> argparse.ArgumentParser:
         "--model-name-or-path", type=str, help="Model name"
     )
     parser.add_argument(
+        "--provider", type=str, help="Provider of the model"
+    )
+    parser.add_argument(
         "--set-url", action="store_true", help="URL for retrieval"
     )
     parser.add_argument(
@@ -106,10 +133,12 @@ def get_cli() -> argparse.ArgumentParser:
 
 
 def main(model_name_or_path: str,
+         provider: str,
          set_url: bool ,
          save_history: bool
          ):
-    chatbot = LangchainChatbot(model_name_or_path=model_name_or_path)
+    chatbot = LangchainChatbot(model_name_or_path=model_name_or_path,
+                               provider=provider)
     if set_url:
         url = input("Please set your url: ")
         chatbot.set_retriever_url(url)
@@ -120,9 +149,11 @@ def main(model_name_or_path: str,
         response = chatbot.chat_with_chatbot(human_input)
         print(f"chatbot: {response}")
     if save_history:
-        if not os.path.exists("chat_result"):
-            os.mkdir("chat_result")
-        with open(f"chat_result/{model_name_or_path}.txt", 'w') as file:
+        if '/' in model_name_or_path:
+            model_name_or_path = model_name_or_path.split('/')[1]
+        if not os.path.exists("chat_history"):
+            os.mkdir("chat_history")
+        with open(f"chat_history/{model_name_or_path}.txt", 'w') as file:
             file.write(str(chatbot.memory['abc123'].messages))
 
 
