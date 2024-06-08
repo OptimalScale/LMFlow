@@ -25,5 +25,5 @@ python contrib/langchain/retrieval_chatbot.py [options]
 
 - Inference with `mistralai/Mistral-7B-Instruct-v0.2` and specified url
 ```commandline
-python contrib/langchain/retrieval_chatbot.py --model-name-or-path "mistralai/Mistral-7B-Instruct-v0.2" --set-url
+python contrib/langchain/retrieval_chatbot.py --provider "huggingface" --model-name-or-path "mistralai/Mistral-7B-Instruct-v0.2" --set-url
 ```
