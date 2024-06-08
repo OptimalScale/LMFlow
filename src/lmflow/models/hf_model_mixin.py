@@ -3,7 +3,7 @@
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 import os
 import logging
-from typing import Union
+from typing import Union, Optional
 
 import torch
 import deepspeed
@@ -52,18 +52,27 @@ class HFModelMixin(BaseModel):
     def __init__(
         self,
         model_args,
-        do_train,
+        do_train: bool,
         ds_config=None,
-        device="gpu",
-        use_accelerator=False,
+        device: Optional[str]="gpu",
+        use_accelerator: bool=False,
         *args,
         **kwargs
     ):
-        """
-        Initializes a HFModel instance.
-        :param model_args: dictionary with model arguments such as model name, path, revision, etc.
-        :param tune_strategy: tuning strategy: normal, none, lora or adapter
-        :param ds_config: deepspeed configuration for distributed training
+        """Initializes a HFModel instance.
+
+        Parameters
+        ----------
+        model_args : 
+            Dictionary with model arguments such as model name, path, revision, etc.
+        do_train : bool
+            To prepare the model for training or inference.
+        ds_config : optional
+            Deepspeed configuration for distributed training, by default None
+        device : str, optional
+            By default "gpu"
+        use_accelerator : bool, optional
+            By default False
         """
 
         # See more about loading any type of standard or custom dataset (from
