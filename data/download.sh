@@ -251,6 +251,12 @@ function main() {
         rm -rf images.zip
         cd ../
     fi
+
+    if [ "$1" = "example_doc_for_retrieval.txt" -o "$1" = "all" ]; then
+        echo "downloading example_doc_for_retrieval.txt"
+        filename='example_doc_for_retrieval.txt'
+        wget ${public_server}/${filename}
+    fi
 }
 main "$@"
 
