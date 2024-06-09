@@ -3,9 +3,8 @@
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 # Parses arguments
 model_name_or_path=google/gemma-2b-it
-reward_model_name_or_path=google/gemma-2b-it
-train_dataset_path=data/ultrafeedback-binarized-preferences-cleaned/train
-eval_dataset_path=data/ultrafeedback-binarized-preferences-cleaned/train
+reward_model_name_or_path=/vol/yizhenjia/projs/LMFlow/output_models/gemma-rm
+train_dataset_path=/vol/yizhenjia/projs/LMFlow/data/alpaca/train_conversation
 output_dir=output_models/ppo
 deepspeed_args="--master_port=11345 --include localhost:4,5,6,7"
 conversation_template=gemma
@@ -87,9 +86,6 @@ deepspeed ${deepspeed_args} \
         --warmup_ratio 0.03 \
         --report_to 'wandb' \
         --run_name ${exp_id} \
-        --do_eval True \
-        --eval_dataset_path ${eval_dataset_path} \
-        --eval_steps 999999 \
         --preprocessing_num_workers 4 \
         | tee ${log_dir}/train.log \
         2> ${log_dir}/train.err

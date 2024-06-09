@@ -49,6 +49,17 @@ def create_copied_dataclass(original_dataclass, field_prefix, class_prefix, new_
     return copied_dataclass
 
 
+def remove_prefix(data_instance, prefix):
+    new_attributes = {}
+    for field in fields(data_instance):
+        attr_name = field.name
+        attr_value = getattr(data_instance, attr_name)
+        new_attr_name = f"{attr_name[len(prefix):]}"
+        new_attributes[new_attr_name] = attr_value
+    
+    return ModelArguments(**new_attributes)
+
+
 RewardModelArguments = create_copied_dataclass(
     original_dataclass=ModelArguments, 
     field_prefix="reward_", 
@@ -71,6 +82,8 @@ def main():
         model_args, reward_model_args, data_args, pipeline_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
     else:
         model_args, reward_model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
+
+    reward_model_args = remove_prefix(reward_model_args, "reward_")
 
     # Initialization
     finetuner = AutoPipeline.get_pipeline(

@@ -6,23 +6,11 @@ import logging
 from typing import Optional
 from copy import deepcopy
 
-import numpy as np
-import datasets
-import transformers
-from transformers import set_seed
-from transformers.utils import send_example_telemetry
-from transformers.trainer_callback import (
-    TrainerCallback
-)
-from trl.trainer.ppov2_trainer import PPOv2Trainer
-
 from lmflow.datasets import Dataset
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.finetuner import Finetuner
-from lmflow.pipeline.utils.rm_trainer import compute_metrics, RewardTrainer, PeftRewardTrainer
-from lmflow.pipeline.utils.peft_trainer import PeftSavingCallback
-from lmflow.pipeline.utils.rm_dataprocessor import RewardDataCollatorWithPadding
+from lmflow.pipeline.utils.ppo_trainer import PPOTrainer
 
 
 logger = logging.getLogger(__name__)
@@ -54,14 +42,13 @@ class PPOTuner(Finetuner):
     def __init__(
         self, 
         model_args, 
-        reward_model_args,
         data_args, 
         finetuner_args, 
         *args, 
         **kwargs
     ):
         super().__init__(model_args, data_args, finetuner_args, *args, **kwargs)
-        self.reward_model_args = reward_model_args
+        self.reward_model_args = kwargs.get('reward_model_args')
         
     
     def tune(
@@ -99,7 +86,7 @@ class PPOTuner(Finetuner):
             logger.warning("Currently eval for RLHF is not supported.")
         
         # 2. prepare trainer
-        trainer = PPOv2Trainer(
+        trainer = PPOTrainer(
             config=self.finetuner_args,
             tokenizer=model.get_tokenizer(),
             policy=model.get_backend_model(),

@@ -643,7 +643,7 @@ class RewardModelingArguments(FinetunerArguments):
 
 
 @dataclass
-class PPOArguments(OnpolicyRuntimeConfig, FinetunerArguments):
+class PPOArguments(FinetunerArguments):
     """
     Arguments for PPO training, from 
     [trl.trainer.ppov2_config.py](https://github.com/huggingface/trl/blob/main/trl/trainer/ppov2_config.py).
@@ -667,8 +667,6 @@ class PPOArguments(OnpolicyRuntimeConfig, FinetunerArguments):
     """the number of debugging samples generations (i.e., `generate_completions` calls) throughout training"""
 
     # other config
-    base_model: str = "EleutherAI/pythia-160m"
-    """the name of the pretrained model to use"""
     response_length: int = 53
     """the length of the response"""
     stop_token: Optional[Literal["eos"]] = None
@@ -681,10 +679,6 @@ class PPOArguments(OnpolicyRuntimeConfig, FinetunerArguments):
     """the reward value for responses that do not contain `stop_token_id`"""
     non_eos_penalty: bool = False
     """whether to penalize responses that do not contain `stop_token_id`"""
-    reward_model_path: str = "EleutherAI/pythia-160m"
-    """the path to the reward model"""
-    sft_model_path: str = "EleutherAI/pythia-160m"
-    """the path to the sft model"""
 
     # ppo config
     num_ppo_epochs: int = 4
@@ -1201,7 +1195,8 @@ PIPELINE_ARGUMENT_MAPPING = {
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
-    "rm_tuner": RewardModelingArguments
+    "rm_tuner": RewardModelingArguments,
+    "ppo_tuner": PPOArguments,
 }
 
 
