@@ -11,6 +11,7 @@ MODEL_CONFIG_CLASSES is assigned a list of the model config classes from
 MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types
 extracted from the MODEL_CONFIG_CLASSES.
 """
+import os
 import logging
 from dataclasses import dataclass, field
 from typing import Optional, List, Literal
