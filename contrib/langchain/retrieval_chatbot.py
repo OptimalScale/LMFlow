@@ -68,18 +68,18 @@ class LangchainChatbot:
         else:
             raise ValueError("Invalid provider or model_name_or_path.")
 
-    def set_retriever_url(self, url):
+    def set_retriever_url(self, url, chunk_size, chunk_overlap):
         loader = WebBaseLoader(url)
         data = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=20)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
         all_splits = text_splitter.split_documents(data)
         vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
         self.retriever_url = vectorstore.as_retriever(k=4)
 
-    def set_retriever_file(self, file):
+    def set_retriever_file(self, file, chunk_size, chunk_overlap):
         loader = TextLoader(file, encoding='utf-8')
         data = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=20)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
         all_splits = text_splitter.split_documents(data)
         vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
         self.retriever_file = vectorstore.as_retriever(k=4)
@@ -141,6 +141,12 @@ def get_cli() -> argparse.ArgumentParser:
         "--set-txt", action="store_true", help="Set a single text file for retrieval if enabled"
     )
     parser.add_argument(
+        "--chunk-size", type=int, default=400, help="Chunk size for splitting documents."
+    )
+    parser.add_argument(
+        "--chunk-overlap", type=int, default=20, help="Chunk overlap for splitting documents."
+    )
+    parser.add_argument(
         "--session-id", type=str, default="demo", help="Session id of this chat"
     )
     parser.add_argument(
@@ -156,6 +162,8 @@ def main(model_name_or_path: str,
          provider: str,
          set_url: bool,
          set_txt: bool,
+         chunk_size: int,
+         chunk_overlap: int,
          session_id: str,
          save_history: bool,
          save_dir: Path
@@ -164,10 +172,10 @@ def main(model_name_or_path: str,
                                provider=provider)
     if set_url:
         url = input("Please enter the url: ")
-        chatbot.set_retriever_url(url)
+        chatbot.set_retriever_url(url, chunk_size, chunk_overlap)
     if set_txt:
         file = input("Please enter the text file path: ")
-        chatbot.set_retriever_file(file)
+        chatbot.set_retriever_file(file, chunk_size, chunk_overlap)
     while True:
         human_input = input("User: ")
         if human_input == "exit":
