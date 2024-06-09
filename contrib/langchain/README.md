@@ -20,11 +20,19 @@ python contrib/langchain/retrieval_chatbot.py [options]
 - `--provider` - Supports the following providers: `openai`, `anthropic`, `google`, and `huggingface`.
 - `--set-url` - Retrieve content from a specified URL if enabled.
 - `--set-txt` - Retrieve content from a local txt file if enabled.
-- `--save-history` - Saves the chat history in the `chat_history` directory if enabled.
+- `--session-id` - Session id of this chat, default: `demo`.
+- `--save-history` - Saves the chat history if enabled.
+- `--save-dir` - Directory to store chat history, default: `tmp/chat_history`
 
 ### Example Usage
 
-- Inference with `mistralai/Mistral-7B-Instruct-v0.2` and specified url
-```commandline
-python contrib/langchain/retrieval_chatbot.py --provider "huggingface" --model-name-or-path "mistralai/Mistral-7B-Instruct-v0.2" --set-url
+- Inference with `gpt-4o`, specified url and txt file
+```
+cd data && ./download.sh example_doc_for_retrieval.txt && cd -
+python contrib/langchain/retrieval_chatbot.py --provider "openai" --model-name-or-path "gpt-4o" --set-url --set-txt
+```
+- Then set the url and txt file as follows:
+```
+Please enter the url: https://optimalscale.github.io/LMFlow/index.html
+Please enter the text file path: data/example_doc_for_retrieval.txt
 ```

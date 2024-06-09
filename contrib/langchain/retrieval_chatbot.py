@@ -9,12 +9,13 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, MessagesPlaceholder
 from langchain_core.messages import SystemMessage
 
-# retriever usage
+# retrieval usage
 from langchain_community.document_loaders import WebBaseLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 
+from pathlib import Path
 import re
 import os
 import argparse
@@ -70,7 +71,7 @@ class LangchainChatbot:
     def set_retriever_url(self, url):
         loader = WebBaseLoader(url)
         data = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=20)
         all_splits = text_splitter.split_documents(data)
         vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
         self.retriever_url = vectorstore.as_retriever(k=4)
@@ -78,7 +79,7 @@ class LangchainChatbot:
     def set_retriever_file(self, file):
         loader = TextLoader(file, encoding='utf-8')
         data = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=20)
         all_splits = text_splitter.split_documents(data)
         vectorstore = Chroma.from_documents(documents=all_splits, embedding=OpenAIEmbeddings())
         self.retriever_file = vectorstore.as_retriever(k=4)
@@ -99,7 +100,7 @@ class LangchainChatbot:
             raise ValueError("Invalid provider.")
         return model
 
-    def chat_with_chatbot(self, human_input):
+    def chat_with_chatbot(self, human_input, session_id):
         retriever_search = []
         if self.retriever_url:
             retriever_search.extend(self.retrieve_by_url(human_input))
@@ -108,7 +109,7 @@ class LangchainChatbot:
 
         response = self.llm_chain.invoke({"input": human_input,
                                           "retriever": retriever_search},
-                                         config={"configurable": {"session_id": "abc123"}})
+                                         config={"configurable": {"session_id": session_id}})
         return response if self.provider == "huggingface" else response.content
 
     def retrieve_by_url(self, query):
@@ -128,19 +129,25 @@ def get_cli() -> argparse.ArgumentParser:
         description=__doc__,
     )
     parser.add_argument(
-        "--model-name-or-path", type=str, help="Model name"
+        "--model-name-or-path", type=str, help="Model name or path"
     )
     parser.add_argument(
         "--provider", type=str, help="Provider of the model"
     )
     parser.add_argument(
-        "--set-url", action="store_true", help="URL for retrieval"
+        "--set-url", action="store_true", help="Set a URL for retrieval if enabled"
     )
     parser.add_argument(
-        "--set-txt", action="store_true", help="Text file for retrieval"
+        "--set-txt", action="store_true", help="Set a single text file for retrieval if enabled"
+    )
+    parser.add_argument(
+        "--session-id", type=str, default="demo", help="Session id of this chat"
     )
     parser.add_argument(
         "--save-history", action="store_true", help="Save chat history if enabled"
+    )
+    parser.add_argument(
+        "--save-dir", type=Path, default=Path("tmp", "chat_history"), help="Directory to store chat history"
     )
     return parser
 
@@ -149,29 +156,32 @@ def main(model_name_or_path: str,
          provider: str,
          set_url: bool,
          set_txt: bool,
-         save_history: bool
+         session_id: str,
+         save_history: bool,
+         save_dir: Path
          ):
     chatbot = LangchainChatbot(model_name_or_path=model_name_or_path,
                                provider=provider)
     if set_url:
-        url = input("Please set your url: ")
+        url = input("Please enter the url: ")
         chatbot.set_retriever_url(url)
     if set_txt:
-        file = input("Please set your text file path: ")
+        file = input("Please enter the text file path: ")
         chatbot.set_retriever_file(file)
     while True:
-        human_input = input("user: ")
+        human_input = input("User: ")
         if human_input == "exit":
             break
-        response = chatbot.chat_with_chatbot(human_input)
+        response = chatbot.chat_with_chatbot(human_input, session_id)
         print(f"Chatbot: {response}")
     if save_history:
         if '/' in model_name_or_path:
-            model_name_or_path = model_name_or_path.split('/')[1]
-        if not os.path.exists("chat_history"):
-            os.mkdir("chat_history")
-        with open(f"chat_history/{model_name_or_path}.txt", 'w') as file:
-            file.write(str(chatbot.memory['abc123'].messages))
+            model_name_or_path = Path(model_name_or_path).parts[-1]
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        save_path = Path(save_dir, f"{model_name_or_path}_{session_id}.txt")
+        with open(save_path, 'w') as file:
+            file.write(str(chatbot.memory[session_id].messages))
 
 
 if __name__ == "__main__":
