@@ -11,7 +11,7 @@ MODEL_CONFIG_CLASSES is assigned a list of the model config classes from
 MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types
 extracted from the MODEL_CONFIG_CLASSES.
 """
-
+import logging
 from dataclasses import dataclass, field
 from typing import Optional, List
 
@@ -24,6 +24,9 @@ from transformers import (
 
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_CAUSAL_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -75,14 +78,21 @@ class ModelArguments:
     use_ram_optimized_load : bool
         a boolean indicating whether to use disk mapping when memory is not
         enough.
+        
     use_int8 : bool
         a boolean indicating whether to load int8 quantization for inference.
+        
     load_in_4bit : bool
         whether to load the model in 4bit
+        
     model_max_length : int
         The maximum length of the model.
+        
     truncation_side : str
         The side on which the model should have truncation applied.
+        
+    arch_type : str
+        Model architecture type.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -107,10 +117,6 @@ class ModelArguments:
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
     )
-    arch_type: Optional[str] = field(
-        default="decoder_only",
-        metadata={"help": "The architecture type of the model. Currently supported decoder_only, encoder_decoder, and text_regression"}
-    )
     config_overrides: Optional[str] = field(
         default=None,
         metadata={
@@ -123,10 +129,7 @@ class ModelArguments:
     arch_type: Optional[str] = field(
         default="decoder_only",
         metadata={
-            "help": (
-                "Model architecture type, e.g. \"decoder_only\","
-                " \"encoder_decoder\""
-            ),
+            "help": ("Model architecture type."),
             "choices": ["decoder_only", "encoder_decoder", "text_regression", "vision_encoder_decoder"],
         },
     )
@@ -207,8 +210,7 @@ class ModelArguments:
             "help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
     )
     lora_target_modules: List[str] = field(
-        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",
-                                }
+        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",}
     )
     lora_dropout: float = field(
         default=0.1,
@@ -278,14 +280,20 @@ class ModelArguments:
         },
     )
     model_max_length: Optional[int] = field(
-        default=4096,
-        metadata={"help": "The maximum length of the model."}
+        default=None,
+        metadata={"help": (
+            "The maximum length of the model. When not specified, "
+            "will follow the model's default max length. (i.e., tokenizer.model_max_length)")
+        },
     )
     truncation_side: str = field(
-        default='left',
+        default=None,
         metadata={
-            "help": ("The side on which the model should have truncation applied. "),
-            "choices": ["left", "right"],
+            "help": (
+                "The side on which the tokenizer should have truncation applied. "
+                "When not specified, will follow the tokenizer's default truncation strategy. "
+                "(i.e., tokenizer.truncation_side)"),
+            "choices": [None, "left", "right"],
         },
     )
 
@@ -294,6 +302,11 @@ class ModelArguments:
             raise ValueError(
                 "--config_overrides can't be used in combination with --config_name or --model_name_or_path"
             )
+            
+        if self.use_qlora:
+            if not self.use_lora:
+                logger.warning("use_qlora is set to True, but use_lora is not set to True. Setting use_lora to True.")
+                self.use_lora = True
 
 
 @dataclass
