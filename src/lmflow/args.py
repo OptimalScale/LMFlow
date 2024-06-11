@@ -682,7 +682,7 @@ class PPOArguments(FinetunerArguments):
     """whether to penalize responses that do not contain `stop_token_id`"""
 
     # ppo config
-    num_ppo_epochs: int = 4
+    num_ppo_epochs: int = 1
     """the number of epochs to train"""
     vf_coef: float = 0.1
     """the value function coefficient"""

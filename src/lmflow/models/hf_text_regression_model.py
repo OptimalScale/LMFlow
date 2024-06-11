@@ -81,6 +81,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         :param tune_strategy: tuning strategy: normal, none, lora or adapter
         :param ds_config: deepspeed configuration for distributed training
         """
+        config_additional_args = {"num_labels": 1}
         HFModelMixin.__init__(
             self,
             model_args=model_args,
@@ -88,6 +89,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
             ds_config=ds_config,
             device=device,
             use_accelerator=use_accelerator,
+            hf_auto_model_additional_args=config_additional_args,
             *args,
             **kwargs
         )
