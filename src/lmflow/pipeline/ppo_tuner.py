@@ -76,14 +76,37 @@ class PPOTuner(Finetuner):
                     model_max_length=model.get_max_length(),
                 )
         train_dataset = lm_dataset.get_backend_dataset()
-        logger.info(f"Number of train samples: {len(train_dataset)}")
+        num_train_samples = len(train_dataset)
+        logger.info(f"Number of train samples: {num_train_samples}")
 
         if self.finetuner_args.do_train and self.data_args.max_train_samples is not None:
-            max_train_samples = min(len(train_dataset), self.data_args.max_train_samples)
+            max_train_samples = min(num_train_samples, self.data_args.max_train_samples)
             train_dataset = train_dataset.select(range(max_train_samples))
         
         if self.finetuner_args.do_eval:
-            logger.warning("Currently eval for RLHF is not supported.")
+            if self.finetuner_args.eval_dataset_path:
+                eval_dataset_args = deepcopy(self.data_args)
+                eval_dataset_args.dataset_path = self.finetuner_args.eval_dataset_path
+                eval_dataset = Dataset(eval_dataset_args)
+                with self.finetuner_args.main_process_first(desc="dataset map tokenization"):
+                    tokenized_dataset = model.tokenize(eval_dataset)
+                    if self.data_args.disable_group_texts:
+                        lm_dataset = tokenized_dataset
+                    else:
+                        lm_dataset = self.group_text(
+                            tokenized_dataset,
+                            model_max_length=model.get_max_length(),
+                        )
+                eval_dataset = lm_dataset.get_backend_dataset()
+            else:
+                num_eval_sampels = int(num_train_samples * 0.2)
+                eval_dataset = train_dataset.select(range(num_train_samples - num_eval_sampels, num_train_samples))
+                train_dataset = train_dataset.select(range(num_train_samples - num_eval_sampels))
+                logger.warning(f"You've set `do_eval=True` but haven't provided an `eval_dataset_path`. "
+                               "Using 0.2 of the training dataset for evaluation (These samples "
+                               "will not be used for training). If you want to use a different dataset "
+                               "for evaluation, please provide the path to the dataset using")
+            logger.info(f"Number of eval samples: {len(eval_dataset)}")
         
         # 2. prepare trainer
         trainer = PPOTrainer(
@@ -94,7 +117,7 @@ class PPOTuner(Finetuner):
             reward_model=reward_model.get_backend_model(),
             value_model=value_model.get_backend_model(),
             train_dataset=train_dataset,
-            eval_dataset=None
+            eval_dataset=eval_dataset,
         )
         
         # 3. training
@@ -102,7 +125,10 @@ class PPOTuner(Finetuner):
             # TODO: checkpointing
             trainer.train()
             trainer.save_model(self.finetuner_args.output_dir)
-            trainer.push_to_hub()
+            print("Model saved to %s", self.finetuner_args.output_dir)
+            if self.finetuner_args.push_to_hub:
+                print('push to hub')
+                trainer.push_to_hub()
             trainer.generate_completions()
 
         return model

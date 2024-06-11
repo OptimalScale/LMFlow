@@ -31,6 +31,7 @@ from lmflow.utils.constants import (
     LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
 from lmflow.args import ModelArguments
+from lmflow.args import ModelArguments
 
 
 logger = logging.getLogger(__name__)
@@ -91,6 +92,7 @@ class HFModelMixin(BaseModel):
         self.tokenizer = self.__prepare_tokenizer(model_args)
         self.torch_dtype = self.__prepare_dtype(model_args)
         self.hf_model_config = self.__prepare_model_config(model_args, hf_auto_model_additional_args)
+        self.hf_model_config = self.__prepare_model_config(model_args, hf_auto_model_additional_args)
         self.quant_config = self.__prepare_quant_config(model_args)
         self.peft_config = self.__prepare_peft_config(model_args)
         
@@ -114,7 +116,7 @@ class HFModelMixin(BaseModel):
 
     def __prepare_tokenizer(
         self,
-        model_args: ModelArguments,
+        model_args: ModelArguments
     ) -> Union[PreTrainedTokenizer, PreTrainedTokenizerFast]:
         tokenizer_kwargs = {
             "cache_dir": model_args.cache_dir,
@@ -169,7 +171,7 @@ class HFModelMixin(BaseModel):
     
     def __prepare_dtype(
         self,
-        model_args: ModelArguments,
+        model_args: ModelArguments
     ) -> torch.dtype:
         if model_args.arch_type == 'text_regression':
             if model_args.torch_dtype in ["auto", None, "bf16", "bfloat16"]:
@@ -199,6 +201,7 @@ class HFModelMixin(BaseModel):
         hf_auto_model_additional_args: Optional[Dict]=None,
     ):
         """Prepare model configuration for hf auto register,
+
         Parameters
         ----------
         model_args : ModelArguments
@@ -207,6 +210,7 @@ class HFModelMixin(BaseModel):
             Special configurations such as `num_labels` in `AutoModelForSequenceClassification` 
             (commonly used in reward modeling) will not preset in __prepare_model_config, 
             so it should be passed in hf_auto_model_additional_args.
+
         Returns
         -------
         config : ModelConfig
@@ -223,7 +227,7 @@ class HFModelMixin(BaseModel):
         }
         if hf_auto_model_additional_args is not None:
             config_kwargs.update(hf_auto_model_additional_args)
-            
+        
         if model_args.config_name:
             config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
         elif model_args.model_name_or_path:
@@ -241,7 +245,7 @@ class HFModelMixin(BaseModel):
     
     def __prepare_quant_config(
         self,
-        model_args: ModelArguments,
+        model_args: ModelArguments
     ):
         quant_config = None
         if model_args.use_qlora:
@@ -260,7 +264,7 @@ class HFModelMixin(BaseModel):
     
     def __prepare_peft_config(
         self,
-        model_args: ModelArguments,
+        model_args: ModelArguments
     ):
         peft_config = None
         if model_args.use_lora:
@@ -291,7 +295,7 @@ class HFModelMixin(BaseModel):
     
     def __model_module_inject(
         self,
-        model_args: ModelArguments,
+        model_args: ModelArguments
     ) -> None:
         """Override some model modules with custom implementations.
         
@@ -311,7 +315,7 @@ class HFModelMixin(BaseModel):
     def __prepare_model_for_training(
         self,
         model_args: ModelArguments,
-        hf_auto_model: HF_AUTOMODEL_TYPE,
+        hf_auto_model: HF_AUTOMODEL_TYPE
     ):
         # TODO: change to accelerate
         logger.info("Preparing model for training")
