@@ -113,6 +113,9 @@ class HFModelMixin(BaseModel):
         if self.backend_model.config.pad_token_id is None:
             self.backend_model.config.pad_token_id = self.tokenizer.pad_token_id
             
+        if self.backend_model.config.pad_token_id is None:
+            self.backend_model.config.pad_token_id = self.tokenizer.pad_token_id
+        
 
     def __prepare_tokenizer(
         self,
