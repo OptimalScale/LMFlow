@@ -115,7 +115,6 @@ class PPOTrainer(PPOv2Trainer):
         self.args.num_updates = int(self.args.total_episodes // self.args.batch_size)
         time_tensor = torch.tensor(int(time.time()), device=accelerator.device)
         time_int = broadcast(time_tensor, 0).item()  # avoid different timestamps across processes
-        self.args.run_name = f"{self.args.exp_name}__{self.args.seed}__{time_int}"
         self.local_seed = self.args.seed + accelerator.process_index * 100003  # Prime
         if self.args.num_sample_generations > 0:
             self.sample_generations_freq = max(1, self.args.num_updates // self.args.num_sample_generations)

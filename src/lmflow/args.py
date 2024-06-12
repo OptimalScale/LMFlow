@@ -650,10 +650,6 @@ class PPOArguments(FinetunerArguments):
     [trl.trainer.ppov2_config.py](https://github.com/huggingface/trl/blob/main/trl/trainer/ppov2_config.py).
     """
     # common config
-    exp_name: str = os.path.basename(__file__)[: -len(".py")]
-    """the name of this experiment"""
-    run_name: Optional[str] = None
-    """a unique name of this run"""
     sanity_check: bool = False
     """wether to run in debug mode"""
 
