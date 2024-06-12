@@ -138,7 +138,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         hf_raw_datasets = dataset.get_backend_dataset()
         column_names = list(hf_raw_datasets.features) # in paired conversation, for example, would be 'chosen' and 'rejected'
         data_args = raw_datasets.get_data_args()
-
+        
         # Requires three types of information for tokenizing different datasets
         #   1) Which fields require tokenization, e.g.
         #        "text2float": "text", but not "float"
@@ -178,6 +178,9 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
                 f"    1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
                 f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
                 f"    3) {PAIRED_CONVERSATION_DATASET_DESCRIPTION}\n"
+                f"    1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
+                f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
+                f"    3) {PAIRED_CONVERSATION_DATASET_DESCRIPTION}\n"
             )
 
         # Whether to truncate long sequences to fit into max_length
@@ -185,6 +188,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         if model_args.use_lora or data_args.disable_group_texts:
             use_truncation = True
             
+        tokenize_fn = paired_conversation_tokenize_function if "conversation" in dataset_type else tokenize_function
         tokenize_fn = paired_conversation_tokenize_function if "conversation" in dataset_type else tokenize_function
         tokenize_fn_kwargs = {
             "data_args": data_args,
