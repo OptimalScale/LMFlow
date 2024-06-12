@@ -194,6 +194,13 @@ class RewardModelingTuner(Finetuner):
             elif last_checkpoint is not None:
                 checkpoint = last_checkpoint
                 
+            if self.finetuner_args.gradient_checkpointing:
+                if model.get_backend_model().config.use_cache:
+                    logger.warning(
+                        "Backend model config `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`."
+                    )
+                    model.get_backend_model().config.use_cache = False
+                
             train_result = trainer.train(resume_from_checkpoint=checkpoint)
 
             trainer.save_model()  # Saves the tokenizer too for easy upload
