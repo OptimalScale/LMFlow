@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/bin/bash
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 # Parses arguments
 model_name_or_path=/home/yizhenjia/.cache/huggingface/hub/models--EleutherAI--pythia-1b-deduped/snapshots/7199d8fc61a6d565cd1f3c62bf11525b563e13b2
