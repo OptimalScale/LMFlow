@@ -3,7 +3,7 @@
 # Parses arguments
 model_name_or_path=/home/yizhenjia/.cache/huggingface/hub/models--EleutherAI--pythia-1b-deduped/snapshots/7199d8fc61a6d565cd1f3c62bf11525b563e13b2
 reward_model_name_or_path=/home/yizhenjia/.cache/huggingface/hub/models--EleutherAI--pythia-1b-deduped/snapshots/7199d8fc61a6d565cd1f3c62bf11525b563e13b2
-train_dataset_path=/vol/yizhenjia/projs/LMFlow/data/alpaca/train_conversation
+train_dataset_path=/vol/yizhenjia/projs/LMFlow/data/ppotest
 output_dir=output_models/ppo
 conversation_template=gemma
 
@@ -60,13 +60,15 @@ accelerate launch --config_file configs/accelerate_deepspeed_zero3.yaml \
         --conversation_template ${conversation_template} \
         --output_dir ${output_dir} --overwrite_output_dir \
         --use_flash_attention True \
-        --block_size 64 \
-        --learning_rate 1e-5 \
+        --block_size 512 \
+        --learning_rate 3e-6 \
         --per_device_train_batch_size 1 \
         --per_device_eval_batch_size 1 \
-        --num_train_epochs 0.01 \
+        --total_episodes 10000 \
         --num_ppo_epochs 1 \
-        --gradient_accumulation_steps 32 \
+        --num_mini_batches 1 \
+        --gradient_accumulation_steps 16 \
+        --non_eos_penalty True \
         --report_to 'wandb' \
         --run_name ${exp_id} \
         --preprocessing_num_workers 4 \
