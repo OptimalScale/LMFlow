@@ -31,10 +31,12 @@ from lmflow.datasets import Dataset
 from lmflow.models.interfaces.tunable import Tunable
 from lmflow.models.hf_model_mixin import HFModelMixin
 from lmflow.models.text_regression_model import TextRegressionModel
-from lmflow.tokenization.hf_text_regression_model import tokenize_function
+from lmflow.tokenization.hf_text_regression_model import paired_conversation_tokenize_function, tokenize_function
 from lmflow.utils.conversation_template import PRESET_TEMPLATES
 from lmflow.utils.constants import (
     PAIRED_CONVERSATION_DATASET_DESCRIPTION, 
+    TEXT2TEXT_DATASET_DESCRIPTION,
+    TEXT_ONLY_DATASET_DESCRIPTION,
     CONVERSATION_ROLE_NAMES, 
 )
 
@@ -135,14 +137,28 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         raw_datasets = dataset
         hf_raw_datasets = dataset.get_backend_dataset()
         column_names = list(hf_raw_datasets.features) # in paired conversation, for example, would be 'chosen' and 'rejected'
-
-        # since this will be pickled to avoid _LazyModule error in Hasher force
-        # logger loading before tokenize_function
-        tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
-
         data_args = raw_datasets.get_data_args()
-
-        if dataset_type == "paired_conversation":
+        
+        # Requires three types of information for tokenizing different datasets
+        #   1) Which fields require tokenization, e.g.
+        #        "text2float": "text", but not "float"
+        #        "text2text": both "input" and "output"
+        #   2) How will there tokenized sequence concatenated together, e.g.
+        #        "text_only": "text" -> "text"
+        #        "text2text": "input", "output" -> "input" + "output"
+        #   3) Which fields require loss in final computation, e.g.
+        #        "text_only": "text"
+        #        "text2text": "output" only
+        tokenized_column_order = None       # Handles 1) and 2)
+        label_columns = None                # Handles 3)
+        if dataset_type == "text_only":
+            tokenized_column_order = ["text"]
+            label_columns = ["text"]
+        elif dataset_type == "text2text":
+            tokenized_column_order = ["input", "output"]
+            label_columns = ["output"]
+            add_special_tokens = False
+        elif dataset_type == "paired_conversation":
             if data_args.conversation_template:
                 if data_args.conversation_template in PRESET_TEMPLATES.keys():
                     conversation_template = PRESET_TEMPLATES[data_args.conversation_template]
@@ -159,7 +175,9 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
             raise NotImplementedError(
                 f"Dataset type \"{dataset_type}\" is not supported, currently"
                 " only support following data types for HFTextRegressionModel:\n"
-                f"    {PAIRED_CONVERSATION_DATASET_DESCRIPTION}\n"
+                f"    1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
+                f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
+                f"    3) {PAIRED_CONVERSATION_DATASET_DESCRIPTION}\n"
             )
 
         # Whether to truncate long sequences to fit into max_length
@@ -167,13 +185,19 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         if model_args.use_lora or data_args.disable_group_texts:
             use_truncation = True
             
-        tokenize_fn = tokenize_function
+        tokenize_fn = paired_conversation_tokenize_function if "conversation" in dataset_type else tokenize_function
         tokenize_fn_kwargs = {
             "data_args": data_args,
             "tokenizer": self.tokenizer,
             "column_names": column_names,
-            "conversation_template": conversation_template
         }
+        if "conversation" in dataset_type:
+            tokenize_fn_kwargs["conversation_template"] = conversation_template
+        else:
+            tokenize_fn_kwargs["label_columns"] = label_columns
+            tokenize_fn_kwargs["tokenized_column_order"] = tokenized_column_order
+            tokenize_fn_kwargs["add_special_tokens"] = add_special_tokens
+            tokenize_fn_kwargs["use_truncation"] = use_truncation
                            
         tokenize_kwargs = {}
         if not data_args.streaming:
