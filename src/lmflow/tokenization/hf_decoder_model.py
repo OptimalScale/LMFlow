@@ -22,6 +22,7 @@ def blocking(
     block_size: int, 
     model_max_length: int,
     pad_token_id: int,
+    padding_side: str,
 ) -> Dict:
     block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
@@ -35,16 +36,32 @@ def blocking(
             for key in ["input_ids", "attention_mask", "labels"]:
                 token_dict[key][i] = token_dict[key][i][:pad_length]
         else:
-            # Pads too short samples
-            token_dict["input_ids"][i].extend(
-                [pad_token_id for _ in range(pad_length)]
-            )
-            token_dict["attention_mask"][i].extend(
-                [0 for _ in range(pad_length)]
-            )
-            token_dict["labels"][i].extend(
-                [-100 for _ in range(pad_length)]
-            )
+            if padding_side == 'right':
+                # Pads too short samples
+                token_dict["input_ids"][i].extend(
+                    [pad_token_id for _ in range(pad_length)]
+                )
+                token_dict["attention_mask"][i].extend(
+                    [0 for _ in range(pad_length)]
+                )
+                token_dict["labels"][i].extend(
+                    [-100 for _ in range(pad_length)]
+                )
+            elif padding_side == 'left':
+                # Pads too short samples
+                token_dict["input_ids"][i] = (
+                    [pad_token_id for _ in range(pad_length)] + token_dict["input_ids"][i]
+                )
+                token_dict["attention_mask"][i] = (
+                    [0 for _ in range(pad_length)] + token_dict["attention_mask"][i]
+                )
+                token_dict["labels"][i] = (
+                    [-100 for _ in range(pad_length)] + token_dict["labels"][i]
+                )
+            else:
+                raise ValueError(
+                    f"padding_side should be either 'right' or 'left', got {padding_side}"
+                )
     if block_size_warning_num > 0:
         logger.warning(
             f"There are {block_size_warning_num} of {num_example} samples where"
@@ -105,6 +122,7 @@ def tokenize_function(
             block_size=data_args.block_size,
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
+            padding_side=tokenizer.padding_side
         )
 
     # clm input could be much much longer than block_size
@@ -175,6 +193,7 @@ def conversation_tokenize_function(
             block_size=data_args.block_size,
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
+            padding_side=tokenizer.padding_side
         )
 
     # clm input could be much much longer than block_size
