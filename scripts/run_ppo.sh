@@ -3,7 +3,7 @@
 # Parses arguments
 model_name_or_path=/home/yizhenjia/.cache/huggingface/hub/models--EleutherAI--pythia-1b-deduped/snapshots/7199d8fc61a6d565cd1f3c62bf11525b563e13b2
 reward_model_name_or_path=/home/yizhenjia/.cache/huggingface/hub/models--EleutherAI--pythia-1b-deduped/snapshots/7199d8fc61a6d565cd1f3c62bf11525b563e13b2
-train_dataset_path=/vol/yizhenjia/projs/LMFlow/data/ppotest
+train_dataset_path=/vol/yizhenjia/projs/LMFlow/data/ppotest/ppo
 output_dir=output_models/ppo
 conversation_template=gemma
 
@@ -68,6 +68,7 @@ accelerate launch --config_file configs/accelerate_deepspeed_zero3.yaml \
         --num_ppo_epochs 1 \
         --num_mini_batches 1 \
         --gradient_accumulation_steps 16 \
+        --local_rollout_forward_batch_size 1 \
         --non_eos_penalty True \
         --report_to 'wandb' \
         --run_name ${exp_id} \
