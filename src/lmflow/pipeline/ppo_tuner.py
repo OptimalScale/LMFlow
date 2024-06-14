@@ -10,7 +10,7 @@ from lmflow.datasets import Dataset
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.finetuner import Finetuner
-from lmflow.pipeline.utils.ppo_trainer import PPOTrainer
+from lmflow.pipeline.utils.ppov2_trainer import PPOTrainer
 
 
 logger = logging.getLogger(__name__)
