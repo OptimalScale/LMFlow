@@ -3,7 +3,7 @@
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 import os
 import logging
-from typing import Union, Optional
+from typing import Union, Optional, Dict
 
 import torch
 import deepspeed
@@ -30,6 +30,7 @@ from lmflow.models.base_model import BaseModel
 from lmflow.utils.constants import (
     LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
+from lmflow.args import ModelArguments
 
 
 logger = logging.getLogger(__name__)
@@ -51,11 +52,12 @@ LORA_TARGET_MODULES_MAPPING = {
 class HFModelMixin(BaseModel):
     def __init__(
         self,
-        model_args,
+        model_args: ModelArguments,
         do_train: bool,
         ds_config=None,
         device: Optional[str]="gpu",
         use_accelerator: bool=False,
+        hf_auto_model_additional_args: Optional[Dict]=None,
         *args,
         **kwargs
     ):
@@ -88,7 +90,7 @@ class HFModelMixin(BaseModel):
         self.model_args = model_args
         self.tokenizer = self.__prepare_tokenizer(model_args)
         self.torch_dtype = self.__prepare_dtype(model_args)
-        self.hf_model_config = self.__prepare_model_config(model_args)
+        self.hf_model_config = self.__prepare_model_config(model_args, hf_auto_model_additional_args)
         self.quant_config = self.__prepare_quant_config(model_args)
         self.peft_config = self.__prepare_peft_config(model_args)
         
@@ -106,11 +108,13 @@ class HFModelMixin(BaseModel):
             self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        if self.backend_model.config.pad_token_id is None:
+            self.backend_model.config.pad_token_id = self.tokenizer.pad_token_id
             
 
     def __prepare_tokenizer(
         self,
-        model_args
+        model_args: ModelArguments,
     ) -> Union[PreTrainedTokenizer, PreTrainedTokenizerFast]:
         tokenizer_kwargs = {
             "cache_dir": model_args.cache_dir,
@@ -119,6 +123,8 @@ class HFModelMixin(BaseModel):
             "use_auth_token": True if model_args.use_auth_token else None,
             "trust_remote_code": model_args.trust_remote_code,
         }
+        if model_args.padding_side != 'auto':
+            tokenizer_kwargs["padding_side"] = model_args.padding_side
         
         try:
             if model_args.tokenizer_name:
@@ -163,7 +169,7 @@ class HFModelMixin(BaseModel):
     
     def __prepare_dtype(
         self,
-        model_args
+        model_args: ModelArguments,
     ) -> torch.dtype:
         if model_args.arch_type == 'text_regression':
             if model_args.torch_dtype in ["auto", None, "bf16", "bfloat16"]:
@@ -189,8 +195,23 @@ class HFModelMixin(BaseModel):
 
     def __prepare_model_config(
         self,
-        model_args
+        model_args: ModelArguments,
+        hf_auto_model_additional_args: Optional[Dict]=None,
     ):
+        """Prepare model configuration for hf auto register,
+        Parameters
+        ----------
+        model_args : ModelArguments
+            LMFlow model arguments.
+        hf_auto_model_additional_args : Optional[Dict], optional
+            Special configurations such as `num_labels` in `AutoModelForSequenceClassification` 
+            (commonly used in reward modeling) will not preset in __prepare_model_config, 
+            so it should be passed in hf_auto_model_additional_args.
+        Returns
+        -------
+        config : ModelConfig
+            hf model config.
+        """
         config_kwargs = {
             "torch_dtype": self.torch_dtype,
             "attn_implementation": "flash_attention_2" if model_args.use_flash_attention else None,
@@ -200,6 +221,9 @@ class HFModelMixin(BaseModel):
             "trust_remote_code": model_args.trust_remote_code,
             "from_tf": bool(".ckpt" in model_args.model_name_or_path),
         }
+        if hf_auto_model_additional_args is not None:
+            config_kwargs.update(hf_auto_model_additional_args)
+            
         if model_args.config_name:
             config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
         elif model_args.model_name_or_path:
@@ -217,7 +241,7 @@ class HFModelMixin(BaseModel):
     
     def __prepare_quant_config(
         self,
-        model_args
+        model_args: ModelArguments,
     ):
         quant_config = None
         if model_args.use_qlora:
@@ -236,7 +260,7 @@ class HFModelMixin(BaseModel):
     
     def __prepare_peft_config(
         self,
-        model_args
+        model_args: ModelArguments,
     ):
         peft_config = None
         if model_args.use_lora:
@@ -267,7 +291,7 @@ class HFModelMixin(BaseModel):
     
     def __model_module_inject(
         self,
-        model_args
+        model_args: ModelArguments,
     ) -> None:
         """Override some model modules with custom implementations.
         
@@ -286,8 +310,8 @@ class HFModelMixin(BaseModel):
                 
     def __prepare_model_for_training(
         self,
-        model_args,
-        hf_auto_model: HF_AUTOMODEL_TYPE
+        model_args: ModelArguments,
+        hf_auto_model: HF_AUTOMODEL_TYPE,
     ):
         # TODO: change to accelerate
         logger.info("Preparing model for training")
@@ -326,7 +350,7 @@ class HFModelMixin(BaseModel):
     
     def __prepare_model_for_inference(
         self,
-        model_args,
+        model_args: ModelArguments,
         hf_auto_model: HF_AUTOMODEL_TYPE,
         use_accelerator,
         ds_config

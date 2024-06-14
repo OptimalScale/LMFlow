@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/bin/bash
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 # Parses arguments
 model_name_or_path=google/gemma-2b-it
