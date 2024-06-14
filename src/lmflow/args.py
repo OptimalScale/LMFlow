@@ -93,6 +93,8 @@ class ModelArguments:
         
     arch_type : str
         Model architecture type.
+    padding_side : str
+        The side on which the tokenizer should have padding applied.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -295,6 +297,16 @@ class ModelArguments:
                 "(i.e., tokenizer.truncation_side)"),
             "choices": [None, "left", "right"],
         },
+    )
+    padding_side: str = field(
+        default='right',
+        metadata={
+            "help": (
+                "The side on which the tokenizer should have padding applied. "
+                "LMFlow uses right padding by default. When set to `auto`, will "
+                "use padding_side from tokenizer.padding_side."),
+            "choices": ["right", "left", "auto"],
+        }
     )
 
     def __post_init__(self):
