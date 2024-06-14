@@ -188,7 +188,6 @@ class PPOTrainer(PPOv2Trainer):
             
     def train(self):
         args = self.args
-        print(args)
         accelerator = self.accelerator
         optimizer = self.optimizer
         model = self.model
@@ -212,7 +211,8 @@ class PPOTrainer(PPOv2Trainer):
             do_sample=True,
         )
 
-        accelerator.print("===training policy===")
+        logger.info("Training Start")
+        
         global_step = 0
         start_time = time.time()
         stats_shape = (args.num_ppo_epochs, args.num_mini_batches, args.gradient_accumulation_steps)
@@ -230,7 +230,6 @@ class PPOTrainer(PPOv2Trainer):
             data = next(iter_dataloader)
             with torch.no_grad():
                 queries = data["input_ids"].to(device)
-                print(f"{queries.shape=}")
                 context_length = queries.shape[1]
                 query_responses = []
                 responses = []
@@ -243,14 +242,12 @@ class PPOTrainer(PPOv2Trainer):
                 with unwrap_model_for_generation(model, self.accelerator) as unwrapped_model:
                     for i in tqdm(range(0, queries.shape[0], args.local_rollout_forward_batch_size), desc="RM Scoring", unit="queries"):
                         query = queries[i : i + args.local_rollout_forward_batch_size]
-                        print(f"{query.shape=}")
                         query_response, logits = generate(
                             unwrapped_model.policy,
                             query,
                             tokenizer.pad_token_id,
                             generation_config,
                         )
-                        print(f"{query_response.shape=}, {logits.shape=}")
                         response = query_response[:, context_length:]
 
                         # use the logits during generation directly, instead of using the following
@@ -281,9 +278,7 @@ class PPOTrainer(PPOv2Trainer):
                         full_value, _, _ = get_reward(
                             unwrapped_value_model, query_response, tokenizer.pad_token_id, context_length
                         )
-                        print(f'full_value shape = {full_value.shape}')
                         value = full_value[:, context_length - 1 : -1].squeeze(-1)
-                        print(f'value shape = {value.shape}')
                         _, score, _ = get_reward(
                             reward_model, postprocessed_query_response, tokenizer.pad_token_id, context_length
                         )
@@ -323,8 +318,6 @@ class PPOTrainer(PPOv2Trainer):
                 padding_mask_p1 = response_idxs > (sequence_lengths_p1.unsqueeze(1))
                 logprobs = torch.masked_fill(logprobs, padding_mask, INVALID_LOGPROB)
                 ref_logprobs = torch.masked_fill(ref_logprobs, padding_mask, INVALID_LOGPROB)
-                print(f"values shape = {values.shape}")
-                print(f"padding_mask_p1 shape = {padding_mask_p1.shape}")
                 values = torch.masked_fill(values, padding_mask_p1, 0)
 
                 # 4. compute rewards
@@ -489,10 +482,7 @@ class PPOTrainer(PPOv2Trainer):
                 returns,
             )
             torch.cuda.empty_cache()
-            
-            
-            print('finish epoch')
-            
+                        
     
     def generate_completions(self, sampling: bool = False):
         args = self.args
