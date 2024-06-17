@@ -124,7 +124,7 @@ def tokenize_function(
             block_size=data_args.block_size,
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
-            padding_side=tokenizer.padding_side,
+            padding_side=tokenizer.padding_side
         )
 
     # clm input could be much much longer than block_size
@@ -195,7 +195,7 @@ def conversation_tokenize_function(
             block_size=data_args.block_size,
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
-            padding_side=tokenizer.padding_side,
+            padding_side=tokenizer.padding_side
         )
 
     # clm input could be much much longer than block_size

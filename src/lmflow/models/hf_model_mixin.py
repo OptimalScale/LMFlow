@@ -31,7 +31,6 @@ from lmflow.utils.constants import (
     LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
 from lmflow.args import ModelArguments
-from lmflow.args import ModelArguments
 
 
 logger = logging.getLogger(__name__)
@@ -92,7 +91,6 @@ class HFModelMixin(BaseModel):
         self.tokenizer = self.__prepare_tokenizer(model_args)
         self.torch_dtype = self.__prepare_dtype(model_args)
         self.hf_model_config = self.__prepare_model_config(model_args, hf_auto_model_additional_args)
-        self.hf_model_config = self.__prepare_model_config(model_args, hf_auto_model_additional_args)
         self.quant_config = self.__prepare_quant_config(model_args)
         self.peft_config = self.__prepare_peft_config(model_args)
         
@@ -110,8 +108,6 @@ class HFModelMixin(BaseModel):
             self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
-        if self.backend_model.config.pad_token_id is None:
-            self.backend_model.config.pad_token_id = self.tokenizer.pad_token_id
             
         if self.backend_model.config.pad_token_id is None:
             self.backend_model.config.pad_token_id = self.tokenizer.pad_token_id
