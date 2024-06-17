@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
+import gc
 import os
 import logging
 from typing import Union, Optional, Dict
@@ -25,6 +26,8 @@ from peft import (
     prepare_model_for_kbit_training
 )
 from peft.utils.constants import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
+from vllm import LLM
+from vllm.distributed.parallel_state import destroy_model_parallel
 
 from lmflow.models.base_model import BaseModel
 from lmflow.utils.constants import (
@@ -88,20 +91,27 @@ class HFModelMixin(BaseModel):
 
         self.device = device
         self.model_args = model_args
+        self.hf_auto_model = HF_AUTOMODEL_MAPPING[model_args.arch_type]
+        self.use_accelerator = use_accelerator
+        self.ds_config = ds_config
+        
         self.tokenizer = self.__prepare_tokenizer(model_args)
         self.torch_dtype = self.__prepare_dtype(model_args)
         self.hf_model_config = self.__prepare_model_config(model_args, hf_auto_model_additional_args)
         self.quant_config = self.__prepare_quant_config(model_args)
         self.peft_config = self.__prepare_peft_config(model_args)
+        self.__activated = False # for inference load and offload
         
         # Some implementations require custom modules to be injected into the model.
         self.__model_module_inject(model_args)
 
-        hf_auto_model = HF_AUTOMODEL_MAPPING[model_args.arch_type]
         if do_train:
-            self.__prepare_model_for_training(model_args, hf_auto_model)
+            self.__prepare_model_for_training(model_args, self.hf_auto_model)
         else:
-            self.__prepare_model_for_inference(model_args, hf_auto_model, use_accelerator, ds_config)
+            if model_args.load_on_init:
+                self.__activate_model_for_inference()
+            else:
+                self.backend_model = None
             
         # some post processing
         if self.tokenizer.eos_token_id is None:
@@ -352,81 +362,144 @@ class HFModelMixin(BaseModel):
         self,
         model_args: ModelArguments,
         hf_auto_model: HF_AUTOMODEL_TYPE,
-        use_accelerator,
+        use_accelerator: bool,
         ds_config
     ):
-        # TODO: change to accelerate
-        logger.info("Preparing model for inference")
-        if use_accelerator:
-            peft_model_id = model_args.lora_model_path
-            self.backend_model = hf_auto_model.from_pretrained(
-                    model_args.model_name_or_path,
-                    config=self.hf_model_config,
-                    device_map="auto",
-                    offload_folder="offload",
-                    offload_state_dict=True,
-                    load_in_8bit = model_args.use_int8,
-                )
-            if peft_model_id is not None:
-                self.backend_model = PeftModel.from_pretrained(
-                    self.backend_model, 
-                    peft_model_id,
-                )
-        else:
-            from transformers.integrations import HfDeepSpeedConfig
-            dschf = HfDeepSpeedConfig(ds_config)
-            peft_model_id = model_args.lora_model_path
-            # NOTE: Currently offload is not supported by llama
-            if self.hf_model_config.model_type == "llama" and model_args.use_ram_optimized_load:
-                logger.warning(
-                    "llama does not support RAM optimized load. Automatically"
-                    " use original load instead."
-                )
-                model_args.use_ram_optimized_load = False
-
-            if model_args.use_ram_optimized_load and peft_model_id is None:
-                try:
-                    # RAM-optimized load
-                    self.backend_model = hf_auto_model.from_pretrained(
+        assert not model_args.use_vllm_inference, "You should use VLLM inference instead."
+        if self.backend_model is None:
+            # TODO: change to accelerate
+            logger.info("Preparing model for inference")
+            if use_accelerator:
+                peft_model_id = model_args.lora_model_path
+                self.backend_model = hf_auto_model.from_pretrained(
                         model_args.model_name_or_path,
                         config=self.hf_model_config,
                         device_map="auto",
                         offload_folder="offload",
                         offload_state_dict=True,
+                        load_in_8bit = model_args.use_int8,
                     )
-                except:
+                if peft_model_id is not None:
+                    self.backend_model = PeftModel.from_pretrained(
+                        self.backend_model, 
+                        peft_model_id,
+                    )
+            else:
+                from transformers.integrations import HfDeepSpeedConfig
+                dschf = HfDeepSpeedConfig(ds_config)
+                peft_model_id = model_args.lora_model_path
+                # NOTE: Currently offload is not supported by llama
+                if self.hf_model_config.model_type == "llama" and model_args.use_ram_optimized_load:
                     logger.warning(
-                        "Failed to use RAM optimized load. Automatically"
+                        "llama does not support RAM optimized load. Automatically"
                         " use original load instead."
                     )
-                    # Normal load
+                    model_args.use_ram_optimized_load = False
+
+                if model_args.use_ram_optimized_load and peft_model_id is None:
+                    try:
+                        # RAM-optimized load
+                        self.backend_model = hf_auto_model.from_pretrained(
+                            model_args.model_name_or_path,
+                            config=self.hf_model_config,
+                            device_map="auto",
+                            offload_folder="offload",
+                            offload_state_dict=True,
+                        )
+                    except:
+                        logger.warning(
+                            "Failed to use RAM optimized load. Automatically"
+                            " use original load instead."
+                        )
+                        # Normal load
+                        self.backend_model = hf_auto_model.from_pretrained(
+                            model_args.model_name_or_path,
+                            config=self.hf_model_config,
+                        )
+                else:
+                    if peft_model_id is not None:
+                        logger.warning(
+                            "LoRA does not support RAM optimized load currently."
+                            " Automatically use original load instead."
+                        )
                     self.backend_model = hf_auto_model.from_pretrained(
                         model_args.model_name_or_path,
                         config=self.hf_model_config,
                     )
-            else:
+
+                self.backend_model_full = self.backend_model
                 if peft_model_id is not None:
-                    logger.warning(
-                        "LoRA does not support RAM optimized load currently."
-                        " Automatically use original load instead."
+                    self.backend_model = PeftModel.from_pretrained(
+                        self.backend_model, peft_model_id
                     )
-                self.backend_model = hf_auto_model.from_pretrained(
-                    model_args.model_name_or_path,
-                    config=self.hf_model_config,
-                )
 
-            self.backend_model_full = self.backend_model
-            if peft_model_id is not None:
-                self.backend_model = PeftModel.from_pretrained(
-                    self.backend_model, peft_model_id
-                )
-
-            if self.device == "gpu":
-                deepspeed.init_distributed()
-                self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
-                self.ds_engine.module.eval()
-                
-        self.tokenizer.padding_side = "left" # necessary for llama, gpt2 and other decoder models
+                if self.device == "gpu":
+                    deepspeed.init_distributed()
+                    self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
+                    self.ds_engine.module.eval()
+                    
+        else:
+            if self.backend_model.device == torch.device("cpu"):
+                self.backend_model.to(self.device)
+            else:
+                return
+                        
+        
+    def __prepare_model_for_vllm_inference(
+        self,
+        model_args: ModelArguments,
+    ):
+        self.backend_model = LLM(
+            model=model_args.model_name_or_path,
+            tokenizer=model_args.model_name_or_path,
+            dtype=model_args.torch_dtype,
+            load_format="auto",
+            tensor_parallel_size=model_args.vllm_tensor_parallel_size,
+        )
+        
+    
+    def __activate_model_for_inference(self):
+        if self.__activated:
+            logger.warning("You are trying to activate the model for inference, but it is already activated.")
+            return
+        
+        if self.model_args.use_vllm_inference:
+            self.__prepare_model_for_vllm_inference(model_args=self.model_args)
+        else:
+            self.__prepare_model_for_inference(
+                model_args=self.model_args,
+                hf_auto_model=self.hf_auto_model,
+                use_accelerator=self.use_accelerator,
+                ds_config=self.ds_config,
+            )
+            
+        self.__activated = True
+            
+            
+    def __deactive_model_for_inference(self):
+        """Deactivate the model and release the resources.
+        
+        NOTE: Currently, VLLM doesn't have an official way to do this, and the
+        implementation below cannot release all gpu resources by our observation.
+        Thus this method is just a placeholder for future implementation. See: 
+        [Github issue](https://github.com/vllm-project/vllm/issues/1908)
+        """
+        if not self.__activated:
+            logger.warning("You are trying to deactivate the model for inference, but it is already deactivated.")
+            return
+        
+        if self.model_args.use_vllm_inference:
+            destroy_model_parallel()
+            del self.backend_model.llm_engine.model_executor.driver_worker
+            del self.backend_model
+            gc.collect()
+            torch.cuda.empty_cache()
+            self.backend_model = None
+        else:
+            self.backend_model.to("cpu")
+            pass
+        
+        self.__activated = False
 
     
     def get_max_length(self):

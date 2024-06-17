@@ -21,7 +21,7 @@ and question answering.
 import hashlib
 import logging
 import os, shutil
-from typing import List, Union
+from typing import List, Union, Optional
 from pathlib import Path
 
 import torch
@@ -44,6 +44,7 @@ from peft import (
     get_peft_model,
     prepare_model_for_kbit_training
 )
+from vllm import SamplingParams
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.hf_model_mixin import HFModelMixin
@@ -354,7 +355,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         outputs :
             The generated sequence output 
         """
-
+        if not self.__activated:
+            self.__activate_model_for_inference()
 
         with torch.no_grad():
             if use_accelerator:
@@ -386,6 +388,35 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                         f"device \"{self.device}\" is not supported"
                     )
         return outputs
+    
+    
+    def vllm_inference(
+        self, 
+        user_input: Union[str, List[str]],
+        sampling_params: Optional[SamplingParams] = None,
+        release: bool = True,
+    ) -> Union[List[List[str]], List[List[List[int]]]]:
+        assert self.model_args.use_vllm_inference, "VLLM inference is not enabled."
+        if not self.__activated:
+            self.__activate_model_for_inference()
+            
+        vllm_outputs = self.backend_model.generate(
+            user_input,
+            sampling_params=sampling_params,
+            use_tqdm=True,
+        )
+        final_output = []
+        if sampling_params.detokenize:
+            for output in vllm_outputs:
+                final_output.append([sentence.text for sentence in output.outputs])
+        else:
+            for output in vllm_outputs:
+                final_output.append([sentence.token_ids for sentence in output.outputs])
+                
+        if release:
+            self.__deactive_model_for_inference()
+                
+        return final_output
 
 
     def merge_lora_weights(self):

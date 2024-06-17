@@ -12,6 +12,7 @@ MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types
 extracted from the MODEL_CONFIG_CLASSES.
 """
 import logging
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Optional, List
 
@@ -95,6 +96,12 @@ class ModelArguments:
         Model architecture type.
     padding_side : str
         The side on which the tokenizer should have padding applied.
+    load_on_init: bool, optional
+        When init the model for inference, whether to load the model on __init__, By default True.
+    use_vllm_inference: bool, optional
+        Whether to use VLLM for inference, By default False.
+    vllm_tensor_parallel_size: int, optional
+        The tensor parallel size for VLLM inference.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -307,6 +314,18 @@ class ModelArguments:
                 "use padding_side from tokenizer.padding_side."),
             "choices": ["right", "left", "auto"],
         }
+    )
+    load_on_init: bool = field(
+        default=True,
+        metadata={"help": "When init the model for inference, whether to load the model on __init__, By default True."}
+    )
+    use_vllm_inference: bool = field(
+        default=False,
+        metadata={"help": "Whether to use VLLM for inference, By default False."}
+    )
+    vllm_tensor_parallel_size: Optional[int] = field(
+        default=1,
+        metadata={"help": "The tensor parallel size for VLLM inference."}
     )
 
     def __post_init__(self):
@@ -593,6 +612,25 @@ class MultiModalDatasetArguments(DatasetArguments):
     sep_style: Optional[str] = field(
         default="plain", metadata={"help": "Sep style in multi_modality dataset."}
     )
+    
+    
+@dataclass
+class OnlineRLHFDatasetArguments(DatasetArguments):
+    save_intermediate_results: Optional[bool] = field(
+        default=True, metadata={"help": "Whether to save intermediate results."}
+    )
+    intermediate_results_path: Optional[str] = field(
+        default="./runs/online_rlhf/intermediate_results", metadata={"help": "The path of intermediate results."}
+    )
+    
+    def __post_init__(self):
+        super().__post_init__()
+        
+        if self.save_intermediate_results:
+            if self.intermediate_results_path is None:
+                raise ValueError("Need to specify intermediate_results_path when save_intermediate_results is True.")
+            else:
+                Path(self.intermediate_results_path).mkdir(parents=True, exist_ok=True)
 
 
 @dataclass
@@ -902,6 +940,46 @@ class InferencerArguments:
     use_accelerator: bool = field(
         default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
+    
+    
+@dataclass
+class InferencerWithOffloadingArguments:
+    seed: Optional[int] = field(
+        default=42,
+        metadata={"help": "seed for random number generator."},
+    )
+    use_beam_search: Optional[bool] = field(
+        default=False,
+        metadata={"help": "whether to use beam search during inference."},
+    )
+    num_output_sequences: Optional[int] = field(
+        default=8,
+        metadata={"help": "number of output sequences to return for the given prompt."},
+    )
+    temperature: Optional[float] = field(
+        default=1.0,
+        metadata={"help": "temperature for sampling."},
+    )
+    top_p: Optional[float] = field(
+        default=1.0,
+        metadata={"help": "top_p for sampling."},
+    )
+    top_k: Optional[int] = field(
+        default=-1,
+        metadata={"help": "top_k for sampling."},
+    )
+    max_new_tokens: Optional[int] = field(
+        default=2048,
+        metadata={"help": "maximum number of tokens to generate."},
+    )
+    additional_stop_token_ids: Optional[List[int]] = field(
+        default_factory=lambda: [], 
+        metadata={"help": "the ids of the end of sentence tokens"},
+    )
+    tensor_parallel_size: Optional[int] = field(
+        default=1,
+        metadata={"help": "the size of tensor parallelism, only used in vllm inference."},
+    )
 
 
 @dataclass
@@ -1145,8 +1223,19 @@ class DPOAlignerArguments:
 
 
 @dataclass
-class IterativeDPOAlignerArguments:
-    pass
+class IterativeDPOAlignerArguments(InferencerWithOffloadingArguments):
+    """
+    Arguments for iterative DPO aligner.
+    """
+    # Generation (step1) args
+    dataset_name_or_path: Optional[str] = field(
+        default="cornfieldrm/iterative-prompt-v1-iter1-2K",
+        metadata={"help": "the location of the dataset name or path"},
+    )
+    output_dir: Optional[str] = field(
+        default="uf_split0_responses_K8.json",
+        metadata={"help": "the location of the output file"},
+    )
 
 
 PIPELINE_ARGUMENT_MAPPING = {

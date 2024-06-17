@@ -5,7 +5,7 @@ tokenizers>=0.13.3
 peft>=0.10.0
 torch>=2.0.1
 wandb==0.14.0
-deepspeed==0.10.0
+deepspeed>=0.11.2
 trl>=0.7.11
 sentencepiece
 transformers>=4.31.0
@@ -18,8 +18,8 @@ scikit-learn==1.2.2
 lm-eval==0.3.0
 dill<0.3.5
 bitsandbytes>=0.40.0
-pydantic<=1.10.9
+pydantic
 gradio
 accelerate>=0.27.2
 einops>=0.6.1
-scikit-learn==1.2.2
+vllm>=0.4.1
