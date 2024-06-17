@@ -1144,13 +1144,19 @@ class DPOAlignerArguments:
     )
 
 
+@dataclass
+class IterativeDPOAlignerArguments:
+    pass
+
+
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
-    "rm_tuner": RewardModelingArguments
+    "iter_dpo_aligner": IterativeDPOAlignerArguments,
+    "rm_tuner": RewardModelingArguments,
 }
 
 
