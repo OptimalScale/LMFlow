@@ -5,7 +5,6 @@
 model_name_or_path=meta-llama/Meta-Llama-3-70B-Instruct
 dataset_path=data/dpo-mix-7k
 output_dir=output_models/finetuned_llama3_70b_dpo_example
-deepspeed_args="--master_port=13000 --include localhost:3"
 # specify gpus/single gpu here by 
 # `--include localhost:0,1` or `--include localhost:0`
 
