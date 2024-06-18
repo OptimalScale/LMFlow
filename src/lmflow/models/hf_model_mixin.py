@@ -100,7 +100,7 @@ class HFModelMixin(BaseModel):
         self.hf_model_config = self.__prepare_model_config(model_args, hf_auto_model_additional_args)
         self.quant_config = self.__prepare_quant_config(model_args)
         self.peft_config = self.__prepare_peft_config(model_args)
-        self.__activated = False # for inference load and offload
+        self._activated = False # for inference load and offload
         
         # Some implementations require custom modules to be injected into the model.
         self.__model_module_inject(model_args)
@@ -109,7 +109,7 @@ class HFModelMixin(BaseModel):
             self.__prepare_model_for_training(model_args, self.hf_auto_model)
         else:
             if model_args.load_on_init:
-                self.__activate_model_for_inference()
+                self.activate_model_for_inference()
             else:
                 self.backend_model = None
             
@@ -438,6 +438,7 @@ class HFModelMixin(BaseModel):
                     self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
                     self.ds_engine.module.eval()
                     
+        # backend model already initialized
         else:
             if self.backend_model.device == torch.device("cpu"):
                 self.backend_model.to(self.device)
@@ -454,12 +455,13 @@ class HFModelMixin(BaseModel):
             tokenizer=model_args.model_name_or_path,
             dtype=model_args.torch_dtype,
             load_format="auto",
+            gpu_memory_utilization=model_args.vllm_gpu_memory_utilization,
             tensor_parallel_size=model_args.vllm_tensor_parallel_size,
         )
         
     
-    def __activate_model_for_inference(self):
-        if self.__activated:
+    def activate_model_for_inference(self):
+        if self._activated:
             logger.warning("You are trying to activate the model for inference, but it is already activated.")
             return
         
@@ -473,10 +475,10 @@ class HFModelMixin(BaseModel):
                 ds_config=self.ds_config,
             )
             
-        self.__activated = True
+        self._activated = True
             
             
-    def __deactive_model_for_inference(self):
+    def deactivate_model_for_inference(self):
         """Deactivate the model and release the resources.
         
         NOTE: Currently, VLLM doesn't have an official way to do this, and the
@@ -484,7 +486,7 @@ class HFModelMixin(BaseModel):
         Thus this method is just a placeholder for future implementation. See: 
         [Github issue](https://github.com/vllm-project/vllm/issues/1908)
         """
-        if not self.__activated:
+        if not self._activated:
             logger.warning("You are trying to deactivate the model for inference, but it is already deactivated.")
             return
         
@@ -499,7 +501,7 @@ class HFModelMixin(BaseModel):
             self.backend_model.to("cpu")
             pass
         
-        self.__activated = False
+        self._activated = False
 
     
     def get_max_length(self):

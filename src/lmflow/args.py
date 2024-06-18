@@ -319,6 +319,8 @@ class ModelArguments:
         default=True,
         metadata={"help": "When init the model for inference, whether to load the model on __init__, By default True."}
     )
+    
+    # vllm inference init args
     use_vllm_inference: bool = field(
         default=False,
         metadata={"help": "Whether to use VLLM for inference, By default False."}
@@ -326,6 +328,10 @@ class ModelArguments:
     vllm_tensor_parallel_size: Optional[int] = field(
         default=1,
         metadata={"help": "The tensor parallel size for VLLM inference."}
+    )
+    vllm_gpu_memory_utilization: Optional[float] = field(
+        default=0.95,
+        metadata={"help": "The GPU memory utilization for VLLM inference."}
     )
 
     def __post_init__(self):
@@ -976,10 +982,6 @@ class InferencerWithOffloadingArguments:
         default_factory=lambda: [], 
         metadata={"help": "the ids of the end of sentence tokens"},
     )
-    tensor_parallel_size: Optional[int] = field(
-        default=1,
-        metadata={"help": "the size of tensor parallelism, only used in vllm inference."},
-    )
 
 
 @dataclass
@@ -1235,6 +1237,10 @@ class IterativeDPOAlignerArguments(InferencerWithOffloadingArguments):
     output_dir: Optional[str] = field(
         default="uf_split0_responses_K8.json",
         metadata={"help": "the location of the output file"},
+    )
+    apply_chat_template: Optional[bool] = field(
+        default=True,
+        metadata={"help": "whether to apply chat template"},
     )
 
 
