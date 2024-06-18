@@ -338,7 +338,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     def inference(
         self, 
         inputs, 
-        release: bool = False,
+        release_gpu: bool = False,
         **kwargs
     ):
         """
@@ -350,10 +350,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             The sequence used as a prompt for the generation or as model inputs to the model.
             When using vllm inference, this should be a string or a list of strings.
             When using normal inference, this should be a tensor.
-            
-        args : Optional.
-            Positional arguments.
-        
+        release_gpu : bool, optional
+            Whether to release the GPU resource after inference, by default False.
         kwargs : Optional.
             Keyword arguments.    
         
@@ -370,7 +368,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         else:
             res = self._inference(inputs, **kwargs)
             
-        if release:
+        if release_gpu:
             self.deactivate_model_for_inference()
             
         return res
@@ -441,8 +439,6 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             Prompt(s), string or a list of strings.
         sampling_params : Optional[SamplingParams], optional
             vllm SamplingParams object, by default None.
-        release : bool, optional
-            Release gpu resource after generation, by default True
 
         Returns
         -------

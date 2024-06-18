@@ -38,7 +38,7 @@ RewardModelArguments = create_copied_dataclass(
 
 def main():
 	# Parses arguments
-    pipeline_name = "iter_dpo_aligner"
+    pipeline_name = "iterative_dpo_aligner"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
     parser = HfArgumentParser((

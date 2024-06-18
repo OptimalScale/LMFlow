@@ -618,25 +618,6 @@ class MultiModalDatasetArguments(DatasetArguments):
     sep_style: Optional[str] = field(
         default="plain", metadata={"help": "Sep style in multi_modality dataset."}
     )
-    
-    
-@dataclass
-class OnlineRLHFDatasetArguments(DatasetArguments):
-    save_intermediate_results: Optional[bool] = field(
-        default=True, metadata={"help": "Whether to save intermediate results."}
-    )
-    intermediate_results_path: Optional[str] = field(
-        default="./runs/online_rlhf/intermediate_results", metadata={"help": "The path of intermediate results."}
-    )
-    
-    def __post_init__(self):
-        super().__post_init__()
-        
-        if self.save_intermediate_results:
-            if self.intermediate_results_path is None:
-                raise ValueError("Need to specify intermediate_results_path when save_intermediate_results is True.")
-            else:
-                Path(self.intermediate_results_path).mkdir(parents=True, exist_ok=True)
 
 
 @dataclass
@@ -882,6 +863,25 @@ class InferencerArguments:
 
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
+    use_beam_search : Optional[bool]
+        Whether to use beam search during inference, By default False.
+    num_output_sequences : Optional[int]
+        Number of output sequences to return for the given prompt, 
+        currently only used in vllm inference, By default 8.
+    top_p : Optional[float]
+        top_p for sampling, By default 1.0.
+    top_k : Optional[int]
+        top_k for sampling, By default -1 (no top_k).
+    additional_stop_token_ids : Optional[List[int]]
+        the ids of the end of sentence tokens, By default [].
+    apply_chat_template : Optional[bool]
+        Whether to apply chat template, By default True.
+    save_results : Optional[bool]
+        Whether to save inference results, By default False.
+    results_path : Optional[str]
+        The **json file** path of inference results, By default None.
+    memory_safe_vllm_inference_devices : Optional[str]
+        The device used for memory safe vllm inference. Example: '0,1', By default None.
     """
     device: str = field(
         default="gpu",
@@ -946,25 +946,16 @@ class InferencerArguments:
     use_accelerator: bool = field(
         default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
-    
-    
-@dataclass
-class InferencerWithOffloadingArguments:
-    seed: Optional[int] = field(
-        default=42,
-        metadata={"help": "seed for random number generator."},
-    )
     use_beam_search: Optional[bool] = field(
         default=False,
         metadata={"help": "whether to use beam search during inference."},
     )
     num_output_sequences: Optional[int] = field(
         default=8,
-        metadata={"help": "number of output sequences to return for the given prompt."},
-    )
-    temperature: Optional[float] = field(
-        default=1.0,
-        metadata={"help": "temperature for sampling."},
+        metadata={"help": (
+            "number of output sequences to return for the given prompt, "
+            "currently only used in vllm inference."
+        )},
     )
     top_p: Optional[float] = field(
         default=1.0,
@@ -974,14 +965,50 @@ class InferencerWithOffloadingArguments:
         default=-1,
         metadata={"help": "top_k for sampling."},
     )
-    max_new_tokens: Optional[int] = field(
-        default=2048,
-        metadata={"help": "maximum number of tokens to generate."},
-    )
     additional_stop_token_ids: Optional[List[int]] = field(
         default_factory=lambda: [], 
         metadata={"help": "the ids of the end of sentence tokens"},
     )
+    apply_chat_template: Optional[bool] = field(
+        default=True,
+        metadata={"help": "whether to apply chat template"},
+    )
+    memory_safe_vllm_inference_devices: Optional[str] = field(
+        default=None,
+        metadata={"help": "The device used for memory safe vllm inference. Example: '0,1'"},
+    )
+    memory_safe_vllm_inference_detokenize: Optional[bool] = field(
+        default=False,
+        metadata={"help": (
+            "Whether to detokenize the memory safe vllm inference results. "
+            "NOTE: "
+            "For iterative align pipelines, whether to detokenize depends on "
+            "the homogeneity of the policy model and the reward model "
+            "(i.e., if they have the same tokenizer). "
+            "The reason why `detokenize` for memory safe vllm inference is "
+            "included in args is due to the its implementation (i.e., subprocess "
+            "rather than within the python codes, thus have to communicate through "
+            "command line arguments). "
+        )},
+    )
+    
+    # Args for result saving
+    save_results: Optional[bool] = field(
+        default=False, metadata={"help": "Whether to save inference results."}
+    )
+    results_path: Optional[str] = field(
+        default=None, metadata={"help": "The path of inference results."}
+    )
+    
+    def __post_init__(self):
+        if self.save_results:
+            if self.results_path is None:
+                raise ValueError("Need to specify results_path when save_results is True.")
+            else:
+                if not self.results_path.endswith(".json"):
+                    raise ValueError("The results_path must be a json file.")
+                else:
+                    Path(self.results_path).parent.mkdir(parents=True, exist_ok=True)
 
 
 @dataclass
@@ -1225,23 +1252,19 @@ class DPOAlignerArguments:
 
 
 @dataclass
-class IterativeDPOAlignerArguments(InferencerWithOffloadingArguments):
+class IterativeAlignerArguments(InferencerArguments):
     """
-    Arguments for iterative DPO aligner.
+    Arguments for iterative aligners.
     """
-    # Generation (step1) args
-    dataset_name_or_path: Optional[str] = field(
-        default="cornfieldrm/iterative-prompt-v1-iter1-2K",
-        metadata={"help": "the location of the dataset name or path"},
-    )
-    output_dir: Optional[str] = field(
-        default="uf_split0_responses_K8.json",
-        metadata={"help": "the location of the output file"},
-    )
-    apply_chat_template: Optional[bool] = field(
-        default=True,
-        metadata={"help": "whether to apply chat template"},
-    )
+    pass
+                    
+
+@dataclass
+class IterativeDPOAlignerArguments(IterativeAlignerArguments):
+    """
+    Arguments for iterative DPO aligners.
+    """
+    pass
 
 
 PIPELINE_ARGUMENT_MAPPING = {
@@ -1250,7 +1273,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
-    "iter_dpo_aligner": IterativeDPOAlignerArguments,
+    "iterative_dpo_aligner": IterativeDPOAlignerArguments,
     "rm_tuner": RewardModelingArguments,
 }
 
