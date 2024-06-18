@@ -61,7 +61,7 @@ class Dataset:
     kwargs : Optional.
         Keyword arguments.
     """
-    def __init__(self, data_args=None, backend: str="huggingface", *args, **kwargs):
+    def __init__(self, data_args: DatasetArguments=None, backend: str="huggingface", *args, **kwargs):
         self.data_args = data_args
         self.backend = backend
         self.backend_dataset = None
@@ -263,7 +263,7 @@ class Dataset:
             return self
         else:
             raise NotImplementedError(
-                f'Currently .from_dict is not supported for backend "{backend}"'
+                f'Currently .from_dict is not supported for backend "{self.backend}"'
             )
 
 
@@ -331,7 +331,7 @@ class Dataset:
             return dict_obj
         else:
             raise NotImplementedError(
-                f'Current .to_dict is not supported for backend "{backend}"'
+                f'Current .to_dict is not supported for backend "{self.backend}"'
             )
 
 
@@ -347,7 +347,7 @@ class Dataset:
             return instance_list
         else:
             raise NotImplementedError(
-                f'Current .to_list is not supported for backend "{backend}"'
+                f'Current .to_list is not supported for backend "{self.backend}"'
             )
 
 
@@ -376,7 +376,7 @@ class Dataset:
         else:
             # If the backend is not Hugging Face, raise a NotImplementedError
             raise NotImplementedError(
-                f'Currently .map is not supported for backend "{backend}"'
+                f'Currently .map is not supported for backend "{self.backend}"'
             )
 
 

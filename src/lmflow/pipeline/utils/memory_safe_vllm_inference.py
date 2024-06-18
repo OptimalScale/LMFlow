@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
+
+# Note that this is only a workaround, since vllm
+# inference engine cannot release GPU memory properly by now. Please see this github 
+# [issue](https://github.com/vllm-project/vllm/issues/1908).
+
 import logging
 import sys
 import os
-sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from typing import Dict
 
 from transformers import (
@@ -26,14 +30,8 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-	# Parses arguments
-    # This is an inference pipeline and we should use the InferencerArguments class.
-    # However, use IterativeDPOAlignerArguments here, since this inference script is a 
-    # part of the iterative dpo pipeline, and the IterativeDPOAlignerArguments inherits 
-    # from the InferencerArguments class. Note that this is only a workaround, since vllm
-    # inference engine cannot release GPU memory properly by now. Please see this github 
-    # [issue](https://github.com/vllm-project/vllm/issues/1908).
-    pipeline_name = "iterative_dpo_aligner"
+    # Parses arguments
+    pipeline_name = "inferencer"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
     parser = HfArgumentParser((

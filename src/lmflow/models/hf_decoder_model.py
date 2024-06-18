@@ -517,7 +517,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                             tokenize=False, 
                             add_generation_prompt=True
                         )
-                    }
+                    },
+                    num_proc=dataset.data_args.preprocessing_num_workers,
                 )
                 inference_inputs = dataset.get_backend_dataset()['templated']
             else:
@@ -533,7 +534,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                             tokenize=False, 
                             add_generation_prompt=True
                         )
-                    }
+                    },
+                    num_proc=dataset.data_args.preprocessing_num_workers,
                 )
                 inference_inputs = dataset.get_backend_dataset()['templated']
             else:
@@ -556,7 +558,10 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                         )}
                         
                     return sample_out
-                dataset = dataset.map(preprocess_conversation)
+                dataset = dataset.map(
+                    preprocess_conversation,
+                    num_proc=dataset.data_args.preprocessing_num_workers,
+                )
                 inference_inputs = dataset.get_backend_dataset()['templated']
             else:
                 logger.warning(
