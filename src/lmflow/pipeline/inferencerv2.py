@@ -10,6 +10,7 @@ import logging
 import subprocess
 import importlib.resources as pkg_resources
 from typing import List, Union, Optional
+import time
 
 from vllm import SamplingParams
 from transformers import AutoTokenizer
@@ -201,6 +202,10 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             shell=True,
             preexec_fn=os.setsid
         )
+        # wait for the subprocess to finish (kill cleanly, otherwise may leads to:
+        # > Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedWriter name='<stdout>'> 
+        # > at interpreter shutdown, possibly due to daemon threads
+        time.sleep(30) 
         logger.info(f"MemorySafeVLLMInference subprocess run finished, info at finish: {cli_res}")
         
         if cli_res.returncode != 0:
