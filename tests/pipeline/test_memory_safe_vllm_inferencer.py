@@ -1,10 +1,15 @@
-import unittest
+# cannot use unittest, since memory safe vllm inference uses stdout, 
+# which has conflicts with unittest stdout.
+import logging
 import json
 
 from lmflow.args import DatasetArguments, ModelArguments, InferencerArguments
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.inferencerv2 import MemorySafeVLLMInferencer
 from lmflow.datasets import Dataset
+
+
+logger = logging.getLogger(__name__)
 
 
 model_args = ModelArguments(
@@ -31,7 +36,7 @@ inferencer_args = InferencerArguments(
 )
 
 
-class MemorySafeVLLMInferencerTest(unittest.TestCase):
+class MemorySafeVLLMInferencerTest:
     def test_init(self):
         self.dataset = Dataset(data_args)
         self.model = HFDecoderModel(model_args)
@@ -40,13 +45,18 @@ class MemorySafeVLLMInferencerTest(unittest.TestCase):
             data_args=data_args,
             inferencer_args=inferencer_args,
         )
+        self.status = []
 
     def test_inference(self):
         res = self.inferencer.inference()
-        self.assertTrue(isinstance(res, list))
-        self.assertTrue(isinstance(res[0], list))
-        self.assertTrue(isinstance(res[0][0], list))
-        self.assertTrue(isinstance(res[0][0][0], int))
+        test_res = all([
+            isinstance(res, list), 
+            isinstance(res[0], list), 
+            isinstance(res[0][0], list), 
+            isinstance(res[0][0][0], int),
+        ])
+        self.status.append(test_res)
+        logger.warning(f"test_inference: {test_res}")
         
     def test_inference_detokenize(self):
         inferencer_args.memory_safe_vllm_inference_detokenize = True
@@ -56,10 +66,21 @@ class MemorySafeVLLMInferencerTest(unittest.TestCase):
             inferencer_args=inferencer_args,
         )
         res = self.inferencer.inference()
-        self.assertTrue(isinstance(res, list))
-        self.assertTrue(isinstance(res[0], list))
-        self.assertTrue(isinstance(res[0][0], str))
+        test_res = all([
+            isinstance(res, list), 
+            isinstance(res[0], list), 
+            isinstance(res[0][0], str), 
+        ])
+        self.status.append(test_res)
+        logger.warning(f"test_inference_detokenize: {test_res}")
+        
+    def summary(self):
+        logger.warning(f"MemorySafeVLLMInferencerTest: {all(self.status)}")
         
         
 if __name__ == "__main__":
-    unittest.main()
+    test = MemorySafeVLLMInferencerTest()
+    test.test_init()
+    test.test_inference()
+    test.test_inference_detokenize()
+    test.summary()
