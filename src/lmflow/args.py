@@ -12,6 +12,7 @@ MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types
 extracted from the MODEL_CONFIG_CLASSES.
 """
 import logging
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Optional, List
 
@@ -95,6 +96,12 @@ class ModelArguments:
         Model architecture type.
     padding_side : str
         The side on which the tokenizer should have padding applied.
+    load_on_init: bool, optional
+        When init the model for inference, whether to load the model on __init__, By default True.
+    use_vllm_inference: bool, optional
+        Whether to use VLLM for inference, By default False.
+    vllm_tensor_parallel_size: int, optional
+        The tensor parallel size for VLLM inference.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -307,6 +314,24 @@ class ModelArguments:
                 "use padding_side from tokenizer.padding_side."),
             "choices": ["right", "left", "auto"],
         }
+    )
+    load_on_init: bool = field(
+        default=True,
+        metadata={"help": "When init the model for inference, whether to load the model on __init__, By default True."}
+    )
+    
+    # vllm inference init args
+    use_vllm_inference: bool = field(
+        default=False,
+        metadata={"help": "Whether to use VLLM for inference, By default False."}
+    )
+    vllm_tensor_parallel_size: Optional[int] = field(
+        default=1,
+        metadata={"help": "The tensor parallel size for VLLM inference."}
+    )
+    vllm_gpu_memory_utilization: Optional[float] = field(
+        default=0.95,
+        metadata={"help": "The GPU memory utilization for VLLM inference."}
     )
 
     def __post_init__(self):
@@ -838,6 +863,25 @@ class InferencerArguments:
 
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
+    use_beam_search : Optional[bool]
+        Whether to use beam search during inference, By default False.
+    num_output_sequences : Optional[int]
+        Number of output sequences to return for the given prompt, 
+        currently only used in vllm inference, By default 8.
+    top_p : Optional[float]
+        top_p for sampling, By default 1.0.
+    top_k : Optional[int]
+        top_k for sampling, By default -1 (no top_k).
+    additional_stop_token_ids : Optional[List[int]]
+        the ids of the end of sentence tokens, By default [].
+    apply_chat_template : Optional[bool]
+        Whether to apply chat template, By default True.
+    save_results : Optional[bool]
+        Whether to save inference results, By default False.
+    results_path : Optional[str]
+        The **json file** path of inference results, By default None.
+    memory_safe_vllm_inference_devices : Optional[str]
+        The device used for memory safe vllm inference. Example: '0,1', By default None.
     """
     device: str = field(
         default="gpu",
@@ -902,6 +946,69 @@ class InferencerArguments:
     use_accelerator: bool = field(
         default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
+    use_beam_search: Optional[bool] = field(
+        default=False,
+        metadata={"help": "whether to use beam search during inference."},
+    )
+    num_output_sequences: Optional[int] = field(
+        default=8,
+        metadata={"help": (
+            "number of output sequences to return for the given prompt, "
+            "currently only used in vllm inference."
+        )},
+    )
+    top_p: Optional[float] = field(
+        default=1.0,
+        metadata={"help": "top_p for sampling."},
+    )
+    top_k: Optional[int] = field(
+        default=-1,
+        metadata={"help": "top_k for sampling."},
+    )
+    additional_stop_token_ids: Optional[List[int]] = field(
+        default_factory=lambda: [], 
+        metadata={"help": "the ids of the end of sentence tokens"},
+    )
+    apply_chat_template: Optional[bool] = field(
+        default=True,
+        metadata={"help": "whether to apply chat template"},
+    )
+    memory_safe_vllm_inference_devices: Optional[str] = field(
+        default=None,
+        metadata={"help": "The device used for memory safe vllm inference. Example: '0,1'"},
+    )
+    memory_safe_vllm_inference_detokenize: Optional[bool] = field(
+        default=False,
+        metadata={"help": (
+            "Whether to detokenize the memory safe vllm inference results. "
+            "NOTE: "
+            "For iterative align pipelines, whether to detokenize depends on "
+            "the homogeneity of the policy model and the reward model "
+            "(i.e., if they have the same tokenizer). "
+            "The reason why `detokenize` for memory safe vllm inference is "
+            "included in args is due to the its implementation (i.e., subprocess "
+            "rather than within the python codes, thus have to communicate through "
+            "command line arguments). "
+        )},
+    )
+    
+    # Args for result saving
+    save_results: Optional[bool] = field(
+        default=False, metadata={"help": "Whether to save inference results."}
+    )
+    results_path: Optional[str] = field(
+        default=None, metadata={"help": "The path of inference results."}
+    )
+    
+    def __post_init__(self):
+        if self.save_results:
+            if self.results_path is None:
+                raise ValueError("Need to specify results_path when save_results is True.")
+            else:
+                if not self.results_path.endswith(".json"):
+                    raise ValueError("The results_path must be a json file.")
+                else:
+                    Path(self.results_path).parent.mkdir(parents=True, exist_ok=True)
 
 
 @dataclass
@@ -1144,13 +1251,21 @@ class DPOAlignerArguments:
     )
 
 
+@dataclass
+class IterativeAlignerArguments(InferencerArguments):
+    """
+    Arguments for iterative aligners.
+    """
+    pass
+                    
+
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
-    "rm_tuner": RewardModelingArguments
+    "rm_tuner": RewardModelingArguments,
 }
 
 

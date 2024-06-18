@@ -314,3 +314,6 @@ LMFLOW_LORA_TARGET_MODULES_MAPPING = {
     'qwen2': ["q_proj", "v_proj"],
     'internlm2': ["wqkv"],
 }
+
+# vllm inference
+MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG = "MEMORY_SAFE_VLLM_INFERENCE_DONE"
