@@ -38,8 +38,11 @@ class InferencerWithOffloading(BasePipeline):
     def inference(self):
         raise NotImplementedError(".inference is not implemented")
         
-    def save(self):
-        raise NotImplementedError(".save is not implemented")
+    def save_inference_results(self):
+        raise NotImplementedError(".save_inference_results is not implemented")
+        
+    def load_inference_results(self):
+        raise NotImplementedError(".load_inference_results is not implemented")
     
     
 class VLLMInferencer(InferencerWithOffloading):
@@ -199,7 +202,6 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             preexec_fn=os.setsid
         )
         logger.info(f"MemorySafeVLLMInference subprocess run finished, info at finish: {cli_res}")
-        # os.killpg(os.getpgid(cli_res.pid), signal.SIGTERM)
         
         if cli_res.returncode != 0:
             raise RuntimeError(f"Error during MemorySafeVLLMInference.")
