@@ -173,6 +173,13 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
     def inference(self):
         cuda_env = ''
         if self.inferencer_args.memory_safe_vllm_inference_devices:
+            if len(self.inferencer_args.memory_safe_vllm_inference_devices.split(',')) != self.model_args.vllm_tensor_parallel_size:
+                raise ValueError(
+                    "The number of devices in `memory_safe_vllm_inference_devices` "
+                    "must be equal to the `vllm_tensor_parallel_size`. "
+                    f"Got {self.inferencer_args.memory_safe_vllm_inference_devices=} "
+                    f"and {self.model_args.vllm_tensor_parallel_size=}."
+                )
             cuda_env = f"CUDA_VISIBLE_DEVICES={self.inferencer_args.memory_safe_vllm_inference_devices}"
         inferencer_args = make_shell_args_from_dataclass(
             dataclass_objects=[

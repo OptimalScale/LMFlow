@@ -1009,6 +1009,9 @@ class InferencerArguments:
                     raise ValueError("The results_path must be a json file.")
                 else:
                     Path(self.results_path).parent.mkdir(parents=True, exist_ok=True)
+                    
+        if self.memory_safe_vllm_inference_devices:
+            self.memory_safe_vllm_inference_devices = self.memory_safe_vllm_inference_devices.strip(',')
 
 
 @dataclass
