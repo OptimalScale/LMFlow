@@ -23,7 +23,7 @@ from lmflow.args import (
     ModelArguments, 
     DatasetArguments,
 )
-from lmflow.utils.args import make_shell_args_from_dataclass
+from lmflow.utils.common import make_shell_args_from_dataclass
 from lmflow.utils.constants import MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG
 
 
