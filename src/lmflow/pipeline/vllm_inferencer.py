@@ -200,15 +200,21 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             shell=True,
             preexec_fn=os.setsid
         )
-        # wait for the subprocess to finish (kill cleanly, otherwise may leads to:
-        # > Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedWriter name='<stdout>'> 
-        # > at interpreter shutdown, possibly due to daemon threads
-        time.sleep(30) 
         logger.info(f"MemorySafeVLLMInference subprocess run finished, info at finish: {cli_res}")
         
-        if cli_res.returncode != 0:
-            raise RuntimeError(f"Error during MemorySafeVLLMInference.")
+        if cli_res.returncode not in [0, 134]:
+            raise RuntimeError(f"Error during MemorySafeVLLMInference: {cli_res}")
         else:
+            if cli_res.returncode == 134:
+                # > Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedWriter name='<stdout>'> 
+                # > at interpreter shutdown, possibly due to daemon threads
+                # The above error, by our observation, is due to the kill signal with unfinished 
+                # stdout/stderr writing in the subprocess
+                logger.warning(
+                    "^^^^^^^^^^ Please ignore the above error, as it comes from the subprocess. "
+                    "This may due a kill signal with unfinished stdout/stderr writing in the subprocess. "
+                )
+                
             outputs = self.load_inference_results(self.inferencer_args.results_path)
             logger.info("MemorySafeVLLMInference result captured.")
             
