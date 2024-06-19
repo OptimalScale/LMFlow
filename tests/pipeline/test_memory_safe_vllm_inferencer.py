@@ -15,9 +15,6 @@ logger = logging.getLogger(__name__)
 model_args = ModelArguments(
     'Qwen/Qwen2-0.5B', 
     torch_dtype='auto',
-    vllm_gpu_memory_utilization=0.95,
-    use_vllm_inference=True,
-    vllm_tensor_parallel_size=2,
 )
 data_args = DatasetArguments(
     './data/alpaca/test_conversation',
@@ -29,10 +26,12 @@ inferencer_args = InferencerArguments(
     num_output_sequences=2,
     temperature=1.0,
     max_new_tokens=1024,
-    memory_safe_vllm_inference_devices='0,1,', # intended, testing InferencerArguments post init.
     save_results=True,
     results_path='./data/mem_safe_vllm_res.json',
-    memory_safe_vllm_inference_detokenize=False
+    use_vllm=True,
+    memory_safe_vllm_inference_detokenize=False,
+    vllm_gpu_memory_utilization=0.95,
+    vllm_tensor_parallel_size=2,
 )
 
 
