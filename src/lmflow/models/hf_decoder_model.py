@@ -21,7 +21,7 @@ and question answering.
 import hashlib
 import logging
 import os, shutil
-from typing import List, Union
+from typing import List, Union, Optional, Dict
 from pathlib import Path
 
 import torch
@@ -44,6 +44,7 @@ from peft import (
     get_peft_model,
     prepare_model_for_kbit_training
 )
+from vllm import SamplingParams
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.hf_model_mixin import HFModelMixin
@@ -332,9 +333,15 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         else:
             # Can be list of ints or a Tensor
             return self.tokenizer.decode(input, *args, **kwargs)
-
-
-    def inference(self, inputs, use_accelerator=False, *args, **kwargs):
+        
+        
+    def inference(
+        self, 
+        inputs, 
+        release_gpu: bool = False,
+        use_vllm: bool = False,
+        **kwargs
+    ):
         """
         Perform generation process of the model.
     
@@ -342,6 +349,45 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         ------------
         inputs :
             The sequence used as a prompt for the generation or as model inputs to the model.
+            When using vllm inference, this should be a string or a list of strings.
+            When using normal inference, this should be a tensor.
+        release_gpu : bool, optional
+            Whether to release the GPU resource after inference, by default False.
+        use_vllm : bool, optional
+            Whether to use VLLM for inference, by default False.
+        kwargs : Optional.
+            Keyword arguments.    
+        
+        Returns
+        ------------
+        outputs :
+            The generated sequence output 
+        """
+        if not self._activated:
+            self.activate_model_for_inference(
+                use_vllm=use_vllm,
+                **kwargs,
+            )
+            
+        if use_vllm:
+            res = self.__vllm_inference(inputs, **kwargs)
+        else:
+            res = self.__inference(inputs, **kwargs)
+            
+        if release_gpu:
+            self.deactivate_model_for_inference(use_vllm=use_vllm)
+            
+        return res
+
+
+    def __inference(self, inputs, use_accelerator=False, *args, **kwargs):
+        """
+        Perform generation process of the model.
+    
+        Parameters
+        ------------
+        inputs :
+            The **tokenized** sequence used as a prompt for the generation or as model inputs to the model.
             
         args : Optional.
             Positional arguments.
@@ -354,8 +400,6 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         outputs :
             The generated sequence output 
         """
-
-
         with torch.no_grad():
             if use_accelerator:
                 outputs = self.backend_model.generate(
@@ -386,6 +430,167 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                         f"device \"{self.device}\" is not supported"
                     )
         return outputs
+    
+    
+    def __vllm_inference(
+        self, 
+        inputs: Union[str, List[str]],
+        sampling_params: Optional[SamplingParams] = None,
+        **kwargs,
+    ) -> Union[List[List[str]], List[List[List[int]]]]:
+        """Perform VLLM inference process of the model.
+
+        Parameters
+        ----------
+        inputs : Union[str, List[str]]
+            Prompt(s), string or a list of strings.
+        sampling_params : Optional[SamplingParams], optional
+            vllm SamplingParams object, by default None.
+
+        Returns
+        -------
+        Union[List[List[str]], List[List[List[int]]]]
+            When `sampling_params.detokenize = True`, return a list of list of strings. Inner list
+            contains sampling_params.n samples for a single prompt (i.e., `len(res[i]) = sampling_params.n`).
+            Outer list contains the results for all prompts (i.e., `len(res) = len(inputs)`).
+            
+            When `sampling_params.detokenize = False`, return a list of list of list of ints 
+            (token ids, no decoding after generation).
+        """
+        vllm_outputs = self.backend_model_for_inference.generate(
+            inputs,
+            sampling_params=sampling_params,
+            use_tqdm=True,
+        )
+        final_output = []
+        if sampling_params.detokenize:
+            for output in vllm_outputs:
+                final_output.append([sentence.text for sentence in output.outputs])
+        else:
+            for output in vllm_outputs:
+                final_output.append([sentence.token_ids for sentence in output.outputs])
+                                
+        return final_output
+    
+    
+    def prepare_inputs_for_inference(
+        self,
+        dataset: Dataset,
+        apply_chat_template: bool = True,
+        use_vllm: bool = False,
+    ) -> Union[List[str], Dict[str, torch.Tensor]]:
+        """
+        Prepare inputs for inference.
+    
+        Parameters
+        ------------
+        dataset : lmflow.datasets.Dataset.
+            The dataset used for inference.
+            
+        args : Optional.
+            Positional arguments.
+        
+        kwargs : Optional.
+            Keyword arguments.    
+        
+        Returns
+        ------------
+        outputs :
+            The prepared inputs for inference.
+        """
+        if use_vllm:
+            inference_inputs = self.__prepare_inputs_for_vllm_inference(
+                dataset=dataset, 
+                apply_chat_template=apply_chat_template
+            )
+        else:
+            inference_inputs = self.__prepare_inputs_for_inference(dataset)
+            
+        return inference_inputs
+    
+    
+    def __prepare_inputs_for_vllm_inference(
+        self,
+        dataset: Dataset,
+        apply_chat_template: bool = True,
+    ) -> List[str]:
+        if dataset.get_type() == 'text_only':
+            if apply_chat_template:
+                dataset = dataset.map(
+                    lambda sample: {
+                        "templated": self.tokenizer.apply_chat_template(
+                            [{"role":"user", "content": sample['text']}], 
+                            tokenize=False, 
+                            add_generation_prompt=True
+                        )
+                    },
+                    num_proc=dataset.data_args.preprocessing_num_workers,
+                )
+                inference_inputs = dataset.get_backend_dataset()['templated']
+            else:
+                inference_inputs = dataset.get_backend_dataset()['text']
+            
+        elif dataset.get_type() == "text2text":
+            logger.warning(f"For a text2text dataset, only `input` will be used as the model input.")
+            if apply_chat_template:
+                dataset = dataset.map(
+                    lambda sample: {
+                        "templated": self.tokenizer.apply_chat_template(
+                            conversation=[{"role":"user", "content": sample['input']}], 
+                            tokenize=False, 
+                            add_generation_prompt=True
+                        )
+                    },
+                    num_proc=dataset.data_args.preprocessing_num_workers,
+                )
+                inference_inputs = dataset.get_backend_dataset()['templated']
+            else:
+                inference_inputs = dataset.get_backend_dataset()['input']
+            
+        elif dataset.get_type() == 'conversation':
+            if apply_chat_template:
+                def preprocess_conversation(sample):
+                    if len(sample['messages'])%2 == 0:
+                        conversation = sample['messages'][:-1]
+                        
+                    if sample['messages'][-1]['role'] != 'assistant':
+                        logger.warning("Not a valid conversation, skip.")
+                        sample_out = {"templated": ""}
+                    else:
+                        sample_out = {"templated": self.tokenizer.apply_chat_template(
+                            conversation=conversation,
+                            tokenize=False,
+                            add_generation_prompt=True,
+                        )}
+                        
+                    return sample_out
+                dataset = dataset.map(
+                    preprocess_conversation,
+                    num_proc=dataset.data_args.preprocessing_num_workers,
+                )
+                inference_inputs = dataset.get_backend_dataset()['templated']
+            else:
+                logger.warning(
+                    "Your dataset is `conversation` type but `apply_chat_template` is set to False. "
+                    "Will use the first user input in conversation as model input."
+                )
+                inference_inputs = [conversation[0]['content'] for conversation in dataset.get_backend_dataset()['messages']]
+
+        else:
+            raise NotImplementedError(
+                f"Currently `{dataset.get_type()}` data are not supported for vllm inference."
+            )
+
+        inference_inputs = [sentence for sentence in inference_inputs if len(sentence) > 0]
+        
+        return inference_inputs
+    
+    
+    def __prepare_inputs_for_inference(
+        self,
+        dataset: Dataset,
+    ):
+        raise NotImplementedError("prepare_inputs_for_inference is not implemented")
 
 
     def merge_lora_weights(self):
