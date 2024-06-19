@@ -17,7 +17,7 @@ from transformers import (
 
 from lmflow.datasets import Dataset
 from lmflow.models.hf_decoder_model import HFDecoderModel
-from lmflow.pipeline.inferencerv2 import VLLMInferencer
+from lmflow.pipeline.vllm_inferencer import VLLMInferencer
 from lmflow.args import (
     ModelArguments, 
     DatasetArguments, 

@@ -18,8 +18,12 @@ from transformers import AutoTokenizer
 from lmflow.datasets import Dataset
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.models.hf_decoder_model import HFDecoderModel
-from lmflow.args import InferencerArguments, ModelArguments, DatasetArguments
-from lmflow.pipeline.utils.collections import make_shell_args_from_dataclass
+from lmflow.args import (
+    InferencerArguments, 
+    ModelArguments, 
+    DatasetArguments,
+)
+from lmflow.utils.args import make_shell_args_from_dataclass
 from lmflow.utils.constants import MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG
 
 
@@ -52,7 +56,7 @@ class VLLMInferencer(InferencerWithOffloading):
         model_args: ModelArguments,
         inferencer_args: InferencerArguments,
     ):
-        assert model_args.use_vllm_inference, "The model_args.use_vllm_inference must be True."
+        assert inferencer_args.use_vllm, "The inferencer_args.use_vllm must be True."
         super().__init__(model_args, inferencer_args)
         self.sampling_params = self.parse_to_sampling_params(inferencer_args)
         
@@ -125,13 +129,17 @@ class VLLMInferencer(InferencerWithOffloading):
         
         model_input = model.prepare_inputs_for_inference(
             dataset=dataset, 
-            apply_chat_template=self.inferencer_args.apply_chat_template
+            apply_chat_template=self.inferencer_args.apply_chat_template,
+            use_vllm=self.inferencer_args.use_vllm
         )
         
         outputs = model.inference(
             inputs=model_input,
             sampling_params=sampling_params,
             release_gpu=release_gpu,
+            use_vllm=self.inferencer_args.use_vllm,
+            vllm_gpu_memory_utilization=self.inferencer_args.vllm_gpu_memory_utilization,
+            vllm_tensor_parallel_size=self.inferencer_args.vllm_tensor_parallel_size,
         )
                 
         if self.inferencer_args.save_results:
@@ -175,16 +183,6 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
         
     
     def inference(self):
-        cuda_env = ''
-        if self.inferencer_args.memory_safe_vllm_inference_devices:
-            if len(self.inferencer_args.memory_safe_vllm_inference_devices.split(',')) != self.model_args.vllm_tensor_parallel_size:
-                raise ValueError(
-                    "The number of devices in `memory_safe_vllm_inference_devices` "
-                    "must be equal to the `vllm_tensor_parallel_size`. "
-                    f"Got {self.inferencer_args.memory_safe_vllm_inference_devices=} "
-                    f"and {self.model_args.vllm_tensor_parallel_size=}."
-                )
-            cuda_env = f"CUDA_VISIBLE_DEVICES={self.inferencer_args.memory_safe_vllm_inference_devices}"
         inferencer_args = make_shell_args_from_dataclass(
             dataclass_objects=[
                 self.model_args, 
@@ -193,7 +191,7 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             ],
             format="shell",
         )
-        cmd = cuda_env + " python " + str(self.inferencer_file_path) + " " + inferencer_args
+        cmd = "python " + str(self.inferencer_file_path) + " " + inferencer_args
         
         cli_res = subprocess.run(
             args=cmd,

@@ -1,8 +1,63 @@
 #!/usr/bin/env python
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
-from typing import Dict, Union
-from dataclasses import fields, Field, make_dataclass
+import logging
+from dataclasses import dataclass, field, fields, Field, make_dataclass
+from pathlib import Path
+from typing import Optional, List, Union, Dict
+
+
+logger = logging.getLogger(__name__)
+
+
+def make_shell_args_from_dataclass(
+    dataclass_objects: List, 
+    format: str="subprocess",
+    skip_default: bool=True,
+) -> Union[str, List[str]]:
+    """Return a string or a list of strings that can be used as shell arguments.
+
+    Parameters
+    ----------
+    dataclass_objects : List
+        A list of dataclass objects.
+    format : str, optional
+        Return format, can be "shell" or "subprocess", by default "subprocess".
+    skip_default : bool, optional
+        Whether to skip attributes with default values, by default True. 
+
+    Returns
+    -------
+    Union[str, List[str]]
+    """
+    assert isinstance(dataclass_objects, list), "dataclass_objects should be a list of dataclass objects."
+    all_args = {}
+    for dataclass_object in dataclass_objects:
+        for k, v in dataclass_object.__dict__.items():
+            if not v:
+                continue
+            if skip_default:
+                if dataclass_object.__dataclass_fields__[k].default == v:
+                    continue
+            if k not in all_args:
+                all_args[k] = v
+            elif k in all_args:
+                if all_args[k] == v:
+                    continue
+                else:
+                    logger.warning(f"Found different values for the same key: {k}, using value: {v} instead.")
+                    all_args[k] = v
+    
+    if format == "shell":
+        final_res = " ".join([f"--{k} {v}" for k, v in all_args.items()])
+    elif format == "subprocess":
+        final_res = []
+        for k, v in all_args.items():
+            final_res.extend([f"--{k}", str(v)])
+    else:
+        raise ValueError(f"Unknown format: {format}")
+        
+    return final_res
 
 
 def create_copied_dataclass(

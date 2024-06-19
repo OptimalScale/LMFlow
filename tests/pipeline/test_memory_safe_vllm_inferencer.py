@@ -5,7 +5,7 @@ import json
 
 from lmflow.args import DatasetArguments, ModelArguments, InferencerArguments
 from lmflow.models.hf_decoder_model import HFDecoderModel
-from lmflow.pipeline.inferencerv2 import MemorySafeVLLMInferencer
+from lmflow.pipeline.vllm_inferencer import MemorySafeVLLMInferencer
 from lmflow.datasets import Dataset
 
 
@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
 
 
 model_args = ModelArguments(
-    '/home/yizhenjia/.cache/huggingface/hub/models--Qwen--Qwen2-0.5B/snapshots/ff3a49fac17555b8dfc4db6709f480cc8f16a9fe', 
+    'Qwen/Qwen2-0.5B', 
     torch_dtype='auto',
     vllm_gpu_memory_utilization=0.95,
     use_vllm_inference=True,
     vllm_tensor_parallel_size=2,
 )
 data_args = DatasetArguments(
-    '/vol/yizhenjia/projs/LMFlow/data/alpaca/test_conversation',
+    './data/alpaca/test_conversation',
     preprocessing_num_workers=4,
 )
 inferencer_args = InferencerArguments(
@@ -31,7 +31,7 @@ inferencer_args = InferencerArguments(
     max_new_tokens=1024,
     memory_safe_vllm_inference_devices='0,1,', # intended, testing InferencerArguments post init.
     save_results=True,
-    results_path='/vol/yizhenjia/projs/LMFlow/data/mem_safe_vllm_res.json',
+    results_path='./data/mem_safe_vllm_res.json',
     memory_safe_vllm_inference_detokenize=False
 )
 

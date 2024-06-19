@@ -107,11 +107,6 @@ class HFModelMixin(BaseModel):
 
         if do_train:
             self.__prepare_model_for_training(model_args, self.hf_auto_model)
-        else:
-            if model_args.load_on_init:
-                self.activate_model_for_inference()
-            else:
-                self.backend_model = None
             
         # some post processing
         if self.tokenizer.eos_token_id is None:
@@ -365,8 +360,7 @@ class HFModelMixin(BaseModel):
         use_accelerator: bool,
         ds_config
     ):
-        assert not model_args.use_vllm_inference, "You should use VLLM inference instead."
-        if self.backend_model is None:
+        if not hasattr(self, "backend_model"):
             # TODO: change to accelerate
             logger.info("Preparing model for inference")
             if use_accelerator:
@@ -449,24 +443,34 @@ class HFModelMixin(BaseModel):
     def __prepare_model_for_vllm_inference(
         self,
         model_args: ModelArguments,
+        vllm_gpu_memory_utilization: float,
+        vllm_tensor_parallel_size: int,
     ):
-        self.backend_model = LLM(
+        self.backend_model_for_inference = LLM(
             model=model_args.model_name_or_path,
             tokenizer=model_args.model_name_or_path,
             dtype=model_args.torch_dtype,
             load_format="auto",
-            gpu_memory_utilization=model_args.vllm_gpu_memory_utilization,
-            tensor_parallel_size=model_args.vllm_tensor_parallel_size,
+            gpu_memory_utilization=vllm_gpu_memory_utilization,
+            tensor_parallel_size=vllm_tensor_parallel_size,
         )
         
     
-    def activate_model_for_inference(self):
+    def activate_model_for_inference(
+        self,
+        use_vllm: bool=False,
+        **kwargs,
+    ):
         if self._activated:
             logger.warning("You are trying to activate the model for inference, but it is already activated.")
             return
         
-        if self.model_args.use_vllm_inference:
-            self.__prepare_model_for_vllm_inference(model_args=self.model_args)
+        if use_vllm:
+            self.__prepare_model_for_vllm_inference(
+                model_args=self.model_args,
+                vllm_gpu_memory_utilization=kwargs.get("vllm_gpu_memory_utilization"),
+                vllm_tensor_parallel_size=kwargs.get("vllm_tensor_parallel_size"),
+            )
         else:
             self.__prepare_model_for_inference(
                 model_args=self.model_args,
@@ -478,7 +482,10 @@ class HFModelMixin(BaseModel):
         self._activated = True
             
             
-    def deactivate_model_for_inference(self):
+    def deactivate_model_for_inference(
+        self,
+        use_vllm: bool=False,
+    ):
         """Deactivate the model and release the resources.
         
         NOTE: Currently, VLLM doesn't have an official way to do this, and the
@@ -490,13 +497,12 @@ class HFModelMixin(BaseModel):
             logger.warning("You are trying to deactivate the model for inference, but it is already deactivated.")
             return
         
-        if self.model_args.use_vllm_inference:
+        if use_vllm:
             destroy_model_parallel()
-            del self.backend_model.llm_engine.model_executor.driver_worker
-            del self.backend_model
+            del self.backend_model_for_inference.llm_engine.model_executor.driver_worker
+            del self.backend_model_for_inference
             gc.collect()
             torch.cuda.empty_cache()
-            self.backend_model = None
         else:
             self.backend_model.to("cpu")
             pass

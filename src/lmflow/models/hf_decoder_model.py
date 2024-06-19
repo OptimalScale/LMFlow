@@ -339,6 +339,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self, 
         inputs, 
         release_gpu: bool = False,
+        use_vllm: bool = False,
         **kwargs
     ):
         """
@@ -352,6 +353,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             When using normal inference, this should be a tensor.
         release_gpu : bool, optional
             Whether to release the GPU resource after inference, by default False.
+        use_vllm : bool, optional
+            Whether to use VLLM for inference, by default False.
         kwargs : Optional.
             Keyword arguments.    
         
@@ -361,20 +364,23 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             The generated sequence output 
         """
         if not self._activated:
-            self.activate_model_for_inference()
+            self.activate_model_for_inference(
+                use_vllm=use_vllm,
+                **kwargs,
+            )
             
-        if self.model_args.use_vllm_inference:
-            res = self._vllm_inference(inputs, **kwargs)
+        if use_vllm:
+            res = self.__vllm_inference(inputs, **kwargs)
         else:
-            res = self._inference(inputs, **kwargs)
+            res = self.__inference(inputs, **kwargs)
             
         if release_gpu:
-            self.deactivate_model_for_inference()
+            self.deactivate_model_for_inference(use_vllm=use_vllm)
             
         return res
 
 
-    def _inference(self, inputs, use_accelerator=False, *args, **kwargs):
+    def __inference(self, inputs, use_accelerator=False, *args, **kwargs):
         """
         Perform generation process of the model.
     
@@ -426,7 +432,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         return outputs
     
     
-    def _vllm_inference(
+    def __vllm_inference(
         self, 
         inputs: Union[str, List[str]],
         sampling_params: Optional[SamplingParams] = None,
@@ -450,9 +456,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             When `sampling_params.detokenize = False`, return a list of list of list of ints 
             (token ids, no decoding after generation).
         """
-        assert self.model_args.use_vllm_inference, "VLLM inference is not enabled."
-            
-        vllm_outputs = self.backend_model.generate(
+        vllm_outputs = self.backend_model_for_inference.generate(
             inputs,
             sampling_params=sampling_params,
             use_tqdm=True,
@@ -472,6 +476,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self,
         dataset: Dataset,
         apply_chat_template: bool = True,
+        use_vllm: bool = False,
     ) -> Union[List[str], Dict[str, torch.Tensor]]:
         """
         Prepare inputs for inference.
@@ -492,7 +497,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         outputs :
             The prepared inputs for inference.
         """
-        if self.model_args.use_vllm_inference:
+        if use_vllm:
             inference_inputs = self.__prepare_inputs_for_vllm_inference(
                 dataset=dataset, 
                 apply_chat_template=apply_chat_template
