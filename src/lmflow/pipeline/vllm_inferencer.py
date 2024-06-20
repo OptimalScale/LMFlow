@@ -34,9 +34,11 @@ class InferencerWithOffloading(BasePipeline):
     def __init__(
         self, 
         model_args: ModelArguments,
+        data_args: DatasetArguments,
         inferencer_args: InferencerArguments,
     ):
         self.model_args = model_args
+        self.data_args = data_args
         self.inferencer_args = inferencer_args
         self.eos_token_id = AutoTokenizer.from_pretrained(model_args.model_name_or_path).eos_token_id
 
@@ -54,10 +56,11 @@ class VLLMInferencer(InferencerWithOffloading):
     def __init__(
         self,
         model_args: ModelArguments,
+        data_args: DatasetArguments,
         inferencer_args: InferencerArguments,
     ):
         assert inferencer_args.use_vllm, "The inferencer_args.use_vllm must be True."
-        super().__init__(model_args, inferencer_args)
+        super().__init__(model_args, data_args, inferencer_args)
         self.sampling_params = self.parse_to_sampling_params(inferencer_args)
         
     
@@ -174,8 +177,7 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
         inferencer_args: InferencerArguments,
     ):
         assert inferencer_args.save_results, "For MemorySafeVLLMInferencer, `save_results` must be True."
-        super().__init__(model_args, inferencer_args)
-        self.data_args = data_args
+        super().__init__(model_args, data_args, inferencer_args)
         self.inferencer_file_path = pkg_resources.files("lmflow.pipeline.utils") / "memory_safe_vllm_inference.py"
         
     

@@ -4,10 +4,10 @@
 # Parses arguments
 run_name=vllm_inference
 model_name_or_path='Qwen/Qwen2-0.5B'
-dataset_path=data/alpaca/train_conversation
+dataset_path=data/alpaca/test_conversation
 output_dir=data/inference_results
 output_file_name=results.json
-apply_chat_template=False
+apply_chat_template=True
 
 # Safety related arguments
 trust_remote_code=0
@@ -61,7 +61,7 @@ python /vol/yizhenjia/projs/LMFlow/examples/vllm_inference.py \
   --trust_remote_code ${trust_remote_code} \
   --model_name_or_path ${model_name_or_path} \
   --dataset_path ${dataset_path} \
-  --preprocessing_num_workers 4 \
+  --preprocessing_num_workers 16 \
   --random_seed 42 \
   --apply_chat_template ${apply_chat_template} \
   --num_output_sequences 2 \

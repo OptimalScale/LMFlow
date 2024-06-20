@@ -52,7 +52,7 @@ def main():
         model,
         dataset,
         release_gpu=False,
-        detokenize=True,
+        decode_inference_result=True,
     )
     
 

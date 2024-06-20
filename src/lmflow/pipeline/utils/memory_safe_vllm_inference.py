@@ -48,7 +48,7 @@ def main():
 
     dataset = Dataset(data_args)
     model = HFDecoderModel(model_args)
-    inferencer = VLLMInferencer(model_args, pipeline_args)
+    inferencer = VLLMInferencer(model_args, data_args, pipeline_args)
 
     res = inferencer.inference(
         model,
