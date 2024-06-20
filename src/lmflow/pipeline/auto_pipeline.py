@@ -17,12 +17,14 @@ def is_package_version_at_least(package_name, min_version):
 from lmflow.pipeline.evaluator import Evaluator
 from lmflow.pipeline.finetuner import Finetuner
 from lmflow.pipeline.inferencer import Inferencer
+from lmflow.pipeline.vllm_inferencer import VLLMInferencer
 from lmflow.pipeline.dpo_aligner import DPOAligner
 from lmflow.pipeline.rm_tuner import RewardModelingTuner
 PIPELINE_MAPPING = {
     "evaluator": Evaluator,
     "finetuner": Finetuner,
     "inferencer": Inferencer,
+    "vllm_inferencer": VLLMInferencer,
     "dpo_aligner": DPOAligner,
     "rm_tuner": RewardModelingTuner,
 }

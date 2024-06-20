@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
-
-# Note that this is only a workaround, since vllm
-# inference engine cannot release GPU memory properly by now. Please see this github 
-# [issue](https://github.com/vllm-project/vllm/issues/1908).
-
 import logging
-import sys
 import os
-from typing import Dict
+import sys
 
 from transformers import (
     HfArgumentParser
@@ -17,13 +11,12 @@ from transformers import (
 
 from lmflow.datasets import Dataset
 from lmflow.models.hf_decoder_model import HFDecoderModel
-from lmflow.pipeline.vllm_inferencer import VLLMInferencer
+from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.args import (
     ModelArguments, 
     DatasetArguments, 
     AutoArguments,
 )
-from lmflow.utils.constants import MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG
 
 
 logger = logging.getLogger(__name__)
@@ -48,7 +41,12 @@ def main():
 
     dataset = Dataset(data_args)
     model = HFDecoderModel(model_args)
-    inferencer = VLLMInferencer(model_args, data_args, pipeline_args)
+    inferencer = AutoPipeline.get_pipeline(
+        pipeline_name=pipeline_name,
+        model_args=model_args,
+        data_args=data_args,
+        pipeline_args=pipeline_args
+    )
 
     res = inferencer.inference(
         model,
@@ -56,9 +54,6 @@ def main():
         release_gpu=False,
         enable_decode_inference_result=pipeline_args.enable_decode_inference_result,
     )
-    
-    # use this as a flag, stdout will be captured by the pipeline
-    print(MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG)
     
 
 if __name__ == "__main__":

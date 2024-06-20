@@ -127,7 +127,7 @@ Here is an example to finetune a GPT-2 base model.
 ```sh
 cd data && ./download.sh alpaca && cd -
 
-./scripts/run_finetune.sh \
+bash ./scripts/run_finetune.sh \
   --model_name_or_path gpt2 \
   --dataset_path data/alpaca/train_conversation \
   --output_model_path output_models/finetuned_gpt2
@@ -141,7 +141,7 @@ cd data && ./download.sh alpaca && cd -
 >```bash
 >cd data && ./download.sh alpaca && cd -
 >
->./scripts/run_finetune.sh \
+>bash ./scripts/run_finetune.sh \
 >  --model_name_or_path meta-llama/Meta-Llama-3-8B \
 >  --dataset_path data/alpaca/train_conversation \
 >  --conversation_template llama3 \
@@ -155,7 +155,7 @@ cd data && ./download.sh alpaca && cd -
 ```sh
 cd data && ./download.sh alpaca && cd -
 
-./scripts/run_finetune_with_lisa.sh \
+bash ./scripts/run_finetune_with_lisa.sh \
   --model_name_or_path meta-llama/Llama-2-7b-hf \
   --dataset_path data/alpaca/train_conversation \
   --output_model_path output_models/finetuned_llama2_7b \
@@ -169,7 +169,7 @@ cd data && ./download.sh alpaca && cd -
 >```bash
 >cd data && ./download.sh alpaca && cd -
 >
->./scripts/run_finetune_with_lisa.sh \
+>bash ./scripts/run_finetune_with_lisa.sh \
 >  --model_name_or_path meta-llama/Llama-2-7b-hf \
 >  --dataset_path data/alpaca/train_conversation \
 >  --conversation_template llama2 \
@@ -185,7 +185,7 @@ LoRA is a parameter-efficient finetuning algorithm and is more efficient than fu
 ```sh
 cd data && ./download.sh alpaca && cd -
 
-./scripts/run_finetune_with_lora.sh \
+bash ./scripts/run_finetune_with_lora.sh \
   --model_name_or_path facebook/galactica-1.3b \
   --dataset_path data/alpaca/train_conversation \
   --output_lora_path output_models/finetuned_galactica_lora
@@ -197,7 +197,7 @@ cd data && ./download.sh alpaca && cd -
 >```bash
 >cd data && ./download.sh alpaca && cd -
 >
->./scripts/run_finetune_with_lora.sh \
+>bash ./scripts/run_finetune_with_lora.sh \
 >  --model_name_or_path meta-llama/Llama-2-7b-hf \
 >  --dataset_path data/alpaca/train_conversation \
 >  --conversation_template llama2 \
@@ -209,7 +209,7 @@ cd data && ./download.sh alpaca && cd -
 >
 >Merge LoRA weight and the base model into one using:  
 >```sh
->./scripts/run_merge_lora.sh \
+>bash ./scripts/run_merge_lora.sh \
 >  --model_name_or_path Qwen/Qwen1.5-1.8B \
 >  --lora_model_path output_models/lora \
 >  --output_model_path output_models/lora_merged \
@@ -219,8 +219,21 @@ cd data && ./download.sh alpaca && cd -
 ### Inference
 After finetuning, you can run the following command to chat with the model.
 ```sh
-./scripts/run_chatbot.sh output_models/finetuned_gpt2
+bash ./scripts/run_chatbot.sh output_models/finetuned_gpt2
 ```
+
+> [!TIP]
+> We recommend using vLLM for faster inference.
+> 
+> <details><summary>Faster inference using vLLM</summary>  
+>
+>```bash
+>bash ./scripts/run_vllm_inference.sh \
+>   --model_name_or_path Qwen/Qwen2-0.5B \
+>   --dataset_path data/alpaca/test_conversation \
+>   --output_dir data/inference_results \
+>```
+> </details>
 
 ### Deployment
 If you want to deploy your own model locally, we provide a gradio-based UI for building chatbots. 
@@ -240,7 +253,7 @@ You can directly run the LMFlow benchmark evaluation to obtain the results to pa
 [LLM comparision](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing).
 For example, to run GPT2 XL, one may execute
 ```sh
-./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
+bash ./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
 ```
 `--model_name_or_path` is required, you may fill in huggingface model name or local model path here.
 
@@ -287,6 +300,10 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 * FlashAttention
 
   LMFlow supports both FlashAttention-1 and the latest FlashAttention-2. Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
+
+* vLLM
+
+  Try vLLM for fast and easy-to-use LLM inference and serving. Thanks for the [great work](https://github.com/vllm-project/vllm)!
 
 </details>
 

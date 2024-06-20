@@ -449,7 +449,7 @@ class HFModelMixin(BaseModel):
         self.backend_model_for_inference = LLM(
             model=model_args.model_name_or_path,
             tokenizer=model_args.model_name_or_path,
-            dtype=model_args.torch_dtype,
+            dtype=model_args.torch_dtype if model_args.torch_dtype else "auto",
             load_format="auto",
             gpu_memory_utilization=vllm_gpu_memory_utilization,
             tensor_parallel_size=vllm_tensor_parallel_size,

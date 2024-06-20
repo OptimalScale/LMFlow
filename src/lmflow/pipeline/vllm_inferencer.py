@@ -24,7 +24,7 @@ from lmflow.args import (
     DatasetArguments,
 )
 from lmflow.utils.common import make_shell_args_from_dataclass
-from lmflow.utils.constants import MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG
+from lmflow.utils.constants import RETURN_CODE_ERROR_BUFFER
 
 
 logger = logging.getLogger(__name__)
@@ -34,9 +34,11 @@ class InferencerWithOffloading(BasePipeline):
     def __init__(
         self, 
         model_args: ModelArguments,
+        data_args: DatasetArguments,
         inferencer_args: InferencerArguments,
     ):
         self.model_args = model_args
+        self.data_args = data_args
         self.inferencer_args = inferencer_args
         self.eos_token_id = AutoTokenizer.from_pretrained(model_args.model_name_or_path).eos_token_id
 
@@ -54,10 +56,11 @@ class VLLMInferencer(InferencerWithOffloading):
     def __init__(
         self,
         model_args: ModelArguments,
+        data_args: DatasetArguments,
         inferencer_args: InferencerArguments,
     ):
         assert inferencer_args.use_vllm, "The inferencer_args.use_vllm must be True."
-        super().__init__(model_args, inferencer_args)
+        super().__init__(model_args, data_args, inferencer_args)
         self.sampling_params = self.parse_to_sampling_params(inferencer_args)
         
     
@@ -81,7 +84,7 @@ class VLLMInferencer(InferencerWithOffloading):
         self,
         model: HFDecoderModel, 
         dataset: Dataset, 
-        detokenize: bool = True,
+        enable_decode_inference_result: bool = True,
         release_gpu: bool = False,
         inference_args: Optional[InferencerArguments] = None,
     ) -> Union[List[List[str]], List[List[List[int]]]]:
@@ -96,25 +99,22 @@ class VLLMInferencer(InferencerWithOffloading):
             LMFlow Dataset object
         apply_chat_template : bool, optional
             Whether to apply chat template to the input, by default True.
-        detokenize : bool, optional
+        enable_decode_inference_result : bool, optional
             Whether to decode after generation, by default False.
         release_gpu : bool, optional
             Whether to release gpu resources, by default False. 
-            NOTE: The reason why `release_gpu` and `detokenize` are not in `inference_args` is that
-            Inferencer may be used by other pipeline, and the pipeline may want to control these 
-            two behaviors dynamically. 
         inference_args : InferencerArguments, optional
             by default None
 
         Returns
         -------
         Union[List[List[str]], List[List[List[int]]]]
-            When `detokenize = True`, return a list of list of strings. Inner list
+            When `enable_decode_inference_result = True`, return a list of list of strings. Inner list
             contains inference_args.num_output_sequences samples for a single prompt 
             (i.e., `len(res[i]) = inference_args.num_output_sequences`). Outer list 
             contains the results for all prompts (i.e., `len(res) = len(dataset)`).
             
-            When `detokenize = False`, return a list of list of list of ints 
+            When `enable_decode_inference_result = False`, return a list of list of list of ints 
             (token ids, no decoding after generation).
         """
         if inference_args:
@@ -125,7 +125,7 @@ class VLLMInferencer(InferencerWithOffloading):
         else:
             sampling_params = self.sampling_params
             
-        sampling_params.detokenize = detokenize
+        sampling_params.detokenize = enable_decode_inference_result
         
         model_input = model.prepare_inputs_for_inference(
             dataset=dataset, 
@@ -177,8 +177,7 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
         inferencer_args: InferencerArguments,
     ):
         assert inferencer_args.save_results, "For MemorySafeVLLMInferencer, `save_results` must be True."
-        super().__init__(model_args, inferencer_args)
-        self.data_args = data_args
+        super().__init__(model_args, data_args, inferencer_args)
         self.inferencer_file_path = pkg_resources.files("lmflow.pipeline.utils") / "memory_safe_vllm_inference.py"
         
     
@@ -200,16 +199,20 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             shell=True,
             preexec_fn=os.setsid
         )
-        # wait for the subprocess to finish (kill cleanly, otherwise may leads to:
-        # > Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedWriter name='<stdout>'> 
-        # > at interpreter shutdown, possibly due to daemon threads
-        time.sleep(30) 
         logger.info(f"MemorySafeVLLMInference subprocess run finished, info at finish: {cli_res}")
         
-        if cli_res.returncode != 0:
-            raise RuntimeError(f"Error during MemorySafeVLLMInference.")
+        if cli_res.returncode in RETURN_CODE_ERROR_BUFFER:
+            # > Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedWriter name='<stdout>'> 
+            # > at interpreter shutdown, possibly due to daemon threads
+            logger.warning(
+                "^^^^^^^^^^ Please ignore the above error, as it comes from the subprocess. "
+                "This may due a kill signal with unfinished stdout/stderr writing in the subprocess. "
+            )
         else:
-            outputs = self.load_inference_results(self.inferencer_args.results_path)
-            logger.info("MemorySafeVLLMInference result captured.")
-            
-            return outputs
+            if cli_res.returncode != 0:
+                raise RuntimeError(f"Error during MemorySafeVLLMInference: {cli_res}")
+                
+        outputs = self.load_inference_results(self.inferencer_args.results_path)
+        logger.info("MemorySafeVLLMInference result captured.")
+        
+        return outputs
