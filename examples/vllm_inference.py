@@ -52,7 +52,7 @@ def main():
         model,
         dataset,
         release_gpu=False,
-        decode_inference_result=True,
+        decode_inference_result=pipeline_args.decode_inference_result,
     )
     
 
