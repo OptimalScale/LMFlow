@@ -317,3 +317,11 @@ LMFLOW_LORA_TARGET_MODULES_MAPPING = {
 
 # vllm inference
 MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG = "MEMORY_SAFE_VLLM_INFERENCE_DONE"
+RETURN_CODE_ERROR_BUFFER = [
+    134
+]
+# return code 134:
+# > Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedWriter name='<stdout>'> 
+# > at interpreter shutdown, possibly due to daemon threads
+# The above error, by our observation, is due to the kill signal with unfinished 
+# stdout/stderr writing in the subprocess

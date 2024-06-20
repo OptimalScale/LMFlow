@@ -56,7 +56,7 @@ log_dir=${project_dir}/log/${run_name}
 output_file_path=${output_dir}/${run_name}/${output_file_name}
 mkdir -p ${output_dir}/${run_name} ${log_dir}
 
-python /vol/yizhenjia/projs/LMFlow/examples/vllm_inference.py \
+python examples/vllm_inference.py \
   --use_vllm True \
   --trust_remote_code ${trust_remote_code} \
   --model_name_or_path ${model_name_or_path} \
@@ -71,7 +71,7 @@ python /vol/yizhenjia/projs/LMFlow/examples/vllm_inference.py \
   --max_new_tokens 1024 \
   --save_results True \
   --results_path ${output_file_path} \
-  --decode_inference_result False \
+  --enable_decode_inference_result False \
   --vllm_gpu_memory_utilization 0.95 \
   --vllm_tensor_parallel_size 2 \
-  2>&1 | tee ${log_dir}/$(date "+%Y%m%d_%H%M%S").log
+  2>&1 | tee ${log_dir}/vllm_inference.log

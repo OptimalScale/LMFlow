@@ -856,7 +856,7 @@ class InferencerArguments:
         Whether to save inference results, By default False.
     results_path : Optional[str]
         The **json file** path of inference results, By default None.
-    decode_inference_result : Optional[bool]
+    enable_decode_inference_result : Optional[bool]
         Whether to detokenize the inference results. 
 
         NOTE: For iterative align pipelines, whether to detokenize depends on 
@@ -960,7 +960,7 @@ class InferencerArguments:
         default=True,
         metadata={"help": "whether to apply chat template"},
     )
-    decode_inference_result: Optional[bool] = field(
+    enable_decode_inference_result: Optional[bool] = field(
         default=False,
         metadata={"help": "Whether to decode the inference results."},
     )
