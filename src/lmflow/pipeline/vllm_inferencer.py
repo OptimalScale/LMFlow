@@ -81,7 +81,7 @@ class VLLMInferencer(InferencerWithOffloading):
         self,
         model: HFDecoderModel, 
         dataset: Dataset, 
-        detokenize: bool = True,
+        decode_inference_result: bool = True,
         release_gpu: bool = False,
         inference_args: Optional[InferencerArguments] = None,
     ) -> Union[List[List[str]], List[List[List[int]]]]:
@@ -96,25 +96,22 @@ class VLLMInferencer(InferencerWithOffloading):
             LMFlow Dataset object
         apply_chat_template : bool, optional
             Whether to apply chat template to the input, by default True.
-        detokenize : bool, optional
+        decode_inference_result : bool, optional
             Whether to decode after generation, by default False.
         release_gpu : bool, optional
             Whether to release gpu resources, by default False. 
-            NOTE: The reason why `release_gpu` and `detokenize` are not in `inference_args` is that
-            Inferencer may be used by other pipeline, and the pipeline may want to control these 
-            two behaviors dynamically. 
         inference_args : InferencerArguments, optional
             by default None
 
         Returns
         -------
         Union[List[List[str]], List[List[List[int]]]]
-            When `detokenize = True`, return a list of list of strings. Inner list
+            When `decode_inference_result = True`, return a list of list of strings. Inner list
             contains inference_args.num_output_sequences samples for a single prompt 
             (i.e., `len(res[i]) = inference_args.num_output_sequences`). Outer list 
             contains the results for all prompts (i.e., `len(res) = len(dataset)`).
             
-            When `detokenize = False`, return a list of list of list of ints 
+            When `decode_inference_result = False`, return a list of list of list of ints 
             (token ids, no decoding after generation).
         """
         if inference_args:
@@ -125,7 +122,7 @@ class VLLMInferencer(InferencerWithOffloading):
         else:
             sampling_params = self.sampling_params
             
-        sampling_params.detokenize = detokenize
+        sampling_params.detokenize = decode_inference_result
         
         model_input = model.prepare_inputs_for_inference(
             dataset=dataset, 

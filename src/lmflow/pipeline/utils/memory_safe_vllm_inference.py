@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     # Parses arguments
-    pipeline_name = "inferencer"
+    pipeline_name = "vllm_inferencer"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
     parser = HfArgumentParser((
@@ -54,7 +54,7 @@ def main():
         model,
         dataset,
         release_gpu=False,
-        detokenize=pipeline_args.memory_safe_vllm_inference_detokenize,
+        decode_inference_result=pipeline_args.decode_inference_result,
     )
     
     # use this as a flag, stdout will be captured by the pipeline

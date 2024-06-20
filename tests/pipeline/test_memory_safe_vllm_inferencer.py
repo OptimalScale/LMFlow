@@ -29,7 +29,7 @@ inferencer_args = InferencerArguments(
     save_results=True,
     results_path='./data/mem_safe_vllm_res.json',
     use_vllm=True,
-    memory_safe_vllm_inference_detokenize=False,
+    decode_inference_result=False,
     vllm_gpu_memory_utilization=0.95,
     vllm_tensor_parallel_size=2,
 )
@@ -58,7 +58,7 @@ class MemorySafeVLLMInferencerTest:
         logger.warning(f"test_inference: {test_res}")
         
     def test_inference_detokenize(self):
-        inferencer_args.memory_safe_vllm_inference_detokenize = True
+        inferencer_args.decode_inference_result = True
         self.inferencer = MemorySafeVLLMInferencer(
             model_args=model_args,
             data_args=data_args,

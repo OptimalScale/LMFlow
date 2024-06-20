@@ -856,16 +856,12 @@ class InferencerArguments:
         Whether to save inference results, By default False.
     results_path : Optional[str]
         The **json file** path of inference results, By default None.
-    memory_safe_vllm_inference_detokenize : Optional[bool]
-        Whether to detokenize the memory safe vllm inference results. 
+    decode_inference_result : Optional[bool]
+        Whether to detokenize the inference results. 
 
         NOTE: For iterative align pipelines, whether to detokenize depends on 
         the homogeneity of the policy model and the reward model 
-        (i.e., if they have the same tokenizer). 
-        The reason why `detokenize` for memory safe vllm inference is 
-        included in args is due to the its implementation (i.e., subprocess 
-        rather than within the python codes, thus have to communicate through 
-        command line arguments).
+        (i.e., if they have the same tokenizer).
     use_vllm: bool, optional
         Whether to use VLLM for inference, By default False.
     vllm_tensor_parallel_size: int, optional
@@ -964,9 +960,9 @@ class InferencerArguments:
         default=True,
         metadata={"help": "whether to apply chat template"},
     )
-    memory_safe_vllm_inference_detokenize: Optional[bool] = field(
+    decode_inference_result: Optional[bool] = field(
         default=False,
-        metadata={"help": "Whether to detokenize the memory safe vllm inference results."},
+        metadata={"help": "Whether to decode the inference results."},
     )
     
     # vllm inference args
@@ -1254,6 +1250,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
+    "vllm_inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
     "rm_tuner": RewardModelingArguments,
