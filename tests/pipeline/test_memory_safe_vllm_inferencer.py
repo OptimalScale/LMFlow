@@ -58,7 +58,7 @@ class MemorySafeVLLMInferencerTest:
         logger.warning(f"test_inference: {test_res}")
         
     def test_inference_detokenize(self):
-        inferencer_args.decode_inference_result = True
+        inferencer_args.enable_decode_inference_result = True
         self.inferencer = MemorySafeVLLMInferencer(
             model_args=model_args,
             data_args=data_args,
