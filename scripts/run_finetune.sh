@@ -74,5 +74,5 @@ deepspeed ${deepspeed_args} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
-    | tee ${log_dir}/train.log \
-    2> ${log_dir}/train.err
+    > >(tee ${log_dir}/train.log) \
+    2> >(tee ${log_dir}/train.err >&2)

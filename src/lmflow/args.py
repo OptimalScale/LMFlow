@@ -29,6 +29,10 @@ MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 logger = logging.getLogger(__name__)
 
 
+class OptimizerNames():
+    DUMMY = "dummy"
+
+
 @dataclass
 class ModelArguments:
     """
@@ -643,6 +647,36 @@ class FinetunerArguments(TrainingArguments):
         default="model.model.layers",
         metadata={
             "help": "where the layer attribute stores, e.g. model.model.layers"
+        }
+    )
+    use_customized_optim: bool = field(
+        default=False,
+        metadata={
+            "help": "whether to use customized optimizers."
+        }
+    )
+    customized_optim: str = field(
+        default="sign_sgd",
+        metadata={
+            "help": "name of the customized optimizer."
+        }
+    )
+    customized_optim_args: str = field(
+        default=None,
+        metadata={
+            "help": "optional arguments that are supplied."
+        }
+    )
+    optim_dummy_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "A useless argument for dummy optimizer, just for tutorial"
+        }
+    )
+    optim_dummy_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "A useless argument for dummy optimizer, just for tutorial"
         }
     )
     
