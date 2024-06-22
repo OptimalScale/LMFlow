@@ -3,8 +3,7 @@
 
 # Parses arguments
 run_name=rm_inference
-# model_name_or_path=sfairXC/FsfairX-LLaMA3-RM-v0.1
-model_name_or_path=/vol/yizhenjia/projs/RLHFlow-fox/models/rm/sfairXC-FsfairX-LLaMA3-RM-v0.1
+model_name_or_path=sfairXC/FsfairX-LLaMA3-RM-v0.1
 dataset_path=data/alpaca/test
 output_dir=data/rm_inference_results
 output_file_name=results.json
