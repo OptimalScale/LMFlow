@@ -10,7 +10,7 @@ from transformers import (
 )
 
 from lmflow.datasets import Dataset
-from lmflow.models.hf_decoder_model import HFDecoderModel
+from lmflow.models.auto_model import AutoModel
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.args import (
     ModelArguments, 
@@ -40,7 +40,7 @@ def main():
         model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
 
     dataset = Dataset(data_args)
-    model = HFDecoderModel(model_args)
+    model = AutoModel.get_model(model_args, tune_strategy='none')
     inferencer = AutoPipeline.get_pipeline(
         pipeline_name=pipeline_name,
         model_args=model_args,

@@ -4,7 +4,8 @@
 import gc
 import os
 import logging
-from typing import Union, Optional, Dict
+from typing import Union, Optional, Dict, List
+import copy
 
 import torch
 import deepspeed
@@ -26,7 +27,7 @@ from peft import (
     prepare_model_for_kbit_training
 )
 from peft.utils.constants import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
-from vllm import LLM
+from vllm import LLM, SamplingParams
 from vllm.distributed.parallel_state import destroy_model_parallel
 
 from lmflow.models.base_model import BaseModel
@@ -94,6 +95,7 @@ class HFModelMixin(BaseModel):
         self.hf_auto_model = HF_AUTOMODEL_MAPPING[model_args.arch_type]
         self.use_accelerator = use_accelerator
         self.ds_config = ds_config
+        self.do_train = do_train
         
         self.tokenizer = self.__prepare_tokenizer(model_args)
         self.torch_dtype = self.__prepare_dtype(model_args)
@@ -105,22 +107,23 @@ class HFModelMixin(BaseModel):
         # Some implementations require custom modules to be injected into the model.
         self.__model_module_inject(model_args)
 
-        if do_train:
+        if self.do_train:
             self.__prepare_model_for_training(model_args, self.hf_auto_model)
-            
-        # some post processing
-        if self.tokenizer.eos_token_id is None:
-            self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
-        if self.tokenizer.pad_token_id is None:
-            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
-        if self.backend_model.config.pad_token_id is None:
-            self.backend_model.config.pad_token_id = self.tokenizer.pad_token_id
-            
+                        
 
     def __prepare_tokenizer(
         self,
         model_args: ModelArguments,
     ) -> Union[PreTrainedTokenizer, PreTrainedTokenizerFast]:
+        tokenizer_name = model_args.tokenizer_name or model_args.model_name_or_path
+        if not tokenizer_name:
+            raise ValueError(
+                "You are instantiating a new tokenizer from scratch. This is"
+                " not supported by this script. You can do it from another"
+                " script, save it, and load it from here, using"
+                " --tokenizer_name."
+            )
+        
         tokenizer_kwargs = {
             "cache_dir": model_args.cache_dir,
             "use_fast": model_args.use_fast_tokenizer,
@@ -132,39 +135,15 @@ class HFModelMixin(BaseModel):
             tokenizer_kwargs["padding_side"] = model_args.padding_side
         
         try:
-            if model_args.tokenizer_name:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, **tokenizer_kwargs)
-            elif model_args.model_name_or_path:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, **tokenizer_kwargs)
-            else:
-                raise ValueError(
-                    "You are instantiating a new tokenizer from scratch. This is"
-                    " not supported by this script. You can do it from another"
-                    " script, save it, and load it from here, using"
-                    " --tokenizer_name."
-                )
-
+            tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, **tokenizer_kwargs)
         except RecursionError:
             logger.warning(
                 "The tokenizer_config.json file doesn't set the special tokens. Using default values: "
                 "<unk>, <s>, </s> for unknown token, bos token and eos token respectively.")
-            if model_args.tokenizer_name:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.tokenizer_name, unk_token="<unk>",
-                                                    bos_token="<s>",
-                                                    eos_token="</s>",
-                                                    **tokenizer_kwargs)
-            elif model_args.model_name_or_path:
-                tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, unk_token="<unk>",
-                                                    bos_token="<s>",
-                                                    eos_token="</s>",
-                                                    **tokenizer_kwargs)
-            else:
-                raise ValueError(
-                    "You are instantiating a new tokenizer from scratch. This is"
-                    " not supported by this script. You can do it from another"
-                    " script, save it, and load it from here, using"
-                    " --tokenizer_name."
-                )
+            tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, unk_token="<unk>",
+                                                bos_token="<s>",
+                                                eos_token="</s>",
+                                                **tokenizer_kwargs)
             
         tokenizer.truncation_side = model_args.truncation_side or tokenizer.truncation_side
         tokenizer.model_max_length = model_args.model_max_length or tokenizer.model_max_length
@@ -249,19 +228,25 @@ class HFModelMixin(BaseModel):
         model_args: ModelArguments,
     ):
         quant_config = None
-        if model_args.use_qlora:
-            quant_config = BitsAndBytesConfig(
-                load_in_4bit=model_args.bits == 4,
-                load_in_8bit=model_args.bits == 8,
-                llm_int8_threshold=6.0,
-                llm_int8_has_fp16_weight=False,
-                bnb_4bit_compute_dtype=self.torch_dtype,
-                bnb_4bit_use_double_quant=model_args.double_quant,
-                bnb_4bit_quant_type=model_args.quant_type,
-            )
-        
+        if self.do_train:
+            if model_args.use_qlora:
+                quant_config = BitsAndBytesConfig(
+                    load_in_4bit=model_args.bits == 4,
+                    load_in_8bit=model_args.bits == 8,
+                    llm_int8_threshold=6.0,
+                    llm_int8_has_fp16_weight=False,
+                    bnb_4bit_compute_dtype=self.torch_dtype,
+                    bnb_4bit_use_double_quant=model_args.double_quant,
+                    bnb_4bit_quant_type=model_args.quant_type,
+                )
+        else: # inference
+            if model_args.use_int8:
+                quant_config = BitsAndBytesConfig(
+                    load_in_8bit = model_args.use_int8,
+                )
+                
         return quant_config
-    
+
     
     def __prepare_peft_config(
         self,
@@ -318,8 +303,9 @@ class HFModelMixin(BaseModel):
         model_args: ModelArguments,
         hf_auto_model: HF_AUTOMODEL_TYPE,
     ):
+        assert self.do_train, "To prepare the model for training, set do_train=True."
         # TODO: change to accelerate
-        logger.info("Preparing model for training")
+        logger.warning("Preparing model for training")
         if model_args.model_name_or_path:
             model = hf_auto_model.from_pretrained(
                 model_args.model_name_or_path,
@@ -351,6 +337,7 @@ class HFModelMixin(BaseModel):
             model.resize_token_embeddings(len(self.tokenizer))
 
         self.backend_model = model
+        self.__prepare_model_post_process()
 
     
     def __prepare_model_for_inference(
@@ -360,85 +347,68 @@ class HFModelMixin(BaseModel):
         use_accelerator: bool,
         ds_config
     ):
-        if not hasattr(self, "backend_model"):
-            # TODO: change to accelerate
-            logger.info("Preparing model for inference")
-            if use_accelerator:
-                peft_model_id = model_args.lora_model_path
-                self.backend_model = hf_auto_model.from_pretrained(
-                        model_args.model_name_or_path,
-                        config=self.hf_model_config,
-                        device_map="auto",
-                        offload_folder="offload",
-                        offload_state_dict=True,
-                        load_in_8bit = model_args.use_int8,
-                    )
-                if peft_model_id is not None:
-                    self.backend_model = PeftModel.from_pretrained(
-                        self.backend_model, 
-                        peft_model_id,
-                    )
-            else:
-                from transformers.integrations import HfDeepSpeedConfig
-                dschf = HfDeepSpeedConfig(ds_config)
-                peft_model_id = model_args.lora_model_path
-                # NOTE: Currently offload is not supported by llama
-                if self.hf_model_config.model_type == "llama" and model_args.use_ram_optimized_load:
-                    logger.warning(
-                        "llama does not support RAM optimized load. Automatically"
-                        " use original load instead."
-                    )
-                    model_args.use_ram_optimized_load = False
-
-                if model_args.use_ram_optimized_load and peft_model_id is None:
-                    try:
-                        # RAM-optimized load
-                        self.backend_model = hf_auto_model.from_pretrained(
-                            model_args.model_name_or_path,
-                            config=self.hf_model_config,
-                            device_map="auto",
-                            offload_folder="offload",
-                            offload_state_dict=True,
-                        )
-                    except:
-                        logger.warning(
-                            "Failed to use RAM optimized load. Automatically"
-                            " use original load instead."
-                        )
-                        # Normal load
-                        self.backend_model = hf_auto_model.from_pretrained(
-                            model_args.model_name_or_path,
-                            config=self.hf_model_config,
-                        )
-                else:
-                    if peft_model_id is not None:
-                        logger.warning(
-                            "LoRA does not support RAM optimized load currently."
-                            " Automatically use original load instead."
-                        )
-                    self.backend_model = hf_auto_model.from_pretrained(
-                        model_args.model_name_or_path,
-                        config=self.hf_model_config,
-                    )
-
-                self.backend_model_full = self.backend_model
-                if peft_model_id is not None:
-                    self.backend_model = PeftModel.from_pretrained(
-                        self.backend_model, peft_model_id
-                    )
-
-                if self.device == "gpu":
-                    deepspeed.init_distributed()
-                    self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
-                    self.ds_engine.module.eval()
-                    
-        # backend model already initialized
-        else:
+        logger.info(f"Backend model already initialized, moving to device: {self.device}")
+        if hasattr(self, "backend_model"):
             if self.backend_model.device == torch.device("cpu"):
                 self.backend_model.to(self.device)
-            else:
-                return
-                        
+            return
+            
+        # TODO: change to accelerate
+        logger.info("Preparing model for inference")
+        inference_load_kwargs = {}
+        inference_load_kwargs_bak = copy.deepcopy(inference_load_kwargs)
+        ram_optimized_load_kwargs = {
+            "device_map": "auto",
+            "offload_folder": "offload",
+            "offload_state_dict": True,
+        }
+                
+        if model_args.lora_model_path is not None:
+            logger.warning(
+                "LoRA does not support RAM optimized load currently. Using original load."
+            )
+            model_args.use_ram_optimized_load = False
+
+        if use_accelerator or model_args.use_ram_optimized_load:
+            inference_load_kwargs.update(ram_optimized_load_kwargs)
+                   
+        if not use_accelerator:
+            from transformers.integrations import HfDeepSpeedConfig
+            dschf = HfDeepSpeedConfig(ds_config)
+            
+        try:
+            self.backend_model = hf_auto_model.from_pretrained(
+                model_args.model_name_or_path,
+                config=self.hf_model_config,
+                quantization_config=self.quant_config,
+                **inference_load_kwargs,
+            )
+        except:
+            logger.warning(
+                "Failed to use RAM optimized load. Using original load instead."
+            )
+            self.backend_model = hf_auto_model.from_pretrained(
+                model_args.model_name_or_path,
+                config=self.hf_model_config,
+                quantization_config=self.quant_config,
+                **inference_load_kwargs_bak,
+            )
+            
+        self.backend_model_full = self.backend_model
+        
+        if model_args.lora_model_path is not None:
+            self.backend_model = PeftModel.from_pretrained(
+                self.backend_model, 
+                model_args.lora_model_path,
+            )
+
+        if (not use_accelerator) and self.device == "gpu":
+            deepspeed.init_distributed()
+            self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
+            self.ds_engine.module.eval()
+            
+        self.__prepare_model_post_process()
+                    
         
     def __prepare_model_for_vllm_inference(
         self,
@@ -456,6 +426,15 @@ class HFModelMixin(BaseModel):
         )
         
     
+    def __prepare_model_post_process(self):
+        if self.tokenizer.eos_token_id is None:
+            self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        if self.backend_model.config.pad_token_id is None:
+            self.backend_model.config.pad_token_id = self.tokenizer.pad_token_id
+            
+
     def activate_model_for_inference(
         self,
         use_vllm: bool=False,

@@ -12,6 +12,7 @@ Face dataset, mapping datasets, and retrieving the backend dataset and arguments
 # Importing necessary libraries and modules
 import copy
 import json
+from pathlib import Path
 
 from cmath import e
 from pathlib import Path
@@ -24,6 +25,7 @@ from lmflow.args import DatasetArguments
 from lmflow.utils.constants import (
     DATASET_DESCRIPTION_MAP,
     TEXT_ONLY_DATASET_DESCRIPTION,
+    SCORED_TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
     FLOAT_ONLY_DATASET_DESCRIPTION,
     INSTANCE_FIELDS_MAP,
@@ -42,6 +44,7 @@ DATASET_TYPES = [
 
 KEY_TYPE = "type"
 KEY_INSTANCES = "instances"
+KEY_SCORES = "score"
 
 class Dataset:
     r"""
@@ -236,7 +239,7 @@ class Dataset:
                             f' {list(fields)}: should be {list(correct_fields)}.\n'
                             f'The bad instance triggers the error, the {i}-th instance:\n'
                             f'    {instance}'
-                    )
+                        )
 
             try:
                 hf_dict = {}
@@ -428,3 +431,17 @@ class Dataset:
         self.type
         """
         return self.type
+    
+    
+    def save(self, file_path: str):
+        r"""
+        Save the dataset to a json file.
+
+        Parameters
+        ------------
+        file_path : str.
+            The path to the file where the dataset will be saved.
+        """
+        assert Path(file_path).suffix == ".json", "The file path must have a .json extension."
+        with open(file_path, "w") as fout:
+            json.dump(self.to_dict(), fout, indent=2)

@@ -682,7 +682,7 @@ class FinetunerArguments(TrainingArguments):
     
     
 @dataclass
-class RewardModelingArguments(FinetunerArguments):
+class RewardModelTunerArguments(FinetunerArguments):
     """
     Arguments for reward modeling.
     """
@@ -859,18 +859,15 @@ class InferencerArguments:
 
     local_rank : str
         For distributed training: local_rank
-
     random_seed : int, default = 1
-
+    inference_batch_size : int, default = 1
     deepspeed :
         Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
         loaded json file as a dict
     mixed_precision : str, choice from ["bf16","fp16"].
         mixed precision mode, whether to use bf16 or fp16
-
     temperature : float
         An argument of model.generate in huggingface to control the diversity of generation.
-
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
     use_beam_search : Optional[bool]
@@ -916,7 +913,10 @@ class InferencerArguments:
         metadata={"help": "For distributed training: local_rank"
                   },
     )
-
+    inference_batch_size: int = field(
+        default=1,
+        metadata={"help": "batch size for inference"},
+    )
     temperature: float = field(
         default=0.0,
         metadata={"help": "Temperature during inference."},
@@ -1285,9 +1285,10 @@ PIPELINE_ARGUMENT_MAPPING = {
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "vllm_inferencer": InferencerArguments,
+    "rm_inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
-    "rm_tuner": RewardModelingArguments,
+    "rm_tuner": RewardModelTunerArguments,
 }
 
 

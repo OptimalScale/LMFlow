@@ -20,6 +20,23 @@ TEXT_ONLY_DATASET_DESCRIPTION = (
 ).lstrip("\n")
 
 
+SCORED_TEXT_ONLY_DATASET_DESCRIPTION = (
+"""
+"scored_text_only": a dataset with only raw text instances and corresponding scores, with following format:
+
+    {
+        "type": "text_only",
+        "instances": [
+            { "text": "TEXT_1" },
+            { "text": "TEXT_2" },
+            ...
+        ],
+        "scores": [1.0, 0.5, ...]
+    }
+"""
+).lstrip("\n")
+
+
 TEXT_ONLY_DATASET_DETAILS = (
 """
     For example,
@@ -282,6 +299,9 @@ INSTANCE_FIELDS_MAP = {
     "paired_conversation": ["chosen", "rejected"],
     "float_only": ["value"],
     "image_text": ["images", "text"],
+    "scored_text_only": ["text", "score"],
+    "scored_text2text": ["input", "output", "score"],
+    "scored_conversation": ["messages", "score"],
 }
 
 CONVERSATION_ROLE_NAMES = {
