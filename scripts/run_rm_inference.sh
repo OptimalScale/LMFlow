@@ -65,6 +65,7 @@ accelerate launch --config_file configs/accelerator_multigpu_config.yaml \
         --block_size 4096 \
         --inference_batch_size 16 \
         --dataset_path ${dataset_path} \
+        --overwrite_cache True \
         --conversation_template ${conversation_template} \
         --preprocessing_num_workers 16 \
         --save_results True \
