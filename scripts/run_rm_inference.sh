@@ -7,6 +7,7 @@ model_name_or_path=sfairXC/FsfairX-LLaMA3-RM-v0.1
 dataset_path=data/alpaca/test
 output_dir=data/rm_inference_results
 output_file_name=results.json
+conversation_template=llama3
 
 # Safety related arguments
 trust_remote_code=0
@@ -24,6 +25,10 @@ while [[ $# -ge 1 ]]; do
       ;;
     -d|--dataset_path)
       dataset_path="$2"
+      shift
+      ;;
+    --conversation_template)
+      conversation_template="$2"
       shift
       ;;
     --output_dir)
@@ -60,6 +65,7 @@ accelerate launch --config_file configs/accelerator_multigpu_config.yaml \
         --block_size 4096 \
         --inference_batch_size 16 \
         --dataset_path ${dataset_path} \
+        --conversation_template ${conversation_template} \
         --preprocessing_num_workers 16 \
         --save_results True \
         --results_path ${output_file_path} \
