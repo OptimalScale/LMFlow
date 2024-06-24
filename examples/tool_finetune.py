@@ -27,9 +27,6 @@ IGNORE_TOKEN_ID = LabelSmoother.ignore_index
 torch.set_printoptions(profile="full")
 
 
-local_rank = None
-
-
 def safe_save_model_for_hf_trainer(trainer: Trainer, output_dir: str):
     """Collects the state dict and dump to disk."""
     state_dict = trainer.model.state_dict()
