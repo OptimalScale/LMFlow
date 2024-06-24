@@ -34,8 +34,6 @@ IGNORE_TOKEN_ID = LabelSmoother.ignore_index
 torch.set_printoptions(profile="full")
 
 
-local_rank = None
-
 def maybe_zero_3(param):
     if hasattr(param, "ds_id"):
         assert param.ds_status == ZeroParamStatus.NOT_AVAILABLE
@@ -78,7 +76,6 @@ def safe_save_model_for_hf_trainer(trainer: Trainer, output_dir: str):
         del state_dict
         trainer._save(output_dir, state_dict=cpu_state_dict)
 
-
 def preprocess(
     sources,
     tokenizer: PreTrainedTokenizer,
@@ -113,22 +110,7 @@ def preprocess(
     truncated_conversations = conversations
 
     # Tokenize conversations
-    # input_ids = tokenizer(
-    #     truncated_conversations,
-    #     return_tensors="pt",
-    #     padding="max_length",
-    #     max_length=tokenizer.model_max_length,
-    #     truncation=True,
-    # ).input_ids
-        # Tokenize conversations
     try:
-        # input_ids = tokenizer(
-        #     truncated_conversations,
-        #     return_tensors="pt",
-        #     padding="max_length",
-        #     max_length=min(tokenizer.model_max_length, max_length),
-        #     truncation=True,
-        # ).input_ids
         input_ids = tokenizer(
             truncated_conversations,
             return_tensors="pt",
@@ -284,6 +266,7 @@ def main():
     )
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
     print("Argument of whether Use lora:", model_args.use_lora)
+    
     # Initialization
     model = AutoModel.get_model(model_args)
     print("Type of model 1:", type(model))
@@ -299,7 +282,6 @@ def main():
     model = get_peft_model(model.get_backend_model(), lora_config)
     print("Type of model 1:", type(model))
     model.print_trainable_parameters()
-    
     if tokenizer.model_max_length < data_args.block_size:
         condense_ratio = int(data_args.block_size/tokenizer.model_max_length)
         # ratio = N means the sequence length is expanded by N, remember to change the model_max_length to 8192 (2048 * ratio) for ratio = 4
