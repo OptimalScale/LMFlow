@@ -12,7 +12,7 @@ import datetime
 import json
 import time
 import logging
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Tuple
 
 from accelerate import Accelerator
 import torch
@@ -34,6 +34,7 @@ from lmflow.utils.data_utils import (
     set_random_seed,
     batchlize
 )
+from lmflow.datasets.dataset import KEY_SCORES
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
@@ -99,7 +100,7 @@ class RewardModelInferencer(BasePipeline):
         if not transform_dataset_in_place:
             dataset = copy.deepcopy(dataset)
         output_dict = {
-            "type": f"scored_{dataset.get_type()}",
+            "type": f"grouped_{dataset.get_type().lstrip('grouped_')}",
             "instances": dataset.to_dict()["instances"],
         }
         
@@ -109,11 +110,11 @@ class RewardModelInferencer(BasePipeline):
             scores = self.__inference(model, dataset)
             
         for i, score in enumerate(scores):
-            output_dict["instances"][i]["score"] = score
+            output_dict["instances"][i][KEY_SCORES] = score
         
         output_dataset_args = copy.deepcopy(self.data_args)
         output_dataset_args.dataset_path = None
-        output_dataset_args.dataset_name = f"scored_{output_dataset_args.dataset_name}"
+        output_dataset_args.dataset_name = f"{output_dataset_args.dataset_name}_scored"
         output_dataset = Dataset(output_dataset_args)
         output_dataset = output_dataset.from_dict(output_dict)
         
@@ -124,12 +125,17 @@ class RewardModelInferencer(BasePipeline):
         self,
         model: HFTextRegressionModel,
         dataset: Dataset,
-    ) -> List[float]:
+    ) -> Union[List[float], List[List[float]]]:
         tokenized_dataset = model.tokenize(dataset)
-        dataloader, _ = self.create_dataloader(
-            dataset=tokenized_dataset,
+        if 'grouped_' in dataset.get_type():
+            model_input_ids, num_outputs = self.flatten_list(tokenized_dataset.get_backend_dataset()["input_ids"])
+        else:
+            model_input_ids = tokenized_dataset.get_backend_dataset()["input_ids"]
+            
+        dataloader = batchlize(
+            examples=model_input_ids,
             batch_size=self.inferencer_args.inference_batch_size,
-            random_shuffle=False, # no need to shuffle when inference
+            random_shuffle=False, # DO NOT shuffle when inference
         )
         num_batches = len(dataloader)
         final_output = []
@@ -157,6 +163,9 @@ class RewardModelInferencer(BasePipeline):
             batch_output = self.__post_process_model_output(batch_output)
             final_output.extend(batch_output)
         
+        if 'grouped_' in dataset.get_type():
+            final_output = self.compress_list(final_output, num_outputs)
+        
         return final_output
     
     
@@ -175,31 +184,27 @@ class RewardModelInferencer(BasePipeline):
         final_output = model_output.logits.to("cpu").reshape(-1).tolist()
         
         return final_output
-        
-        
-    def create_dataloader(
-        self, 
-        dataset: Dataset,
-        batch_size: int = 1,
-        random_shuffle: bool = False,
-    ):
-        r"""Batchlize dataset and format it to dataloader.
-
-        Args:
-            dataset (Dataset): the dataset object
-
-        Output:
-            dataloader (batchlize): the dataloader object
-            dataset_size (int): the length of the dataset
-
-        """
-        inputs = dataset.get_backend_dataset()["input_ids"] # this comes from lmflow model.tokenize(dataset)
-        dataset_size = len(inputs)
-
-        dataloader = batchlize(
-            inputs,
-            batch_size=batch_size,
-            random_shuffle=random_shuffle,
-        )
-        return dataloader, dataset_size
+            
     
+    def flatten_list(
+        self, 
+        list_of_list: List[List]
+    ) -> Tuple[List, List[int]]:
+        sublist_lengths = [len(sublist) for sublist in list_of_list]
+        flattened_list = [item for sublist in list_of_list for item in sublist]
+        return flattened_list, sublist_lengths
+    
+
+    def compress_list(
+        self, 
+        list_to_compress: List, 
+        sublist_lengths: List[int]
+    ) -> List[List]:
+        assert sum(sublist_lengths) == len(list_to_compress), "Sum of sublist lengths should be equal to length of list to compress."
+        compressed_list = []
+        start_index = 0
+        for length in sublist_lengths:
+            sublist = list_to_compress[start_index: start_index + length]
+            compressed_list.append(sublist)
+            start_index += length
+        return compressed_list

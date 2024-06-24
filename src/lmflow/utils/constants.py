@@ -207,6 +207,32 @@ PAIRED_CONVERSATION_DATASET_DESCRIPTION = (
 ).lstrip("\n")
 
 
+GROUPED_TEXT2TEXT_DATASET_DESCRIPTION = (
+"""
+This kind of dataset is commonly used in reward model training/prediction, as well as rl training.
+{
+    "type": "grouped_text2text",
+    "instances": [
+        {
+            "input": "what's your name?",
+            "outputs": [
+                "My name is John",
+                "I'm John",
+            ]
+        },
+        {
+            "input": "Who are you?",
+            "outputs": [
+                "My name is Amy",
+                "I'm Amy",
+            ]
+        },
+    ]
+}
+"""
+)
+
+
 TEXT2TEXT_DATASET_DETAILS = (
 """
     For example,
@@ -297,11 +323,11 @@ INSTANCE_FIELDS_MAP = {
     "text2text": ["input", "output"],
     "conversation": ["messages"], # system, tools and conversation_id are optional
     "paired_conversation": ["chosen", "rejected"],
+    "paired_text2text": ["prompt", "chosen", "rejected"],
     "float_only": ["value"],
     "image_text": ["images", "text"],
-    "scored_text_only": ["text", "score"],
-    "scored_text2text": ["input", "output", "score"],
-    "scored_conversation": ["messages", "score"],
+    "grouped_text2text": ["input", "outputs"],
+    "grouped_conversation": ["input", "outputs"],
 }
 
 CONVERSATION_ROLE_NAMES = {

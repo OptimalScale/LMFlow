@@ -144,7 +144,7 @@ class HFModelMixin(BaseModel):
                                                 bos_token="<s>",
                                                 eos_token="</s>",
                                                 **tokenizer_kwargs)
-            
+
         tokenizer.truncation_side = model_args.truncation_side or tokenizer.truncation_side
         tokenizer.model_max_length = model_args.model_max_length or tokenizer.model_max_length
         
@@ -322,6 +322,11 @@ class HFModelMixin(BaseModel):
             logger.info(f"Training new model from scratch - Total size={n_params/2**20:.2f}M params")
         self.backend_model_full = model
         
+        if model_args.ignore_bias_buffers:
+            model._ddp_params_and_buffers_to_ignore = [
+                name for name, buffer in model.named_buffers() if buffer.dtype == torch.bool
+            ]
+        
         if model_args.use_lora:
             model.enable_input_require_grads()
             model = get_peft_model(model, self.peft_config)
@@ -427,12 +432,19 @@ class HFModelMixin(BaseModel):
         
     
     def __prepare_model_post_process(self):
+        # old models/tokenizers may not have these attributes, fixing            
+        if self.tokenizer.eos_token is None:
+            self.tokenizer.eos_token = self.backend_model.config.eos_token
         if self.tokenizer.eos_token_id is None:
             self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
+            
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
-        if self.backend_model.config.pad_token_id is None:
-            self.backend_model.config.pad_token_id = self.tokenizer.pad_token_id
+        
+        if self.model_args.eos_padding:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
             
 
     def activate_model_for_inference(

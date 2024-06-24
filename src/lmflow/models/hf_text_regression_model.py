@@ -30,12 +30,14 @@ from lmflow.tokenization.hf_text_regression_model import (
     paired_conversation_tokenize_function, 
     conversation_tokenize_function,
     tokenize_function,
+    grouped_text2text_tokenize_function,
 )
 from lmflow.utils.conversation_template import PRESET_TEMPLATES
 from lmflow.utils.constants import (
     PAIRED_CONVERSATION_DATASET_DESCRIPTION, 
     TEXT2TEXT_DATASET_DESCRIPTION,
     TEXT_ONLY_DATASET_DESCRIPTION,
+    GROUPED_TEXT2TEXT_DATASET_DESCRIPTION,
     CONVERSATION_DATASET_DESCRIPTION, 
 )
 
@@ -196,6 +198,11 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
             tokenize_fn_kwargs["conversation_template"] = conversation_template
             logger.warning(f"Conversation template: {conversation_template}")
             
+        elif dataset_type == "grouped_text2text":
+            tokenize_fn = grouped_text2text_tokenize_function
+            tokenize_fn_kwargs["add_special_tokens"] = add_special_tokens
+            tokenize_fn_kwargs["use_truncation"] = use_truncation
+            
         else:
             raise NotImplementedError(
                 f"Dataset type \"{dataset_type}\" is not supported, currently"
@@ -204,6 +211,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
                 f"    2) [Inference]{TEXT2TEXT_DATASET_DESCRIPTION}\n"
                 f"    3) [Training]{PAIRED_CONVERSATION_DATASET_DESCRIPTION}\n"
                 f"    4) [Inference]{CONVERSATION_DATASET_DESCRIPTION}\n"
+                f"    5) [Inference]{GROUPED_TEXT2TEXT_DATASET_DESCRIPTION}\n"
             )
   
         tokenize_kwargs = {}

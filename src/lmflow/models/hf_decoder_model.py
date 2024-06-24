@@ -145,7 +145,13 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         )
 
 
-    def tokenize(self, dataset, add_special_tokens=True, *args, **kwargs):
+    def tokenize(
+        self, 
+        dataset, 
+        add_special_tokens=True, 
+        *args, 
+        **kwargs
+    ) -> Dataset:
         """
         Tokenize the full dataset.
     

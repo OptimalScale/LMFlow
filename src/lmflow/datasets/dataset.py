@@ -39,12 +39,15 @@ DATASET_TYPES = [
     "float_only",
     "image_text",
     "conversation",
-    "paired_conversation"
+    "paired_conversation",
+    "paired_text2text",
+    "grouped_text2text",
+    "grouped_conversation",
 ]
 
 KEY_TYPE = "type"
 KEY_INSTANCES = "instances"
-KEY_SCORES = "score"
+KEY_SCORES = "scores"
 
 class Dataset:
     r"""
@@ -150,19 +153,11 @@ class Dataset:
         data_type = data_dict[KEY_TYPE]
         fields = self.get_backend_dataset().features
         correct_fields = INSTANCE_FIELDS_MAP[data_type]
-        # TODO: this can not guarantee every instance has correct fields.
-        if set(fields) != set(correct_fields):
-            if data_type == "conversation":
-                if "messages" not in fields:
-                    raise ValueError(
-                        f'Conversation dataset should have "messages" field'
-                        f' but got {list(fields)}'
-                    )
-            else:
-                raise ValueError(
-                    f'Data instance fields incorrect'
-                    f' {list(fields)}: should be {list(correct_fields)}.'
-                )
+        if not set(correct_fields).issubset(set(fields)):
+            raise ValueError(
+                f'data instance fields incorrect'
+                f' {list(correct_fields)} are required.'
+            )
 
 
     def from_dict(self, dict_obj: dict, *args, **kwargs):
@@ -226,20 +221,11 @@ class Dataset:
 
             for i, instance in enumerate(dict_obj[KEY_INSTANCES]):
                 fields = instance.keys()
-                if set(fields) != set(correct_fields):
-                    if self.type == "conversation":
-                        if "messages" not in fields:
-                            raise ValueError(
-                                f'Conversation dataset should have "messages" field'
-                                f' but got {list(fields)}'
-                            )
-                    else:
-                        raise ValueError(
-                            f'data instance fields incorrect'
-                            f' {list(fields)}: should be {list(correct_fields)}.\n'
-                            f'The bad instance triggers the error, the {i}-th instance:\n'
-                            f'    {instance}'
-                        )
+                if not set(correct_fields).issubset(set(fields)):
+                    raise ValueError(
+                        f'data instance fields incorrect'
+                        f' {list(correct_fields)} are required.'
+                    )
 
             try:
                 hf_dict = {}
@@ -423,7 +409,7 @@ class Dataset:
         return self.data_args
 
 
-    def get_type(self):
+    def get_type(self) -> str:
         r"""
         Returns
         ---------
