@@ -20,19 +20,52 @@ TEXT_ONLY_DATASET_DESCRIPTION = (
 ).lstrip("\n")
 
 
-SCORED_TEXT_ONLY_DATASET_DESCRIPTION = (
+TEXT_TO_SCORED_TEXTLIST_DATASET_DESCRIPTION = (
 """
-"scored_text_only": a dataset with only raw text instances and corresponding scores, with following format:
+This kind of dataset is commonly used in reward model training/prediction, as well as rl training.
+{
+    "type": "text_to_scored_textlist",
+    "instances": [
+        {
+            "input": "what's your name?",
+            "output": [
+                {"score": 1.0, "text": "My name is John"},
+                {"score": -0.8, "text": "I'm John"}
+            ]
+        },
+        {
+            "input": "Who are you?",
+            "output": [
+                {"score": 1.5, "text": "My name is Amy"},
+                {"score": 1.0, "text": "I'm Amy"}
+            ]
+        },
+    ]
+}
+"""
+).lstrip("\n")
 
-    {
-        "type": "text_only",
-        "instances": [
-            { "text": "TEXT_1" },
-            { "text": "TEXT_2" },
-            ...
-        ],
-        "scores": [1.0, 0.5, ...]
-    }
+
+PAIRED_TEXT_TO_TEXT_DATASET_DESCRIPTION = (
+"""
+This kind of dataset is commonly used in reward model training as well as rl training.
+{
+    "type": "paired_text_to_text",
+    "instances": [
+        {
+            "prompt": "Who are you?",
+            "chosen": "My name is Amy.",
+            "rejected": "I'm Amy",
+            "margin": 0.6
+        },
+        {
+            "prompt": "what's your name?",
+            "chosen": "My name is John.",
+            "rejected": "I'm John",
+            "margin": 0.5
+        }
+    ]
+}
 """
 ).lstrip("\n")
 
@@ -207,22 +240,22 @@ PAIRED_CONVERSATION_DATASET_DESCRIPTION = (
 ).lstrip("\n")
 
 
-GROUPED_TEXT2TEXT_DATASET_DESCRIPTION = (
+TEXT_TO_TEXTLIST_DATASET_DESCRIPTION = (
 """
-This kind of dataset is commonly used in reward model training/prediction, as well as rl training.
+This kind of dataset is commonly used in reward model inference.
 {
-    "type": "grouped_text2text",
+    "type": "text_to_textlist",
     "instances": [
         {
             "input": "what's your name?",
-            "outputs": [
+            "output": [
                 "My name is John",
                 "I'm John",
             ]
         },
         {
             "input": "Who are you?",
-            "outputs": [
+            "output": [
                 "My name is Amy",
                 "I'm Amy",
             ]
@@ -230,7 +263,7 @@ This kind of dataset is commonly used in reward model training/prediction, as we
     ]
 }
 """
-)
+).lstrip("\n")
 
 
 TEXT2TEXT_DATASET_DETAILS = (
@@ -323,11 +356,10 @@ INSTANCE_FIELDS_MAP = {
     "text2text": ["input", "output"],
     "conversation": ["messages"], # system, tools and conversation_id are optional
     "paired_conversation": ["chosen", "rejected"],
-    "paired_text2text": ["prompt", "chosen", "rejected"],
+    "paired_text_to_text": ["prompt", "chosen", "rejected"],
     "float_only": ["value"],
     "image_text": ["images", "text"],
-    "grouped_text2text": ["input", "outputs"],
-    "grouped_conversation": ["input", "outputs"],
+    "text_to_textlist": ["input", "output"],
 }
 
 CONVERSATION_ROLE_NAMES = {

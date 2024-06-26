@@ -7,7 +7,7 @@ import numpy as np
 from tqdm import tqdm
 from transformers import TrainingArguments
 
-from lmflow.pipeline.utils.dpov2_trainer import PreferenceTrainer
+from lmflow.pipeline.utils.dpov2_trainer import DPOv2Trainer
 from lmflow.pipeline.base_aligner import BaseAligner
 from lmflow.args import (
     ModelArguments,
@@ -15,7 +15,7 @@ from lmflow.args import (
     DPOv2AlignerArguments
 )
 from lmflow.models.hf_decoder_model import HFDecoderModel
-from lmflow.datasets.dataset import Dataset, KEY_SCORES, KEY_TYPE, KEY_INSTANCES
+from lmflow.datasets.dataset import Dataset, KEY_SCORE, KEY_TYPE, KEY_INSTANCES
 
 
 logger = logging.getLogger(__name__)
@@ -43,6 +43,12 @@ class DPOv2Aligner(BaseAligner):
         eval_dataset: Dataset,
         transform_dataset_in_place: bool=True,
     ):
+        if (train_dataset.get_type() not in ["text_to_scored_textlist", "paired_text_to_text"]) or \
+            (eval_dataset.get_type() not in ["text_to_scored_textlist", "paired_text_to_text"]):
+            raise ValueError(
+                f"Unsupported dataset type {train_dataset.get_type()} for DPOv2 aligner."
+            )
+            
         # step 0. setting up
         if self.aligner_args.gradient_checkpointing:
             logger.warning(
@@ -52,29 +58,31 @@ class DPOv2Aligner(BaseAligner):
             ref_model.get_backend_model().config.use_cache = False
             
         # step 1. prepare datasets
-        paired_train_dataset = self.convert_grouped_to_paired_dataset(
-            grouped_dataset=train_dataset,
-            sampling_paired_method=self.aligner_args.sampling_paired_method,
-            length_penalty=self.aligner_args.length_penalty,
-            margin_scale=self.aligner_args.margin_scale,
-            use_fast=False,
-        )
+        if train_dataset.get_type() == "text_to_scored_textlist":
+            train_dataset = self.convert_to_paired_dataset(
+                source_dataset=train_dataset,
+                sampling_paired_method=self.aligner_args.sampling_paired_method,
+                length_penalty=self.aligner_args.length_penalty,
+                margin_scale=self.aligner_args.margin_scale,
+                use_fast=False,
+            )
         if self.data_args.max_train_samples:
-            paired_train_dataset.backend_dataset = paired_train_dataset.backend_dataset.select(range(self.data_args.max_train_samples))
+            train_dataset.backend_dataset = train_dataset.backend_dataset.select(range(self.data_args.max_train_samples))
 
-        paired_eval_dataset = self.convert_grouped_to_paired_dataset(
-            grouped_dataset=eval_dataset,
-            sampling_paired_method=self.aligner_args.sampling_paired_method,
-            margin_scale=self.aligner_args.margin_scale,
-            use_fast=False,
-        )
+        if eval_dataset.get_type() == "text_to_scored_textlist":
+            eval_dataset = self.convert_to_paired_dataset(
+                source_dataset=eval_dataset,
+                sampling_paired_method=self.aligner_args.sampling_paired_method,
+                margin_scale=self.aligner_args.margin_scale,
+                use_fast=False,
+            )
             
         # step 2. prepare trainer
-        dpo_trainer = PreferenceTrainer(
+        dpo_trainer = DPOv2Trainer(
             model.get_backend_model(),
             ref_model.get_backend_model(),
-            train_dataset=paired_eval_dataset.get_backend_dataset(), # tokenization is done in the trainer
-            eval_dataset=paired_eval_dataset.get_backend_dataset(),
+            train_dataset=train_dataset.get_backend_dataset(), # tokenization is done in the trainer
+            eval_dataset=eval_dataset.get_backend_dataset(),
             tokenizer=model.tokenizer,
             args=self.__prepare_training_args(self.aligner_args),
             beta=self.aligner_args.beta,
@@ -96,54 +104,55 @@ class DPOv2Aligner(BaseAligner):
         
     def __prepare_training_args(
         self,
-        aligner_args: DPOv2AlignerArguments,
+        args: DPOv2AlignerArguments,
     ) -> TrainingArguments:
         training_args = TrainingArguments(
-            per_device_train_batch_size=aligner_args.per_device_train_batch_size,
-            per_device_eval_batch_size=aligner_args.per_device_eval_batch_size,
-            num_train_epochs=aligner_args.num_train_epochs,
-            save_strategy=aligner_args.save_strategy,
-            logging_steps=aligner_args.logging_steps,
-            save_steps=aligner_args.save_steps,
-            gradient_accumulation_steps=aligner_args.gradient_accumulation_steps,
-            gradient_checkpointing=aligner_args.gradient_checkpointing,
-            learning_rate=aligner_args.learning_rate,
-            evaluation_strategy=aligner_args.evaluation_strategy,
-            eval_steps=aligner_args.eval_steps,
-            output_dir=aligner_args.output_dir,
-            lr_scheduler_type=aligner_args.lr_scheduler_type,
-            warmup_steps=aligner_args.warmup_steps,
-            optim=aligner_args.optim,
-            bf16=aligner_args.bf16,
-            report_to=aligner_args.report_to,
-            run_name=aligner_args.run_name,
-            remove_unused_columns=False, # DO NOT CHANGE THIS, may cause error
+            per_device_train_batch_size=args.per_device_train_batch_size,
+            per_device_eval_batch_size=args.per_device_eval_batch_size,
+            num_train_epochs=args.num_train_epochs,
+            save_strategy=args.save_strategy,
+            logging_steps=args.logging_steps,
+            save_steps=args.save_steps,
+            gradient_accumulation_steps=args.gradient_accumulation_steps,
+            gradient_checkpointing=args.gradient_checkpointing,
+            learning_rate=args.learning_rate,
+            evaluation_strategy=args.evaluation_strategy,
+            eval_steps=args.eval_steps,
+            output_dir=args.output_dir,
+            lr_scheduler_type=args.lr_scheduler_type,
+            warmup_steps=args.warmup_steps,
+            optim=args.optim,
+            bf16=args.bf16,
+            report_to=args.report_to,
+            run_name=args.run_name,
+            remove_unused_columns=False, # DO NOT CHANGE THIS, may cause error https://discuss.huggingface.co/t/indexerror-invalid-key-16-is-out-of-bounds-for-size-0/14298/3
         )
         logger.warning(f"Actual training arguments for dpo trainer: {training_args}")
         
         return training_args
     
     
-    def convert_grouped_to_paired_dataset(
+    def convert_to_paired_dataset(
         self,
-        grouped_dataset: Dataset,
+        source_dataset: Dataset,
         sampling_paired_method: str="random",
         length_penalty: float=0.0,
         margin_scale: float=1.0,
         use_fast: bool=False,
     ) -> Dataset:
-        """Convert a grouped dataset to a paired dataset by rejection sampling.
+        """Convert a scored one to multiple (text_to_scored_textlist) to a paired dataset by rejection sampling.
         """
         output_dict = {
-            KEY_TYPE: f"paired_{grouped_dataset.get_type().replace('grouped_','')}",
             KEY_INSTANCES: []
         }
+        if source_dataset.get_type() in ["text_to_scored_textlist"]:
+            output_dict[KEY_TYPE] = "paired_text_to_text"
         
-        for sample in tqdm(grouped_dataset.get_backend_dataset(), desc="Converting to paired dataset"):
+        for sample in tqdm(source_dataset.get_backend_dataset(), desc="Converting to paired dataset"):
             sample_output_dict = {}
-            lengths = self._calc_response_lengths(sample["outputs"], grouped_dataset.get_type())
+            lengths = self._calc_response_lengths(sample["output"], source_dataset.get_type())
             penalized_rewards = self._calc_reward_with_length_penalty(
-                rewards=sample[KEY_SCORES], 
+                rewards=[content[KEY_SCORE] for content in sample["output"]], 
                 lengths=lengths, 
                 length_penalty=length_penalty
             )
@@ -154,12 +163,12 @@ class DPOv2Aligner(BaseAligner):
             )
             
             sample_output_dict["prompt"] = sample["input"]
-            sample_output_dict["chosen"] = sample["outputs"][chosen_idx]
-            sample_output_dict["rejected"] = sample["outputs"][rejected_idx]
-            sample_output_dict["margin"] = (sample[KEY_SCORES][chosen_idx] - sample[KEY_SCORES][rejected_idx]) * margin_scale
+            sample_output_dict["chosen"] = sample["output"][chosen_idx]["text"]
+            sample_output_dict["rejected"] = sample["output"][rejected_idx]["text"]
+            sample_output_dict["margin"] = (sample["output"][chosen_idx][KEY_SCORE] - sample["output"][rejected_idx][KEY_SCORE]) * margin_scale
             output_dict[KEY_INSTANCES].append(sample_output_dict)
         
-        output_dataset_args = copy.deepcopy(grouped_dataset.data_args)
+        output_dataset_args = copy.deepcopy(source_dataset.data_args)
         output_dataset_args.dataset_path = None
         output_dataset_args.dataset_name = f"paired_{output_dataset_args.dataset_name}"
         output_dataset = Dataset(output_dataset_args)
@@ -174,8 +183,8 @@ class DPOv2Aligner(BaseAligner):
         dataset_type: str,
     ) -> List[int]:
         all_lengths = []
-        if dataset_type == 'grouped_text2text':
-            all_lengths = [len(output) for output in outputs]
+        if dataset_type == "text_to_scored_textlist":
+            all_lengths = [len(output["text"]) for output in outputs]
             
         else:
             raise NotImplementedError(
@@ -194,7 +203,7 @@ class DPOv2Aligner(BaseAligner):
         """When length_penalty > 0, penalize the longer sequence by subtracting 
         length_penalty * length from the reward. Vice versa when length_penalty < 0.
         """
-        assert len(rewards) == len(lengths)
+        assert len(rewards) == len(lengths), "The number of rewards and lengths should be the same."
         return [reward - length_penalty * length for reward, length in zip(rewards, lengths)]
     
     

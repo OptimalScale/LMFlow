@@ -74,8 +74,6 @@ class RewardModelInferencer(BasePipeline):
             torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
             deepspeed.init_distributed()
         else:
-            os.environ["MASTER_ADDR"] = "localhost"
-            os.environ["MASTER_PORT"] = "15000"
             dist.init_process_group(
                 "gloo", rank=self.local_rank, world_size=self.world_size
             )
@@ -99,10 +97,14 @@ class RewardModelInferencer(BasePipeline):
         assert isinstance(model, HFTextRegressionModel), "model should be HFTextRegressionModel"
         if not transform_dataset_in_place:
             dataset = copy.deepcopy(dataset)
+            
         output_dict = {
-            "type": f"grouped_{dataset.get_type().lstrip('grouped_')}",
             "instances": dataset.to_dict()["instances"],
         }
+        if dataset.get_type() == "text_to_textlist":
+            output_dict["type"] = "text_to_scored_textlist"
+        else:
+            raise NotImplementedError(f"Dataset type {dataset.get_type()} is not supported for reward model inference.")
         
         if use_vllm:
             scores = self.__vllm_inference(model, dataset)
@@ -127,7 +129,7 @@ class RewardModelInferencer(BasePipeline):
         dataset: Dataset,
     ) -> Union[List[float], List[List[float]]]:
         tokenized_dataset = model.tokenize(dataset)
-        if 'grouped_' in dataset.get_type():
+        if dataset.get_type() in ["text_to_textlist"]:
             model_input_ids, num_outputs = self.flatten_list(tokenized_dataset.get_backend_dataset()["input_ids"])
         else:
             model_input_ids = tokenized_dataset.get_backend_dataset()["input_ids"]
@@ -163,7 +165,7 @@ class RewardModelInferencer(BasePipeline):
             batch_output = self.__post_process_model_output(batch_output)
             final_output.extend(batch_output)
         
-        if 'grouped_' in dataset.get_type():
+        if dataset.get_type() in ["text_to_textlist"]:
             final_output = self.compress_list(final_output, num_outputs)
         
         return final_output

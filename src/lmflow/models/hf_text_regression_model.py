@@ -30,14 +30,14 @@ from lmflow.tokenization.hf_text_regression_model import (
     paired_conversation_tokenize_function, 
     conversation_tokenize_function,
     tokenize_function,
-    grouped_text2text_tokenize_function,
+    text_to_textlist_tokenize_function,
 )
 from lmflow.utils.conversation_template import PRESET_TEMPLATES
 from lmflow.utils.constants import (
     PAIRED_CONVERSATION_DATASET_DESCRIPTION, 
     TEXT2TEXT_DATASET_DESCRIPTION,
     TEXT_ONLY_DATASET_DESCRIPTION,
-    GROUPED_TEXT2TEXT_DATASET_DESCRIPTION,
+    TEXT_TO_TEXTLIST_DATASET_DESCRIPTION,
     CONVERSATION_DATASET_DESCRIPTION, 
 )
 
@@ -167,17 +167,23 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         }            
         if dataset_type == "text_only":
             tokenize_fn = tokenize_function
-            tokenize_fn_kwargs["tokenized_column_order"] = ["text"]
-            tokenize_fn_kwargs["label_columns"] = ["text"]
-            tokenize_fn_kwargs["add_special_tokens"] = add_special_tokens
-            tokenize_fn_kwargs["use_truncation"] = use_truncation
+            text_only_tokenize_fn_kwargs = {
+                "tokenized_column_order": ["text"],
+                "label_columns": ["text"],
+                "add_special_tokens": add_special_tokens,
+                "use_truncation": use_truncation,
+            }
+            tokenize_fn_kwargs.update(text_only_tokenize_fn_kwargs)
             
         elif dataset_type == "text2text":
             tokenize_fn = tokenize_function
-            tokenize_fn_kwargs["tokenized_column_order"] = ["input", "output"]
-            tokenize_fn_kwargs["label_columns"] = ["output"]
-            tokenize_fn_kwargs["add_special_tokens"] = False
-            tokenize_fn_kwargs["use_truncation"] = use_truncation
+            text2text_tokenize_fn_kwargs = {
+                "tokenized_column_order": ["input", "output"],
+                "label_columns": ["output"],
+                "add_special_tokens": False,
+                "use_truncation": use_truncation,
+            }
+            tokenize_fn_kwargs.update(text2text_tokenize_fn_kwargs)
             
         elif dataset_type in ["conversation", "paired_conversation"]:
             if dataset_type == "conversation":
@@ -198,10 +204,13 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
             tokenize_fn_kwargs["conversation_template"] = conversation_template
             logger.warning(f"Conversation template: {conversation_template}")
             
-        elif dataset_type == "grouped_text2text":
-            tokenize_fn = grouped_text2text_tokenize_function
-            tokenize_fn_kwargs["add_special_tokens"] = add_special_tokens
-            tokenize_fn_kwargs["use_truncation"] = use_truncation
+        elif dataset_type == "text_to_textlist":
+            tokenize_fn = text_to_textlist_tokenize_function
+            text_to_textlist_tokenize_fn_kwargs = {
+                "add_special_tokens": add_special_tokens,
+                "use_truncation": use_truncation,
+            }
+            tokenize_fn_kwargs.update(text_to_textlist_tokenize_fn_kwargs)
             
         else:
             raise NotImplementedError(
@@ -211,7 +220,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
                 f"    2) [Inference]{TEXT2TEXT_DATASET_DESCRIPTION}\n"
                 f"    3) [Training]{PAIRED_CONVERSATION_DATASET_DESCRIPTION}\n"
                 f"    4) [Inference]{CONVERSATION_DATASET_DESCRIPTION}\n"
-                f"    5) [Inference]{GROUPED_TEXT2TEXT_DATASET_DESCRIPTION}\n"
+                f"    5) [Inference]{TEXT_TO_TEXTLIST_DATASET_DESCRIPTION}\n"
             )
   
         tokenize_kwargs = {}

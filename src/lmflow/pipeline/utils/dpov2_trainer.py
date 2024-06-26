@@ -22,7 +22,7 @@ from lmflow.pipeline.utils.dpov2_dataprocessor import PreferenceDataCollatorWith
 logger = logging.getLogger(__name__)
 
 
-class PreferenceTrainer(DPOTrainer):
+class DPOv2Trainer(DPOTrainer):
     def __init__(
         self,
         model: Union[PreTrainedModel, nn.Module] = None,

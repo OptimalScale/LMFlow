@@ -127,7 +127,7 @@ def blocking(
     return token_dict
 
 
-def blocking_grouped_text2text(
+def blocking_text_to_textlist(
     token_dict: Dict, 
     block_size: int, 
     model_max_length: int,
@@ -369,7 +369,7 @@ def tokenize_function(
     return token_dict
 
 
-def grouped_text2text_tokenize_function(
+def text_to_textlist_tokenize_function(
     examples, 
     data_args: DatasetArguments,
     tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
@@ -387,8 +387,8 @@ def grouped_text2text_tokenize_function(
     for example_idx in range(num_example):
         encoded = tokenizer(
             [
-                examples["input"][example_idx] + examples["outputs"][example_idx][i] 
-                for i in range(len(examples["outputs"][example_idx]))
+                examples["input"][example_idx] + examples["output"][example_idx][i] 
+                for i in range(len(examples["output"][example_idx]))
             ],
             add_special_tokens=add_special_tokens,
             truncation=use_truncation,
@@ -397,7 +397,7 @@ def grouped_text2text_tokenize_function(
         output_dict["input_ids"][example_idx] = encoded["input_ids"]
         
     if data_args.disable_group_texts:
-        output_dict = blocking_grouped_text2text(
+        output_dict = blocking_text_to_textlist(
             token_dict=output_dict,
             block_size=data_args.block_size,
             model_max_length=tokenizer.model_max_length,

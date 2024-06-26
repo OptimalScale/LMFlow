@@ -303,9 +303,9 @@ class HFModelMixin(BaseModel):
         model_args: ModelArguments,
         hf_auto_model: HF_AUTOMODEL_TYPE,
     ):
-        assert self.do_train, "To prepare the model for training, set do_train=True."
+        assert self.do_train, "To prepare the model for training, please set do_train=True."
         # TODO: change to accelerate
-        logger.warning("Preparing model for training")
+        logger.info("Preparing model for training")
         if model_args.model_name_or_path:
             model = hf_auto_model.from_pretrained(
                 model_args.model_name_or_path,
@@ -323,6 +323,9 @@ class HFModelMixin(BaseModel):
         self.backend_model_full = model
         
         if model_args.ignore_bias_buffers:
+            # torch distributed hack
+            # fix for DDP issues with LM bias/mask buffers - invalid scalar type, inplace operation. 
+            # See: https://github.com/huggingface/transformers/issues/22482#issuecomment-1595790992
             model._ddp_params_and_buffers_to_ignore = [
                 name for name, buffer in model.named_buffers() if buffer.dtype == torch.bool
             ]
@@ -367,12 +370,6 @@ class HFModelMixin(BaseModel):
             "offload_folder": "offload",
             "offload_state_dict": True,
         }
-                
-        if model_args.lora_model_path is not None:
-            logger.warning(
-                "LoRA does not support RAM optimized load currently. Using original load."
-            )
-            model_args.use_ram_optimized_load = False
 
         if use_accelerator or model_args.use_ram_optimized_load:
             inference_load_kwargs.update(ram_optimized_load_kwargs)

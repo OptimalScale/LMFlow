@@ -12,6 +12,7 @@ Face dataset, mapping datasets, and retrieving the backend dataset and arguments
 # Importing necessary libraries and modules
 import copy
 import json
+import logging
 from pathlib import Path
 
 from cmath import e
@@ -25,13 +26,16 @@ from lmflow.args import DatasetArguments
 from lmflow.utils.constants import (
     DATASET_DESCRIPTION_MAP,
     TEXT_ONLY_DATASET_DESCRIPTION,
-    SCORED_TEXT_ONLY_DATASET_DESCRIPTION,
     TEXT2TEXT_DATASET_DESCRIPTION,
     FLOAT_ONLY_DATASET_DESCRIPTION,
     INSTANCE_FIELDS_MAP,
 )
 
 from .multi_modal_dataset import CustomMultiModalDataset
+
+
+logger = logging.getLogger(__name__)
+
 
 DATASET_TYPES = [
     "text_only",
@@ -40,14 +44,14 @@ DATASET_TYPES = [
     "image_text",
     "conversation",
     "paired_conversation",
-    "paired_text2text",
-    "grouped_text2text",
-    "grouped_conversation",
+    "paired_text_to_text",
+    "text_to_textlist",
+    "text_to_scored_textlist"
 ]
 
 KEY_TYPE = "type"
 KEY_INSTANCES = "instances"
-KEY_SCORES = "scores"
+KEY_SCORE = "score"
 
 class Dataset:
     r"""
@@ -419,7 +423,11 @@ class Dataset:
         return self.type
     
     
-    def save(self, file_path: str):
+    def save(
+        self, 
+        file_path: str, 
+        format: str="json"
+    ):
         r"""
         Save the dataset to a json file.
 
@@ -428,6 +436,10 @@ class Dataset:
         file_path : str.
             The path to the file where the dataset will be saved.
         """
-        assert Path(file_path).suffix == ".json", "The file path must have a .json extension."
-        with open(file_path, "w") as fout:
-            json.dump(self.to_dict(), fout, indent=2)
+        if format == "json":
+            assert Path(file_path).suffix == ".json", "The file path must have a .json extension."
+            with open(file_path, "w", encoding='utf-8') as fout:
+                json.dump(self.to_dict(), fout, indent=4, ensure_ascii=False)
+                
+        else:
+            logger.error(f"Unsupported format when saving the dataset: {format}.")
