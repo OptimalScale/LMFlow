@@ -34,7 +34,7 @@ from lmflow.utils.data_utils import (
     set_random_seed,
     batchlize
 )
-from lmflow.datasets.dataset import KEY_SCORES
+from lmflow.datasets.dataset import KEY_SCORE
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
@@ -98,11 +98,18 @@ class RewardModelInferencer(BasePipeline):
         if not transform_dataset_in_place:
             dataset = copy.deepcopy(dataset)
             
-        output_dict = {
-            "instances": dataset.to_dict()["instances"],
-        }
+        output_dict = {"type": "", "instances": []}
         if dataset.get_type() == "text_to_textlist":
             output_dict["type"] = "text_to_scored_textlist"
+            for idx, instance in enumerate(dataset.get_backend_dataset()):
+                if len(instance["output"]) < 2:
+                    logger.warning(f"Instance {idx} has less than 2 outputs, skipping.")
+                output_dict["instances"].append(
+                    {
+                        "input": instance["input"],
+                        "output": [{"text": text} for text in instance["output"]],
+                    }
+                )
         else:
             raise NotImplementedError(f"Dataset type {dataset.get_type()} is not supported for reward model inference.")
         
@@ -111,8 +118,9 @@ class RewardModelInferencer(BasePipeline):
         else:
             scores = self.__inference(model, dataset)
             
-        for i, score in enumerate(scores):
-            output_dict["instances"][i][KEY_SCORES] = score
+        for i, instance_scores in enumerate(scores):
+            for j, score in enumerate(instance_scores):
+                output_dict["instances"][i]["output"][j][KEY_SCORE] = score
         
         output_dataset_args = copy.deepcopy(self.data_args)
         output_dataset_args.dataset_path = None

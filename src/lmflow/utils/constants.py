@@ -360,6 +360,7 @@ INSTANCE_FIELDS_MAP = {
     "float_only": ["value"],
     "image_text": ["images", "text"],
     "text_to_textlist": ["input", "output"],
+    "text_to_scored_textlist": ["input", "output"],
 }
 
 CONVERSATION_ROLE_NAMES = {
