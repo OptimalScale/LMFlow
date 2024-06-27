@@ -19,6 +19,7 @@ from lmflow.pipeline.finetuner import Finetuner
 from lmflow.pipeline.inferencer import Inferencer
 from lmflow.pipeline.vllm_inferencer import VLLMInferencer
 from lmflow.pipeline.dpo_aligner import DPOAligner
+from lmflow.pipeline.dpov2_aligner import DPOv2Aligner
 from lmflow.pipeline.rm_tuner import RewardModelTuner
 from lmflow.pipeline.rm_inferencer import RewardModelInferencer
 PIPELINE_MAPPING = {
@@ -28,6 +29,7 @@ PIPELINE_MAPPING = {
     "vllm_inferencer": VLLMInferencer,
     "rm_inferencer": RewardModelInferencer,
     "dpo_aligner": DPOAligner,
+    "dpov2_aligner": DPOv2Aligner,
     "rm_tuner": RewardModelTuner,
 }
 

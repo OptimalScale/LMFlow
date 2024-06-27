@@ -1289,65 +1289,22 @@ class DPOAlignerArguments:
 
 
 @dataclass
-class DPOv2AlignerArguments(TrainingArguments):
+class DPOv2AlignerArguments(FinetunerArguments):
     """
     The arguments for the DPOv2 training script.
     """
-
-    # data parameters, i.e., the KL penalty in the paper
-    beta: Optional[float] = field(default=0.1, metadata={"help": "the beta parameter for DPO loss"})
-
-    # training parameters
-    eval_dir: Optional[str] = field(
-        default="/export/home/hanze/project/vllm-gen/uf_split0_offline_reward.json",  # "/export/home/data/gemma_it_2b_3w_k8_with_pairrm_rewards.json",
-        metadata={"help": "the location of the evalset name or path"},
-    )
-    learning_rate: Optional[float] = field(default=5e-7, metadata={"help": "optimizer learning rate"})
-    lr_scheduler_type: Optional[str] = field(
-        default="constant_with_warmup", metadata={"help": "the lr scheduler type"}
-    )
-    warmup_steps: Optional[int] = field(default=100, metadata={"help": "the number of warmup steps"})
-    weight_decay: Optional[float] = field(default=0.01, metadata={"help": "the weight decay"})
-
-    per_device_train_batch_size: Optional[int] = field(default=1, metadata={"help": "train batch size per device"})
-    per_device_eval_batch_size: Optional[int] = field(default=1, metadata={"help": "eval batch size per device"})
-    gradient_accumulation_steps: Optional[int] = field(
-        default=16, metadata={"help": "the number of gradient accumulation steps"}
-    )
-    gradient_checkpointing: Optional[bool] = field(
-        default=True, metadata={"help": "whether to use gradient checkpointing"}
-    )
-
-    
-    lora_alpha: Optional[float] = field(default=16, metadata={"help": "the lora alpha parameter"})
-    lora_dropout: Optional[float] = field(default=0.05, metadata={"help": "the lora dropout parameter"})
-    lora_r: Optional[int] = field(default=8, metadata={"help": "the lora r parameter"})
-
+    # pair sampling args
     margin_scale: Optional[float] = field(default=1.0, metadata={"help": "the margin scale"})
-
-    max_prompt_length: Optional[int] = field(default=1000, metadata={"help": "the maximum prompt length"})
-    max_length: Optional[int] = field(default=2048, metadata={"help": "the maximum sequence length"})
-    num_train_epochs: Optional[int] = field(default=2, metadata={"help": "max number of training epochs"})
-    logging_steps: Optional[int] = field(default=2, metadata={"help": "the logging frequency"})
-    save_strategy: Optional[str] = field(default="epoch", metadata={"help": "the saving strategy"})
-    save_steps: Optional[int] = field(default=50000, metadata={"help": "the saving frequency"})
-    eval_steps: Optional[int] = field(default=100, metadata={"help": "the evaluation frequency"})
-    run_name: Optional[str] = field(default="dpo_soft", metadata={"help": "the run name"})
-    loss_type: Optional[str] = field(default="sigmoid", metadata={"help": "the loss type"})
-    output_dir: Optional[str] = field(default="./dpo_soft", metadata={"help": "the output directory"})
-    log_freq: Optional[int] = field(default=1, metadata={"help": "the logging frequency"})
-
-    # instrumentation
     sampling_paired_method: Optional[str] = field(default="max_random", metadata={"help": "the choose type"})
-
-    mask_prompt: Optional[bool] = field(default=False, metadata={"help": "mask prompt"})
     length_penalty: Optional[float] = field(default=0, metadata={"help": "the length penalty"})
+    # data collator args
+    max_length: Optional[int] = field(default=2048, metadata={"help": "the maximum sequence length, prompt + output"})
+    max_prompt_length: Optional[int] = field(default=1000, metadata={"help": "the maximum prompt length"})
+    mask_prompt: Optional[bool] = field(default=False, metadata={"help": "mask prompt"})
+    # dpov2 aligner args
+    beta: Optional[float] = field(default=0.1, metadata={"help": "the beta parameter for DPO loss"})
+    loss_type: Optional[str] = field(default="sigmoid", metadata={"help": "the loss type"})
 
-    # need to add
-    evaluation_strategy: Optional[str] = field(
-        default="steps", 
-        metadata={"help": "the evaluation strategy"}
-    )
 
 @dataclass
 class IterativeAlignerArguments(InferencerArguments):
@@ -1366,6 +1323,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
     "rm_tuner": RewardModelTunerArguments,
+    "dpov2_aligner": DPOv2AlignerArguments,
 }
 
 

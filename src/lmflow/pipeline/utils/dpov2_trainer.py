@@ -54,6 +54,7 @@ class DPOv2Trainer(DPOTrainer):
         compute_metrics: Optional[Callable[[EvalLoopOutput], Dict]] = None,
         mask_prompt: Optional[bool] = False,
         len_penalty: float = 0,
+        preprocessing_num_workers: int = 1,
     ):
 
         if data_collator is None:
@@ -93,6 +94,7 @@ class DPOv2Trainer(DPOTrainer):
             disable_dropout=disable_dropout,
             generate_during_eval=generate_during_eval,
             compute_metrics=compute_metrics,
+            dataset_num_proc=preprocessing_num_workers,
         )
         self.use_dpo_data_collator = True
         self.len_penalty = len_penalty

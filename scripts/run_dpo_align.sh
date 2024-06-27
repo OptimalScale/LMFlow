@@ -20,7 +20,7 @@ while [[ $# -ge 1 ]]; do
       dataset_path="$2"
       shift
       ;;
-    -o|--output_lora_path)
+    -o|--output_dir)
       output_dir="$2"
       shift
       ;;

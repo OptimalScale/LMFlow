@@ -25,9 +25,9 @@ class DPOv2Aligner(BaseAligner):
     def __init__(
         self,
         model_args: ModelArguments,
-        ref_model_args: ModelArguments,
         data_args: DatasetArguments,
         aligner_args: DPOv2AlignerArguments,
+        ref_model_args: ModelArguments,
     ):
         self.model_args = model_args
         self.ref_model_args = ref_model_args
@@ -91,6 +91,7 @@ class DPOv2Aligner(BaseAligner):
             max_length=self.aligner_args.max_length,
             mask_prompt=self.aligner_args.mask_prompt,
             len_penalty=self.aligner_args.length_penalty,
+            # preprocessing_num_workers=self.data_args.preprocessing_num_workers, # will trigger TypeError: cannot pickle 'torch._C._distributed_c10d.ProcessGroup' object
         )
         
         # step 3. train
