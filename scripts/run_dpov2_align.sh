@@ -7,7 +7,6 @@ reference_model_name_or_path=meta-llama/Meta-Llama-3-8B-Instruct
 dataset_path=data/iterative-prompt/train
 eval_dataset_path=data/iterative-prompt/eval
 output_dir=output_models/${run_name}
-deepspeed_args="--master_port=11000 --include localhost:4,5,6,7"
 
 while [[ $# -ge 1 ]]; do
   key="$1"
@@ -34,10 +33,6 @@ while [[ $# -ge 1 ]]; do
       ;;
     -o|--output_dir)
       output_dir="$2"
-      shift
-      ;;
-    --deepspeed_args)
-      deepspeed_args="$2"
       shift
       ;;
     *)
