@@ -13,8 +13,8 @@ machine_rank: 0
 main_training_function: main
 mixed_precision: bf16
 num_machines: 1
-num_processes: 4
-gpu_ids: 4,5,6,7
+num_processes: 8
+gpu_ids:
 rdzv_backend: static
 same_network: true
 tpu_env: []
