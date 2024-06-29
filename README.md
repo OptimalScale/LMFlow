@@ -340,7 +340,7 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
   LMFlow now supports custom optimizer training with a variety of optimizers. Elevate your model's performance with tailored optimization strategies. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
 
-  The following table evaluates the performance of custom optimizers in the fine-tuning process of GPT-2 on the Alpaca dataset, emphasizing their individual impacts on the training loss. The specific hyperparameter settings utilize default configurations, which can be customized and adjusted at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
+  The following table evaluates the performance of custom optimizers in the fine-tuning process of GPT-2 on the Alpaca dataset, emphasizing their individual impacts on the training loss. The specific hyperparameter settings utilize default configurations, which can be customized and adjusted at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh). It is important to note that the evaluations were conducted over a duration of 0.1 epochs to provide a preliminary insight into the optimizers' effectiveness.
 
   | Optimizer Name | Train Loss |
   |----------------|------------|
