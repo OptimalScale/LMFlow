@@ -31,6 +31,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 
 ## Latest News
+* [2024-06-29] Expanding Optimization Options! We now support custom optimizer training with a variety of optimizers. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
 * [2024-04-25] :rocket: Support conversation template! We've preset the latest [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) and [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) conversation templates as well as some frequently used templates such as `chatml` (see all templates [here](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)), and we are working on adding more preset templates. Adding corresponding `--conversation_template` in the shell script and you are all set! :rocket:
 * [2024-03-27] Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! 
 * [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
@@ -331,6 +332,16 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
   LMFlow supports multimodal inputs of images and texts. Check out our [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh).
 
 </details>
+
+
+<details> <summary>Optimizers</summary>
+
+* Custom Optimizers
+
+  LMFlow now supports custom optimizer training with a variety of optimizers. Elevate your model's performance with tailored optimization strategies. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
+
+</details>
+
 
 
 ## Support

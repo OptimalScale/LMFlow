@@ -31,6 +31,18 @@ logger = logging.getLogger(__name__)
 
 class OptimizerNames():
     DUMMY = "dummy"
+    ADABELIEF = "adabelief"
+    ADABOUND = "adabound"
+    LARS = "lars"
+    LAMB = "lamb"
+    ADAMAX = "adamax"
+    NADAM = "nadam"
+    RADAM = "radam"
+    ADAMP = "adamp"
+    SGDP = "sgdp"
+    YOGI = "yogi"
+    SOPHIA = "sophia"
+    ADAN = "adan"
 
 
 @dataclass
@@ -679,7 +691,42 @@ class FinetunerArguments(TrainingArguments):
             "help": "A useless argument for dummy optimizer, just for tutorial"
         }
     )
-    
+    optim_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_beta3: float = field(
+        default=0.999,
+        metadata={
+            "help": "Additional coefficient used in some optimizers for additional smoothing"
+        }
+    )
+    optim_momentum: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for the momentum term in optimizers like SGD with momentum"
+        }
+    )
+    optim_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_eps: float = field(
+        default=1e-8,
+        metadata={
+            "help": "A small value to prevent division by zero in some calculations"
+        }
+    )
     
 @dataclass
 class RewardModelingArguments(FinetunerArguments):
