@@ -1,182 +1,71 @@
-from typing import cast, List, Optional, Tuple, Union
 import torch
-from torch import Tensor
-from torch.optim.optimizer import Optimizer
-class NAdam(Optimizer): 
-    def __init__(
-        self,
-        params,
-        lr: float = 2e-3,
-        betas: Tuple[float, float] = (0.9, 0.999),
-        eps: float = 1e-8,
-        weight_decay: float = 0,
-        momentum_decay: float = 4e-3,
-        decoupled_weight_decay: bool = False,
-        *,
-        foreach: Optional[bool] = None,
-        maximize: bool = False,
-        capturable: bool = False,
-        differentiable: bool = False,
-    ):  # noqa: D107
+import math
+
+class NAdam(torch.optim.Optimizer):
+    def __init__(self, params, lr=2e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0, momentum_decay=4e-3):
         if not 0.0 <= lr:
-            raise ValueError(f"Invalid learning rate: {lr}")
+            raise ValueError("Invalid learning rate: {}".format(lr))
         if not 0.0 <= eps:
-            raise ValueError(f"Invalid epsilon value: {eps}")
+            raise ValueError("Invalid epsilon value: {}".format(eps))
         if not 0.0 <= betas[0] < 1.0:
-            raise ValueError(f"Invalid beta parameter at index 0: {betas[0]}")
+            raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
         if not 0.0 <= betas[1] < 1.0:
-            raise ValueError(f"Invalid beta parameter at index 1: {betas[1]}")
+            raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
         if not 0.0 <= weight_decay:
-            raise ValueError(f"Invalid weight_decay value: {weight_decay}")
+            raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
         if not 0.0 <= momentum_decay:
-            raise ValueError(f"Invalid momentum_decay value: {momentum_decay}")
-        defaults = dict(
-            lr=lr,
-            betas=betas,
-            eps=eps,
-            weight_decay=weight_decay,
-            momentum_decay=momentum_decay,
-            decoupled_weight_decay=decoupled_weight_decay,
-            maximize=maximize,
-            foreach=foreach,
-            capturable=capturable,
-            differentiable=differentiable,
-        )
-        super().__init__(params, defaults)
+            raise ValueError("Invalid momentum_decay value: {}".format(momentum_decay))
 
-    def __setstate__(self, state):  # noqa: D105
-        super().__setstate__(state)
-        for group in self.param_groups:
-            group.setdefault("maximize", False)
-            group.setdefault("foreach", None)
-            group.setdefault("capturable", False)
-            group.setdefault("differentiable", False)
-            group.setdefault("decoupled_weight_decay", False)
-            for p in group["params"]:
-                p_state = self.state.get(p, [])
-                if len(p_state) != 0:
-                    if not torch.is_tensor(p_state["step"]):
-                        step_val = float(p_state["step"])
-                        p_state["step"] = (
-                            torch.tensor(
-                                step_val, dtype=_get_scalar_dtype(), device=p.device
-                            )
-                            if group["capturable"]
-                            else torch.tensor(step_val, dtype=_get_scalar_dtype())
-                        )
-                    if not torch.is_tensor(p_state["mu_product"]):
-                        mu_prod_val = p_state["mu_product"]
-                        p_state["mu_product"] = (
-                            torch.tensor(
-                                mu_prod_val, dtype=_get_scalar_dtype(), device=p.device
-                            )
-                            if group["capturable"]
-                            else torch.tensor(mu_prod_val, dtype=_get_scalar_dtype())
-                        )
+        defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay, momentum_decay=momentum_decay)
+        super(NAdam, self).__init__(params, defaults)
 
-    def _init_group(
-        self,
-        group,
-        params_with_grad,
-        grads,
-        exp_avgs,
-        exp_avg_sqs,
-        mu_products,
-        state_steps,
-    ):
-        has_complex = False
-        for p in group["params"]:
-            if p.grad is not None:
-                has_complex |= torch.is_complex(p)
-                params_with_grad.append(p)
-                if p.grad.is_sparse:
-                    raise RuntimeError("NAdam does not support sparse gradients")
-                grads.append(p.grad)
-
-                state = self.state[p]
-                # Lazy state initialization
-                if len(state) == 0:
-                    # note(crcrpar): [special device hosting for step]
-                    # Deliberately host `step` and `mu_product` on CPU if capturable is False.
-                    # This is because kernel launches are costly on CUDA and XLA.
-                    state["step"] = (
-                        torch.zeros((), dtype=_get_scalar_dtype(), device=p.device)
-                        if group["capturable"]
-                        else torch.tensor(0.0, dtype=_get_scalar_dtype())
-                    )
-                    state["mu_product"] = (
-                        torch.ones((), dtype=_get_scalar_dtype(), device=p.device)
-                        if group["capturable"]
-                        else torch.tensor(1.0, dtype=_get_scalar_dtype())
-                    )
-                    # Exponential moving average of gradient values
-                    state["exp_avg"] = torch.zeros_like(
-                        p, memory_format=torch.preserve_format
-                    )
-                    # Exponential moving average of squared gradient values
-                    state["exp_avg_sq"] = torch.zeros_like(
-                        p, memory_format=torch.preserve_format
-                    )
-
-                exp_avgs.append(state["exp_avg"])
-                exp_avg_sqs.append(state["exp_avg_sq"])
-                mu_products.append(state["mu_product"])
-                state_steps.append(state["step"])
-        return has_complex
+    def __setstate__(self, state):
+        super(NAdam, self).__setstate__(state)
 
     def step(self, closure=None):
-        """Perform a single optimization step.
-
-        Args:
-            closure (Callable, optional): A closure that reevaluates the model
-                and returns the loss.
-        """
-        self._cuda_graph_capture_health_check()
-
         loss = None
         if closure is not None:
-            with torch.enable_grad():
-                loss = closure()
+            loss = closure()
 
         for group in self.param_groups:
-            params_with_grad: List[Tensor] = []
-            grads: List[Tensor] = []
-            exp_avgs: List[Tensor] = []
-            exp_avg_sqs: List[Tensor] = []
-            mu_products: List[Tensor] = []
-            state_steps: List[Tensor] = []
-            beta1, beta2 = cast(Tuple[float, float], group["betas"])
+            for p in group['params']:
+                if p.grad is None:
+                    continue
+                grad = p.grad.data
+                if grad.is_sparse:
+                    raise RuntimeError('NAdam does not support sparse gradients')
+                state = self.state[p]
 
-            has_complex = self._init_group(
-                group,
-                params_with_grad,
-                grads,
-                exp_avgs,
-                exp_avg_sqs,
-                mu_products,
-                state_steps,
-            )
+                # State initialization
+                if len(state) == 0:
+                    state['step'] = 0
+                    state['m_prev'] = torch.zeros_like(p.data)
+                    state['v'] = torch.zeros_like(p.data)
 
-            nadam(
-                params_with_grad,
-                grads,
-                exp_avgs,
-                exp_avg_sqs,
-                mu_products,
-                state_steps,
-                beta1=beta1,
-                beta2=beta2,
-                lr=group["lr"],
-                weight_decay=group["weight_decay"],
-                momentum_decay=group["momentum_decay"],
-                eps=group["eps"],
-                maximize=group["maximize"],
-                decoupled_weight_decay=group["decoupled_weight_decay"],
-                foreach=group["foreach"],
-                capturable=group["capturable"],
-                differentiable=group["differentiable"],
-                has_complex=has_complex,
-            )
+                m_prev, v = state['m_prev'], state['v']
+                beta1, beta2 = group['betas']
+
+                state['step'] += 1
+                bias_correction1 = 1 - beta1 ** state['step']
+                bias_correction2 = 1 - beta2 ** state['step']
+
+                if group['weight_decay'] != 0:
+                    grad = grad.add(group['weight_decay'], p.data)
+
+                m = beta1 * m_prev + (1 - beta1) * grad
+                v.mul_(beta2).addcmul_(1 - beta2, grad, grad)
+
+                m_hat = m / bias_correction1
+                v_hat = v / bias_correction2
+
+                denom = v_hat.sqrt().add_(group['eps'])
+
+                momentum_decay = group['momentum_decay']
+                m_prev.mul_(beta1).add_(1 - beta1, grad)
+                m_prev_hat = m_prev / bias_correction1
+
+                step_size = group['lr'] * math.sqrt(bias_correction2) / bias_correction1
+
+                p.data.addcdiv_(-step_size, m_hat + momentum_decay * m_prev_hat, denom)
 
         return loss
-

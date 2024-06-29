@@ -1,7 +1,6 @@
 import torch
-from torch import Tensor
 from torch.optim.optimizer import Optimizer
-from typing import List
+
 class SophiaG(Optimizer):
     """
     Sophia: A Scalable Stochastic Second-order Optimizer for Language Model Pre-training.
@@ -79,7 +78,7 @@ class SophiaG(Optimizer):
                 params_with_grad.append(p)
                 
                 if p.grad.is_sparse:
-                    raise RuntimeError('Hero does not support sparse gradients')
+                    raise RuntimeError('SophiaG does not support sparse gradients')
                 grads.append(p.grad)
                 state = self.state[p]
                 # State initialization
@@ -99,107 +98,19 @@ class SophiaG(Optimizer):
                 if self.defaults['capturable']:
                     bs = torch.ones((1,), dtype=torch.float, device=p.device) * bs
 
-            sophiag(params_with_grad,
-                  grads,
-                  exp_avgs,
-                  hessian,
-                  state_steps,
-                  bs=bs,
-                  beta1=beta1,
-                  beta2=beta2,
-                  rho=group['rho'],
-                  lr=group['lr'],
-                  weight_decay=group['weight_decay'],
-                  maximize=group['maximize'],
-                  capturable=group['capturable'])
+            # Perform the actual update step here instead of calling SophiaG again
+            for p, grad, exp_avg, h, step in zip(params_with_grad, grads, exp_avgs, hessian, state_steps):
+                if group['weight_decay'] != 0:
+                    grad = grad.add(p, alpha=group['weight_decay'])
+
+                # Decay the first and second moment running average coefficient
+                exp_avg.mul_(beta1).add_(grad, alpha=1 - beta1)
+                step.add_(1)
+
+                # Compute the update using the hessian information
+                update = exp_avg.div(1 - beta1 ** step.item())
+                h_sqrt = h.sqrt().add_(group['rho'])
+                p.addcdiv_(update, h_sqrt, value=-group['lr'])
 
         return loss
-
-
-def sophiag(params: List[Tensor],
-          grads: List[Tensor],
-          exp_avgs: List[Tensor],
-          hessian: List[Tensor],
-          state_steps: List[Tensor],
-          capturable: bool = False,
-          *,
-          bs: int,
-          beta1: float,
-          beta2: float,
-          rho: float,
-          lr: float,
-          weight_decay: float,
-          maximize: bool):
-
-    if not all(isinstance(t, torch.Tensor) for t in state_steps):
-        raise RuntimeError("API has changed, `state_steps` argument must contain a list of singleton tensors")
-
-    func = _single_tensor_sophiag
-
-    func(params,
-         grads,
-         exp_avgs,
-         hessian,
-         state_steps,
-         bs=bs,
-         beta1=beta1,
-         beta2=beta2,
-         rho=rho,
-         lr=lr,
-         weight_decay=weight_decay,
-         maximize=maximize,
-         capturable=capturable)
-
-
-def _single_tensor_sophiag(params: List[Tensor],
-                         grads: List[Tensor],
-                         exp_avgs: List[Tensor],
-                         hessian: List[Tensor],
-                         state_steps: List[Tensor],
-                         *,
-                         bs: int,
-                         beta1: float,
-                         beta2: float,
-                         rho: float,
-                         lr: float,
-                         weight_decay: float,
-                         maximize: bool,
-                         capturable: bool):
-
-    for i, param in enumerate(params):
-        grad = grads[i] if not maximize else -grads[i]
-        exp_avg = exp_avgs[i]
-        hess = hessian[i]
-        step_t = state_steps[i]
-
-        if capturable:
-            assert param.is_cuda and step_t.is_cuda and bs.is_cuda 
-
-        if torch.is_complex(param):
-            grad = torch.view_as_real(grad)
-            exp_avg = torch.view_as_real(exp_avg)
-            hess = torch.view_as_real(hess)
-            param = torch.view_as_real(param)
-
-        # update step
-        step_t += 1
-
-        # Perform stepweight decay
-        param.mul_(1 - lr * weight_decay)
-
-        # Decay the first and second moment running average coefficient
-        exp_avg.mul_(beta1).add_(grad, alpha=1 - beta1)
-
-        if capturable:
-            step = step_t
-            step_size = lr 
-            step_size_neg = step_size.neg()
-
-            ratio = (exp_avg.abs() / (rho * bs * hess + 1e-15)).clamp(None,1)
-            param.addcmul_(exp_avg.sign(), ratio, value=step_size_neg)
-        else:
-            step = step_t.item()
-            step_size_neg = - lr 
-            
-            ratio = (exp_avg.abs() / (rho * bs * hess + 1e-15)).clamp(None,1)
-            param.addcmul_(exp_avg.sign(), ratio, value=step_size_neg)
+        

@@ -1,6 +1,7 @@
 import math
 import torch
 from torch.optim.optimizer import Optimizer
+
 class AdaBelief(Optimizer):
     r"""Implements AdaBelief algorithm. Modified from Adam in PyTorch
     Arguments:
@@ -36,6 +37,7 @@ class AdaBelief(Optimizer):
     def __init__(self, params, lr=1e-3, betas=(0.9, 0.999), eps=1e-16,
                  weight_decay=0, amsgrad=False, weight_decouple=True, fixed_decay=False, rectify=True,
                  degenerated_to_sgd=True, print_change_log = True):
+
         if not 0.0 <= lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
         if not 0.0 <= eps:
@@ -82,17 +84,13 @@ class AdaBelief(Optimizer):
                 # State initialization
                 state['step'] = 0
                 # Exponential moving average of gradient values
-                state['exp_avg'] = torch.zeros_like(p.data,memory_format=torch.preserve_format) \
-                    if version_higher else torch.zeros_like(p.data)
-
+                state['exp_avg'] = torch.zeros_like(p.data)
                 # Exponential moving average of squared gradient values
-                state['exp_avg_var'] = torch.zeros_like(p.data,memory_format=torch.preserve_format) \
-                    if version_higher else torch.zeros_like(p.data)
+                state['exp_avg_var'] = torch.zeros_like(p.data)
 
                 if amsgrad:
                     # Maintains max of all exp. moving avg. of sq. grad. values
-                    state['max_exp_avg_var'] = torch.zeros_like(p.data,memory_format=torch.preserve_format) \
-                        if version_higher else torch.zeros_like(p.data)
+                    state['max_exp_avg_var'] = torch.zeros_like(p.data)
 
     def step(self, closure=None):
         """Performs a single optimization step.
@@ -130,15 +128,12 @@ class AdaBelief(Optimizer):
                 if len(state) == 0:
                     state['step'] = 0
                     # Exponential moving average of gradient values
-                    state['exp_avg'] = torch.zeros_like(p.data,memory_format=torch.preserve_format) \
-                        if version_higher else torch.zeros_like(p.data)
+                    state['exp_avg'] = torch.zeros_like(p.data)
                     # Exponential moving average of squared gradient values
-                    state['exp_avg_var'] = torch.zeros_like(p.data,memory_format=torch.preserve_format) \
-                        if version_higher else torch.zeros_like(p.data)
+                    state['exp_avg_var'] = torch.zeros_like(p.data)
                     if amsgrad:
                         # Maintains max of all exp. moving avg. of sq. grad. values
-                        state['max_exp_avg_var'] = torch.zeros_like(p.data,memory_format=torch.preserve_format) \
-                            if version_higher else torch.zeros_like(p.data)
+                        state['max_exp_avg_var'] = torch.zeros_like(p.data)
                 
                 # perform weight decay, check if decoupled weight decay
                 if self.weight_decouple:
