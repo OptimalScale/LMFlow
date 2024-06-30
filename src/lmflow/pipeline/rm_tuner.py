@@ -23,8 +23,8 @@ from lmflow.pipeline.utils.rm_dataprocessor import RewardDataCollatorWithPadding
 logger = logging.getLogger(__name__)
 
 
-class RewardModelingTuner(Finetuner):
-    """Initializes the `RewardModelingTuner` class.
+class RewardModelTuner(Finetuner):
+    """Initializes the `RewardModelTuner` class.
 
     Parameters
     ----------
@@ -34,7 +34,7 @@ class RewardModelingTuner(Finetuner):
     data_args : DatasetArguments object.
         Contains the arguments required to load the dataset.
 
-    finetuner_args : RewardModelingArguments object.
+    finetuner_args : RewardModelTunerArguments object.
         Contains the arguments required to perform finetuning.
 
     args : Optional.

@@ -153,8 +153,8 @@ class VLLMInferencer(InferencerWithOffloading):
         outputs: Union[List[List[str]], List[List[List[int]]]],
         save_file_path: str,
     ):
-        with open(save_file_path, "w") as f:
-            json.dump(outputs, f)
+        with open(save_file_path, "w", encoding='utf-8') as f:
+            json.dump(outputs, f, ensure_ascii=False, indent=4)
             
         logger.info(f"Inference results are saved to {save_file_path}.")
         

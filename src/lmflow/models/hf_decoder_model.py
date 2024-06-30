@@ -145,7 +145,13 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         )
 
 
-    def tokenize(self, dataset, add_special_tokens=True, *args, **kwargs):
+    def tokenize(
+        self, 
+        dataset, 
+        add_special_tokens=True, 
+        *args, 
+        **kwargs
+    ) -> Dataset:
         """
         Tokenize the full dataset.
     
@@ -333,7 +339,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         else:
             # Can be list of ints or a Tensor
             return self.tokenizer.decode(input, *args, **kwargs)
-        
+
         
     def inference(
         self, 
@@ -380,7 +386,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         return res
 
 
-    def __inference(self, inputs, use_accelerator=False, *args, **kwargs):
+    def __inference(self, inputs, *args, **kwargs):
         """
         Perform generation process of the model.
     
@@ -401,7 +407,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             The generated sequence output 
         """
         with torch.no_grad():
-            if use_accelerator:
+            if self.use_accelerator:
                 outputs = self.backend_model.generate(
                     input_ids=inputs,
                     pad_token_id=self.tokenizer.pad_token_id,

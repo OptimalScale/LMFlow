@@ -111,6 +111,10 @@ class ModelArguments:
         Model architecture type.
     padding_side : str
         The side on which the tokenizer should have padding applied.
+    eos_padding : bool
+        whether to pad with eos token instead of pad token.
+    ignore_bias_buffers : bool
+        fix for DDP issues with LM bias/mask buffers - invalid scalar type,`inplace operation.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -323,6 +327,18 @@ class ModelArguments:
                 "use padding_side from tokenizer.padding_side."),
             "choices": ["right", "left", "auto"],
         }
+    )
+    eos_padding: Optional[bool] = field(
+        default=False, 
+        metadata={"help": "whether to pad with eos token"}
+    )
+    ignore_bias_buffers: Optional[bool] = field(
+        default=False,
+        metadata={
+            # debug argument for distributed training
+            "help": "fix for DDP issues with LM bias/mask buffers - invalid scalar type,`inplace operation. See"
+            "https://github.com/huggingface/transformers/issues/22482#issuecomment-1595790992"
+        },
     )
     
 
@@ -903,7 +919,7 @@ class FinetunerArguments(TrainingArguments):
     )
 
 @dataclass
-class RewardModelingArguments(FinetunerArguments):
+class RewardModelTunerArguments(FinetunerArguments):
     """
     Arguments for reward modeling.
     """
@@ -1080,18 +1096,15 @@ class InferencerArguments:
 
     local_rank : str
         For distributed training: local_rank
-
     random_seed : int, default = 1
-
+    inference_batch_size : int, default = 1
     deepspeed :
         Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
         loaded json file as a dict
     mixed_precision : str, choice from ["bf16","fp16"].
         mixed precision mode, whether to use bf16 or fp16
-
     temperature : float
         An argument of model.generate in huggingface to control the diversity of generation.
-
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
     use_beam_search : Optional[bool]
@@ -1137,7 +1150,10 @@ class InferencerArguments:
         metadata={"help": "For distributed training: local_rank"
                   },
     )
-
+    inference_batch_size: int = field(
+        default=1,
+        metadata={"help": "batch size for inference"},
+    )
     temperature: float = field(
         default=0.0,
         metadata={"help": "Temperature during inference."},
@@ -1494,6 +1510,24 @@ class DPOAlignerArguments:
 
 
 @dataclass
+class DPOv2AlignerArguments(FinetunerArguments):
+    """
+    The arguments for the DPOv2 training script.
+    """
+    # pair sampling args
+    margin_scale: Optional[float] = field(default=1.0, metadata={"help": "the margin scale"})
+    sampling_paired_method: Optional[str] = field(default="max_random", metadata={"help": "the choose type"})
+    length_penalty: Optional[float] = field(default=0, metadata={"help": "the length penalty"})
+    # data collator args
+    max_length: Optional[int] = field(default=2048, metadata={"help": "the maximum sequence length, prompt + output"})
+    max_prompt_length: Optional[int] = field(default=1000, metadata={"help": "the maximum prompt length"})
+    mask_prompt: Optional[bool] = field(default=False, metadata={"help": "mask prompt"})
+    # dpov2 aligner args
+    beta: Optional[float] = field(default=0.1, metadata={"help": "the beta parameter for DPO loss"})
+    loss_type: Optional[str] = field(default="sigmoid", metadata={"help": "the loss type"})
+
+
+@dataclass
 class IterativeAlignerArguments(InferencerArguments):
     """
     Arguments for iterative aligners.
@@ -1506,9 +1540,11 @@ PIPELINE_ARGUMENT_MAPPING = {
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "vllm_inferencer": InferencerArguments,
+    "rm_inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
-    "rm_tuner": RewardModelingArguments,
+    "rm_tuner": RewardModelTunerArguments,
+    "dpov2_aligner": DPOv2AlignerArguments,
 }
 
 
