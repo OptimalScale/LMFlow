@@ -31,6 +31,18 @@ logger = logging.getLogger(__name__)
 
 class OptimizerNames():
     DUMMY = "dummy"
+    ADABELIEF = "adabelief"
+    ADABOUND = "adabound"
+    LARS = "lars"
+    LAMB = "lamb"
+    ADAMAX = "adamax"
+    NADAM = "nadam"
+    RADAM = "radam"
+    ADAMP = "adamp"
+    SGDP = "sgdp"
+    YOGI = "yogi"
+    SOPHIA = "sophia"
+    ADAN = "adan"
 
 
 @dataclass
@@ -679,8 +691,217 @@ class FinetunerArguments(TrainingArguments):
             "help": "A useless argument for dummy optimizer, just for tutorial"
         }
     )
-    
-    
+    optim_adamp_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_adamp_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_nadam_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_nadam_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_lamb_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_lamb_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_adamax_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_adamax_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_adabelief_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_adabelief_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_adabound_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_adabound_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_adan_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_adan_beta2: float = field(
+        default=0.95,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_sophia_beta1: float = field(
+        default=0.965,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_sophia_beta2: float = field(
+        default=0.99,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_yogi_beta1: float = field(
+        default=0.965,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_yogi_beta2: float = field(
+        default=0.99,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_radam_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_radam_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_adan_beta3: float = field(
+        default=0.999,
+        metadata={
+            "help": "Additional coefficient used in some optimizers for additional smoothing"
+        }
+    )
+    optim_sgdp_momentum: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for the momentum term in optimizers like SGD with momentum"
+        }
+    )
+    optim_lars_momentum: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for the momentum term in optimizers like SGD with momentum"
+        }
+    )
+    optim_adamp_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_nadam_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_radam_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_adan_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_lamb_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_lars_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_sgdp_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_yogi_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_adamax_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_sophia_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_adabelief_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_adabound_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+
 @dataclass
 class RewardModelingArguments(FinetunerArguments):
     """

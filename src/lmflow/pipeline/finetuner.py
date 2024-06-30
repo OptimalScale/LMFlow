@@ -234,13 +234,96 @@ class Finetuner(BaseTuner):
                         "betas": (args.optim_dummy_beta1, args.optim_dummy_beta2),
                     }
                     optimizer_kwargs.update(dummy_kwargs)
+                elif args.customized_optim == OptimizerNames.ADABELIEF:
+                    optimizer_cls = optim.AdaBelief
+                    adabelief_kwargs = {
+                        "betas": (args.optim_adabelief_beta1, args.optim_adabelief_beta2),
+                        "weight_decay": (args.optim_adabelief_weight_decay)
+                    }
+                    optimizer_kwargs.update(adabelief_kwargs)
+                elif args.customized_optim == OptimizerNames.ADABOUND:
+                    optimizer_cls = optim.AdaBound
+                    adabound_kwargs = {
+                        "betas": (args.optim_adabound_beta1, args.optim_adabound_beta2),
+                        "weight_decay": (args.optim_adabound_weight_decay)
+                    }
+                    optimizer_kwargs.update(adabound_kwargs)
+                elif args.customized_optim == OptimizerNames.LARS:
+                    optimizer_cls = optim.LARS
+                    lars_kwargs = {
+                        "momentum": (args.optim_lars_momentum),
+                        "weight_decay": (args.optim_lars_weight_decay),
+                    }
+                    optimizer_kwargs.update(lars_kwargs)
+                elif args.customized_optim == OptimizerNames.LAMB:
+                    optimizer_cls = optim.Lamb
+                    lamb_kwargs = {
+                        "betas": (args.optim_lamb_beta1, args.optim_lamb_beta2),
+                        "weight_decay": (args.optim_lamb_weight_decay),
+                    }
+                    optimizer_kwargs.update(lamb_kwargs)
+                elif args.customized_optim == OptimizerNames.ADAMAX:
+                    optimizer_cls = optim.Adamax
+                    adamax_kwargs = {
+                        "betas": (args.optim_adamax_beta1, args.optim_adamax_beta2),
+                        "weight_decay": (args.optim_adamax_weight_decay),
+                    }
+                    optimizer_kwargs.update(adamax_kwargs)
+                elif args.customized_optim == OptimizerNames.NADAM:
+                    optimizer_cls = optim.NAdam
+                    nadam_kwargs = {
+                        "betas": (args.optim_nadam_beta1, args.optim_nadam_beta2),
+                        "weight_decay": (args.optim_nadam_weight_decay),
+                    }
+                    optimizer_kwargs.update(nadam_kwargs)
+                elif args.customized_optim == OptimizerNames.RADAM:
+                    optimizer_cls = optim.RAdam
+                    radam_kwargs = {
+                        "betas": (args.optim_radam_beta1, args.optim_radam_beta2),
+                        "weight_decay": (args.optim_radam_weight_decay),
+                    }
+                    optimizer_kwargs.update(radam_kwargs)
+                elif args.customized_optim == OptimizerNames.ADAMP:
+                    optimizer_cls = optim.AdamP
+                    adamp_kwargs = {
+                        "betas": (args.optim_adamp_beta1, args.optim_adamp_beta2),
+                        "weight_decay": (args.optim_adamp_weight_decay),
+                    }
+                    optimizer_kwargs.update(adamp_kwargs)
+                elif args.customized_optim == OptimizerNames.SGDP:
+                    optimizer_cls = optim.SGDP
+                    sgdp_kwargs = {
+                        "momentum": (args.optim_sgdp_momentum),
+                        "weight_decay": (args.optim_sgdp_weight_decay),
+                    }
+                    optimizer_kwargs.update(sgdp_kwargs)
+                elif args.customized_optim == OptimizerNames.YOGI:
+                    optimizer_cls = optim.Yogi
+                    yogi_kwargs = {
+                        "betas": (args.optim_yogi_beta1, args.optim_yogi_beta2),
+                        "weight_decay": (args.optim_yogi_weight_decay),
+                    }
+                    optimizer_kwargs.update(yogi_kwargs)
+                elif args.customized_optim == OptimizerNames.SOPHIA:
+                    optimizer_cls = optim.SophiaG
+                    sophia_kwargs = {
+                        "betas": (args.optim_sophia_beta1, args.optim_sophia_beta2),
+                        "weight_decay": (args.optim_sophia_weight_decay),
+                    }
+                    optimizer_kwargs.update(sophia_kwargs)
+                elif args.customized_optim == OptimizerNames.ADAN:
+                    optimizer_cls = optim.Adan
+                    adan_kwargs = {
+                        "betas": (args.optim_adan_beta1, args.optim_adan_beta2, args.optim_adan_beta3),
+                        "weight_decay": (args.optim_adan_weight_decay),
+                    }
+                    optimizer_kwargs.update(adan_kwargs)
                 else:
                     raise ValueError(
                         f"Trainer cannot instantiate unsupported optimizer: "
                         f" {args.customized_optim}"
                     )
                 return optimizer_cls, optimizer_kwargs
-
 
             def create_optimizer(self):
                 opt_model = self.model_wrapped if is_sagemaker_mp_enabled() else self.model
