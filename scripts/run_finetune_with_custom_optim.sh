@@ -3,6 +3,7 @@
 #   https://github.com/shizhediao/llm-ft
 #     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
 # Parses arguments
+export CUDA_VISIBLE_DEVICES=0,1,2,3
 model_name_or_path=gpt2
 dataset_path=data/alpaca/train_conversation
 
@@ -14,7 +15,8 @@ batch_size=1
 block_size=256
 per_device_train_batch_size=1
 conversation_template=llama2
-optim=dummy
+optimtech=ema  # or 'ema' or 'switchema'
+optim=radam
 """
 Select an optimizer from the following options:
 - 'adamw_hf'
@@ -57,6 +59,13 @@ Select an optimizer from the following options:
 - 'lars'
 - 'yogi'
 - 'sophia'
+- 'adadelta'
+- 'adam'
+- 'novograd'
+- 'adamwschedulefree'
+- 'adamwschedulefreeclosure'
+- 'sgdschedulefree'
+- 'sgdschedulefreeclosure'
 
 """
 learning_rate=1e-5
@@ -72,6 +81,27 @@ seed=42
 
 # Safety related arguments
 trust_remote_code=0
+# EMA and SwitchEMA related arguments
+ema_momentum=0.999
+ema_warmup=exp
+ema_warmup_iters=0
+ema_warmup_ratio=0.01
+ema_evaluate_on_ema=True
+ema_evaluate_on_nonema=True
+ema_full_params_ema=True
+ema_update_interval=0
+
+switchema_momentum=0.999
+switchema_warmup=0
+switchema_warmup_iters=0
+switchema_warmup_ratio=0
+switchema_switch_params=0
+switchema_switch_by_iter=0
+switchema_switch_start=0
+switchema_switch_end=0
+switchema_switch_interval=1
+switchema_full_params_ema=0
+switchema_update_interval=1
 
 # Enable model parallelism for multiple gpus, modify this if you prefer
 # customized deepspeed zero-redundancy optimization settings
@@ -145,44 +175,124 @@ while [[ $# -ge 1 ]]; do
       optim="$2"
       shift
       ;;
+    --optimtech)
+      optimtech="$2"
+      shift
+      ;;
     --lr)
-      learning_rate=$2
+      learning_rate="$2"
       shift
       ;;
     --beta1)
-      beta1=$2
+      beta1="$2"
       shift
       ;;
     --beta2)
-      beta2=$2
+      beta2="$2"
       shift
       ;;
     --beta3)
-      beta3=$2
+      beta3="$2"
       shift
       ;;
     --weight_decay)
-      weight_decay=$2
+      weight_decay="$2"
       shift
       ;;
     --momentum)
-      momentum=$2
+      momentum="$2"
       shift
       ;;
     -n|--num_epoch)
-      num_epoch=$2
+      num_epoch="$2"
       shift
       ;;
     --lr_schedule)
-      lr_schedule=$2
+      lr_schedule="$2"
       shift
       ;;
     --use_deepspeed)
-      use_deepspeed=$2
+      use_deepspeed="$2"
       shift
       ;;
     --seed)
-      seed=$2
+      seed="$2"
+      shift
+      ;;
+    --ema_momentum)
+      ema_momentum="$2"
+      shift
+      ;;
+    --ema_warmup)
+      ema_warmup="$2"
+      shift
+      ;;
+    --ema_warmup_iters)
+      ema_warmup_iters="$2"
+      shift
+      ;;
+    --ema_warmup_ratio)
+      ema_warmup_ratio="$2"
+      shift
+      ;;
+    --ema_evaluate_on_ema)
+      ema_evaluate_on_ema="$2"
+      shift
+      ;;
+    --ema_evaluate_on_nonema)
+      ema_evaluate_on_nonema="$2"
+      shift
+      ;;
+    --ema_full_params_ema)
+      ema_full_params_ema="$2"
+      shift
+      ;;
+    --ema_update_interval)
+      ema_update_interval="$2"
+      shift
+      ;;
+    --switchema_momentum)
+      switchema_momentum="$2"
+      shift
+      ;;
+    --switchema_warmup)
+      switchema_warmup="$2"
+      shift
+      ;;
+    --switchema_warmup_iters)
+      switchema_warmup_iters="$2"
+      shift
+      ;;
+    --switchema_warmup_ratio)
+      switchema_warmup_ratio="$2"
+      shift
+      ;;
+    --switchema_switch_params)
+      switchema_switch_params="$2"
+      shift
+      ;;
+    --switchema_switch_by_iter)
+      switchema_switch_by_iter="$2"
+      shift
+      ;;
+    --switchema_switch_start)
+      switchema_switch_start="$2"
+      shift
+      ;;
+    --switchema_switch_end)
+      switchema_switch_end="$2"
+      shift
+      ;;
+    --switchema_switch_interval)
+      switchema_switch_interval="$2"
+      shift
+      ;;
+    --switchema_full_params_ema)
+      switchema_full_params_ema="$2"
+      shift
+      ;;
+    --switchema_update_interval)
+      switchema_update_interval="$2"
       shift
       ;;
     *)
@@ -272,11 +382,69 @@ elif [ "${optim}" == "adan" ]; then
   optim_suffix_args+=" --optim_adan_beta2 ${beta2}"
   optim_suffix_args+=" --optim_adan_beta3 ${beta3}"
   optim_suffix_args+=" --optim_adan_weight_decay ${weight_decay}"
+elif [ "${optim}" == "adam" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_adam_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_adam_beta2 ${beta2}"
+elif [ "${optim}" == "novograd" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_novograd_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_novograd_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_novograd_weight_decay ${weight_decay}"
+elif [ "${optim}" == "adadelta" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+elif [ "${optim}" == "adagrad" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+elif [ "${optim}" == "adamwschedulefree" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_adamwschedulefree_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_adamwschedulefree_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_adamwschedulefree_weight_decay ${weight_decay}"
+elif [ "${optim}" == "sgdschedulefree" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_sgdschedulefree_momentum ${momentum}"
+  optim_suffix_args+=" --optim_sgdschedulefree_weight_decay ${weight_decay}"
 else
   optim_suffix_args="--optim ${optim}"
   optim_suffix_args+=" --adam_beta1 ${beta1}"
   optim_suffix_args+=" --adam_beta2 ${beta2}"
 fi
+
+ema_suffix_args=""
+if [ "${optimtech}" == "ema" ]; then
+  ema_suffix_args="--use_customized_optimtech 1"
+  ema_suffix_args+=" --optimtech_ema_momentum ${ema_momentum}"
+  ema_suffix_args+=" --optimtech_ema_warmup ${ema_warmup}"
+  ema_suffix_args+=" --optimtech_ema_warmup_iters ${ema_warmup_iters}"
+  ema_suffix_args+=" --optimtech_ema_warmup_ratio ${ema_warmup_ratio}"
+  ema_suffix_args+=" --optimtech_ema_evaluate_on_ema ${ema_evaluate_on_ema}"
+  ema_suffix_args+=" --optimtech_ema_evaluate_on_nonema ${ema_evaluate_on_nonema}"
+  ema_suffix_args+=" --optimtech_ema_full_params_ema ${ema_full_params_ema}"
+  ema_suffix_args+=" --optimtech_ema_update_interval ${ema_update_interval}"
+fi
+
+switchema_suffix_args=""
+if [ "${optimtech}" == "switchema" ]; then
+  switchema_suffix_args="--use_customized_optimtech 1"
+  switchema_suffix_args+=" --optimtech_switchema_momentum ${switchema_momentum}"
+  switchema_suffix_args+=" --optimtech_switchema_warmup ${switchema_warmup}"
+  switchema_suffix_args+=" --optimtech_switchema_warmup_iters ${switchema_warmup_iters}"
+  switchema_suffix_args+=" --optimtech_switchema_warmup_ratio ${switchema_warmup_ratio}"
+  switchema_suffix_args+=" --optimtech_switchema_switch_params ${switchema_switch_params}"
+  switchema_suffix_args+=" --optimtech_switchema_switch_by_iter ${switchema_switch_by_iter}"
+  switchema_suffix_args+=" --optimtech_switchema_switch_start ${switchema_switch_start}"
+  switchema_suffix_args+=" --optimtech_switchema_switch_end ${switchema_switch_end}"
+  switchema_suffix_args+=" --optimtech_switchema_switch_interval ${switchema_switch_interval}"
+  switchema_suffix_args+=" --optimtech_switchema_full_params_ema ${switchema_full_params_ema}"
+  switchema_suffix_args+=" --optimtech_switchema_update_interval ${switchema_update_interval}"
+fi
+
 
 # Finetune
 exp_id=alpaca_${optim}_lr-${learning_rate}_beta1-${beta1}_beta2-${beta2}_lr-sched-${lr_schedule}_model-$(basename ${model_name_or_path})_batch-size-${batch_size}x${gradient_accumulation_steps}_seed-${seed}
@@ -329,8 +497,11 @@ ${exe} examples/finetune.py \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \
     --seed ${seed} \
     ${optim_suffix_args} \
+    ${ema_suffix_args} \
+    ${switchema_suffix_args} \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
+
 
 if [[ $? -ne 0 ]]; then
   echo "$(date): failed"

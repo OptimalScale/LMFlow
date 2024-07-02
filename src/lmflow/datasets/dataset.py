@@ -12,6 +12,8 @@ Face dataset, mapping datasets, and retrieving the backend dataset and arguments
 # Importing necessary libraries and modules
 import copy
 import json
+import logging
+from pathlib import Path
 
 from cmath import e
 from pathlib import Path
@@ -31,17 +33,25 @@ from lmflow.utils.constants import (
 
 from .multi_modal_dataset import CustomMultiModalDataset
 
+
+logger = logging.getLogger(__name__)
+
+
 DATASET_TYPES = [
     "text_only",
     "text2text",
     "float_only",
     "image_text",
     "conversation",
-    "paired_conversation"
+    "paired_conversation",
+    "paired_text_to_text",
+    "text_to_textlist",
+    "text_to_scored_textlist"
 ]
 
 KEY_TYPE = "type"
 KEY_INSTANCES = "instances"
+KEY_SCORE = "score"
 
 class Dataset:
     r"""
@@ -147,19 +157,11 @@ class Dataset:
         data_type = data_dict[KEY_TYPE]
         fields = self.get_backend_dataset().features
         correct_fields = INSTANCE_FIELDS_MAP[data_type]
-        # TODO: this can not guarantee every instance has correct fields.
-        if set(fields) != set(correct_fields):
-            if data_type == "conversation":
-                if "messages" not in fields:
-                    raise ValueError(
-                        f'Conversation dataset should have "messages" field'
-                        f' but got {list(fields)}'
-                    )
-            else:
-                raise ValueError(
-                    f'Data instance fields incorrect'
-                    f' {list(fields)}: should be {list(correct_fields)}.'
-                )
+        if not set(correct_fields).issubset(set(fields)):
+            raise ValueError(
+                f'data instance fields incorrect'
+                f' {list(correct_fields)} are required.'
+            )
 
 
     def from_dict(self, dict_obj: dict, *args, **kwargs):
@@ -223,19 +225,10 @@ class Dataset:
 
             for i, instance in enumerate(dict_obj[KEY_INSTANCES]):
                 fields = instance.keys()
-                if set(fields) != set(correct_fields):
-                    if self.type == "conversation":
-                        if "messages" not in fields:
-                            raise ValueError(
-                                f'Conversation dataset should have "messages" field'
-                                f' but got {list(fields)}'
-                            )
-                    else:
-                        raise ValueError(
-                            f'data instance fields incorrect'
-                            f' {list(fields)}: should be {list(correct_fields)}.\n'
-                            f'The bad instance triggers the error, the {i}-th instance:\n'
-                            f'    {instance}'
+                if not set(correct_fields).issubset(set(fields)):
+                    raise ValueError(
+                        f'data instance fields incorrect'
+                        f' {list(correct_fields)} are required.'
                     )
 
             try:
@@ -420,7 +413,7 @@ class Dataset:
         return self.data_args
 
 
-    def get_type(self):
+    def get_type(self) -> str:
         r"""
         Returns
         ---------
@@ -428,3 +421,25 @@ class Dataset:
         self.type
         """
         return self.type
+    
+    
+    def save(
+        self, 
+        file_path: str, 
+        format: str="json"
+    ):
+        r"""
+        Save the dataset to a json file.
+
+        Parameters
+        ------------
+        file_path : str.
+            The path to the file where the dataset will be saved.
+        """
+        if format == "json":
+            assert Path(file_path).suffix == ".json", "The file path must have a .json extension."
+            with open(file_path, "w", encoding='utf-8') as fout:
+                json.dump(self.to_dict(), fout, indent=4, ensure_ascii=False)
+                
+        else:
+            logger.error(f"Unsupported format when saving the dataset: {format}.")

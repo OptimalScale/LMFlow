@@ -43,8 +43,16 @@ class OptimizerNames():
     YOGI = "yogi"
     SOPHIA = "sophia"
     ADAN = "adan"
+    ADAM = "adam"
+    NOVOGRAD = "novograd"
+    ADADELTA = "adadelta"
+    ADAGRAD = "adagrad"
+    ADAMWSCHEDULEFREE = "adamwschedulefree"
+    SGDSCHEDULEFREE = "sgdschedulefree"
 
-
+class OptimizationTechNames():
+    EMA = "ema"
+    SWITCHEMA = "switchema"
 @dataclass
 class ModelArguments:
     """
@@ -111,6 +119,10 @@ class ModelArguments:
         Model architecture type.
     padding_side : str
         The side on which the tokenizer should have padding applied.
+    eos_padding : bool
+        whether to pad with eos token instead of pad token.
+    ignore_bias_buffers : bool
+        fix for DDP issues with LM bias/mask buffers - invalid scalar type,`inplace operation.
     """
 
     model_name_or_path: Optional[str] = field(
@@ -323,6 +335,18 @@ class ModelArguments:
                 "use padding_side from tokenizer.padding_side."),
             "choices": ["right", "left", "auto"],
         }
+    )
+    eos_padding: Optional[bool] = field(
+        default=False, 
+        metadata={"help": "whether to pad with eos token"}
+    )
+    ignore_bias_buffers: Optional[bool] = field(
+        default=False,
+        metadata={
+            # debug argument for distributed training
+            "help": "fix for DDP issues with LM bias/mask buffers - invalid scalar type,`inplace operation. See"
+            "https://github.com/huggingface/transformers/issues/22482#issuecomment-1595790992"
+        },
     )
     
 
@@ -667,6 +691,12 @@ class FinetunerArguments(TrainingArguments):
             "help": "whether to use customized optimizers."
         }
     )
+    use_customized_optimtech: bool = field(
+        default=False,
+        metadata={
+            "help": "whether to use customized optimization techniques."
+        }
+    )
     customized_optim: str = field(
         default="sign_sgd",
         metadata={
@@ -689,6 +719,18 @@ class FinetunerArguments(TrainingArguments):
         default=0.999,
         metadata={
             "help": "A useless argument for dummy optimizer, just for tutorial"
+        }
+    )
+    optim_adam_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_adam_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
         }
     )
     optim_adamp_beta1: float = field(
@@ -799,6 +841,30 @@ class FinetunerArguments(TrainingArguments):
             "help": "Coefficient used for computing running averages of squared gradient"
         }
     )
+    optim_novograd_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_novograd_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
+    optim_adamwschedulefree_beta1: float = field(
+        default=0.9,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
+    optim_adamwschedulefree_beta2: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of squared gradient"
+        }
+    )
     optim_radam_beta1: float = field(
         default=0.9,
         metadata={
@@ -829,6 +895,12 @@ class FinetunerArguments(TrainingArguments):
             "help": "Coefficient used for the momentum term in optimizers like SGD with momentum"
         }
     )
+    optim_sgdschedulefree_momentum: float = field(
+        default=0.999,
+        metadata={
+            "help": "Coefficient used for computing running averages of gradient"
+        }
+    )
     optim_adamp_weight_decay: float = field(
         default=0,
         metadata={
@@ -842,6 +914,18 @@ class FinetunerArguments(TrainingArguments):
         }
     )
     optim_radam_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_adamwschedulefree_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
+    optim_sgdschedulefree_weight_decay: float = field(
         default=0,
         metadata={
             "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
@@ -895,15 +979,135 @@ class FinetunerArguments(TrainingArguments):
             "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
         }
     )
+    optim_novograd_weight_decay: float = field(
+        default=0,
+        metadata={
+            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
+        }
+    )
     optim_adabound_weight_decay: float = field(
         default=0,
         metadata={
             "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
         }
     )
+    optimtech_ema_momentum: float = field(
+        default=0.999,
+        metadata={
+            "help": "The decay factor used for the exponential moving average (EMA) of model parameters. A higher value means the EMA updates more slowly, retaining more historical information."
+        }
+    )
+    optimtech_ema_warmup: str = field(
+        default=None,
+        metadata={
+            "help": "Type of warmup strategy for the EMA momentum. Can be 'constant', 'linear', or 'exp'. If None, no warmup is applied."
+        }
+    )
+    optimtech_ema_warmup_iters: int = field(
+        default=0,
+        metadata={
+            "help": "Number of iterations over which to apply the EMA momentum warmup. Only used if a warmup strategy is specified."
+        }
+    )
+    optimtech_ema_warmup_ratio: float = field(
+        default=0.9,
+        metadata={
+            "help": "Initial ratio of the EMA momentum during warmup. The actual momentum will be this ratio multiplied by the configured momentum."
+        }
+    )
+    optimtech_ema_evaluate_on_ema: bool = field(
+        default=True,
+        metadata={
+            "help": "Whether to use the EMA parameters for evaluation. If True, the model will be evaluated using the EMA parameters."
+        }
+    )
+    optimtech_ema_evaluate_on_nonema: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to use the non-EMA parameters for evaluation. If True, the model will be evaluated using the non-EMA parameters."
+        }
+    )
+    optimtech_ema_full_params_ema: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to apply EMA to all parameters of the model, including non-trainable ones. If False, only trainable parameters will be considered for EMA."
+        }
+    )
+    optimtech_ema_update_interval: int = field(
+        default=1,
+        metadata={
+            "help": "Interval (in iterations) at which to update the EMA parameters. For example, if set to 10, EMA parameters will be updated every 10 iterations."
+        }
+    )
+    optimtech_switchema_momentum: float = field(
+        default=0.999,
+        metadata={
+            "help": "The decay factor used for the exponential moving average (EMA) of model parameters. A higher value means the EMA updates more slowly, retaining more historical information."
+        }
+    )
+    optimtech_switchema_warmup: str = field(
+        default=None,
+        metadata={
+            "help": "Type of warmup strategy for the EMA momentum. Can be 'constant', 'linear', or 'exp'. If None, no warmup is applied."
+        }
+    )
+    optimtech_switchema_warmup_iters: int = field(
+        default=0,
+        metadata={
+            "help": "Number of iterations over which to apply the EMA momentum warmup. Only used if a warmup strategy is specified."
+        }
+    )
+    optimtech_switchema_warmup_ratio: float = field(
+        default=0.9,
+        metadata={
+            "help": "Initial ratio of the EMA momentum during warmup. The actual momentum will be this ratio multiplied by the configured momentum."
+        }
+    )
+    optimtech_switchema_switch_params: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to enable parameter switching during training. If True, the model parameters will be switched to the EMA parameters at specified intervals."
+        }
+    )
+    optimtech_switchema_switch_by_iter: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to switch parameters based on the number of iterations. If True, parameter switching will occur at specified iteration intervals. If False, switching will occur at specified epoch intervals."
+        }
+    )
+    optimtech_switchema_switch_start: int = field(
+        default=0,
+        metadata={
+            "help": "The starting point (either iteration or epoch, depending on the value of switch_by_iter) for parameter switching."
+        }
+    )
+    optimtech_switchema_switch_end: int = field(
+        default=None,
+        metadata={
+            "help": "The ending point (either iteration or epoch, depending on the value of switch_by_iter) for parameter switching. If None, switching will continue indefinitely."
+        }
+    )
+    optimtech_switchema_switch_interval: int = field(
+        default=100,
+        metadata={
+            "help": "The interval at which to perform parameter switching. If switch_by_iter is True, this is the number of iterations between switches. If False, this is the number of epochs between switches."
+        }
+    )
+    optimtech_switchema_full_params_ema: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to apply EMA to all parameters of the model, including non-trainable ones. If False, only trainable parameters will be considered for EMA."
+        }
+    )
+    optimtech_switchema_update_interval: int = field(
+        default=1,
+        metadata={
+            "help": "Interval (in iterations) at which to update the EMA parameters. For example, if set to 10, EMA parameters will be updated every 10 iterations."
+        }
+    )
 
 @dataclass
-class RewardModelingArguments(FinetunerArguments):
+class RewardModelTunerArguments(FinetunerArguments):
     """
     Arguments for reward modeling.
     """
@@ -1080,18 +1284,15 @@ class InferencerArguments:
 
     local_rank : str
         For distributed training: local_rank
-
     random_seed : int, default = 1
-
+    inference_batch_size : int, default = 1
     deepspeed :
         Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
         loaded json file as a dict
     mixed_precision : str, choice from ["bf16","fp16"].
         mixed precision mode, whether to use bf16 or fp16
-
     temperature : float
         An argument of model.generate in huggingface to control the diversity of generation.
-
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
     use_beam_search : Optional[bool]
@@ -1137,7 +1338,10 @@ class InferencerArguments:
         metadata={"help": "For distributed training: local_rank"
                   },
     )
-
+    inference_batch_size: int = field(
+        default=1,
+        metadata={"help": "batch size for inference"},
+    )
     temperature: float = field(
         default=0.0,
         metadata={"help": "Temperature during inference."},
@@ -1494,6 +1698,24 @@ class DPOAlignerArguments:
 
 
 @dataclass
+class DPOv2AlignerArguments(FinetunerArguments):
+    """
+    The arguments for the DPOv2 training script.
+    """
+    # pair sampling args
+    margin_scale: Optional[float] = field(default=1.0, metadata={"help": "the margin scale"})
+    sampling_paired_method: Optional[str] = field(default="max_random", metadata={"help": "the choose type"})
+    length_penalty: Optional[float] = field(default=0, metadata={"help": "the length penalty"})
+    # data collator args
+    max_length: Optional[int] = field(default=2048, metadata={"help": "the maximum sequence length, prompt + output"})
+    max_prompt_length: Optional[int] = field(default=1000, metadata={"help": "the maximum prompt length"})
+    mask_prompt: Optional[bool] = field(default=False, metadata={"help": "mask prompt"})
+    # dpov2 aligner args
+    beta: Optional[float] = field(default=0.1, metadata={"help": "the beta parameter for DPO loss"})
+    loss_type: Optional[str] = field(default="sigmoid", metadata={"help": "the loss type"})
+
+
+@dataclass
 class IterativeAlignerArguments(InferencerArguments):
     """
     Arguments for iterative aligners.
@@ -1506,9 +1728,11 @@ PIPELINE_ARGUMENT_MAPPING = {
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "vllm_inferencer": InferencerArguments,
+    "rm_inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,
-    "rm_tuner": RewardModelingArguments,
+    "rm_tuner": RewardModelTunerArguments,
+    "dpov2_aligner": DPOv2AlignerArguments,
 }
 
 
