@@ -344,23 +344,28 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
   | Optimizer Name | Train Loss |
   |----------------|------------|
-  | SGD            | 3.3734      |
-  | SGDP           | 3.3567      |
-  | RMSprop        | 2.4016      |
-  | AdamW          | 2.4469      |
-  | AdamP          | 2.4295      |
-  | AdaMax         | 2.5924      |
-  | AdaFactor      | 2.4543      |
-  | RAdam          | 2.6104      |
-  | NAdam          | 2.5569      |
-  | AdaBelief      | 2.5857      |
-  | AdaBound       | 2.4547      |
-  | LION-32bit     | 2.4041      |
-  | Sophia         | 3.1517      |
-  | Adan           | 2.5063      |
-  | Yogi           | 2.9314      |
-  | LAMB           | 3.2350      |
-  | LARS           | 3.3329      |
+  | SGD            | 3.3734     |
+  | SGDP           | 3.3567     |
+  | RMSprop        | 2.4016     |
+  | AdamW          | 2.4469     |
+  | AdamP          | 2.4295     |
+  | AdaMax         | 2.5924     |
+  | AdaFactor      | 2.4543     |
+  | RAdam          | 2.6104     |
+  | NAdam          | 2.5569     |
+  | AdaBelief      | 2.5857     |
+  | AdaBound       | 2.4547     |
+  | LION-32bit     | 2.4041     |
+  | Sophia         | 3.1517     |
+  | Adan           | 2.5063     |
+  | Yogi           | 2.9314     |
+  | LAMB           | 3.2350     |
+  | LARS           | 3.3329     |
+  | NovoGrad       | 2.9314     |
+  | AdaGrad        | 3.2350     |
+  | AdaDelta       | 3.3329     |
+  | AdamWScheduleFree       | 2.9314     |
+  | SGDScheduleFree        | 3.2350     |
 
 </details>
 

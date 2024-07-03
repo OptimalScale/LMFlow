@@ -15,8 +15,8 @@ batch_size=1
 block_size=256
 per_device_train_batch_size=1
 conversation_template=llama2
-optimtech=ema  # or 'ema' or 'switchema'
-optim=radam
+optimtech=none  # or 'ema' or 'switchema'
+optim=dummy
 """
 Select an optimizer from the following options:
 - 'adamw_hf'
@@ -82,16 +82,16 @@ seed=42
 # Safety related arguments
 trust_remote_code=0
 # EMA and SwitchEMA related arguments
-ema_momentum=0.999
-ema_warmup=exp
+ema_momentum=0
+ema_warmup=0
 ema_warmup_iters=0
-ema_warmup_ratio=0.01
-ema_evaluate_on_ema=True
-ema_evaluate_on_nonema=True
-ema_full_params_ema=True
+ema_warmup_ratio=0
+ema_evaluate_on_ema=False
+ema_evaluate_on_nonema=False
+ema_full_params_ema=False
 ema_update_interval=0
 
-switchema_momentum=0.999
+switchema_momentum=0
 switchema_warmup=0
 switchema_warmup_iters=0
 switchema_warmup_ratio=0
@@ -99,9 +99,9 @@ switchema_switch_params=0
 switchema_switch_by_iter=0
 switchema_switch_start=0
 switchema_switch_end=0
-switchema_switch_interval=1
+switchema_switch_interval=0
 switchema_full_params_ema=0
-switchema_update_interval=1
+switchema_update_interval=0
 
 # Enable model parallelism for multiple gpus, modify this if you prefer
 # customized deepspeed zero-redundancy optimization settings
