@@ -33,6 +33,7 @@ from transformers.utils import (
 import numpy as np
 
 import lmflow.optim.optimizers as optim
+import lmflow.hook as optimtech
 from lmflow.args import OptimizerNames
 from lmflow.args import OptimizationTechNames
 from lmflow.datasets.dataset import Dataset
@@ -428,7 +429,7 @@ class Finetuner(BaseTuner):
                 optimization_tech_kwargs = {}
 
                 if args.customized_optimization_tech == OptimizationTechNames.EMA:
-                    optimization_tech_cls = optim.EMA
+                    optimization_tech_cls = optimtech.EMA
                     ema_kwargs = {
                         "ema_momentum": args.optimtech_ema_momentum,
                         "ema_warmup": args.optimtech_ema_warmup,
@@ -441,7 +442,7 @@ class Finetuner(BaseTuner):
                     }
                     optimization_tech_kwargs.update(ema_kwargs)
                 elif args.customized_optimization_tech == OptimizationTechNames.SWITCHEMA:
-                    optimization_tech_cls = optim.SwitchEMA
+                    optimization_tech_cls = optimtech.SwitchEMA
                     switchema_kwargs = {
                         "switchema_momentum": args.optimtech_switchema_momentum,
                         "switchema_warmup": args.optimtech_switchema_warmup,
