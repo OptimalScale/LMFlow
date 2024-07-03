@@ -3,6 +3,33 @@ from mmcv.runner import Hook
 from mmcv.parallel import is_module_wrapper
 
 class EMAHook(Hook):
+    r"""Exponential Moving Average Hook.
+    IP120 v01.10, v02.08
+
+    Use Exponential Moving Average on all parameters of model in training
+    process. All parameters have a ema backup, which update by the formula
+    as below. EMAHook takes priority over EvalHook and CheckpointSaverHook!
+
+        .. math::
+            Xema\_{t+1} = \text{momentum} \times Xema\_{t} +
+                (1 - \text{momentum}) \times X_t
+
+    Args:
+        momentum (float): The momentum used for updating ema parameter.
+            Defaults to 0.9999.
+        resume_from (str): The checkpoint path. Defaults to None.
+        warmup (string): Type of warmup used. It can be None(use no warmup),
+            'constant', 'linear' or 'exp'. Default to None.
+        warmup_iters (int): The number of iterations that warmup lasts, i.e.,
+            warmup by iteration. Default to 0.
+        warmup_ratio (float): Attr used at the beginning of warmup equals to
+            warmup_ratio * momentum.
+        full_params_ema (bool): Whether to register EMA parameters by
+            `named_parameters()` or `state_dict()`, which influences performances
+            of models with BN variants. defaults to False.
+        update_interval (int): Update ema parameter every interval iteration.
+            Defaults to 1.
+    """
     def __init__(self,
                  momentum=0.9999,
                  resume_from=None,

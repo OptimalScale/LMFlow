@@ -3,33 +3,51 @@ from mmcv.parallel import is_module_wrapper
 from mmcv.runner import Hook
 
 class SwitchEMAHook(Hook):
-    r"""Exponential Moving Average Hook.
-    IP120 v01.10, v02.08
-
+    r"""Switch Exponential Moving Average Hook.
+    Switch EMA: A Free Lunch for Better Flatness and Sharpness. (Siyuan Li, Zicheng Liu, Juanxi Tian, et al.)
     Use Exponential Moving Average on all parameters of model in training
-    process. All parameters have a ema backup, which update by the formula
-    as below. EMAHook takes priority over EvalHook and CheckpointSaverHook!
+    process. All parameters have an ema backup, which is updated by the formula
+    as below. SwitchEMAHook takes priority over EvalHook and CheckpointSaverHook!
 
         .. math::
-            Xema\_{t+1} = \text{momentum} \times Xema\_{t} +
-                (1 - \text{momentum}) \times X_t
+            X_ema_{t+1} = \left\{
+                \begin{array}{ll}
+                    \text{momentum} \times X_ema_{t} + (1 - \text{momentum}) \times X_t, & \text{if not switching}\\
+                    X_t, & \text{if switching}
+                \end{array}
+            \right.
+
+    During certain iterations or epochs, the model parameters can be switched to
+    the ema backup parameters.
 
     Args:
         momentum (float): The momentum used for updating ema parameter.
             Defaults to 0.9999.
         resume_from (str): The checkpoint path. Defaults to None.
-        warmup (string): Type of warmup used. It can be None(use no warmup),
+        warmup (str): Type of warmup used. It can be None (use no warmup),
             'constant', 'linear' or 'exp'. Default to None.
         warmup_iters (int): The number of iterations that warmup lasts, i.e.,
             warmup by iteration. Default to 0.
         warmup_ratio (float): Attr used at the beginning of warmup equals to
             warmup_ratio * momentum.
+        switch_params (bool): Whether to switch the model parameters to the
+            ema backup parameters. Defaults to False.
+        switch_by_iter (bool): Whether to switch parameters by iterations or
+            epochs. Defaults to False.
+        switch_start (int): The start iteration or epoch to switch parameters.
+            Defaults to 0.
+        switch_end (int, optional): The end iteration or epoch to switch
+            parameters. If not specified, it will always switch parameters
+            after `switch_start`.
+        switch_interval (int): The interval (iterations or epochs) to switch
+            parameters. Defaults to 100.
         full_params_ema (bool): Whether to register EMA parameters by
             `named_parameters()` or `state_dict()`, which influences performances
             of models with BN variants. defaults to False.
         update_interval (int): Update ema parameter every interval iteration.
             Defaults to 1.
     """
+
 
     def __init__(self,
                  momentum=0.9999,

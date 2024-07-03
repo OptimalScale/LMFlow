@@ -342,13 +342,6 @@ class Finetuner(BaseTuner):
                         "weight_decay": (args.optim_adamwschedulefree_weight_decay),
                     }
                     optimizer_kwargs.update(adamwschedulefree_kwargs)
-                elif args.customized_optim == OptimizerNames.ADAMWSCHEDULEFREECLOSURE:
-                    optimizer_cls = optim.AdamWScheduleFreeClosure
-                    adamwschedulefreeclosure_kwargs = {
-                        "betas": (args.optim_adamwschedulefreeclosure_beta1, args.optim_adamwschedulefreeclosure_beta2),
-                        "weight_decay": (args.optim_adamwschedulefreeclosure_weight_decay),
-                    }
-                    optimizer_kwargs.update(adamwschedulefreeclosure_kwargs)
                 elif args.customized_optim == OptimizerNames.SGDSCHEDULEFREE:
                     optimizer_cls = optim.SGDScheduleFree
                     sgdschedulefree_kwargs = {
@@ -356,13 +349,6 @@ class Finetuner(BaseTuner):
                         "weight_decay": (args.optim_sgdschedulefree_weight_decay),
                     }
                     optimizer_kwargs.update(sgdschedulefree_kwargs)
-                elif args.customized_optim == OptimizerNames.SGDSCHEDULEFREECLOSURE:
-                    optimizer_cls = optim.SGDScheduleFreeClosure
-                    sgdschedulefreeclosure_kwargs = {
-                        "momentum": (args.optim_sgdschedulefreeclosure_momentum),
-                        "weight_decay": (args.optim_sgdschedulefreeclosure_weight_decay),
-                    }
-                    optimizer_kwargs.update(sgdschedulefreeclosure_kwargs)
                 elif args.customized_optim == OptimizerNames.ADAN:
                     optimizer_cls = optim.Adan
                     adan_kwargs = {
@@ -444,30 +430,30 @@ class Finetuner(BaseTuner):
                 if args.customized_optimization_tech == OptimizationTechNames.EMA:
                     optimization_tech_cls = optim.EMA
                     ema_kwargs = {
-                        "momentum": args.optimtech_ema_momentum,
-                        "warmup": args.optimtech_ema_warmup,
-                        "warmup_iters": args.optimtech_ema_warmup_iters,
-                        "warmup_ratio": args.optimtech_ema_warmup_ratio,
-                        "evaluate_on_ema": args.optimtech_ema_evaluate_on_ema,
-                        "evaluate_on_nonema": args.optimtech_ema_evaluate_on_nonema,
-                        "full_params_ema": args.optimtech_ema_full_params_ema,
-                        "update_interval": args.optimtech_ema_update_interval,
+                        "ema_momentum": args.optimtech_ema_momentum,
+                        "ema_warmup": args.optimtech_ema_warmup,
+                        "ema_warmup_iters": args.optimtech_ema_warmup_iters,
+                        "ema_warmup_ratio": args.optimtech_ema_warmup_ratio,
+                        "ema_evaluate_on_ema": args.optimtech_ema_evaluate_on_ema,
+                        "ema_evaluate_on_nonema": args.optimtech_ema_evaluate_on_nonema,
+                        "ema_full_params_ema": args.optimtech_ema_full_params_ema,
+                        "ema_update_interval": args.optimtech_ema_update_interval,
                     }
                     optimization_tech_kwargs.update(ema_kwargs)
                 elif args.customized_optimization_tech == OptimizationTechNames.SWITCHEMA:
                     optimization_tech_cls = optim.SwitchEMA
                     switchema_kwargs = {
-                        "momentum": args.optimtech_switchema_momentum,
-                        "warmup": args.optimtech_switchema_warmup,
-                        "warmup_iters": args.optimtech_switchema_warmup_iters,
-                        "warmup_ratio": args.optimtech_switchema_warmup_ratio,
-                        "switch_params": args.optimtech_switchema_switch_params,
-                        "switch_by_iter": args.optimtech_switchema_switch_by_iter,
-                        "switch_start": args.optimtech_switchema_switch_start,
-                        "switch_end": args.optimtech_switchema_switch_end,
-                        "switch_interval": args.optimtech_switchema_switch_interval,
-                        "full_params_ema": args.optimtech_switchema_full_params_ema,
-                        "update_interval": args.optimtech_switchema_update_interval,
+                        "switchema_momentum": args.optimtech_switchema_momentum,
+                        "switchema_warmup": args.optimtech_switchema_warmup,
+                        "switchema_warmup_iters": args.optimtech_switchema_warmup_iters,
+                        "switchema_warmup_ratio": args.optimtech_switchema_warmup_ratio,
+                        "switchema_switch_params": args.optimtech_switchema_switch_params,
+                        "switchema_switch_by_iter": args.optimtech_switchema_switch_by_iter,
+                        "switchema_switch_start": args.optimtech_switchema_switch_start,
+                        "switchema_switch_end": args.optimtech_switchema_switch_end,
+                        "switchema_switch_interval": args.optimtech_switchema_switch_interval,
+                        "switchema_full_params_ema": args.optimtech_switchema_full_params_ema,
+                        "switchema_update_interval": args.optimtech_switchema_update_interval,
                     }
                     optimization_tech_kwargs.update(switchema_kwargs)
                 else:

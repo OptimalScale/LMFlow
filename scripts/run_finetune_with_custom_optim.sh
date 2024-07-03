@@ -17,57 +17,52 @@ per_device_train_batch_size=1
 conversation_template=llama2
 optimtech=none  # or 'ema' or 'switchema'
 optim=dummy
-"""
-Select an optimizer from the following options:
-- 'adamw_hf'
-- 'adamw_torch'
-- 'adamw_torch_fused'
-- 'adamw_torch_xla'
-- 'adamw_torch_npu_fused'
-- 'adamw_apex_fused'
-- 'adafactor'
-- 'adamw_anyprecision'
-- 'sgd'
-- 'adagrad'
-- 'adamw_bnb_8bit'
-- 'adamw_8bit'
-- 'lion_8bit'
-- 'lion_32bit'
-- 'paged_adamw_32bit'
-- 'paged_adamw_8bit'
-- 'paged_lion_32bit'
-- 'paged_lion_8bit'
-- 'rmsprop'
-- 'rmsprop_bnb'
-- 'rmsprop_bnb_8bit'
-- 'rmsprop_bnb_32bit'
-- 'galore_adamw'
-- 'galore_adamw_8bit'
-- 'galore_adafactor'
-- 'galore_adamw_layerwise'
-- 'galore_adamw_8bit_layerwise'
-- 'galore_adafactor_layerwise'
-- 'adamp'
-- 'sgdp'
-- 'adan'
-- 'nadam'
-- 'radam'
-- 'adabound'
-- 'adabelief'
-- 'adamax'
-- 'lamb'
-- 'lars'
-- 'yogi'
-- 'sophia'
-- 'adadelta'
-- 'adam'
-- 'novograd'
-- 'adamwschedulefree'
-- 'adamwschedulefreeclosure'
-- 'sgdschedulefree'
-- 'sgdschedulefreeclosure'
-
-"""
+# Select an optimizer from the following options:
+# - 'adamw_hf'
+# - 'adamw_torch'
+# - 'adamw_torch_fused'
+# - 'adamw_torch_xla'
+# - 'adamw_torch_npu_fused'
+# - 'adamw_apex_fused'
+# - 'adafactor'
+# - 'adamw_anyprecision'
+# - 'sgd'
+# - 'adagrad'
+# - 'adamw_bnb_8bit'
+# - 'adamw_8bit'
+# - 'lion_8bit'
+# - 'lion_32bit'
+# - 'paged_adamw_32bit'
+# - 'paged_adamw_8bit'
+# - 'paged_lion_32bit'
+# - 'paged_lion_8bit'
+# - 'rmsprop'
+# - 'rmsprop_bnb'
+# - 'rmsprop_bnb_8bit'
+# - 'rmsprop_bnb_32bit'
+# - 'galore_adamw'
+# - 'galore_adamw_8bit'
+# - 'galore_adafactor'
+# - 'galore_adamw_layerwise'
+# - 'galore_adamw_8bit_layerwise'
+# - 'galore_adafactor_layerwise'
+# - 'adamp'
+# - 'sgdp'
+# - 'adan'
+# - 'nadam'
+# - 'radam'
+# - 'adabound'
+# - 'adabelief'
+# - 'adamax'
+# - 'lamb'
+# - 'lars'
+# - 'yogi'
+# - 'sophia'
+# - 'adadelta'
+# - 'adam'
+# - 'novograd'
+# - 'adamwschedulefree'
+# - 'sgdschedulefree'
 learning_rate=1e-5
 lr_schedule=cosine
 beta1=0.9
@@ -416,35 +411,33 @@ else
   optim_suffix_args+=" --adam_beta2 ${beta2}"
 fi
 
-ema_suffix_args=""
+optimtech_suffix_args=""
 if [ "${optimtech}" == "ema" ]; then
-  ema_suffix_args="--use_customized_optimtech 1"
-  ema_suffix_args+=" --optimtech_ema_momentum ${ema_momentum}"
-  ema_suffix_args+=" --optimtech_ema_warmup ${ema_warmup}"
-  ema_suffix_args+=" --optimtech_ema_warmup_iters ${ema_warmup_iters}"
-  ema_suffix_args+=" --optimtech_ema_warmup_ratio ${ema_warmup_ratio}"
-  ema_suffix_args+=" --optimtech_ema_evaluate_on_ema ${ema_evaluate_on_ema}"
-  ema_suffix_args+=" --optimtech_ema_evaluate_on_nonema ${ema_evaluate_on_nonema}"
-  ema_suffix_args+=" --optimtech_ema_full_params_ema ${ema_full_params_ema}"
-  ema_suffix_args+=" --optimtech_ema_update_interval ${ema_update_interval}"
+  optimtech_suffix_args="--use_customized_optimtech 1"
+  optimtech_suffix_args+=" --optimtech_ema_momentum ${ema_momentum}"
+  optimtech_suffix_args+=" --optimtech_ema_warmup ${ema_warmup}"
+  optimtech_suffix_args+=" --optimtech_ema_warmup_iters ${ema_warmup_iters}"
+  optimtech_suffix_args+=" --optimtech_ema_warmup_ratio ${ema_warmup_ratio}"
+  optimtech_suffix_args+=" --optimtech_ema_evaluate_on_ema ${ema_evaluate_on_ema}"
+  optimtech_suffix_args+=" --optimtech_ema_evaluate_on_nonema ${ema_evaluate_on_nonema}"
+  optimtech_suffix_args+=" --optimtech_ema_full_params_ema ${ema_full_params_ema}"
+  optimtech_suffix_args+=" --optimtech_ema_update_interval ${ema_update_interval}"
+elif [ "${optimtech}" == "switchema" ]; then
+  optimtech_suffix_args="--use_customized_optimtech 1"
+  optimtech_suffix_args+=" --optimtech_switchema_momentum ${switchema_momentum}"
+  optimtech_suffix_args+=" --optimtech_switchema_warmup ${switchema_warmup}"
+  optimtech_suffix_args+=" --optimtech_switchema_warmup_iters ${switchema_warmup_iters}"
+  optimtech_suffix_args+=" --optimtech_switchema_warmup_ratio ${switchema_warmup_ratio}"
+  optimtech_suffix_args+=" --optimtech_switchema_switch_params ${switchema_switch_params}"
+  optimtech_suffix_args+=" --optimtech_switchema_switch_by_iter ${switchema_switch_by_iter}"
+  optimtech_suffix_args+=" --optimtech_switchema_switch_start ${switchema_switch_start}"
+  optimtech_suffix_args+=" --optimtech_switchema_switch_end ${switchema_switch_end}"
+  optimtech_suffix_args+=" --optimtech_switchema_switch_interval ${switchema_switch_interval}"
+  optimtech_suffix_args+=" --optimtech_switchema_full_params_ema ${switchema_full_params_ema}"
+  optimtech_suffix_args+=" --optimtech_switchema_update_interval ${switchema_update_interval}"
+else
+  optimtech_suffix_args=""
 fi
-
-switchema_suffix_args=""
-if [ "${optimtech}" == "switchema" ]; then
-  switchema_suffix_args="--use_customized_optimtech 1"
-  switchema_suffix_args+=" --optimtech_switchema_momentum ${switchema_momentum}"
-  switchema_suffix_args+=" --optimtech_switchema_warmup ${switchema_warmup}"
-  switchema_suffix_args+=" --optimtech_switchema_warmup_iters ${switchema_warmup_iters}"
-  switchema_suffix_args+=" --optimtech_switchema_warmup_ratio ${switchema_warmup_ratio}"
-  switchema_suffix_args+=" --optimtech_switchema_switch_params ${switchema_switch_params}"
-  switchema_suffix_args+=" --optimtech_switchema_switch_by_iter ${switchema_switch_by_iter}"
-  switchema_suffix_args+=" --optimtech_switchema_switch_start ${switchema_switch_start}"
-  switchema_suffix_args+=" --optimtech_switchema_switch_end ${switchema_switch_end}"
-  switchema_suffix_args+=" --optimtech_switchema_switch_interval ${switchema_switch_interval}"
-  switchema_suffix_args+=" --optimtech_switchema_full_params_ema ${switchema_full_params_ema}"
-  switchema_suffix_args+=" --optimtech_switchema_update_interval ${switchema_update_interval}"
-fi
-
 
 # Finetune
 exp_id=alpaca_${optim}_lr-${learning_rate}_beta1-${beta1}_beta2-${beta2}_lr-sched-${lr_schedule}_model-$(basename ${model_name_or_path})_batch-size-${batch_size}x${gradient_accumulation_steps}_seed-${seed}
@@ -497,8 +490,7 @@ ${exe} examples/finetune.py \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \
     --seed ${seed} \
     ${optim_suffix_args} \
-    ${ema_suffix_args} \
-    ${switchema_suffix_args} \
+    ${optimtech_suffix_args} \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
 
