@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     # Parses arguments
-    pipeline_name = "vllm_inferencer"
+    pipeline_name = "rm_inferencer"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
     parser = HfArgumentParser((
@@ -40,7 +40,7 @@ def main():
         model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
 
     dataset = Dataset(data_args)
-    model = AutoModel.get_model(model_args, tune_strategy='none')
+    model = AutoModel.get_model(model_args, tune_strategy='none', use_accelerator=pipeline_args.use_accelerator)
     inferencer = AutoPipeline.get_pipeline(
         pipeline_name=pipeline_name,
         model_args=model_args,
@@ -51,9 +51,10 @@ def main():
     res = inferencer.inference(
         model,
         dataset,
-        release_gpu=False,
-        enable_decode_inference_result=pipeline_args.enable_decode_inference_result,
     )
+    
+    if pipeline_args.save_results:
+        res.save(pipeline_args.results_path)
     
 
 if __name__ == "__main__":
