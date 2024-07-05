@@ -15,3 +15,9 @@ from lmflow.optim.sgdp import SGDP
 from lmflow.optim.yogi import Yogi
 from lmflow.optim.sophia import SophiaG
 from lmflow.optim.adan import Adan
+from lmflow.optim.novograd import NovoGrad
+from lmflow.optim.adam import Adam
+from lmflow.optim.adadelta import Adadelta
+from lmflow.optim.adagrad import AdaGrad
+from lmflow.optim.adamw_schedule_free import AdamWScheduleFree
+from lmflow.optim.sgd_schedule_free import SGDScheduleFree
