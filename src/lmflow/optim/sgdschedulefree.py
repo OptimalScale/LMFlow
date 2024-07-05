@@ -3,6 +3,9 @@
 # 
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import torch
 import torch.optim
 
