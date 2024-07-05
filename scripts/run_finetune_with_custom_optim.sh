@@ -3,7 +3,6 @@
 #   https://github.com/shizhediao/llm-ft
 #     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
 # Parses arguments
-export CUDA_VISIBLE_DEVICES=0,1,2,3
 model_name_or_path=gpt2
 dataset_path=data/alpaca/train_conversation
 
@@ -15,7 +14,7 @@ batch_size=1
 block_size=256
 per_device_train_batch_size=1
 conversation_template=llama2
-optimtech=none  # or 'ema' or 'switchema'
+optim_technique=none  # or 'ema' or 'switchema'
 optim=dummy
 # Select an optimizer from the following options:
 # - 'adamw_hf'
@@ -27,7 +26,6 @@ optim=dummy
 # - 'adafactor'
 # - 'adamw_anyprecision'
 # - 'sgd'
-# - 'adagrad'
 # - 'adamw_bnb_8bit'
 # - 'adamw_8bit'
 # - 'lion_8bit'
@@ -46,23 +44,6 @@ optim=dummy
 # - 'galore_adamw_layerwise'
 # - 'galore_adamw_8bit_layerwise'
 # - 'galore_adafactor_layerwise'
-# - 'adamp'
-# - 'sgdp'
-# - 'adan'
-# - 'nadam'
-# - 'radam'
-# - 'adabound'
-# - 'adabelief'
-# - 'adamax'
-# - 'lamb'
-# - 'lars'
-# - 'yogi'
-# - 'sophia'
-# - 'adadelta'
-# - 'adam'
-# - 'novograd'
-# - 'adamwschedulefree'
-# - 'sgdschedulefree'
 learning_rate=1e-5
 lr_schedule=cosine
 beta1=0.9
@@ -297,8 +278,7 @@ while [[ $# -ge 1 ]]; do
   shift
 done
 
-gpu_id=${CUDA_VISIBLE_DEVICES}
-deepspeed_args="--master_port=1103${gpu_id::1} --hostfile configs/hostfile --include localhost:${gpu_id}"
+deepspeed_args="--master_port=1103 --hostfile configs/hostfile"
 
 optim_suffix_args=""
 if [ "${optim}" == "dummy" ]; then
@@ -411,34 +391,32 @@ else
   optim_suffix_args+=" --adam_beta2 ${beta2}"
 fi
 
-optimtech_suffix_args=""
-if [ "${optimtech}" == "ema" ]; then
-  optimtech_suffix_args="--use_customized_optimtech 1"
-  optimtech_suffix_args+=" --optimtech_ema_momentum ${ema_momentum}"
-  optimtech_suffix_args+=" --optimtech_ema_warmup ${ema_warmup}"
-  optimtech_suffix_args+=" --optimtech_ema_warmup_iters ${ema_warmup_iters}"
-  optimtech_suffix_args+=" --optimtech_ema_warmup_ratio ${ema_warmup_ratio}"
-  optimtech_suffix_args+=" --optimtech_ema_evaluate_on_ema ${ema_evaluate_on_ema}"
-  optimtech_suffix_args+=" --optimtech_ema_evaluate_on_nonema ${ema_evaluate_on_nonema}"
-  optimtech_suffix_args+=" --optimtech_ema_full_params_ema ${ema_full_params_ema}"
-  optimtech_suffix_args+=" --optimtech_ema_update_interval ${ema_update_interval}"
-elif [ "${optimtech}" == "switchema" ]; then
-  optimtech_suffix_args="--use_customized_optimtech 1"
-  optimtech_suffix_args+=" --optimtech_switchema_momentum ${switchema_momentum}"
-  optimtech_suffix_args+=" --optimtech_switchema_warmup ${switchema_warmup}"
-  optimtech_suffix_args+=" --optimtech_switchema_warmup_iters ${switchema_warmup_iters}"
-  optimtech_suffix_args+=" --optimtech_switchema_warmup_ratio ${switchema_warmup_ratio}"
-  optimtech_suffix_args+=" --optimtech_switchema_switch_params ${switchema_switch_params}"
-  optimtech_suffix_args+=" --optimtech_switchema_switch_by_iter ${switchema_switch_by_iter}"
-  optimtech_suffix_args+=" --optimtech_switchema_switch_start ${switchema_switch_start}"
-  optimtech_suffix_args+=" --optimtech_switchema_switch_end ${switchema_switch_end}"
-  optimtech_suffix_args+=" --optimtech_switchema_switch_interval ${switchema_switch_interval}"
-  optimtech_suffix_args+=" --optimtech_switchema_full_params_ema ${switchema_full_params_ema}"
-  optimtech_suffix_args+=" --optimtech_switchema_update_interval ${switchema_update_interval}"
+optim_technique_suffix_args=""
+if [ "${optim_technique}" == "ema" ]; then
+  optim_technique_suffix_args="--use_customized_optimtech 1"
+  optim_technique_suffix_args+=" --optimtech_ema_momentum ${ema_momentum}"
+  optim_technique_suffix_args+=" --optimtech_ema_warmup ${ema_warmup}"
+  optim_technique_suffix_args+=" --optimtech_ema_warmup_iters ${ema_warmup_iters}"
+  optim_technique_suffix_args+=" --optimtech_ema_warmup_ratio ${ema_warmup_ratio}"
+  optim_technique_suffix_args+=" --optimtech_ema_evaluate_on_ema ${ema_evaluate_on_ema}"
+  optim_technique_suffix_args+=" --optimtech_ema_full_params_ema ${ema_full_params_ema}"
+  optim_technique_suffix_args+=" --optimtech_ema_update_interval ${ema_update_interval}"
+elif [ "${optim_technique}" == "switchema" ]; then
+  optim_technique_suffix_args="--use_customized_optimtech 1"
+  optim_technique_suffix_args+=" --optimtech_switchema_momentum ${switchema_momentum}"
+  optim_technique_suffix_args+=" --optimtech_switchema_warmup ${switchema_warmup}"
+  optim_technique_suffix_args+=" --optimtech_switchema_warmup_iters ${switchema_warmup_iters}"
+  optim_technique_suffix_args+=" --optimtech_switchema_warmup_ratio ${switchema_warmup_ratio}"
+  optim_technique_suffix_args+=" --optimtech_switchema_switch_params ${switchema_switch_params}"
+  optim_technique_suffix_args+=" --optimtech_switchema_switch_by_iter ${switchema_switch_by_iter}"
+  optim_technique_suffix_args+=" --optimtech_switchema_switch_start ${switchema_switch_start}"
+  optim_technique_suffix_args+=" --optimtech_switchema_switch_end ${switchema_switch_end}"
+  optim_technique_suffix_args+=" --optimtech_switchema_switch_interval ${switchema_switch_interval}"
+  optim_technique_suffix_args+=" --optimtech_switchema_full_params_ema ${switchema_full_params_ema}"
+  optim_technique_suffix_args+=" --optimtech_switchema_update_interval ${switchema_update_interval}"
 else
-  optimtech_suffix_args=""
+  optim_technique_suffix_args=""
 fi
-
 # Finetune
 exp_id=alpaca_${optim}_lr-${learning_rate}_beta1-${beta1}_beta2-${beta2}_lr-sched-${lr_schedule}_model-$(basename ${model_name_or_path})_batch-size-${batch_size}x${gradient_accumulation_steps}_seed-${seed}
 echo "$(date): ${exp_id}..."
@@ -490,7 +468,7 @@ ${exe} examples/finetune.py \
     --gradient_accumulation_steps ${gradient_accumulation_steps} \
     --seed ${seed} \
     ${optim_suffix_args} \
-    ${optimtech_suffix_args} \
+    ${optim_technique_suffix_args} \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
 
