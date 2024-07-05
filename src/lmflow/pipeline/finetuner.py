@@ -33,7 +33,7 @@ from transformers.utils import (
 import numpy as np
 
 import lmflow.optim.optimizers as optim
-import lmflow.hook as optimtech
+import lmflow.hook.optimtech as optimtech
 from lmflow.args import OptimizerNames
 from lmflow.args import OptimizationTechNames
 from lmflow.datasets.dataset import Dataset
