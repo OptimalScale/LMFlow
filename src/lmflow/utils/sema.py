@@ -1,3 +1,11 @@
+"""
+EMA Hook Implementation copied from SEMA/openmixup/openmixup/core/hooks/ema_hook.py
+Paper: https://arxiv.org/abs/2402.09240
+Code: https://github.com/Westlake-AI/SEMA/blob/45811267deafdc90d32401d4dab4d84ed2a29d51/openmixup/openmixup/core/hooks/ema_hook.py#L9
+
+Copyright (c) 2020-present NAVER Corp.
+MIT license
+"""
 import warnings
 from mmcv.parallel import is_module_wrapper
 from mmcv.runner import Hook
