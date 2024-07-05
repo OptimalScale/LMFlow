@@ -33,7 +33,7 @@ from transformers.utils import (
 import numpy as np
 
 import lmflow.optim.optimizers as optim
-import lmflow.hook.optimtech as optimtech
+import lmflow.utils.optimtech as optim_technique
 from lmflow.args import OptimizerNames
 from lmflow.args import OptimizationTechNames
 from lmflow.datasets.dataset import Dataset
@@ -336,20 +336,20 @@ class Finetuner(BaseTuner):
                     adagrad_kwargs = {
                     }
                     optimizer_kwargs.update(adagrad_kwargs)
-                elif args.customized_optim == OptimizerNames.ADAMWSCHEDULEFREE:
+                elif args.customized_optim == OptimizerNames.ADAMW_SCHEDULE_FREE:
                     optimizer_cls = optim.AdamWScheduleFree
-                    adamwschedulefree_kwargs = {
-                        "betas": (args.optim_adamwschedulefree_beta1, args.optim_adamwschedulefree_beta2),
-                        "weight_decay": (args.optim_adamwschedulefree_weight_decay),
+                    adamw_schedule_free_kwargs = {
+                        "betas": (args.optim_adamw_schedule_free_beta1, args.optim_adamw_schedule_free_beta2),
+                        "weight_decay": (args.optim_adamw_schedule_free_weight_decay),
                     }
-                    optimizer_kwargs.update(adamwschedulefree_kwargs)
-                elif args.customized_optim == OptimizerNames.SGDSCHEDULEFREE:
+                    optimizer_kwargs.update(adamw_schedule_free_kwargs)
+                elif args.customized_optim == OptimizerNames.SGD_SCHEDULE_FREE:
                     optimizer_cls = optim.SGDScheduleFree
-                    sgdschedulefree_kwargs = {
-                        "momentum": (args.optim_sgdschedulefree_momentum),
-                        "weight_decay": (args.optim_sgdschedulefree_weight_decay),
+                    sgd_schedule_free_kwargs = {
+                        "momentum": (args.optim_sgd_schedule_free_momentum),
+                        "weight_decay": (args.optim_sgd_schedule_free_weight_decay),
                     }
-                    optimizer_kwargs.update(sgdschedulefree_kwargs)
+                    optimizer_kwargs.update(sgd_schedule_free_kwargs)
                 elif args.customized_optim == OptimizerNames.ADAN:
                     optimizer_cls = optim.Adan
                     adan_kwargs = {
@@ -409,8 +409,8 @@ class Finetuner(BaseTuner):
                     )
                 if is_sagemaker_mp_enabled():
                     self.optimizer = smp.DistributedOptimizer(self.optimizer)
-
         return CustomizedOptimTrainer
+
     def create_customized_optimizationtech(self, base_trainer_class, model_args):
         class CustomizedOptimizationTechTrainer(base_trainer_class):
 
@@ -557,6 +557,8 @@ class Finetuner(BaseTuner):
 
             def preprocess_logits_for_metrics(logits, labels):
                 if isinstance(logits, tuple):
+                    # Depending on the model and config, logits may contain extra tensors,
+                    # like past_key_values, but logits always come first
                     logits = logits[0]
                 return logits.argmax(dim=-1)
 
@@ -564,6 +566,8 @@ class Finetuner(BaseTuner):
 
             def compute_metrics(eval_preds):
                 preds, labels = eval_preds
+                # preds have the same shape as the labels, after the argmax(-1) has been calculated
+                # by preprocess_logits_for_metrics but we need to shift the labels
                 labels = labels[:, 1:].reshape(-1)
                 preds = preds[:, :-1].reshape(-1)
                 return metric.compute(predictions=preds, references=labels)
@@ -573,6 +577,7 @@ class Finetuner(BaseTuner):
                 max_train_samples = min(len(train_dataset), data_args.max_train_samples)
                 train_dataset = train_dataset.select(range(max_train_samples))
 
+        # Initialize our Trainer
         training_args = finetuner_args
 
         if model_args.use_lora:
@@ -604,6 +609,7 @@ class Finetuner(BaseTuner):
                     self.interval_steps = interval_steps
                     self.model = model
 
+                    # Determine the way to access layers based on the model type
                     class_to_layers_map = {
                         'LlamaForCausalLM': 'model.model.layers',
                         'Qwen2ForCausalLM': 'model.model.layers',
@@ -617,34 +623,39 @@ class Finetuner(BaseTuner):
                         self.layers_attribute = class_to_layers_map[model_class_name]
                     else:
                         self.layers_attribute = training_args.lisa_layers_attribute
-                    self.total_layers = len(eval('self.' + self.layers_attribute))
+                    self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
 
                     self.active_layers_indices = []
 
                 def freeze_all_layers(self):
-                    layers = eval('self.' + self.layers_attribute)
+                    layers = eval('self.' + self.layers_attribute)  # Dynamically execute to get layers
                     for layer in layers:
                         for param in layer.parameters():
                             param.requires_grad = False
 
                 def on_step_begin(self, args, state, control, **kwargs):
+                    # Check if it's time to switch active layers, including at step 0
                     if state.global_step % self.interval_steps == 0:
                         self.switch_active_layers()
 
                 def switch_active_layers(self):
+                    # First, disable gradients for all layers
                     self.freeze_all_layers()
 
-                    layers = eval('self.' + self.layers_attribute)
+                     # Randomly select n_layers to activate
+                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
                     self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
                     print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.", flush=True)
 
+                    # Enable gradients only for the selected layers
                     for idx in self.active_layers_indices:
                         for param in layers[idx].parameters():
                             param.requires_grad = True
 
+            # Instantiate the callback
             dynamic_layer_activation_callback = DynamicLayerActivationCallback(
-                n_layers=training_args.lisa_activated_layers,
-                interval_steps=training_args.lisa_interval_steps,
+                n_layers=training_args.lisa_activated_layers,               # Number of layers to activate
+                interval_steps=training_args.lisa_interval_steps,           # Step interval to update active layers
                 model=model.get_backend_model()
             )
 
@@ -656,12 +667,13 @@ class Finetuner(BaseTuner):
             train_dataset=train_dataset if training_args.do_train else None,
             eval_dataset=eval_dataset if training_args.do_eval else None,
             tokenizer=model.get_tokenizer(),
+            # Data collator will default to DataCollatorWithPadding, so we change it.
             data_collator=data_collator,
             compute_metrics=compute_metrics if training_args.do_eval else None,
             preprocess_logits_for_metrics=preprocess_logits_for_metrics if training_args.do_eval else None,
             callbacks=trainer_callbacks
         )
-
+        # Training
         if training_args.do_train:
             checkpoint = None
             last_checkpoint = self.last_checkpoint
@@ -672,12 +684,12 @@ class Finetuner(BaseTuner):
             train_result = trainer.train(resume_from_checkpoint=checkpoint)
 
             if not model_args.use_lora:
-                trainer.save_model()
+                trainer.save_model()  # Saves the tokenizer too for easy upload
             else:
                 if model_args.save_aggregated_lora:
                     model.merge_lora_weights()
                 model.save(finetuner_args.output_dir, model_args.save_aggregated_lora)
-
+            # save language_projection for multi-modal model;
             if self.finetuner_args.save_language_projection:
                 language_projection_state = trainer.model.language_projection.state_dict()
                 torch.save(
