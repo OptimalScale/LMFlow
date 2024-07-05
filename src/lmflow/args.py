@@ -1533,7 +1533,18 @@ class IterativeAlignerArguments(InferencerArguments):
     Arguments for iterative aligners.
     """
     pass
-                    
+
+
+@dataclass
+class IterativeDPOAlignerArguments(DPOv2AlignerArguments, IterativeAlignerArguments):
+    """
+    Arguments for iterative DPO aligners.
+    """
+    output_dir: Optional[str] = field(
+        default="./runs",
+        metadata={"help": "Output path for the inferenced results"},
+    )
+
 
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
