@@ -50,9 +50,6 @@ class OptimizerNames():
     ADAMW_SCHEDULE_FREE = "adamw_schedule_free"
     SGD_SCHEDULE_FREE = "sgd_schedule_free"
 
-class OptimizationTechNames():
-    EMA = "ema"
-    SWITCHEMA = "switchema"
 @dataclass
 class ModelArguments:
     """
@@ -691,12 +688,6 @@ class FinetunerArguments(TrainingArguments):
             "help": "whether to use customized optimizers."
         }
     )
-    optim_technique: str = field(
-        default=None,
-        metadata={
-            "help": "Customized optimization technique to use. Set to None to use default optimization."
-        }
-    )
     customized_optim: str = field(
         default="sign_sgd",
         metadata={
@@ -989,120 +980,6 @@ class FinetunerArguments(TrainingArguments):
         default=0,
         metadata={
             "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
-        }
-    )
-    optim_technique_ema_momentum: float = field(
-        default=0.999,
-        metadata={
-            "help": "The decay factor used for the exponential moving average (EMA) of model parameters. A higher value means the EMA updates more slowly, retaining more historical information."
-        }
-    )
-    optim_technique_ema_warmup: str = field(
-        default=None,
-        metadata={
-            "help": "Type of warmup strategy for the EMA momentum. Can be 'constant', 'linear', or 'exp'. If None, no warmup is applied."
-        }
-    )
-    optim_technique_ema_warmup_iters: int = field(
-        default=0,
-        metadata={
-            "help": "Number of iterations over which to apply the EMA momentum warmup. Only used if a warmup strategy is specified."
-        }
-    )
-    optim_technique_ema_warmup_ratio: float = field(
-        default=0.9,
-        metadata={
-            "help": "Initial ratio of the EMA momentum during warmup. The actual momentum will be this ratio multiplied by the configured momentum."
-        }
-    )
-    optim_technique_ema_evaluate_on_ema: bool = field(
-        default=True,
-        metadata={
-            "help": "Whether to use the EMA parameters for evaluation. If True, the model will be evaluated using the EMA parameters."
-        }
-    )
-    optim_technique_ema_evaluate_on_nonema: bool = field(
-        default=False,
-        metadata={
-            "help": "Whether to use the non-EMA parameters for evaluation. If True, the model will be evaluated using the non-EMA parameters."
-        }
-    )
-    optim_technique_ema_full_params_ema: bool = field(
-        default=False,
-        metadata={
-            "help": "Whether to apply EMA to all parameters of the model, including non-trainable ones. If False, only trainable parameters will be considered for EMA."
-        }
-    )
-    optim_technique_ema_update_interval: int = field(
-        default=1,
-        metadata={
-            "help": "Interval (in iterations) at which to update the EMA parameters. For example, if set to 10, EMA parameters will be updated every 10 iterations."
-        }
-    )
-    optim_technique_switchema_momentum: float = field(
-        default=0.999,
-        metadata={
-            "help": "The decay factor used for the exponential moving average (EMA) of model parameters. A higher value means the EMA updates more slowly, retaining more historical information."
-        }
-    )
-    optim_technique_switchema_warmup: str = field(
-        default=None,
-        metadata={
-            "help": "Type of warmup strategy for the EMA momentum. Can be 'constant', 'linear', or 'exp'. If None, no warmup is applied."
-        }
-    )
-    optim_technique_switchema_warmup_iters: int = field(
-        default=0,
-        metadata={
-            "help": "Number of iterations over which to apply the EMA momentum warmup. Only used if a warmup strategy is specified."
-        }
-    )
-    optim_technique_switchema_warmup_ratio: float = field(
-        default=0.9,
-        metadata={
-            "help": "Initial ratio of the EMA momentum during warmup. The actual momentum will be this ratio multiplied by the configured momentum."
-        }
-    )
-    optim_technique_switchema_switch_params: bool = field(
-        default=False,
-        metadata={
-            "help": "Whether to enable parameter switching during training. If True, the model parameters will be switched to the EMA parameters at specified intervals."
-        }
-    )
-    optim_technique_switchema_switch_by_iter: bool = field(
-        default=False,
-        metadata={
-            "help": "Whether to switch parameters based on the number of iterations. If True, parameter switching will occur at specified iteration intervals. If False, switching will occur at specified epoch intervals."
-        }
-    )
-    optim_technique_switchema_switch_start: int = field(
-        default=0,
-        metadata={
-            "help": "The starting point (either iteration or epoch, depending on the value of switch_by_iter) for parameter switching."
-        }
-    )
-    optim_technique_switchema_switch_end: int = field(
-        default=None,
-        metadata={
-            "help": "The ending point (either iteration or epoch, depending on the value of switch_by_iter) for parameter switching. If None, switching will continue indefinitely."
-        }
-    )
-    optim_technique_switchema_switch_interval: int = field(
-        default=100,
-        metadata={
-            "help": "The interval at which to perform parameter switching. If switch_by_iter is True, this is the number of iterations between switches. If False, this is the number of epochs between switches."
-        }
-    )
-    optim_technique_switchema_full_params_ema: bool = field(
-        default=False,
-        metadata={
-            "help": "Whether to apply EMA to all parameters of the model, including non-trainable ones. If False, only trainable parameters will be considered for EMA."
-        }
-    )
-    optim_technique_switchema_update_interval: int = field(
-        default=1,
-        metadata={
-            "help": "Interval (in iterations) at which to update the EMA parameters. For example, if set to 10, EMA parameters will be updated every 10 iterations."
         }
     )
 

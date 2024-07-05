@@ -33,9 +33,7 @@ from transformers.utils import (
 import numpy as np
 
 import lmflow.optim.optimizers as optim
-import lmflow.utils.optimtech as optim_technique
 from lmflow.args import OptimizerNames
-from lmflow.args import OptimizationTechNames
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
@@ -136,11 +134,11 @@ class Finetuner(BaseTuner):
             block_size = model_max_length
             if block_size > 1024:
                 logger.warning(
-	    			"The chosen tokenizer supports a `model_max_length` that is"
-	    			" longer than the default `block_size` value"
-	    			" of 1024. If you would like to use a longer `block_size`"
-	    			" up to `tokenizer.model_max_length` you can override this "
-	    			" default with `--block_size xxx`."
+                    "The chosen tokenizer supports a `model_max_length` that is"
+                    " longer than the default `block_size` value"
+                    " of 1024. If you would like to use a longer `block_size`"
+                    " up to `tokenizer.model_max_length` you can override this "
+                    " default with `--block_size xxx`."
                 )
                 block_size = 1024
         else:
@@ -409,93 +407,8 @@ class Finetuner(BaseTuner):
                     )
                 if is_sagemaker_mp_enabled():
                     self.optimizer = smp.DistributedOptimizer(self.optimizer)
+                    
         return CustomizedOptimTrainer
-
-    def create_customized_optimizationtech(self, base_trainer_class, model_args):
-        class CustomizedOptimizationTechTrainer(base_trainer_class):
-
-            @staticmethod
-            def get_optimization_tech_cls_and_kwargs(
-                args: TrainingArguments,
-                model: Optional[PreTrainedModel] = None,
-            ) -> Tuple[Any, Any]:
-                # parse args.optimtech_args
-                optimtech_args = {}
-                if args.customized_optimtech_args:
-                    for mapping in args.customized_optimtech_args.replace(" ", "").split(","):
-                        key, value = mapping.split("=")
-                        optimtech_args[key] = value
-
-                optimization_tech_kwargs = {}
-
-                if args.customized_optimization_tech == OptimizationTechNames.EMA:
-                    optimization_tech_cls = optimtech.EMA
-                    ema_kwargs = {
-                        "ema_momentum": args.optimtech_ema_momentum,
-                        "ema_warmup": args.optimtech_ema_warmup,
-                        "ema_warmup_iters": args.optimtech_ema_warmup_iters,
-                        "ema_warmup_ratio": args.optimtech_ema_warmup_ratio,
-                        "ema_evaluate_on_ema": args.optimtech_ema_evaluate_on_ema,
-                        "ema_evaluate_on_nonema": args.optimtech_ema_evaluate_on_nonema,
-                        "ema_full_params_ema": args.optimtech_ema_full_params_ema,
-                        "ema_update_interval": args.optimtech_ema_update_interval,
-                    }
-                    optimization_tech_kwargs.update(ema_kwargs)
-                elif args.customized_optimization_tech == OptimizationTechNames.SWITCHEMA:
-                    optimization_tech_cls = optimtech.SwitchEMA
-                    switchema_kwargs = {
-                        "switchema_momentum": args.optimtech_switchema_momentum,
-                        "switchema_warmup": args.optimtech_switchema_warmup,
-                        "switchema_warmup_iters": args.optimtech_switchema_warmup_iters,
-                        "switchema_warmup_ratio": args.optimtech_switchema_warmup_ratio,
-                        "switchema_switch_params": args.optimtech_switchema_switch_params,
-                        "switchema_switch_by_iter": args.optimtech_switchema_switch_by_iter,
-                        "switchema_switch_start": args.optimtech_switchema_switch_start,
-                        "switchema_switch_end": args.optimtech_switchema_switch_end,
-                        "switchema_switch_interval": args.optimtech_switchema_switch_interval,
-                        "switchema_full_params_ema": args.optimtech_switchema_full_params_ema,
-                        "switchema_update_interval": args.optimtech_switchema_update_interval,
-                    }
-                    optimization_tech_kwargs.update(switchema_kwargs)
-                else:
-                    raise ValueError(
-                        f"Trainer cannot instantiate unsupported optimization technique: "
-                        f" {args.customized_optimization_tech}"
-                    )
-                return optimization_tech_cls, optimization_tech_kwargs
-
-            def create_optimization_tech(self):
-                opt_model = self.model_wrapped if is_sagemaker_mp_enabled() else self.model
-
-                if self.optimization_tech is None:
-                    optimization_tech_cls, optimization_tech_kwargs = CustomizedOptimizationTechTrainer.get_optimization_tech_cls_and_kwargs(self.args, opt_model)
-
-                    self.optimization_tech = optimization_tech_cls(
-                        model=opt_model,
-                        **optimization_tech_kwargs
-                    )
-
-            def on_step_begin(self, args, state, control, **kwargs):
-                if self.optimization_tech is not None:
-                    self.optimization_tech.update()
-
-            def on_evaluate(self, args, state, control, **kwargs):
-                if self.optimization_tech is not None:
-                    if self.optimization_tech.evaluate_on_ema:
-                        self.optimization_tech.apply_ema()
-                    elif self.optimization_tech.evaluate_on_nonema:
-                        self.optimization_tech.restore_original_params()
-
-            def on_save(self, args, state, control, **kwargs):
-                if self.optimization_tech is not None:
-                    if self.optimization_tech.full_params_ema:
-                        self.optimization_tech.apply_ema()
-
-            def on_load_checkpoint(self, args, state, control, **kwargs):
-                if self.optimization_tech is not None:
-                    self.optimization_tech.restore_original_params()
-
-        return CustomizedOptimizationTechTrainer
 
     def tune(self,
              model,
@@ -592,12 +505,6 @@ class Finetuner(BaseTuner):
         if training_args.use_customized_optim:
             BaseTrainer = FinetuningTrainer
             FinetuningTrainer = self.create_customized_optimizer(
-                BaseTrainer, model_args
-            )
-
-        if training_args.use_customized_optimtech:
-            BaseTrainer = FinetuningTrainer
-            FinetuningTrainer = self.create_customized_optimizationtech(
                 BaseTrainer, model_args
             )
 
