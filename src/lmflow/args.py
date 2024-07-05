@@ -47,8 +47,8 @@ class OptimizerNames():
     NOVOGRAD = "novograd"
     ADADELTA = "adadelta"
     ADAGRAD = "adagrad"
-    ADAMWSCHEDULEFREE = "adamwschedulefree"
-    SGDSCHEDULEFREE = "sgdschedulefree"
+    ADAMW_SCHEDULE_FREE = "adamw_schedule_free"
+    SGD_SCHEDULE_FREE = "sgd_schedule_free"
 
 class OptimizationTechNames():
     EMA = "ema"
@@ -691,10 +691,10 @@ class FinetunerArguments(TrainingArguments):
             "help": "whether to use customized optimizers."
         }
     )
-    use_customized_optimtech: bool = field(
-        default=False,
+    optim_technique: str = field(
+        default=None,
         metadata={
-            "help": "whether to use customized optimization techniques."
+            "help": "Customized optimization technique to use. Set to None to use default optimization."
         }
     )
     customized_optim: str = field(
@@ -853,13 +853,13 @@ class FinetunerArguments(TrainingArguments):
             "help": "Coefficient used for computing running averages of squared gradient"
         }
     )
-    optim_adamwschedulefree_beta1: float = field(
+    optim_adamw_schedule_free_beta1: float = field(
         default=0.9,
         metadata={
             "help": "Coefficient used for computing running averages of gradient"
         }
     )
-    optim_adamwschedulefree_beta2: float = field(
+    optim_adamw_schedule_free_beta2: float = field(
         default=0.999,
         metadata={
             "help": "Coefficient used for computing running averages of squared gradient"
@@ -895,7 +895,7 @@ class FinetunerArguments(TrainingArguments):
             "help": "Coefficient used for the momentum term in optimizers like SGD with momentum"
         }
     )
-    optim_sgdschedulefree_momentum: float = field(
+    optim_sgd_schedule_free_momentum: float = field(
         default=0.999,
         metadata={
             "help": "Coefficient used for computing running averages of gradient"
@@ -919,13 +919,13 @@ class FinetunerArguments(TrainingArguments):
             "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
         }
     )
-    optim_adamwschedulefree_weight_decay: float = field(
+    optim_adamw_schedule_free_weight_decay: float = field(
         default=0,
         metadata={
             "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
         }
     )
-    optim_sgdschedulefree_weight_decay: float = field(
+    optim_sgd_schedule_free_weight_decay: float = field(
         default=0,
         metadata={
             "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
