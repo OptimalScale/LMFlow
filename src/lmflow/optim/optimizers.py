@@ -19,5 +19,5 @@ from lmflow.optim.novograd import NovoGrad
 from lmflow.optim.adam import Adam
 from lmflow.optim.adadelta import Adadelta
 from lmflow.optim.adagrad import AdaGrad
-from lmflow.optim.adamwschedulefree import AdamWScheduleFree
-from lmflow.optim.sgdschedulefree import SGDScheduleFree
+from lmflow.optim.adamw_schedule_free import AdamWScheduleFree
+from lmflow.optim.sgd_schedule_free import SGDScheduleFree
