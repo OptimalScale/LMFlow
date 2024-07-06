@@ -19,6 +19,7 @@ class Adam(Optimizer):
                 if p.grad is None:
                     continue
                 grad = p.grad.data
+                
                 state = self.state[p]
 
                 if len(state) == 0:
