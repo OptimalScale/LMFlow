@@ -31,7 +31,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 
 ## Latest News
-* [2024-06-30] Expanding Optimization Options! We currently support the utilization of a diverse array of optimizers for custom optimizer training. Delve into the specifics and experiment with our newly updated script featuring these advanced functionalities at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
+* [2024-06-30] Expanding Optimization Options! We now support custom optimizer training with a variety of optimizers. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
 * [2024-04-25] :rocket: Support conversation template! We've preset the latest [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) and [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) conversation templates as well as some frequently used templates such as `chatml` (see all templates [here](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)), and we are working on adding more preset templates. Adding corresponding `--conversation_template` in the shell script and you are all set! :rocket:
 * [2024-03-27] Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! 
 * [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
@@ -338,7 +338,7 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 * Custom Optimization
 
-  LMFlow has expanded its toolkit to include the ability for custom optimizer training, supporting a wide range of optimizers. This enhancement allows for the implementation of tailored optimization strategies to significantly boost model performance. To delve into these advanced features and to utilize our updated script, please visit [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
+  LMFlow now supports custom optimizer training with a variety of optimizers. Elevate your model's performance with tailored optimization strategies. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
 
   The following table evaluates the performance of custom optimizers in the fine-tuning process of GPT-2 on the Alpaca dataset, emphasizing their individual impacts on the training loss. The specific hyperparameter settings utilize default configurations, which can be customized and adjusted at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh). It is important to note that the evaluations were conducted over a duration of 0.1 epochs to provide a preliminary insight into the optimizers' effectiveness.
 
