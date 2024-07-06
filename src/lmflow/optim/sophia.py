@@ -7,7 +7,6 @@ from torch.optim.optimizer import Optimizer
 class SophiaG(Optimizer):
     """
     Sophia: A Scalable Stochastic Second-order Optimizer for Language Model Pre-training.
-
     Code from: https://github.com/Liuhong99/Sophia/
     """
 
