@@ -7,33 +7,6 @@ from torch.optim.optimizer import Optimizer
 
 class AdaBelief(Optimizer):
     r"""Implements AdaBelief algorithm. Modified from Adam in PyTorch
-    Arguments:
-        params (iterable): iterable of parameters to optimize or dicts defining
-            parameter groups
-        lr (float, optional): learning rate (default: 1e-3)
-        betas (Tuple[float, float], optional): coefficients used for computing
-            running averages of gradient and its square (default: (0.9, 0.999))
-        eps (float, optional): term added to the denominator to improve
-            numerical stability (default: 1e-16)
-        weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
-        amsgrad (boolean, optional): whether to use the AMSGrad variant of this
-            algorithm from the paper `On the Convergence of Adam and Beyond`_
-            (default: False)
-        weight_decouple (boolean, optional): ( default: True) If set as True, then
-            the optimizer uses decoupled weight decay as in AdamW
-        fixed_decay (boolean, optional): (default: False) This is used when weight_decouple
-            is set as True.
-            When fixed_decay == True, the weight decay is performed as
-            $W_{new} = W_{old} - W_{old} \times decay$.
-            When fixed_decay == False, the weight decay is performed as
-            $W_{new} = W_{old} - W_{old} \times decay \times lr$. Note that in this case, the
-            weight decay ratio decreases with learning rate (lr).
-        rectify (boolean, optional): (default: True) If set as True, then perform the rectified
-            update similar to RAdam
-        degenerated_to_sgd (boolean, optional) (default:True) If set as True, then perform SGD update
-            when variance of gradient is high
-        print_change_log (boolean, optional) (default: True) If set as True, print the modifcation to
-            default hyper-parameters
     reference: AdaBelief Optimizer, adapting stepsizes by the belief in observed gradients, NeurIPS 2020
     """
 
