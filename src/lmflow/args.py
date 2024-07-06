@@ -49,6 +49,7 @@ class OptimizerNames():
     ADAGRAD = "adagrad"
     ADAMW_SCHEDULE_FREE = "adamw_schedule_free"
     SGD_SCHEDULE_FREE = "sgd_schedule_free"
+    
 @dataclass
 class ModelArguments:
     """
