@@ -61,12 +61,13 @@ def blocking_paired(
                         f"padding_side should be either 'right' or 'left', got {padding_side}"
                     )
     if block_size_warning_num > 0:
-        logger.warning(
-            f"There are {block_size_warning_num} of {num_example} samples where"
-            f" block_size {block_size} < model_max_length"
-            f" {model_max_length}, use block_size"
-            " for maximum tokenized sequence length"
-        )
+        pass
+        # logger.warning(
+        #     f"There are {block_size_warning_num} of {num_example} samples where"
+        #     f" block_size {block_size} < model_max_length"
+        #     f" {model_max_length}, use block_size"
+        #     " for maximum tokenized sequence length"
+        # )
         
     return token_dict
 
@@ -222,10 +223,8 @@ def paired_conversation_tokenize_function(
                     
             except:
                 num_corrupted += 1
-                logger.error(f"Error in encoding conversation {i}: {column_name}")
-                logger.error(f"Messages: {messages}")
                 continue
-        logger.error(f"Number of corrupted examples: {num_corrupted}")
+        logger.error(f"Number of corrupted examples: {num_corrupted}/{num_example}")
                 
     if data_args.disable_group_texts:
         token_dict = blocking_paired(
