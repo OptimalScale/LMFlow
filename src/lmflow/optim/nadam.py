@@ -18,7 +18,6 @@ class NAdam(torch.optim.Optimizer):
             raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
         if not 0.0 <= momentum_decay:
             raise ValueError("Invalid momentum_decay value: {}".format(momentum_decay))
-
         defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay, momentum_decay=momentum_decay)
         super(NAdam, self).__init__(params, defaults)
 
