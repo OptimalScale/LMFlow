@@ -8,6 +8,7 @@ class AdaGrad(torch.optim.Optimizer):
     def __init__(self, params, lr=0.001, eps=1e-8, weight_decay=0):
         defaults = dict(lr=lr, eps=eps, weight_decay=weight_decay)
         super(AdaGrad, self).__init__(params, defaults)
+        
     def step(self, closure=None):
         loss = None
         if closure is not None:
