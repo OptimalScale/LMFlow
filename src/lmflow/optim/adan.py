@@ -3,10 +3,10 @@
 
 import math
 from typing import List
-
 import torch
 from torch import Tensor
 from torch.optim.optimizer import Optimizer
+
 class Adan(Optimizer):
     """Implements a pytorch variant of Adan.
 
@@ -14,23 +14,6 @@ class Adan(Optimizer):
     Adan : Adaptive Nesterov Momentum Algorithm for Faster Optimizing Deep Models.
     https://arxiv.org/abs/2208.06677
 
-    Arguments:
-        params (iterable): iterable of parameters to optimize
-            or dicts defining parameter groups.
-        lr (float, optional): learning rate. (default: 1e-3)
-        betas (Tuple[float, float, flot], optional): coefficients used
-            for computing running averages of gradient.
-            (default: (0.98, 0.92, 0.99))
-        eps (float, optional): term added to the denominator to improve
-            numerical stability. (default: 1e-8)
-        weight_decay (float, optional): decoupled weight decay
-            (L2 penalty) (default: 0)
-        max_grad_norm (float, optional): value used to clip
-            global grad norm (default: 0.0 no clip)
-        no_prox (bool): how to perform the decoupled weight decay
-            (default: False)
-        foreach (bool): if True would use torch._foreach implementation.
-            It's faster but uses slightly more memory.
     """
 
     def __init__(self,
