@@ -186,6 +186,7 @@ def paired_conversation_tokenize_function(
         token_dict[f"attention_mask_{column_name}"] = [[] for _ in range(num_example)]
         
     with CaptureLogger(tok_logger) as cl:
+        num_corrupted = 0
         for i in range(num_example):
             try:
                 for column_name in column_names:
@@ -220,9 +221,11 @@ def paired_conversation_tokenize_function(
                     token_dict[f"attention_mask_{column_name}"][i].extend([1] * len(input_ids))
                     
             except:
+                num_corrupted += 1
                 logger.error(f"Error in encoding conversation {i}: {column_name}")
                 logger.error(f"Messages: {messages}")
                 continue
+        logger.error(f"Number of corrupted examples: {num_corrupted}")
                 
     if data_args.disable_group_texts:
         token_dict = blocking_paired(
