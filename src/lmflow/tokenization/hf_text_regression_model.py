@@ -187,44 +187,37 @@ def paired_conversation_tokenize_function(
         token_dict[f"attention_mask_{column_name}"] = [[] for _ in range(num_example)]
         
     with CaptureLogger(tok_logger) as cl:
-        num_corrupted = 0
         for i in range(num_example):
-            try:
-                for column_name in column_names:
-                    messages = examples[column_name][i]["messages"]
-                    system = examples[column_name][i].get("system", None)
-                    tools = examples[column_name][i].get("tools", None)
-                    if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
-                        tok_logger.warning(
-                            "Invalid instance encountered. Either the conversation has less than "
-                            "one round or the first message is not from the user."
-                        )
-                        continue
+            for column_name in column_names:
+                messages = examples[column_name][i]["messages"]
+                system = examples[column_name][i].get("system", None)
+                tools = examples[column_name][i].get("tools", None)
+                if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
+                    tok_logger.warning(
+                        "Invalid instance encountered. Either the conversation has less than "
+                        "one round or the first message is not from the user."
+                    )
+                    continue
+            
+                if len(messages) % 2 != 0:
+                    logger.warning(
+                        "The number of messages is not even, the last message will be ignored."
+                    )
+                    messages = messages[:-1]
                 
-                    if len(messages) % 2 != 0:
-                        logger.warning(
-                            "The number of messages is not even, the last message will be ignored."
-                        )
-                        messages = messages[:-1]
-                    
-                        encoded_conversation = conversation_template.encode_conversation(
-                            tokenizer=tokenizer,
-                            messages=messages,
-                            system=system,
-                            tools=tools,
-                        )
+                    encoded_conversation = conversation_template.encode_conversation(
+                        tokenizer=tokenizer,
+                        messages=messages,
+                        system=system,
+                        tools=tools,
+                    )
 
-                    input_ids = []
-                    for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
-                        input_ids += user_input + assistant_result
-                        
-                    token_dict[f"input_ids_{column_name}"][i].extend(input_ids)
-                    token_dict[f"attention_mask_{column_name}"][i].extend([1] * len(input_ids))
+                input_ids = []
+                for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
+                    input_ids += user_input + assistant_result
                     
-            except:
-                num_corrupted += 1
-                continue
-        logger.error(f"Number of corrupted examples: {num_corrupted}/{num_example}")
+                token_dict[f"input_ids_{column_name}"][i].extend(input_ids)
+                token_dict[f"attention_mask_{column_name}"][i].extend([1] * len(input_ids))
                 
     if data_args.disable_group_texts:
         token_dict = blocking_paired(
