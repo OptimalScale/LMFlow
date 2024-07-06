@@ -5,6 +5,7 @@ import torch
 import torch.optim as optim
 
 class NovoGrad(optim.Optimizer):
+    
     def __init__(self, params, lr=0.01, betas=(0.9, 0.999), eps=1e-8, weight_decay=0, grad_averaging=False, amsgrad=False):
         if not 0.0 <= lr:
             raise ValueError("Invalid learning rate: {}".format(lr))
