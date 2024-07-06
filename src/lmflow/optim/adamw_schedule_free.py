@@ -20,29 +20,6 @@ class AdamWScheduleFree(torch.optim.Optimizer):
     This optimizer requires that .train() and .eval() be called before the
     beginning of training and evaluation respectively. The optimizer should
     also be placed in eval mode when saving checkpoints.
-    
-    Arguments:
-        params (iterable): 
-            Iterable of parameters to optimize or dicts defining 
-            parameter groups.
-        lr (float): 
-            Learning rate parameter (default 0.0025)
-        betas (Tuple[float, float], optional): coefficients used for computing
-            running averages of gradient and its square (default: (0.9, 0.999)).
-        eps (float): 
-            Term added to the denominator outside of the root operation to 
-            improve numerical stability. (default: 1e-8).
-        weight_decay (float): 
-            Weight decay, i.e. a L2 penalty (default: 0).
-        warmup_steps (int): Enables a linear learning rate warmup (default 0).
-        r (float): Use polynomial weighting in the average 
-            with power r (default 0).
-        weight_lr_power (float): During warmup, the weights in the average will
-            be equal to lr raised to this power. Set to 0 for no weighting
-            (default 2.0).
-        foreach (bool): Use a foreach-backed implementation of the optimizer.
-            Should be significantly faster, but will have higher peak memory
-            usage (default True if supported in your PyTorch version).
     """
     def __init__(self,
                  params, 
