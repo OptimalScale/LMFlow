@@ -7,27 +7,6 @@ from torch.optim.optimizer import Optimizer
 class LARS(Optimizer):
     r"""Extends SGD in PyTorch with LARS scaling from the paper
     `Large batch training of Convolutional Networks`__.
-
-    Arguments:
-        params (iterable): iterable of parameters to optimize or dicts defining
-            parameter groups
-        lr: learning rate (default: 1e-3)
-        momentum: momentum factor (default: 0)
-        dampening: dampening for momentum (default: 0)
-        eps: term added to the denominator to improve
-            numerical stability (default: 1e-8)
-        weight_decay: weight decay (L2 penalty) (default: 0)
-        nesterov: enables Nesterov momentum (default: False)
-        trust_coefficient: trust coefficient for computing LR (default: 0.001)
-        eps: eps for division denominator (default: 1e-8)
-
-    Example:
-        >>> import torch_optimizer as optim
-        >>> optimizer = optim.LARS(model.parameters(), lr=0.001)
-        >>> optimizer.zero_grad()
-        >>> loss_fn(model(input), target).backward()
-        >>> optimizer.step()
-
     .. note::
         The application of momentum in the SGD part is modified according to
         the PyTorch standards. LARS scaling fits into the equation in the
