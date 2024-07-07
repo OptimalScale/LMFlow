@@ -26,6 +26,7 @@ def blocking_paired(
     model_max_length: int,
     pad_token_id: int,
     padding_side: str,
+    truncation_side: str='right',
 ) -> Dict:
     block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
@@ -38,7 +39,14 @@ def blocking_paired(
             if pad_length < 0:
                 # Truncates too long samples
                 for key in [f"input_ids_{column_name}", f"attention_mask_{column_name}"]:
-                    token_dict[key][i] = token_dict[key][i][:pad_length]
+                    if truncation_side == 'right':
+                        token_dict[key][i] = token_dict[key][i][:pad_length]
+                    elif truncation_side == 'left':
+                        token_dict[key][i] = token_dict[key][i][-pad_length:]
+                    else:
+                        raise ValueError(
+                            f"truncation_side should be either 'right' or 'left', got {truncation_side}"
+                        )
             else:
                 if padding_side == 'right':
                     # Pads too short samples
@@ -78,6 +86,7 @@ def blocking(
     model_max_length: int,
     pad_token_id: int,
     padding_side: str,
+    truncation_side: str='right',
 ) -> Dict:
     block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
@@ -89,7 +98,14 @@ def blocking(
         if pad_length < 0:
             # Truncates too long samples
             for key in ["input_ids", "attention_mask", "labels"]:
-                token_dict[key][i] = token_dict[key][i][:pad_length]
+                if truncation_side == 'right':
+                    token_dict[key][i] = token_dict[key][i][:pad_length]
+                elif truncation_side == 'left':
+                    token_dict[key][i] = token_dict[key][i][-pad_length:]
+                else:
+                    raise ValueError(
+                        f"truncation_side should be either 'right' or 'left', got {truncation_side}"
+                    )
         else:
             if padding_side == 'right':
                 # Pads too short samples
@@ -135,6 +151,7 @@ def blocking_text_to_textlist(
     model_max_length: int,
     pad_token_id: int,
     padding_side: str,
+    truncation_side: str='right',
 ) -> Dict:
     block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
@@ -147,7 +164,14 @@ def blocking_text_to_textlist(
                 block_size_warning_num += 1
             if pad_length < 0:
                 # Truncates too long samples
-                token_dict["input_ids"][example_idx][content_idx] = token_dict["input_ids"][example_idx][content_idx][:pad_length]
+                if truncation_side == 'right':
+                    token_dict["input_ids"][example_idx][content_idx] = token_dict["input_ids"][example_idx][content_idx][:pad_length]
+                elif truncation_side == 'left':
+                    token_dict["input_ids"][example_idx][content_idx] = token_dict["input_ids"][example_idx][content_idx][-pad_length:]
+                else:
+                    raise ValueError(
+                        f"truncation_side should be either 'right' or 'left', got {truncation_side}"
+                    )
             else:
                 if padding_side == 'right':
                     # Pads too short samples
@@ -239,6 +263,7 @@ def paired_conversation_tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
 
     # clm input could be much much longer than block_size
@@ -310,6 +335,7 @@ def conversation_tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
 
     # clm input could be much much longer than block_size
@@ -371,6 +397,7 @@ def tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
 
     # clm input could be much much longer than block_size
@@ -416,6 +443,7 @@ def text_to_textlist_tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
         
     return output_dict
