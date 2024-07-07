@@ -1536,7 +1536,7 @@ class IterativeAlignerArguments(InferencerArguments):
 
 
 @dataclass
-class IterativeDPOAlignerArguments(DPOv2AlignerArguments, IterativeAlignerArguments):
+class IterativeDPOAlignerArguments(DPOv2AlignerArguments, IterativeAlignerArguments, InferencerArguments):
     """
     Arguments for iterative DPO aligners.
     """
