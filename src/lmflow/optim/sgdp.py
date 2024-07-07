@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import math
 import torch
 from torch.optim.optimizer import Optimizer
@@ -7,32 +10,8 @@ class SGDP(Optimizer):
     r"""Implements SGDP algorithm.
 
     It has been proposed in `Slowing Down the Weight Norm Increase in
-    Momentum-based Optimizers`__
-
-    Arguments:
-        params: iterable of parameters to optimize or dicts defining
-            parameter groups
-        lr: learning rate (default: 1e-3)
-        momentum: momentum factor (default: 0)
-        dampening: dampening for momentum (default: 0)
-        eps: term added to the denominator to improve
-            numerical stability (default: 1e-8)
-        weight_decay: weight decay (L2 penalty) (default: 0)
-        delta: threhold that determines whether a set of parameters is scale
-            invariant or not (default: 0.1)
-        wd_ratio: relative weight decay applied on scale-invariant parameters
-            compared to that applied on scale-variant parameters (default: 0.1)
-        nesterov: enables Nesterov momentum (default: False)
-
-
-    Example:
-        >>> import torch_optimizer as optim
-        >>> optimizer = optim.SGDP(model.parameters(), lr=0.1)
-        >>> optimizer.zero_grad()
-        >>> loss_fn(model(input), target).backward()
-        >>> optimizer.step()
-
-     __ https://arxiv.org/abs/2006.08217
+    Momentum-based Optimizers`.
+    https://arxiv.org/abs/2006.08217
 
     Note:
         Reference code: https://github.com/clovaai/AdamP

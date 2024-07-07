@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import math
 
 import torch
@@ -5,33 +8,10 @@ from torch.optim.optimizer import Optimizer
 
 class AdaBound(Optimizer):
     r"""Implements AdaBound algorithm.
-
+    
     It has been proposed in `Adaptive Gradient Methods with Dynamic Bound of
-    Learning Rate`__.
-
-    Arguments:
-        params: iterable of parameters to optimize or dicts defining
-            parameter groups
-        lr: learning rate (default: 1e-3)
-        betas: coefficients used for computing running averages of gradient
-            and its square (default: (0.9, 0.999))
-        final_lr: final (SGD) learning rate (default: 0.1)
-        gamma: convergence speed of the bound functions
-            (default: 1e-3)
-        eps: term added to the denominator to improve numerical stability
-            (default: 1e-8)
-        weight_decay: weight decay (L2 penalty) (default: 0)
-        amsbound: whether to use the AMSBound variant of this algorithm
-
-    Example:
-        >>> import torch_optimizer as optim
-        >>> optimizer = optim.AdaBound(model.parameters(), lr=0.1)
-        >>> optimizer.zero_grad()
-        >>> loss_fn(model(input), target).backward()
-        >>> optimizer.step()
-
-    __ https://arxiv.org/abs/1902.09843
-
+    Learning Rate
+    https://arxiv.org/abs/1902.09843
     Note:
         Reference code: https://github.com/Luolc/AdaBound
     """

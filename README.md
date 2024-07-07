@@ -334,9 +334,9 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 </details>
 
 
-<details> <summary>Optimizers</summary>
+<details> <summary>Custom Optimization</summary>
 
-* Custom Optimizers
+* Custom Optimization
 
   LMFlow now supports custom optimizer training with a variety of optimizers. Elevate your model's performance with tailored optimization strategies. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
 
@@ -344,23 +344,29 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
   | Optimizer Name | Train Loss |
   |----------------|------------|
-  | SGD            | 3.3734      |
-  | SGDP           | 3.3567      |
-  | RMSprop        | 2.4016      |
-  | AdamW          | 2.4469      |
-  | AdamP          | 2.4295      |
-  | AdaMax         | 2.5924      |
-  | AdaFactor      | 2.4543      |
-  | RAdam          | 2.6104      |
-  | NAdam          | 2.5569      |
-  | AdaBelief      | 2.5857      |
-  | AdaBound       | 2.4547      |
-  | LION-32bit     | 2.4041      |
-  | Sophia         | 3.1517      |
-  | Adan           | 2.5063      |
-  | Yogi           | 2.9314      |
-  | LAMB           | 3.2350      |
-  | LARS           | 3.3329      |
+  | RMSprop        | 2.4016     |
+  | LION-32bit     | 2.4041     |
+  | Adam           | 2.4292     |
+  | AdamP          | 2.4295     |
+  | AdamW          | 2.4469     |
+  | AdaFactor      | 2.4543     |
+  | AdaBound       | 2.4547     |
+  | AdamWScheduleFree       | 2.4677     |
+  | Adan           | 2.5063     |
+  | NAdam          | 2.5569     |
+  | AdaBelief      | 2.5857     |
+  | AdaMax         | 2.5924     |
+  | RAdam          | 2.6104     |
+  | AdaDelta       | 2.6298     |
+  | AdaGrad        | 2.8657     |
+  | Yogi           | 2.9314     |
+  | NovoGrad       | 3.1071     |
+  | Sophia         | 3.1517     |
+  | LAMB           | 3.2350     |
+  | LARS           | 3.3329     |
+  | SGDScheduleFree        | 3.3541     |
+  | SGDP           | 3.3567     |
+  | SGD            | 3.3734     |
 
 </details>
 

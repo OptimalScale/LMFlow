@@ -15,50 +15,14 @@ block_size=256
 per_device_train_batch_size=1
 conversation_template=llama2
 optim=dummy
-"""
-Select an optimizer from the following options:
-- 'adamw_hf'
-- 'adamw_torch'
-- 'adamw_torch_fused'
-- 'adamw_torch_xla'
-- 'adamw_torch_npu_fused'
-- 'adamw_apex_fused'
-- 'adafactor'
-- 'adamw_anyprecision'
-- 'sgd'
-- 'adagrad'
-- 'adamw_bnb_8bit'
-- 'adamw_8bit'
-- 'lion_8bit'
-- 'lion_32bit'
-- 'paged_adamw_32bit'
-- 'paged_adamw_8bit'
-- 'paged_lion_32bit'
-- 'paged_lion_8bit'
-- 'rmsprop'
-- 'rmsprop_bnb'
-- 'rmsprop_bnb_8bit'
-- 'rmsprop_bnb_32bit'
-- 'galore_adamw'
-- 'galore_adamw_8bit'
-- 'galore_adafactor'
-- 'galore_adamw_layerwise'
-- 'galore_adamw_8bit_layerwise'
-- 'galore_adafactor_layerwise'
-- 'adamp'
-- 'sgdp'
-- 'adan'
-- 'nadam'
-- 'radam'
-- 'adabound'
-- 'adabelief'
-- 'adamax'
-- 'lamb'
-- 'lars'
-- 'yogi'
-- 'sophia'
-
-"""
+# Select an optimizer from the following options:
+# - 'adamw_torch'
+# - 'adafactor'
+# - 'sgd'
+# - 'lion_8bit'
+# - 'lion_32bit'
+# - 'rmsprop'
+# Additional optimizers are shown below
 learning_rate=1e-5
 lr_schedule=cosine
 beta1=0.9
@@ -66,7 +30,7 @@ beta2=0.999
 beta3=0.99
 weight_decay=0
 momentum=0
-num_epoch=0.1
+num_epoch=0.01
 use_deepspeed=1
 seed=42
 
@@ -146,43 +110,43 @@ while [[ $# -ge 1 ]]; do
       shift
       ;;
     --lr)
-      learning_rate=$2
+      learning_rate="$2"
       shift
       ;;
     --beta1)
-      beta1=$2
+      beta1="$2"
       shift
       ;;
     --beta2)
-      beta2=$2
+      beta2="$2"
       shift
       ;;
     --beta3)
-      beta3=$2
+      beta3="$2"
       shift
       ;;
     --weight_decay)
-      weight_decay=$2
+      weight_decay="$2"
       shift
       ;;
     --momentum)
-      momentum=$2
+      momentum="$2"
       shift
       ;;
     -n|--num_epoch)
-      num_epoch=$2
+      num_epoch="$2"
       shift
       ;;
     --lr_schedule)
-      lr_schedule=$2
+      lr_schedule="$2"
       shift
       ;;
     --use_deepspeed)
-      use_deepspeed=$2
+      use_deepspeed="$2"
       shift
       ;;
     --seed)
-      seed=$2
+      seed="$2"
       shift
       ;;
     *)
@@ -192,8 +156,7 @@ while [[ $# -ge 1 ]]; do
   shift
 done
 
-gpu_id=${CUDA_VISIBLE_DEVICES}
-deepspeed_args="--master_port=1103${gpu_id::1} --hostfile configs/hostfile --include localhost:${gpu_id}"
+deepspeed_args="--master_port=1103 --hostfile configs/hostfile"
 
 optim_suffix_args=""
 if [ "${optim}" == "dummy" ]; then
@@ -204,74 +167,102 @@ if [ "${optim}" == "dummy" ]; then
 elif [ "${optim}" == "adabelief" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_adabelief_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_adabelief_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_adabelief_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "adabound" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_adabound_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_adabound_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_adabound_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "lars" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_lars_momentum ${momentum}"
-  optim_suffix_args+=" --optim_lars_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_momentum ${momentum}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "lamb" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_lamb_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_lamb_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_lamb_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "adamax" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_adamax_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_adamax_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_adamax_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "nadam" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_nadam_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_nadam_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_nadam_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "radam" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_radam_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_radam_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_radam_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "adamp" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_adamp_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_adamp_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_adamp_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "sgdp" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_sgdp_momentum ${momentum}"
-  optim_suffix_args+=" --optim_sgdp_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_momentum ${momentum}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "yogi" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_yogi_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_yogi_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_yogi_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "sophia" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_sophia_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_sophia_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_sophia_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "adan" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
-  optim_suffix_args+=" --optim_adan_beta1 ${beta1}"
-  optim_suffix_args+=" --optim_adan_beta2 ${beta2}"
-  optim_suffix_args+=" --optim_adan_beta3 ${beta3}"
-  optim_suffix_args+=" --optim_adan_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_beta3 ${beta3}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "adam" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+elif [ "${optim}" == "novograd" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "adadelta" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+elif [ "${optim}" == "adagrad" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+elif [ "${optim}" == "adamw_schedule_free" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "sgd_schedule_free" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_momentum ${momentum}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 else
   optim_suffix_args="--optim ${optim}"
   optim_suffix_args+=" --adam_beta1 ${beta1}"
@@ -331,6 +322,7 @@ ${exe} examples/finetune.py \
     ${optim_suffix_args} \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
+
 
 if [[ $? -ne 0 ]]; then
   echo "$(date): failed"

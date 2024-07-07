@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import torch
 from torch.optim.optimizer import Optimizer
 
@@ -13,7 +16,6 @@ class Adamax(Optimizer):
             raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
         if not 0.0 <= weight_decay:
             raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
-
         defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay)
         super(Adamax, self).__init__(params, defaults)
 
