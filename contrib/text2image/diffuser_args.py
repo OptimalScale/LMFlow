@@ -51,8 +51,12 @@ class T2IDatasetArguments(DatasetArguments):
                     self.test_file = same_file
             if self.validation_file is not None:
                 check_extension(self.validation_file, "json")
+                if not os.path.exists(os.path.join(self.dataset_path, self.validation_file)):
+                    self.validation_file = None
             if self.test_file is not None:
                 check_extension(self.test_file, "json")
+                if not os.path.exists(os.path.join(self.dataset_path, self.test_file)):
+                    self.test_file = None
 
 @dataclass           
 class DiffuserModelArguments:
