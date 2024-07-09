@@ -35,7 +35,7 @@ class CustomT2IDataset(Dataset):
     
     def __getitem__(self, idx):
         instance = self.data_instances[idx]
-        image_path = osp.join(self.image_folder, instance["image"])
+        image_path = osp.join(self.image_folder, instance["images"])
         image = Image.open(image_path)
         image = image.convert("RGB")
         

@@ -28,10 +28,10 @@ The `train.json` should be the format as follow:
 
 ```json
 {
-    "type": "text-image",
+    "type": "image_text",
     "instances": [
         {
-            "image": "00.jpg",
+            "images": "00.jpg",
             "text": "A photo of a <SKS> dog"
         },
         ...
