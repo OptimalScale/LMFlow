@@ -2,7 +2,7 @@
 model_name_or_path=stabilityai/stable-diffusion-2-1
 arch_type="unet"
 dataset_path=data/example
-output_dir=output
+output_dir=output_dir
 main_process_port=29500
 img_size=768
 

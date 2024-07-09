@@ -58,9 +58,9 @@ The script will automatically download pretrained weights from huggingface. Just
 For convenience, we provide a script `run_finetune_t2i.sh` for fine-tuning. It can be used as follow:
 
 ```bash
-bash run_finetune_t2i.sh \
-    model_name_or_path=stabilityai/stable-diffusion-2-1 \
-    dataset_path=data/example
+bash scripts/diffuser/run_finetune_t2i.sh \
+    --model_name_or_path "stabilityai/stable-diffusion-2-1" \
+    --dataset_path "data/example"
 ```
 
 The `model_name_or_path` is the model name in [huggingface](https://huggingface.co/) or path of the pre-trained model. The `dataset_path` is the path of the dataset, which should be organized as the above tree struct.
