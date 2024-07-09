@@ -32,7 +32,7 @@ from lmflow.utils.constants import (
 )
 
 from .multi_modal_dataset import CustomMultiModalDataset
-
+from .text2image_dataset import build_t2i_dataset
 
 logger = logging.getLogger(__name__)
 
@@ -128,6 +128,9 @@ class Dataset:
         elif backend == "custom_multi_modal":
             # FIXME refactor the backend name
             raw_dataset = CustomMultiModalDataset(self.dataset_path, data_args)
+            self.backend_dataset = raw_dataset
+        elif backend == "t2i":
+            raw_dataset = build_t2i_dataset(data_args, *args, **kwargs)
             self.backend_dataset = raw_dataset
         else:
             raise NotImplementedError(f'Unsupported dataset backend "{backend}"')
