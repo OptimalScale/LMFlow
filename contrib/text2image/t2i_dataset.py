@@ -26,7 +26,7 @@ class CustomT2IDataset(Dataset):
         self.data_file = osp.join(data_args.dataset_path, data_args.train_file)
         
         self.data_dict = json.load(open(self.data_file, "r"))
-        assert self.data_dict["type"] == "text-image", "The dataset type must be text-image."
+        assert self.data_dict["type"] == "image_text", "The dataset type must be image_text"
         
         self.data_instances = self.data_dict["instances"]
     

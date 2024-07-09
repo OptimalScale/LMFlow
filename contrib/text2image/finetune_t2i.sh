@@ -2,8 +2,8 @@
 model_name_or_path=stabilityai/stable-diffusion-2-1
 model_type="unet"
 dataset_path=data/example
-output_dir=output
-main_port=29500
+output_dir=output_dir
+main_process_port=29500
 img_size=768
 
 while [[ $# -ge 1 ]]; do
@@ -25,8 +25,8 @@ while [[ $# -ge 1 ]]; do
             output_dir="$2"
             shift
             ;;
-        -p|--main_port)
-            main_port="$2"
+        -p|--main_process_port)
+            main_process_port="$2"
             shift
             ;;
         -i|--img_size)
@@ -44,13 +44,13 @@ echo "model_name_or_path: ${model_name_or_path}"
 echo "model_type: ${model_type}"
 echo "dataset_path: ${dataset_path}"
 echo "output_dir: ${output_dir}"
-echo "main_port: ${main_port}"
+echo "main_process_port: ${main_process_port}"
 echo "img_size: ${img_size}"
 
 
 accelerate launch \
     --config_file=./accelerate_t2i_config.yaml \
-    --main_port=${main_port} \
+    --main_process_port=${main_process_port} \
     finetune_t2i.py \
         --model_name_or_path=${model_name_or_path} \
         --model_type=${model_type} \
