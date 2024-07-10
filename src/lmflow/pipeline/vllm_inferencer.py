@@ -276,6 +276,7 @@ class VLLMInferencer(InferencerWithOffloading):
         )
         
         df_model_output = model_input_mapping.to_pandas() # the actual forwards are executed here
+        print(df_model_output.head(10))
         model_output = [df_model_output.loc[i, 'output'] for i in range(len(df_model_output))]
         
         return model_output
