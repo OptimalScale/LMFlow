@@ -1,6 +1,6 @@
 # general
 ## model
-model_name_or_path: /home/yizhenjia/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B-Instruct/snapshots/c4a54320a52ed5f88b7a2f84496903ea4ff07b45/  # initial model
+model_name_or_path: "meta-llama/Meta-Llama-3-8B-Instruct"  # initial model
 reference_model_name_or_path: "meta-llama/Meta-Llama-3-8B-Instruct"
 reward_model_name_or_path: sfairXC/FsfairX-LLaMA3-RM-v0.1
 reward_arch_type: text_regression
