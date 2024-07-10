@@ -4,7 +4,7 @@
 # Parses arguments
 run_name=vllm_inference
 model_name_or_path='Qwen/Qwen2-0.5B'
-dataset_path=data/alpaca/test_conversation
+dataset_path=data/alpaca/test_generation
 output_dir=data/inference_results
 output_file_name=results.json
 apply_chat_template=True
@@ -74,4 +74,5 @@ python examples/vllm_inference.py \
   --enable_decode_inference_result False \
   --vllm_gpu_memory_utilization 0.95 \
   --vllm_tensor_parallel_size 2 \
+  --enable_distributed_vllm_inference False \
   2>&1 | tee ${log_dir}/vllm_inference.log

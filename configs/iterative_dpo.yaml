@@ -1,6 +1,6 @@
 # general
 ## model
-model_name_or_path: meta-llama/Meta-Llama-3-8B-Instruct  # initial model
+model_name_or_path: /home/yizhenjia/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B-Instruct/snapshots/c4a54320a52ed5f88b7a2f84496903ea4ff07b45/  # initial model
 reference_model_name_or_path: "meta-llama/Meta-Llama-3-8B-Instruct"
 reward_model_name_or_path: sfairXC/FsfairX-LLaMA3-RM-v0.1
 reward_arch_type: text_regression
@@ -21,7 +21,7 @@ random_seed: 42
 
 
 # inference phase
-use_vllm: True
+## general
 apply_chat_template: True
 num_output_sequences: 8
 use_beam_search: False
@@ -29,8 +29,13 @@ temperature: 1.0
 top_p: 0.9
 max_new_tokens: 4096
 enable_decode_inference_result: True
+
+## vllm
+use_vllm: True
 vllm_gpu_memory_utilization: 0.95
 vllm_tensor_parallel_size: 2
+enable_distributed_vllm_inference: False
+distributed_vllm_inference_num_instances: 4
 
 
 # reward model scoring phase

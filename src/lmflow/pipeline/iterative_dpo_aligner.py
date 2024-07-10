@@ -79,12 +79,13 @@ class IterativeDPOAligner:
         dataset: Dataset,
     ):
         if Accelerator().is_main_process:
-            model = HFDecoderModel(
-                model_args=target_model_args,
-                tune_strategy='none'
-            )
+            # model = HFDecoderModel(
+            #     model_args=target_model_args,
+            #     tune_strategy='none'
+            # )
             self._do_target_model_inference(
-                model=model,
+                # model=model,
+                target_model_args=target_model_args,
                 dataset=dataset,
                 output_dir=str(self.workspace_path/iteration_name),
             )
@@ -128,13 +129,15 @@ class IterativeDPOAligner:
     
     def _do_target_model_inference(
         self,
-        model: HFDecoderModel,
+        # model: HFDecoderModel,
+        target_model_args: ModelArguments,
         dataset: Dataset,
         output_dir: str,
     ):
         result_cache_path = str(Path(output_dir)/"cache"/"target_model_inference_result.json")
         inferencer = MemorySafeVLLMInferencer(
-            model_args=model.model_args,
+            model_args=target_model_args,
+            # model_args=model.model_args,
             data_args=dataset.data_args,
             inferencer_args=self._parse_target_model_inference_args(
                 args=self.aligner_args,
@@ -144,23 +147,23 @@ class IterativeDPOAligner:
         res = inferencer.inference()
         
         dataset_out = {"type": "text_to_textlist", "instances": []}
-        inferencer_inputs = model.prepare_inputs_for_inference(
-            dataset,
-            apply_chat_template=True,
-            use_vllm=True,
-        )
-        for idx, instance in enumerate(inferencer_inputs):
-            dataset_out["instances"].append({
-                "input": instance,
-                "output": res[idx],
-            })
+        # inferencer_inputs = model.prepare_inputs_for_inference(
+        #     dataset,
+        #     apply_chat_template=True,
+        #     use_vllm=True,
+        # )
+        # for idx, instance in enumerate(inferencer_inputs):
+        #     dataset_out["instances"].append({
+        #         "input": instance,
+        #         "output": res[idx],
+        #     })
             
-        json.dump(
-            dataset_out, 
-            open(str(Path(output_dir)/"target_model_inference_result"/"result.json"), "w", encoding='utf-8'),
-            ensure_ascii=False,
-            indent=4,
-        )
+        # json.dump(
+        #     dataset_out, 
+        #     open(str(Path(output_dir)/"target_model_inference_result"/"result.json"), "w", encoding='utf-8'),
+        #     ensure_ascii=False,
+        #     indent=4,
+        # )
         
         
     def _do_reward_model_inference(
@@ -220,7 +223,6 @@ class IterativeDPOAligner:
         )
         inferencer_args.save_results=True
         inferencer_args.results_path=result_cache_path
-        inferencer_args.enable_distributed_vllm_inference=True
         
         return inferencer_args
     

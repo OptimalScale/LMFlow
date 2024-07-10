@@ -314,7 +314,8 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             ],
             format="shell",
         )
-        cmd = "python " + str(self.inferencer_file_path) + " " + inferencer_args
+        # cmd = "python " + str(self.inferencer_file_path) + " " + inferencer_args
+        cmd = "python /vol/yizhenjia/projs/LMFlow/runs/LMFlow-devtools/pipeline/inferencer/memory_safe_vllm_inference_distributed.py"
         current_env = os.environ.copy()
         for var in MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE:
             current_env.pop(var, None)
