@@ -1249,6 +1249,14 @@ class InferencerArguments:
         default=0.95,
         metadata={"help": "The GPU memory utilization for VLLM inference."}
     )
+    enable_distributed_vllm_inference: Optional[bool] = field(
+        default=False,
+        metadata={"help": "Whether to use multi-instance VLLM inference."}
+    )
+    distributed_vllm_inference_num_instances: Optional[int] = field(
+        default=1,
+        metadata={"help": "The number of instances for multi-instance VLLM inference."}
+    )
     
     # Args for result saving
     save_results: Optional[bool] = field(
@@ -1536,13 +1544,17 @@ class IterativeAlignerArguments(InferencerArguments):
 
 
 @dataclass
-class IterativeDPOAlignerArguments(DPOv2AlignerArguments, IterativeAlignerArguments, InferencerArguments):
+class IterativeDPOAlignerArguments(IterativeAlignerArguments, DPOv2AlignerArguments):
     """
     Arguments for iterative DPO aligners.
     """
     output_dir: Optional[str] = field(
         default="./runs",
         metadata={"help": "Output path for the inferenced results"},
+    )
+    dataset_path_list: List[str] = field(
+        default_factory=list,
+        metadata={"help": "The list of dataset paths for iterative aligners."}
     )
 
 
@@ -1556,6 +1568,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "dpo_aligner": DPOAlignerArguments,
     "rm_tuner": RewardModelTunerArguments,
     "dpov2_aligner": DPOv2AlignerArguments,
+    "iterative_dpo_aligner": IterativeDPOAlignerArguments,
 }
 
 
