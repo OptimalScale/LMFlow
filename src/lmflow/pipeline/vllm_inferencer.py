@@ -240,16 +240,17 @@ class VLLMInferencer(InferencerWithOffloading):
             def __call__(self, batch: Dict[str, np.ndarray]):
                 """batch: Dict[str, np.ndarray], {"item": array(['...', '...', '...', ...])}
                 """
-                batch_res = {
-                    "input": [text for text in batch['item'].tolist()],
-                    "output": self.model.inference(
-                        inputs=batch['item'],
-                        sampling_params=self.sampling_params,
-                        release_gpu=self.release_gpu,
-                        use_vllm=True,
-                    ) # this is the postprocessed output, see model.__vllm_inference
+                batched_inference_res = self.model.inference(
+                    inputs=batch['item'],
+                    sampling_params=self.sampling_params,
+                    release_gpu=self.release_gpu,
+                    use_vllm=True,
+                ) # this is the postprocessed output, see model.__vllm_inference
+                batched_final_res = {
+                    "input": [sample['input'] for sample in batched_inference_res],
+                    "output": [sample['output'] for sample in batched_inference_res] 
                 }
-                return batch_res
+                return batched_final_res
             
         # inference
         model_input = model.prepare_inputs_for_inference(

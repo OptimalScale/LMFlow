@@ -21,7 +21,7 @@ and question answering.
 import hashlib
 import logging
 import os, shutil
-from typing import List, Union, Optional, Dict
+from typing import List, Union, Optional, Dict, TypedDict
 from packaging.version import Version
 from pathlib import Path
 
@@ -97,6 +97,12 @@ except Exception as e:
         )
     else:
         logger.warning(f'An error occurred when importing flash_attn, flash attention is disabled: {e}')
+        
+
+class VLLMInferenceResultWithInput(TypedDict):
+    input: str
+    output: Union[List[str], List[List[int]]]
+
 
 class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     r"""
@@ -446,8 +452,9 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self, 
         inputs: Union[str, List[str]],
         sampling_params: Optional[SamplingParams] = None,
+        return_input: bool = False,
         **kwargs,
-    ) -> Union[List[List[str]], List[List[List[int]]]]:
+    ) -> Union[List[List[str]], List[List[List[int]]], List[VLLMInferenceResultWithInput]]:
         """Perform VLLM inference process of the model.
 
         Parameters
@@ -459,13 +466,16 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
         Returns
         -------
-        Union[List[List[str]], List[List[List[int]]]]
+        Union[List[List[str]], List[List[List[int]]], List[VLLMInferenceResultWithInput]]
             When `sampling_params.detokenize = True`, return a list of list of strings. Inner list
             contains sampling_params.n samples for a single prompt (i.e., `len(res[i]) = sampling_params.n`).
             Outer list contains the results for all prompts (i.e., `len(res) = len(inputs)`).
             
             When `sampling_params.detokenize = False`, return a list of list of list of ints 
             (token ids, no decoding after generation).
+            
+            When `return_input = True`, return a list of VLLMInferenceResultWithInput, where each
+            element contains the input prompt and the corresponding output.
         """
         vllm_outputs = self.backend_model_for_inference.generate(
             inputs,
@@ -473,12 +483,16 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             use_tqdm=True,
         )
         final_output = []
-        if sampling_params.detokenize:
-            for output in vllm_outputs:
-                final_output.append([sentence.text for sentence in output.outputs])
-        else:
-            for output in vllm_outputs:
-                final_output.append([sentence.token_ids for sentence in output.outputs])
+        for output in vllm_outputs:
+            if sampling_params.detokenize:
+                output_list = [sentence.text for sentence in output.outputs]  
+            else:
+                output_list = [sentence.token_ids for sentence in output.outputs]
+                
+            if return_input:
+                final_output.append({"input": output.prompt, "output": output_list})
+            else:
+                final_output.append(output_list)
                                 
         return final_output
     
