@@ -28,6 +28,7 @@ from lmflow.args import (
 )
 from lmflow.utils.common import make_shell_args_from_dataclass
 from lmflow.utils.constants import RETURN_CODE_ERROR_BUFFER, MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE
+from lmflow.utils.data_utils import VLLMInferenceResultWithInput
 
 
 logger = logging.getLogger(__name__)
@@ -92,7 +93,7 @@ class VLLMInferencer(InferencerWithOffloading):
         inference_args: Optional[InferencerArguments] = None,
         enable_distributed_vllm_inference: bool = False,
         **kwargs,
-    ) -> Union[List[List[str]], List[List[List[int]]]]:
+    ) -> List[VLLMInferenceResultWithInput]:
         """Perform inference using the provided model and dataset. Will save inference results if
         `save_results` is set to True in `inferencer_args`.
 
@@ -113,13 +114,14 @@ class VLLMInferencer(InferencerWithOffloading):
 
         Returns
         -------
-        Union[List[List[str]], List[List[List[int]]]]
-            When `enable_decode_inference_result = True`, return a list of list of strings. Inner list
-            contains inference_args.num_output_sequences samples for a single prompt 
-            (i.e., `len(res[i]) = inference_args.num_output_sequences`). Outer list 
-            contains the results for all prompts (i.e., `len(res) = len(dataset)`).
+        List[VLLMInferenceResultWithInput]
+            Return a list of VLLMInferenceResultWithInput, where each
+            element contains the input prompt and the corresponding output.
             
-            When `enable_decode_inference_result = False`, return a list of list of list of ints 
+            When `enable_decode_inference_result = True`, the output would be a list of strings,
+            contains sampling_params.n samples for the corresponding prompt.
+            
+            When `enable_decode_inference_result = False`, return a list of list of ints 
             (token ids, no decoding after generation).
         """
         if inference_args:
@@ -161,7 +163,7 @@ class VLLMInferencer(InferencerWithOffloading):
         dataset: Dataset, 
         sampling_params: SamplingParams,
         release_gpu: bool = False,
-    ) -> Union[List[List[str]], List[List[List[int]]]]:
+    ) -> List[VLLMInferenceResultWithInput]:
         model_input = model.prepare_inputs_for_inference(
             dataset=dataset, 
             apply_chat_template=self.inferencer_args.apply_chat_template,
@@ -188,7 +190,7 @@ class VLLMInferencer(InferencerWithOffloading):
         num_instances: int,
         batch_size: int = 4,
         release_gpu: bool = False,
-    ) -> Union[List[List[str]], List[List[List[int]]]]:
+    ) -> List[VLLMInferenceResultWithInput]:
         # prepare distributed inference resources
         # from https://github.com/vllm-project/vllm/blob/main/examples/offline_inference_distributed.py
         ## strategy
@@ -245,12 +247,11 @@ class VLLMInferencer(InferencerWithOffloading):
                     sampling_params=self.sampling_params,
                     release_gpu=self.release_gpu,
                     use_vllm=True,
-                    return_input=True, # required in distribtued inference
                 ) # this is the postprocessed output, see model.__vllm_inference
                 batched_final_res = {
                     "input": [sample['input'] for sample in batched_inference_res],
                     "output": [sample['output'] for sample in batched_inference_res] 
-                }
+                } # do this since we're writing to a pandas dataframe
                 return batched_final_res
             
         # inference
@@ -277,7 +278,9 @@ class VLLMInferencer(InferencerWithOffloading):
         
         df_model_output = model_input_mapping.to_pandas() # the actual forwards are executed here
         print(df_model_output.head(10))
-        model_output = [df_model_output.loc[i, 'output'] for i in range(len(df_model_output))]
+        model_output = [
+            {"input": row["input"], "output": row["output"]} for _, row in df_model_output.iterrows()
+        ]
         
         return model_output
     

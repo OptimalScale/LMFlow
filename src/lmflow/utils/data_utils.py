@@ -7,6 +7,9 @@ import numpy as np
 import torch
 import json
 import re
+from typing import Union, List, TypedDict
+
+
 def set_random_seed(seed: int):
     """
     Set the random seed for `random`, `numpy`, `torch`, `torch.cuda`.
@@ -222,3 +225,8 @@ def process_image_flag(text, image_flag="<ImageHere>"):
     image_token_indexes = list(np.cumsum(image_token_indexes))
     texts = "".join(texts)
     return texts, image_token_indexes
+
+
+class VLLMInferenceResultWithInput(TypedDict):
+    input: str
+    output: Union[List[str], List[List[int]]]
