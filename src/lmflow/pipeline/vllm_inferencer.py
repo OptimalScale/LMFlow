@@ -318,7 +318,7 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
         self.inferencer_file_path = pkg_resources.files("lmflow.pipeline.utils") / "memory_safe_vllm_inference.py"
         
     
-    def inference(self):
+    def inference(self) -> List[VLLMInferenceResultWithInput]:
         inferencer_args = make_shell_args_from_dataclass(
             dataclass_objects=[
                 self.model_args, 

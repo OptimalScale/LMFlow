@@ -143,17 +143,7 @@ class IterativeDPOAligner:
         )
         res = inferencer.inference()
         
-        dataset_out = {"type": "text_to_textlist", "instances": []}
-        inferencer_inputs = model.prepare_inputs_for_inference(
-            dataset,
-            apply_chat_template=True,
-            use_vllm=True,
-        )
-        for idx, instance in enumerate(inferencer_inputs):
-            dataset_out["instances"].append({
-                "input": instance,
-                "output": res[idx],
-            })
+        dataset_out = {"type": "text_to_textlist", "instances": res}
             
         target_model_inference_result_dir = Path(output_dir)/"target_model_inference_result"
         target_model_inference_result_dir.mkdir(parents=True, exist_ok=True)
