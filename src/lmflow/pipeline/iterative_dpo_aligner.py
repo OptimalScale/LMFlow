@@ -155,9 +155,11 @@ class IterativeDPOAligner:
                 "output": res[idx],
             })
             
+        target_model_inference_result_dir = Path(output_dir)/"target_model_inference_result"
+        target_model_inference_result_dir.mkdir(parents=True, exist_ok=True)
         json.dump(
             dataset_out, 
-            open(str(Path(output_dir)/"target_model_inference_result"/"result.json"), "w", encoding='utf-8'),
+            open(str(target_model_inference_result_dir/"result.json"), "w", encoding='utf-8'),
             ensure_ascii=False,
             indent=4,
         )
