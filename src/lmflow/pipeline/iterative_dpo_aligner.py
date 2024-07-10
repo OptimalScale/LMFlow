@@ -97,7 +97,7 @@ class IterativeDPOAligner:
             use_accelerator=self.aligner_args.use_accelerator,
         )
         target_model_inference_result_data_args = copy.deepcopy(dataset.data_args)
-        target_model_inference_result_data_args.dataset_path = str(self.workspace_path/iteration_name/"target_model_inference_result"/"result.json")
+        target_model_inference_result_data_args.dataset_path = str(self.workspace_path/iteration_name/"target_model_inference_result")
         target_model_inference_result_dataset = Dataset(target_model_inference_result_data_args)
         self._do_reward_model_inference(
             model=reward_model,
@@ -109,7 +109,7 @@ class IterativeDPOAligner:
         target_model = HFDecoderModel(target_model_args)
         ref_model = HFDecoderModel(ref_model_args)
         dpo_train_data_args = copy.deepcopy(dataset.data_args)
-        dpo_train_data_args.dataset_path = str(self.workspace_path/iteration_name/"reward_model_inference_result"/"result.json")
+        dpo_train_data_args.dataset_path = str(self.workspace_path/iteration_name/"reward_model_inference_result")
         dpo_train_dataset = Dataset(dpo_train_data_args)
         dpo_eval_dataset = copy.deepcopy(dpo_train_dataset.sample(
             n=100, 
