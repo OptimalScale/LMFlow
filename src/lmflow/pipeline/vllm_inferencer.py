@@ -7,14 +7,16 @@ import importlib.resources as pkg_resources
 import json
 import logging
 import os
+os.environ['VLLM_WORKER_MULTIPROC_METHOD']='spawn'
 import subprocess
 import sys
 from typing import List, Union, Optional, Dict, Any
 
+import numpy as np
 import ray
 from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from transformers import AutoTokenizer
-from vllm import SamplingParams
+from vllm import SamplingParams, LLM
 
 from lmflow.datasets import Dataset
 from lmflow.pipeline.base_pipeline import BasePipeline
@@ -232,18 +234,22 @@ class VLLMInferencer(InferencerWithOffloading):
                     vllm_gpu_memory_utilization=vllm_gpu_memory_utilization,
                     vllm_tensor_parallel_size=vllm_tensor_parallel_size,
                 )
-                self.inference_func = partial(
-                    self.model.inference, 
-                    sampling_params=sampling_params,
-                    release_gpu=release_gpu,
-                    use_vllm=True,
-                )
+                self.sampling_params = sampling_params
+                self.release_gpu = release_gpu
                 
-            def __call__(self, batch: List[str]):
-                return {
-                    "input": [text for text in batch],
-                    "output": self.inference_func(inputs=batch) # this is the postprocessed output, see model.__vllm_inference
+            def __call__(self, batch: Dict[str, np.ndarray]):
+                """batch: Dict[str, np.ndarray], {"item": array(['...', '...', '...', ...])}
+                """
+                batch_res = {
+                    "input": [text for text in batch['item'].tolist()],
+                    "output": self.model.inference(
+                        inputs=batch['item'],
+                        sampling_params=self.sampling_params,
+                        release_gpu=self.release_gpu,
+                        use_vllm=True,
+                    ) # this is the postprocessed output, see model.__vllm_inference
                 }
+                return batch_res
             
         # inference
         model_input = model.prepare_inputs_for_inference(
@@ -254,15 +260,16 @@ class VLLMInferencer(InferencerWithOffloading):
         )
         
         model_input_mapping = model_input.map_batches(
-            DistributedPredictor(
-                model=model,
-                sampling_params=sampling_params,
-                vllm_gpu_memory_utilization=self.inferencer_args.vllm_gpu_memory_utilization,
-                vllm_tensor_parallel_size=self.inferencer_args.vllm_tensor_parallel_size,
-                release_gpu=release_gpu,
-            ),
+            DistributedPredictor,
             concurrency=num_instances, # Set the concurrency to the number of LLM instances.
             batch_size=batch_size,
+            fn_constructor_kwargs={
+                "model": model,
+                "sampling_params": sampling_params,
+                "vllm_gpu_memory_utilization": self.inferencer_args.vllm_gpu_memory_utilization,
+                "vllm_tensor_parallel_size": self.inferencer_args.vllm_tensor_parallel_size,
+                "release_gpu": release_gpu,
+            },
             **resources_kwarg,
         )
         
@@ -314,8 +321,7 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             ],
             format="shell",
         )
-        # cmd = "python " + str(self.inferencer_file_path) + " " + inferencer_args
-        cmd = "python /vol/yizhenjia/projs/LMFlow/runs/LMFlow-devtools/pipeline/inferencer/memory_safe_vllm_inference_distributed.py"
+        cmd = "python " + str(self.inferencer_file_path) + " " + inferencer_args
         current_env = os.environ.copy()
         for var in MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE:
             current_env.pop(var, None)

@@ -601,7 +601,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         if enable_distributed_vllm_inference:
             assert Version(ray.__version__) >= Version("2.22.0"), "Ray version must be at least 2.22.0"
             
-            inference_inputs = ray.data.from_items(inference_inputs)
+            inference_inputs = ray.data.from_items(inference_inputs) # -> Dict[str, np.ndarray], {"item": array(['...', '...', '...'])}
         
         return inference_inputs
     

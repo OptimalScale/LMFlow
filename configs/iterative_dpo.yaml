@@ -18,6 +18,7 @@ preprocessing_num_workers: 16
 output_dir: ./output_models/iterative_dpo
 run_name: iterative_dpo
 random_seed: 42
+inference_batch_size: 16
 
 
 # inference phase
@@ -33,14 +34,13 @@ enable_decode_inference_result: True
 ## vllm
 use_vllm: True
 vllm_gpu_memory_utilization: 0.95
-vllm_tensor_parallel_size: 2
-enable_distributed_vllm_inference: False
-distributed_vllm_inference_num_instances: 4
+vllm_tensor_parallel_size: 1
+enable_distributed_vllm_inference: True
+distributed_vllm_inference_num_instances: 2
 
 
 # reward model scoring phase
 block_size: 4096
-inference_batch_size: 16
 overwrite_cache: True
 
 
