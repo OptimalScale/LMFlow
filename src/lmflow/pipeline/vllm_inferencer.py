@@ -245,6 +245,7 @@ class VLLMInferencer(InferencerWithOffloading):
                     sampling_params=self.sampling_params,
                     release_gpu=self.release_gpu,
                     use_vllm=True,
+                    return_input=True, # required in distribtued inference
                 ) # this is the postprocessed output, see model.__vllm_inference
                 batched_final_res = {
                     "input": [sample['input'] for sample in batched_inference_res],
