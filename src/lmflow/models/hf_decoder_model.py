@@ -22,8 +22,12 @@ import hashlib
 import logging
 import os, shutil
 from typing import List, Union, Optional, Dict
+from packaging.version import Version
 from pathlib import Path
 
+
+import ray
+import ray.data
 import torch
 import transformers
 import bitsandbytes
@@ -484,7 +488,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         dataset: Dataset,
         apply_chat_template: bool = True,
         use_vllm: bool = False,
-    ) -> Union[List[str], Dict[str, torch.Tensor]]:
+        **kwargs,
+    ) -> Union[List[str], ray.data.Dataset, Dict[str, torch.Tensor]]:
         """
         Prepare inputs for inference.
     
@@ -507,7 +512,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         if use_vllm:
             inference_inputs = self.__prepare_inputs_for_vllm_inference(
                 dataset=dataset, 
-                apply_chat_template=apply_chat_template
+                apply_chat_template=apply_chat_template,
+                enable_distributed_vllm_inference=kwargs.get("enable_distributed_vllm_inference", False),
             )
         else:
             inference_inputs = self.__prepare_inputs_for_inference(dataset)
@@ -519,7 +525,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self,
         dataset: Dataset,
         apply_chat_template: bool = True,
-    ) -> List[str]:
+        enable_distributed_vllm_inference: bool = False,
+    ) -> Union[List[str], ray.data.Dataset]:
         if dataset.get_type() == 'text_only':
             if apply_chat_template:
                 dataset = dataset.map(
@@ -556,11 +563,13 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         elif dataset.get_type() == 'conversation':
             if apply_chat_template:
                 def preprocess_conversation(sample):
-                    if len(sample['messages'])%2 == 0:
-                        conversation = sample['messages'][:-1]
+                    conversation = sample['messages'][:-1] if len(sample['messages'])%2 == 0 else sample['messages']
                         
-                    if sample['messages'][-1]['role'] != 'assistant':
-                        logger.warning("Not a valid conversation, skip.")
+                    if sample['messages'][-1]['role'] != 'user':
+                        logger.warning(
+                            "Not a valid conversation for generation, since the conversation "
+                            "doesn't end up with an user message. Skip."
+                        )
                         sample_out = {"templated": ""}
                     else:
                         sample_out = {"templated": self.tokenizer.apply_chat_template(
@@ -588,6 +597,11 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             )
 
         inference_inputs = [sentence for sentence in inference_inputs if len(sentence) > 0]
+        
+        if enable_distributed_vllm_inference:
+            assert Version(ray.__version__) >= Version("2.22.0"), "Ray version must be at least 2.22.0"
+            
+            inference_inputs = ray.data.from_items(inference_inputs)
         
         return inference_inputs
     

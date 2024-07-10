@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
+from accelerate import Accelerator
 from tqdm import tqdm
 
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
@@ -46,7 +47,7 @@ class IterativeDPOAligner:
         dataset_list: List[Dataset]
     ):
         num_iterations = len(dataset_list)
-        iteration_names = [f"iteration_{i}" for i in range(num_iterations)]
+        iteration_names = [f"iteration_{i+1}" for i in range(num_iterations)]
         
         for iter_idx, iter_name in tqdm(
             enumerate(iteration_names), 
@@ -77,16 +78,18 @@ class IterativeDPOAligner:
         ref_model_args: ModelArguments,
         dataset: Dataset,
     ):
-        model = HFDecoderModel(
-            model_args=target_model_args,
-            tune_strategy='none'
-        )
-        self._do_target_model_inference(
-            model=model,
-            dataset=dataset,
-            output_dir=str(self.workspace_path/iteration_name),
-        )
-        del model
+        if Accelerator().is_main_process:
+            model = HFDecoderModel(
+                model_args=target_model_args,
+                tune_strategy='none'
+            )
+            self._do_target_model_inference(
+                model=model,
+                dataset=dataset,
+                output_dir=str(self.workspace_path/iteration_name),
+            )
+            del model
+        Accelerator().wait_for_everyone()
         
         reward_model = HFTextRegressionModel(
             model_args=reward_model_args,
@@ -215,7 +218,9 @@ class IterativeDPOAligner:
             mixed_args=args,
             target_cls=InferencerArguments,
         )
-        inferencer_args.results_path=result_cache_path,
+        inferencer_args.save_results=True
+        inferencer_args.results_path=result_cache_path
+        inferencer_args.enable_distributed_vllm_inference=True
         
         return inferencer_args
     
