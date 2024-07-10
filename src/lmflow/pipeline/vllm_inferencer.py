@@ -277,7 +277,8 @@ class VLLMInferencer(InferencerWithOffloading):
         )
         
         df_model_output = model_input_mapping.to_pandas() # the actual forwards are executed here
-        print(df_model_output.head(10))
+        logger.info(f"Distributed vllm inference result preview:\n{df_model_output.head(10)}")
+        
         model_output = [
             {"input": row["input"], "output": row["output"]} for _, row in df_model_output.iterrows()
         ]

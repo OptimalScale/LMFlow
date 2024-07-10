@@ -19,6 +19,7 @@ output_dir: ./output_models/iterative_dpo
 run_name: iterative_dpo
 random_seed: 42
 inference_batch_size: 16
+use_accelerator: True
 
 
 # inference phase
