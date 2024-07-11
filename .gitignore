@@ -135,6 +135,8 @@ dmypy.json
 # vscode
 .vs
 .vscode
+# vscode extensions
+.history
 
 # Pycharm
 .idea

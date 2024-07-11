@@ -1,6 +1,6 @@
 # Parses arguments
 model_name_or_path=stabilityai/stable-diffusion-2-1
-model_type="unet"
+arch_type="unet"
 dataset_path=data/example
 output_dir=output_dir
 main_process_port=29500
@@ -13,8 +13,8 @@ while [[ $# -ge 1 ]]; do
             model_name_or_path="$2"
             shift
             ;;
-        -t|--model_type)
-            model_type="$2"
+        -t|--arch_type)
+            arch_type="$2"
             shift
             ;;
         -d|--dataset_path)
@@ -41,7 +41,7 @@ while [[ $# -ge 1 ]]; do
 done
 
 echo "model_name_or_path: ${model_name_or_path}"
-echo "model_type: ${model_type}"
+echo "arch_type: ${arch_type}"
 echo "dataset_path: ${dataset_path}"
 echo "output_dir: ${output_dir}"
 echo "main_process_port: ${main_process_port}"
@@ -49,11 +49,11 @@ echo "img_size: ${img_size}"
 
 
 accelerate launch \
-    --config_file=./accelerate_t2i_config.yaml \
+    --config_file=configs/accelerate_t2i_config.yaml \
     --main_process_port=${main_process_port} \
-    finetune_t2i.py \
+    examples/finetune_t2i.py \
         --model_name_or_path=${model_name_or_path} \
-        --model_type=${model_type} \
+        --arch_type=${arch_type} \
         --use_lora=True \
         --lora_target_module "to_k" "to_q" "to_v" "to_out.0" "add_k_proj" "add_v_proj" \
         --dataset_path=${dataset_path} \
