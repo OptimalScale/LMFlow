@@ -78,18 +78,18 @@ class IterativeDPOAligner:
         ref_model_args: ModelArguments,
         dataset: Dataset,
     ):
-        # if Accelerator().is_main_process:
-        #     model = HFDecoderModel(
-        #         model_args=target_model_args,
-        #         tune_strategy='none'
-        #     )
-        #     self._do_target_model_inference(
-        #         model=model,
-        #         dataset=dataset,
-        #         output_dir=str(self.workspace_path/iteration_name),
-        #     )
-        #     del model
-        # Accelerator().wait_for_everyone()
+        if Accelerator().is_main_process:
+            model = HFDecoderModel(
+                model_args=target_model_args,
+                tune_strategy='none'
+            )
+            self._do_target_model_inference(
+                model=model,
+                dataset=dataset,
+                output_dir=str(self.workspace_path/iteration_name),
+            )
+            del model
+        Accelerator().wait_for_everyone()
         
         reward_model = HFTextRegressionModel(
             model_args=reward_model_args,

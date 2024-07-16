@@ -1235,6 +1235,18 @@ class InferencerArguments:
         default=False,
         metadata={"help": "Whether to decode the inference results."},
     )
+    tensor_parallel_size: Optional[int] = field(
+        default=1,
+        metadata={"help": "The tp size for distributed (multi-instance) inference."}
+    )
+    enable_distributed_inference: Optional[bool] = field(
+        default=False,
+        metadata={"help": "Whether to use multi-instance VLLM inference."}
+    )
+    distributed_inference_num_instances: Optional[int] = field(
+        default=1,
+        metadata={"help": "The number of instances for multi-instance VLLM inference."}
+    )
     
     # vllm inference args
     use_vllm: bool = field(
@@ -1248,14 +1260,6 @@ class InferencerArguments:
     vllm_gpu_memory_utilization: Optional[float] = field(
         default=0.95,
         metadata={"help": "The GPU memory utilization for VLLM inference."}
-    )
-    enable_distributed_vllm_inference: Optional[bool] = field(
-        default=False,
-        metadata={"help": "Whether to use multi-instance VLLM inference."}
-    )
-    distributed_vllm_inference_num_instances: Optional[int] = field(
-        default=1,
-        metadata={"help": "The number of instances for multi-instance VLLM inference."}
     )
     
     # Args for result saving

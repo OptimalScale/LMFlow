@@ -14,6 +14,7 @@ from typing import List, Union, Optional, Dict, Any
 
 import numpy as np
 import ray
+import ray.data
 from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from transformers import AutoTokenizer
 from vllm import SamplingParams, LLM
@@ -91,7 +92,7 @@ class VLLMInferencer(InferencerWithOffloading):
         enable_decode_inference_result: bool = True,
         release_gpu: bool = False,
         inference_args: Optional[InferencerArguments] = None,
-        enable_distributed_vllm_inference: bool = False,
+        enable_distributed_inference: bool = False,
         **kwargs,
     ) -> List[VLLMInferenceResultWithInput]:
         """Perform inference using the provided model and dataset. Will save inference results if
@@ -134,19 +135,26 @@ class VLLMInferencer(InferencerWithOffloading):
             
         sampling_params.detokenize = enable_decode_inference_result
         
-        if enable_distributed_vllm_inference:
+        model_input = model.prepare_inputs_for_inference(
+            dataset=dataset,
+            apply_chat_template=self.inferencer_args.apply_chat_template,
+            use_vllm=self.inferencer_args.use_vllm,
+            enable_distributed_inference=enable_distributed_inference,
+        )
+        
+        if enable_distributed_inference:
             outputs = self._distributed_inference(
                 model=model, 
-                dataset=dataset, 
+                model_input=model_input, 
                 sampling_params=sampling_params,
-                num_instances=kwargs.get("distributed_vllm_inference_num_instances"),
+                num_instances=kwargs.get("distributed_inference_num_instances"),
                 batch_size=kwargs.get("inference_batch_size", 4),
                 release_gpu=release_gpu,
             )
         else:
             outputs = self._inference(
-                model=model, 
-                dataset=dataset, 
+                model=model,
+                model_input=model_input, 
                 sampling_params=sampling_params,
                 release_gpu=release_gpu,
             )
@@ -160,16 +168,10 @@ class VLLMInferencer(InferencerWithOffloading):
     def _inference(
         self,
         model: HFDecoderModel, 
-        dataset: Dataset, 
+        model_input: List[str], 
         sampling_params: SamplingParams,
         release_gpu: bool = False,
-    ) -> List[VLLMInferenceResultWithInput]:
-        model_input = model.prepare_inputs_for_inference(
-            dataset=dataset, 
-            apply_chat_template=self.inferencer_args.apply_chat_template,
-            use_vllm=True,
-        )
-        
+    ) -> List[VLLMInferenceResultWithInput]:        
         outputs = model.inference(
             inputs=model_input,
             sampling_params=sampling_params,
@@ -185,7 +187,7 @@ class VLLMInferencer(InferencerWithOffloading):
     def _distributed_inference(
         self,
         model: HFDecoderModel, 
-        dataset: Dataset, 
+        model_input: ray.data.Dataset, 
         sampling_params: SamplingParams,
         num_instances: int,
         batch_size: int = 4,
@@ -254,14 +256,7 @@ class VLLMInferencer(InferencerWithOffloading):
                 } # do this since we're writing to a pandas dataframe
                 return batched_final_res
             
-        # inference
-        model_input = model.prepare_inputs_for_inference(
-            dataset=dataset,
-            apply_chat_template=self.inferencer_args.apply_chat_template,
-            use_vllm=self.inferencer_args.use_vllm,
-            enable_distributed_vllm_inference=True,
-        )
-        
+        # inference        
         model_input_mapping = model_input.map_batches(
             DistributedPredictor,
             concurrency=num_instances, # Set the concurrency to the number of LLM instances.

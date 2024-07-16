@@ -22,7 +22,6 @@ import hashlib
 import logging
 import os, shutil
 from typing import List, Union, Optional, Dict
-from packaging.version import Version
 from pathlib import Path
 
 
@@ -492,6 +491,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self,
         dataset: Dataset,
         apply_chat_template: bool = True,
+        enable_distributed_inference: bool = False,
         use_vllm: bool = False,
         **kwargs,
     ) -> Union[List[str], ray.data.Dataset, Dict[str, torch.Tensor]]:
@@ -518,10 +518,14 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             inference_inputs = self.__prepare_inputs_for_vllm_inference(
                 dataset=dataset, 
                 apply_chat_template=apply_chat_template,
-                enable_distributed_vllm_inference=kwargs.get("enable_distributed_vllm_inference", False),
+                enable_distributed_inference=enable_distributed_inference,
             )
         else:
-            inference_inputs = self.__prepare_inputs_for_inference(dataset)
+            inference_inputs = self.__prepare_inputs_for_inference(
+                dataset,
+                apply_chat_template=apply_chat_template,
+                enable_distributed_inference=enable_distributed_inference,
+            )
             
         return inference_inputs
     
@@ -530,7 +534,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self,
         dataset: Dataset,
         apply_chat_template: bool = True,
-        enable_distributed_vllm_inference: bool = False,
+        enable_distributed_inference: bool = False,
     ) -> Union[List[str], ray.data.Dataset]:
         if dataset.get_type() == 'text_only':
             if apply_chat_template:
@@ -603,9 +607,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
         inference_inputs = [sentence for sentence in inference_inputs if len(sentence) > 0]
         
-        if enable_distributed_vllm_inference:
-            assert Version(ray.__version__) >= Version("2.22.0"), "Ray version must be at least 2.22.0"
-            
+        if enable_distributed_inference:            
             inference_inputs = ray.data.from_items(inference_inputs) # -> Dict[str, np.ndarray], {"item": array(['...', '...', '...'])}
         
         return inference_inputs
@@ -614,6 +616,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     def __prepare_inputs_for_inference(
         self,
         dataset: Dataset,
+        **kwargs,
     ):
         raise NotImplementedError("prepare_inputs_for_inference is not implemented")
 
