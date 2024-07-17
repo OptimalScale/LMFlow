@@ -55,8 +55,8 @@ def main():
         dataset,
         release_gpu=False,
         enable_decode_inference_result=pipeline_args.enable_decode_inference_result,
-        enable_distributed_vllm_inference=pipeline_args.enable_distributed_vllm_inference,
-        distributed_vllm_inference_num_instances=pipeline_args.distributed_vllm_inference_num_instances,
+        enable_distributed_inference=pipeline_args.enable_distributed_inference,
+        distributed_inference_num_instances=pipeline_args.distributed_inference_num_instances,
         inference_batch_size=pipeline_args.inference_batch_size,
     )
     

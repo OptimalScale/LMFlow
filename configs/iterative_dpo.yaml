@@ -1,16 +1,16 @@
 # general
 ## model
-model_name_or_path: "meta-llama/Meta-Llama-3-8B-Instruct"  # initial model
+model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B-Instruct/snapshots/c4a54320a52ed5f88b7a2f84496903ea4ff07b45"  # initial model
 reference_model_name_or_path: "meta-llama/Meta-Llama-3-8B-Instruct"
-reward_model_name_or_path: sfairXC/FsfairX-LLaMA3-RM-v0.1
+reward_model_name_or_path: /home/yizhenjia/models/sfairXC-FsfairX-LLaMA3-RM-v0.1/
 reward_arch_type: text_regression
 trust_remote_code: True
 
 ## data
 dataset_path_list:
-  - "data/iterative-prompt-3it/iter1"
-  - "data/iterative-prompt-3it/iter2"
-  - "data/iterative-prompt-3it/iter3"
+  - "data/iterative-prompt-3it-100/iter1"
+  - "data/iterative-prompt-3it-100/iter2"
+  - "data/iterative-prompt-3it-100/iter3"
 conversation_template: llama3
 preprocessing_num_workers: 16
 
@@ -20,6 +20,8 @@ run_name: iterative_dpo
 random_seed: 42
 inference_batch_size: 16
 use_accelerator: True
+enable_distributed_inference: True
+distributed_inference_num_instances: 8
 
 
 # inference phase
@@ -36,8 +38,6 @@ enable_decode_inference_result: True
 use_vllm: True
 vllm_gpu_memory_utilization: 0.95
 vllm_tensor_parallel_size: 1
-enable_distributed_vllm_inference: True
-distributed_vllm_inference_num_instances: 2
 
 
 # reward model scoring phase

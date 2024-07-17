@@ -78,52 +78,55 @@ class IterativeDPOAligner:
         ref_model_args: ModelArguments,
         dataset: Dataset,
     ):
+        # if Accelerator().is_main_process:
+        #     model = HFDecoderModel(
+        #         model_args=target_model_args,
+        #         tune_strategy='none'
+        #     )
+        #     self._do_target_model_inference(
+        #         model=model,
+        #         dataset=dataset,
+        #         output_dir=str(self.workspace_path/iteration_name),
+        #     )
+        #     del model
+        # Accelerator().wait_for_everyone()
+        
         if Accelerator().is_main_process:
-            model = HFDecoderModel(
-                model_args=target_model_args,
-                tune_strategy='none'
+            reward_model = HFTextRegressionModel(
+                model_args=reward_model_args,
+                tune_strategy='none',
+                use_accelerator=self.aligner_args.use_accelerator,
             )
-            self._do_target_model_inference(
-                model=model,
-                dataset=dataset,
+            target_model_inference_result_data_args = copy.deepcopy(dataset.data_args)
+            target_model_inference_result_data_args.dataset_path = str(self.workspace_path/iteration_name/"target_model_inference_result")
+            target_model_inference_result_dataset = Dataset(target_model_inference_result_data_args)
+            self._do_reward_model_inference(
+                model=reward_model,
+                dataset=target_model_inference_result_dataset,
                 output_dir=str(self.workspace_path/iteration_name),
             )
-            del model
+            print('11111111111111')
+            del reward_model
         Accelerator().wait_for_everyone()
         
-        reward_model = HFTextRegressionModel(
-            model_args=reward_model_args,
-            tune_strategy='none',
-            use_accelerator=self.aligner_args.use_accelerator,
-        )
-        target_model_inference_result_data_args = copy.deepcopy(dataset.data_args)
-        target_model_inference_result_data_args.dataset_path = str(self.workspace_path/iteration_name/"target_model_inference_result")
-        target_model_inference_result_dataset = Dataset(target_model_inference_result_data_args)
-        self._do_reward_model_inference(
-            model=reward_model,
-            dataset=target_model_inference_result_dataset,
-            output_dir=str(self.workspace_path/iteration_name),
-        )
-        del reward_model
-        
-        target_model = HFDecoderModel(target_model_args)
-        ref_model = HFDecoderModel(ref_model_args)
-        dpo_train_data_args = copy.deepcopy(dataset.data_args)
-        dpo_train_data_args.dataset_path = str(self.workspace_path/iteration_name/"reward_model_inference_result")
-        dpo_train_dataset = Dataset(dpo_train_data_args)
-        dpo_eval_dataset = copy.deepcopy(dpo_train_dataset.sample(
-            n=100, 
-            seed=self.aligner_args.random_seed
-        ))
-        self._do_single_dpo_align(
-            model=target_model,
-            ref_model=ref_model,
-            train_dataset=dpo_train_dataset,
-            eval_dataset=dpo_eval_dataset,
-            output_dir=str(self.workspace_path/iteration_name/"model"),
-        )
-        del target_model
-        del ref_model
+        # target_model = HFDecoderModel(target_model_args)
+        # ref_model = HFDecoderModel(ref_model_args)
+        # dpo_train_data_args = copy.deepcopy(dataset.data_args)
+        # dpo_train_data_args.dataset_path = str(self.workspace_path/iteration_name/"reward_model_inference_result")
+        # dpo_train_dataset = Dataset(dpo_train_data_args)
+        # dpo_eval_dataset = copy.deepcopy(dpo_train_dataset.sample(
+        #     n=100, 
+        #     seed=self.aligner_args.random_seed
+        # ))
+        # self._do_single_dpo_align(
+        #     model=target_model,
+        #     ref_model=ref_model,
+        #     train_dataset=dpo_train_dataset,
+        #     eval_dataset=dpo_eval_dataset,
+        #     output_dir=str(self.workspace_path/iteration_name/"model"),
+        # )
+        # del target_model
+        # del ref_model
     
     
     def _do_target_model_inference(
@@ -171,6 +174,9 @@ class IterativeDPOAligner:
             dataset=dataset,
             transform_dataset_in_place=True,
             use_vllm=False,
+            enable_distributed_inference=self.aligner_args.enable_distributed_inference,
+            distributed_inference_num_instances=self.aligner_args.distributed_inference_num_instances,
+            inference_batch_size=self.aligner_args.inference_batch_size,
         )
         
         res.save(str(Path(output_dir)/"reward_model_inference_result"/"result.json"))

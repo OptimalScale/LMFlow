@@ -391,8 +391,24 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
             
         inference_inputs = self.tokenize(dataset)
                 
-        if enable_distributed_inference:            
-            inference_inputs = ray.data.from_items(inference_inputs.get_backend_dataset()['input_ids']) # -> Dict[str, np.ndarray], {"item": array(['...', '...', '...'])}
+        if enable_distributed_inference:
+            inference_inputs = inference_inputs.get_backend_dataset()
+            data_to_batch = [
+                {
+                    "input": inference_inputs[i]['input'],
+                    "output": inference_inputs[i]['output'],
+                    "input_ids": torch.LongTensor(inference_inputs[i]['input_ids'])
+                } for i in range(len(inference_inputs))
+            ]
+            inference_inputs = ray.data.from_items(data_to_batch) 
+            # -> Dict[str, np.ndarray]
+            # Example (batch size=2):
+            # {'input': array(['...','...'], dtype=object),
+            #  'output': array([array(["...", "..."], dtype=object), array(['...','...'], dtype=object)], dtype=object),
+            #  'input_ids': array([[[128000, 128006,    882, ..., 128256, 128256, 128256],
+            #          [128000, 128006,    882, ..., 128256, 128256, 128256]],
+            #         [[128000, 128006,    882, ..., 128256, 128256, 128256],
+            #          [128000, 128006,    882, ..., 128256, 128256, 128256]]])}
         
         return inference_inputs
             

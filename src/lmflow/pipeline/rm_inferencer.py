@@ -137,16 +137,16 @@ class RewardModelInferencer(BasePipeline):
         **kwargs,
     ):
         if enable_distributed_inference:
-            inference_res = self.__inference(
-                model=model, 
-                model_input=model_input,
-            )
-        else:
             inference_res = self.__distributed_inference(
                 model=model, 
                 model_input=model_input, 
                 num_instances=kwargs.get("distributed_inference_num_instances", 1),
                 batch_size=kwargs.get("inference_batch_size", 1),
+            )
+        else:
+            inference_res = self.__inference(
+                model=model, 
+                model_input=model_input,
             )
         
         return inference_res
@@ -222,7 +222,7 @@ class RewardModelInferencer(BasePipeline):
             )
             
         resources_kwarg: Dict[str, Any] = {}
-        if self.inferencer_args.vllm_tensor_parallel_size == 1:
+        if self.inferencer_args.tensor_parallel_size == 1:
             # For tensor_parallel_size == 1, we simply set num_gpus=1.
             resources_kwarg["num_gpus"] = 1
         else:
@@ -236,20 +236,64 @@ class RewardModelInferencer(BasePipeline):
         class DistributedPredictor:
             def __init__(
                 self, 
-                model: HFTextRegressionModel,
+                model_args: ModelArguments,
+                batch_size: int,
             ):
-                self.model = copy.deepcopy(model)
+                self.model = HFTextRegressionModel(
+                    model_args=model_args, 
+                    tune_strategy='none', 
+                    use_accelerator=True
+                )
                 self.model.activate_model_for_inference(use_vllm=False)
+                self.batch_size = batch_size
                 
             def __call__(self, batch: Dict[str, np.ndarray]):
-                """batch: Dict[str, np.ndarray], {"item": array(['...', '...', '...', ...])}
+                """batch: Dict[str, np.ndarray]
+                Example (batch size=2):
+                {'input': array(['...','...'], dtype=object),
+                 'output': array([array(["...", "..."], dtype=object), array(['...','...'], dtype=object)], dtype=object),
+                 'input_ids': array([[[128000, 128006,    882, ..., 128256, 128256, 128256],
+                         [128000, 128006,    882, ..., 128256, 128256, 128256]],
+                        [[128000, 128006,    882, ..., 128256, 128256, 128256],
+                         [128000, 128006,    882, ..., 128256, 128256, 128256]]])}
                 """
-                batched_inference_res = self.model.inference(inputs=batch['item'])
+                batched_inference_res = self.model.inference(
+                    inputs=torch.LongTensor(batch['input_ids']).flatten(start_dim=0, end_dim=1).to("cuda"),
+                ).logits
+                batched_inference_res = batched_inference_res.to("cpu").reshape(self.batch_size, 1, -1).tolist()
+                print(batched_inference_res)
                 batched_final_res = {
-                    "input": [sample['input'] for sample in batched_inference_res],
-                    "output": [sample['output'] for sample in batched_inference_res] 
+                    "input": batch['input'].tolist(),
+                    "output": [
+                        [
+                            {"score": batched_inference_res[j][i], "text": batch["output"][j][i]}
+                            for i in range(len(batch['output'][j]))
+                        ] 
+                        for j in range(self.batch_size)
+                    ],
                 } # do this since we're writing to a pandas dataframe
                 return batched_final_res
+
+        # inference
+        model_input_mapping = model_input.map_batches(
+            DistributedPredictor,
+            concurrency=num_instances, # Set the concurrency to the number of LLM instances.
+            batch_size=batch_size,
+            fn_constructor_kwargs={
+                "model_args": model.model_args,
+                "batch_size": batch_size,
+            },
+            **resources_kwarg,
+        )
+        
+        df_model_output = model_input_mapping.to_pandas() # the actual forwards are executed here
+        logger.info(f"Distributed reward model inference result preview:\n{df_model_output.head(10)}")
+        
+        model_output = [
+            {"input": row["input"], "output": row["output"]} for _, row in df_model_output.iterrows()
+        ]
+        
+        return model_output
     
     
     def __vllm_inference(
