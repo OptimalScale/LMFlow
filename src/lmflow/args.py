@@ -1560,6 +1560,18 @@ class IterativeDPOAlignerArguments(IterativeAlignerArguments, DPOv2AlignerArgume
         default_factory=list,
         metadata={"help": "The list of dataset paths for iterative aligners."}
     )
+    vllm_inference_batch_size: int = field(
+        default=1,
+        metadata={"help": "The batch size for VLLM inference."}
+    )
+    reward_model_inference_batch_size: int = field(
+        default=1,
+        metadata={"help": "The batch size for reward model inference."}
+    )
+    reward_model_inference_block_size: int = field(
+        default=2048,
+        metadata={"help": "The block size for reward model inference."}
+    )
 
 
 PIPELINE_ARGUMENT_MAPPING = {

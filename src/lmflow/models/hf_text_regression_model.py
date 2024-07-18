@@ -41,6 +41,7 @@ from lmflow.utils.constants import (
     TEXT_TO_TEXTLIST_DATASET_DESCRIPTION,
     CONVERSATION_DATASET_DESCRIPTION, 
 )
+from lmflow.utils.data_utils import RewardModelInferenceResultWithInput
 
 
 logger = logging.getLogger(__name__)
@@ -413,6 +414,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         return inference_inputs
             
     
+    @staticmethod
     def postprocess_inference_outputs(
         dataset: Dataset,
         scores: Union[List[float], List[List[float]]],
@@ -442,6 +444,21 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         output_dataset = Dataset(output_dataset_args)
         output_dataset = output_dataset.from_dict(output_dict)
 
+        return output_dataset
+    
+    
+    @staticmethod
+    def postprocess_distributed_inference_outputs(
+        dataset: Dataset,
+        inference_result: List[RewardModelInferenceResultWithInput],
+    ):
+        output_dict = {"type": "text_to_scored_textlist", "instances": inference_result}
+        output_dataset_args = copy.deepcopy(dataset.data_args)
+        output_dataset_args.dataset_path = None
+        output_dataset_args.dataset_name = f"{output_dataset_args.dataset_name}_scored"
+        output_dataset = Dataset(output_dataset_args)
+        output_dataset = output_dataset.from_dict(output_dict)
+        
         return output_dataset
         
 

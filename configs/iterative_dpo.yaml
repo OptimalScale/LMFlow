@@ -2,7 +2,7 @@
 ## model
 model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B-Instruct/snapshots/c4a54320a52ed5f88b7a2f84496903ea4ff07b45"  # initial model
 reference_model_name_or_path: "meta-llama/Meta-Llama-3-8B-Instruct"
-reward_model_name_or_path: /home/yizhenjia/models/sfairXC-FsfairX-LLaMA3-RM-v0.1/
+reward_model_name_or_path: /home/yizhenjia/projs/RLHFlow-fox/models/rm/sfairXC-FsfairX-LLaMA3-RM-v0.1
 reward_arch_type: text_regression
 trust_remote_code: True
 
@@ -18,7 +18,6 @@ preprocessing_num_workers: 16
 output_dir: ./output_models/iterative_dpo
 run_name: iterative_dpo
 random_seed: 42
-inference_batch_size: 16
 use_accelerator: True
 enable_distributed_inference: True
 distributed_inference_num_instances: 8
@@ -38,11 +37,13 @@ enable_decode_inference_result: True
 use_vllm: True
 vllm_gpu_memory_utilization: 0.95
 vllm_tensor_parallel_size: 1
+vllm_inference_batch_size: 16
 
 
 # reward model scoring phase
-block_size: 4096
+reward_model_inference_block_size: 2048
 overwrite_cache: True
+reward_model_inference_batch_size: 3 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
 
 
 # dpo phase

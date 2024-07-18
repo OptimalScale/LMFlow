@@ -35,7 +35,8 @@ from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.utils.data_utils import (
     set_random_seed,
-    batchlize
+    batchlize,
+    RewardModelInferenceResultWithInput,
 )
 from lmflow.datasets.dataset import KEY_SCORE
 
@@ -111,20 +112,29 @@ class RewardModelInferencer(BasePipeline):
         )
             
         if use_vllm:
-            scores = self.__vllm_inference(
+            inference_result = self.__vllm_inference(
                 model=model, 
                 model_input=model_input,
                 enable_distributed_inference=enable_distributed_inference,
             )
         else:
-            scores = self._inference(
+            inference_result = self._inference(
                 model=model,
                 model_input=model_input,
                 enable_distributed_inference=enable_distributed_inference,
                 **kwargs,
             )
-            
-        output_dataset = model.postprocess_inference_outputs(dataset, scores)
+        
+        if enable_distributed_inference:
+            output_dataset = model.postprocess_distributed_inference_outputs(
+                dataset=dataset,
+                inference_result=inference_result,
+            )
+        else:
+            output_dataset = model.postprocess_inference_outputs(
+                dataset=dataset, 
+                scores=inference_result
+            )
         
         return output_dataset
     
@@ -205,7 +215,7 @@ class RewardModelInferencer(BasePipeline):
         model_input: ray.data.Dataset,
         num_instances: int,
         batch_size: int,
-    ):
+    ) -> List[RewardModelInferenceResultWithInput]:
         def scheduling_strategy_fn():
             # One bundle per tensor parallel worker
             pg = ray.util.placement_group(
@@ -260,8 +270,7 @@ class RewardModelInferencer(BasePipeline):
                 batched_inference_res = self.model.inference(
                     inputs=torch.LongTensor(batch['input_ids']).flatten(start_dim=0, end_dim=1).to("cuda"),
                 ).logits
-                batched_inference_res = batched_inference_res.to("cpu").reshape(self.batch_size, 1, -1).tolist()
-                print(batched_inference_res)
+                batched_inference_res = batched_inference_res.to("cpu").reshape(self.batch_size, -1, 1).squeeze(dim=-1).tolist() # [bs, num_output_sequences]
                 batched_final_res = {
                     "input": batch['input'].tolist(),
                     "output": [

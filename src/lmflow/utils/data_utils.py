@@ -7,7 +7,7 @@ import numpy as np
 import torch
 import json
 import re
-from typing import Union, List, TypedDict
+from typing import Union, List, TypedDict, Dict
 
 
 def set_random_seed(seed: int):
@@ -230,3 +230,8 @@ def process_image_flag(text, image_flag="<ImageHere>"):
 class VLLMInferenceResultWithInput(TypedDict):
     input: str
     output: Union[List[str], List[List[int]]]
+    
+
+class RewardModelInferenceResultWithInput(TypedDict):
+    input: str
+    output: List[Dict[str, Union[str, float]]] # [{"score": 0.5, "text": "output text"}]

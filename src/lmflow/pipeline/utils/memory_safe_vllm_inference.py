@@ -57,7 +57,7 @@ def main():
         enable_decode_inference_result=pipeline_args.enable_decode_inference_result,
         enable_distributed_inference=pipeline_args.enable_distributed_inference,
         distributed_inference_num_instances=pipeline_args.distributed_inference_num_instances,
-        inference_batch_size=pipeline_args.inference_batch_size,
+        inference_batch_size=pipeline_args.vllm_inference_batch_size,
     )
     
     # use this as a flag, stdout will be captured by the pipeline
