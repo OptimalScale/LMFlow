@@ -128,6 +128,29 @@ def remove_dataclass_attr_prefix(data_instance, prefix: str) -> Dict:
     return new_attributes
 
 
+def add_dataclass_attr_prefix(data_instance, prefix: str) -> Dict:
+    """Add the prefix to the attribute names of a dataclass instance.
+
+    Parameters
+    ----------
+    data_instance : dataclass
+    prefix : str
+        The prefix to add to the attribute names of the dataclass instance.
+
+    Returns
+    -------
+    Dict
+    """
+    new_attributes = {}
+    for field in fields(data_instance):
+        attr_name = field.name
+        attr_value = getattr(data_instance, attr_name)
+        new_attr_name = f"{prefix}{attr_name}"
+        new_attributes[new_attr_name] = attr_value
+    
+    return new_attributes
+
+
 def print_banner(message: str):
     length = len(message) + 8
     border = "#" * length

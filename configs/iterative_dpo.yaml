@@ -20,13 +20,13 @@ run_name: iterative_dpo
 random_seed: 42
 use_accelerator: True
 enable_distributed_inference: True
-distributed_inference_num_instances: 5
+distributed_inference_num_instances: 8
 
 
 # inference phase
 ## general
 apply_chat_template: True
-num_output_sequences: 2
+num_output_sequences: 3
 use_beam_search: False
 temperature: 1.0
 top_p: 0.9
@@ -43,7 +43,7 @@ vllm_inference_batch_size: 16
 # reward model scoring phase
 reward_model_inference_block_size: 2048
 overwrite_cache: True
-reward_model_inference_batch_size: 12 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
+reward_model_inference_batch_size: 8 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
 
 
 # dpo phase
@@ -61,7 +61,7 @@ mask_prompt: True
 ### training
 bf16: True
 num_train_epochs: 2
-learning_rate: 5.0e-7
+learning_rate: 2.0e-5
 warmup_steps: 100
 per_device_train_batch_size: 1
 per_device_eval_batch_size: 1

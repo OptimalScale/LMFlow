@@ -1530,6 +1530,8 @@ class DPOv2AlignerArguments(FinetunerArguments):
     """
     The arguments for the DPOv2 training script.
     """
+    # general args
+    random_seed: Optional[int] = field(default=42, metadata={"help": "the random seed"})
     # pair sampling args
     margin_scale: Optional[float] = field(default=1.0, metadata={"help": "the margin scale"})
     sampling_paired_method: Optional[str] = field(default="max_random", metadata={"help": "the choose type"})
