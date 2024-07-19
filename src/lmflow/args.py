@@ -1154,6 +1154,10 @@ class InferencerArguments:
         default=1,
         metadata={"help": "batch size for inference"},
     )
+    vllm_inference_batch_size: int = field(
+        default=1,
+        metadata={"help": "The batch size for VLLM inference."}
+    )
     temperature: float = field(
         default=0.0,
         metadata={"help": "Temperature during inference."},
@@ -1559,10 +1563,6 @@ class IterativeDPOAlignerArguments(IterativeAlignerArguments, DPOv2AlignerArgume
     dataset_path_list: List[str] = field(
         default_factory=list,
         metadata={"help": "The list of dataset paths for iterative aligners."}
-    )
-    vllm_inference_batch_size: int = field(
-        default=1,
-        metadata={"help": "The batch size for VLLM inference."}
     )
     reward_model_inference_batch_size: int = field(
         default=1,

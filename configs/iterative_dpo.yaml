@@ -1,8 +1,8 @@
 # general
 ## model
-model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B-Instruct/snapshots/c4a54320a52ed5f88b7a2f84496903ea4ff07b45"  # initial model
-reference_model_name_or_path: "meta-llama/Meta-Llama-3-8B-Instruct"
-reward_model_name_or_path: /home/yizhenjia/projs/RLHFlow-fox/models/rm/sfairXC-FsfairX-LLaMA3-RM-v0.1
+model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--tensoropera--Fox-1-1.6B-Instruct-v0.1/snapshots/208e4eb147473dce763b889d5974aba38c1f03d3"  # initial model
+reference_model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--tensoropera--Fox-1-1.6B-Instruct-v0.1/snapshots/208e4eb147473dce763b889d5974aba38c1f03d3"
+reward_model_name_or_path: /home/yizhenjia/models/sfairXC-FsfairX-LLaMA3-RM-v0.1
 reward_arch_type: text_regression
 trust_remote_code: True
 
@@ -11,7 +11,7 @@ dataset_path_list:
   - "data/iterative-prompt-3it-100/iter1"
   - "data/iterative-prompt-3it-100/iter2"
   - "data/iterative-prompt-3it-100/iter3"
-conversation_template: llama3
+conversation_template: chatml
 preprocessing_num_workers: 16
 
 ## pipeline
@@ -20,13 +20,13 @@ run_name: iterative_dpo
 random_seed: 42
 use_accelerator: True
 enable_distributed_inference: True
-distributed_inference_num_instances: 8
+distributed_inference_num_instances: 5
 
 
 # inference phase
 ## general
 apply_chat_template: True
-num_output_sequences: 8
+num_output_sequences: 2
 use_beam_search: False
 temperature: 1.0
 top_p: 0.9
@@ -43,7 +43,7 @@ vllm_inference_batch_size: 16
 # reward model scoring phase
 reward_model_inference_block_size: 2048
 overwrite_cache: True
-reward_model_inference_batch_size: 3 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
+reward_model_inference_batch_size: 12 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
 
 
 # dpo phase
@@ -61,7 +61,7 @@ mask_prompt: True
 ### training
 bf16: True
 num_train_epochs: 2
-learning_rate: 5e-7
+learning_rate: 5.0e-7
 warmup_steps: 100
 per_device_train_batch_size: 1
 per_device_eval_batch_size: 1

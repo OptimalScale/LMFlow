@@ -126,3 +126,12 @@ def remove_dataclass_attr_prefix(data_instance, prefix: str) -> Dict:
         new_attributes[new_attr_name] = attr_value
     
     return new_attributes
+
+
+def print_banner(message: str):
+    length = len(message) + 8
+    border = "#" * length
+
+    print(border)
+    print(f"#   {message}   #")
+    print(border)

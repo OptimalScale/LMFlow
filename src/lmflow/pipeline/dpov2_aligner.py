@@ -102,6 +102,9 @@ class DPOv2Aligner(BaseAligner):
         output_dir = os.path.join(self.aligner_args.output_dir, "final_checkpoint")
         dpo_trainer.model.save_pretrained(output_dir)
         
+        # step 5. release resources
+        del dpo_trainer
+        
         
     def __prepare_training_args(
         self,

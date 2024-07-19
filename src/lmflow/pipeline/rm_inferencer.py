@@ -65,6 +65,7 @@ class RewardModelInferencer(BasePipeline):
         model_args: ModelArguments, 
         data_args: DatasetArguments, 
         inferencer_args: InferencerArguments,
+        **kwargs,
     ):
         self.data_args = data_args
         self.inferencer_args = inferencer_args
@@ -83,8 +84,7 @@ class RewardModelInferencer(BasePipeline):
             )
 
         if inferencer_args.use_accelerator:
-            self.accelerator = Accelerator()
-            self.accelerator.wait_for_everyone()
+            self.accelerator: Accelerator = kwargs.get('accelerator', Accelerator())
             
 
     def inference(
@@ -247,7 +247,6 @@ class RewardModelInferencer(BasePipeline):
             def __init__(
                 self, 
                 model_args: ModelArguments,
-                batch_size: int,
             ):
                 self.model = HFTextRegressionModel(
                     model_args=model_args, 
@@ -255,7 +254,6 @@ class RewardModelInferencer(BasePipeline):
                     use_accelerator=True
                 )
                 self.model.activate_model_for_inference(use_vllm=False)
-                self.batch_size = batch_size
                 
             def __call__(self, batch: Dict[str, np.ndarray]):
                 """batch: Dict[str, np.ndarray]
@@ -267,10 +265,16 @@ class RewardModelInferencer(BasePipeline):
                         [[128000, 128006,    882, ..., 128256, 128256, 128256],
                          [128000, 128006,    882, ..., 128256, 128256, 128256]]])}
                 """
+                # The batch is managed by ray and the actual batch size may smaller than 
+                # inference_batch_size in config, since there may be some remainders. 
+                # For example, 10 examples with 2 inference instances and inference_batch_size=4,
+                # there will be only 2 examples for instance 0 to run and then the 
+                # actual batch size changes.
+                actual_batch_size = len(batch['input'])
                 batched_inference_res = self.model.inference(
                     inputs=torch.LongTensor(batch['input_ids']).flatten(start_dim=0, end_dim=1).to("cuda"),
                 ).logits
-                batched_inference_res = batched_inference_res.to("cpu").reshape(self.batch_size, -1, 1).squeeze(dim=-1).tolist() # [bs, num_output_sequences]
+                batched_inference_res = batched_inference_res.to("cpu").reshape(actual_batch_size, -1, 1).squeeze(dim=-1).tolist() # [bs, num_output_sequences]
                 batched_final_res = {
                     "input": batch['input'].tolist(),
                     "output": [
@@ -278,7 +282,7 @@ class RewardModelInferencer(BasePipeline):
                             {"score": batched_inference_res[j][i], "text": batch["output"][j][i]}
                             for i in range(len(batch['output'][j]))
                         ] 
-                        for j in range(self.batch_size)
+                        for j in range(actual_batch_size)
                     ],
                 } # do this since we're writing to a pandas dataframe
                 return batched_final_res
@@ -290,7 +294,6 @@ class RewardModelInferencer(BasePipeline):
             batch_size=batch_size,
             fn_constructor_kwargs={
                 "model_args": model.model_args,
-                "batch_size": batch_size,
             },
             **resources_kwarg,
         )
