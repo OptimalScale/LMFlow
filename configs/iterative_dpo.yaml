@@ -15,7 +15,7 @@ conversation_template: chatml
 preprocessing_num_workers: 16
 
 ## pipeline
-output_dir: ./output_models/iterative_dpo
+output_dir: ./output_models/iterative_dpo_pipelinetest
 run_name: iterative_dpo
 random_seed: 42
 use_accelerator: True
@@ -59,6 +59,7 @@ mask_prompt: True
 
 ## pipeline
 ### training
+accelerate_config_file: configs/accelerate_dsz0_config.yaml
 bf16: True
 num_train_epochs: 2
 learning_rate: 2.0e-5

@@ -1532,6 +1532,10 @@ class DPOv2AlignerArguments(FinetunerArguments):
     """
     # general args
     random_seed: Optional[int] = field(default=42, metadata={"help": "the random seed"})
+    accelerate_config_file: Optional[str] = field(
+        default=None, 
+        metadata={"help": "file path for accelerate config file, only used in memory safe dpov2 align."}
+    )
     # pair sampling args
     margin_scale: Optional[float] = field(default=1.0, metadata={"help": "the margin scale"})
     sampling_paired_method: Optional[str] = field(default="max_random", metadata={"help": "the choose type"})

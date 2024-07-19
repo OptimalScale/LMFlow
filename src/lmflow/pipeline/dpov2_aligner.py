@@ -18,12 +18,24 @@ from lmflow.args import (
     DatasetArguments,
     DPOv2AlignerArguments
 )
-from lmflow.utils.common import make_shell_args_from_dataclass, add_dataclass_attr_prefix
+from lmflow.utils.common import (
+    make_shell_args_from_dataclass, 
+    add_dataclass_attr_prefix, 
+    create_copied_dataclass
+)
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.datasets.dataset import Dataset, KEY_SCORE, KEY_TYPE, KEY_INSTANCES
+from lmflow.utils.constants import MEMORY_SAFE_DPOV2_ALIGN_ENV_VAR_TO_REMOVE
 
 
 logger = logging.getLogger(__name__)
+
+
+ReferenceModelArguments = create_copied_dataclass(
+    original_dataclass=ModelArguments, 
+    field_prefix="reference_",
+    class_prefix="Reference"
+)
 
 
 class DPOv2Aligner(BaseAligner):
@@ -295,7 +307,7 @@ class MemorySafeDPOv2Aligner:
         ref_model_args: ModelArguments,
     ):
         self.model_args = model_args
-        self.ref_model_args = ModelArguments(**add_dataclass_attr_prefix(ref_model_args, 'reference_'))
+        self.ref_model_args = ReferenceModelArguments(**add_dataclass_attr_prefix(ref_model_args, 'reference_'))
         self.data_args = data_args
         self.aligner_args = aligner_args
         self.aligner_file_path = pkg_resources.files("lmflow.pipeline.utils") / "memory_safe_dpov2_align.py"
@@ -309,11 +321,18 @@ class MemorySafeDPOv2Aligner:
                 self.ref_model_args
             ],
             format="shell",
+            ignored_args_list=['accelerator_config', 'fsdp_config', '_n_gpu'],
         )
-        cmd = "python " + str(self.aligner_file_path) + " " + aligner_args
+        cmd = (
+            f"accelerate launch --config_file {self.aligner_args.accelerate_config_file}"
+            + " " 
+            + str(self.aligner_file_path) 
+            + " " 
+            + aligner_args
+        )
         current_env = os.environ.copy()
-        # for var in MEMORY_SAFE_ENV_VAR_TO_REMOVE:
-        #     current_env.pop(var, None)
+        for var in MEMORY_SAFE_DPOV2_ALIGN_ENV_VAR_TO_REMOVE:
+            current_env.pop(var, None)
         
         cli_res = subprocess.run(
             args=cmd,
@@ -326,4 +345,5 @@ class MemorySafeDPOv2Aligner:
         logger.info(f"MemorySafeDPOv2Aligner subprocess run finished, info at finish: {cli_res}")
         
         if cli_res.returncode != 0:
+            print(cli_res.stderr)
             raise RuntimeError(f"Error during MemorySafeDPOv2Aligner: {cli_res}")

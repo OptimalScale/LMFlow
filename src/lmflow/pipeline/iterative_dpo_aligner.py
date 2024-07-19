@@ -6,10 +6,7 @@ import logging
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
-from accelerate import Accelerator
-import torch
 from tqdm import tqdm
-import wandb
 
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.models.hf_decoder_model import HFDecoderModel
@@ -45,7 +42,6 @@ class IterativeDPOAligner:
         self.ref_model_args = ref_model_args
         self.reward_model_args = reward_model_args
         self.workspace_path = Path(self.aligner_args.output_dir)
-        self.accelerator: Accelerator = kwargs.get('accelerator', Accelerator())
         
         
     def align(
@@ -84,53 +80,47 @@ class IterativeDPOAligner:
         ref_model_args: ModelArguments,
         dataset: Dataset,
     ):
-        # # generate responses
-        # if self.accelerator.is_main_process:
-        #     print_banner(f'Iterative DPO {iteration_name}: Generate responses')
-        #     model = HFDecoderModel(
-        #         model_args=target_model_args,
-        #         tune_strategy='none'
-        #     )
-        #     self._do_target_model_inference(
-        #         model=model,
-        #         dataset=dataset,
-        #         output_dir=str(self.workspace_path/iteration_name),
-        #     )
-        #     del model
-        # self.accelerator.wait_for_everyone()
+        # generate responses
+        print_banner(f'Iterative DPO {iteration_name}: Generate responses')
+        model = HFDecoderModel(
+            model_args=target_model_args,
+            tune_strategy='none'
+        )
+        self._do_target_model_inference(
+            model=model,
+            dataset=dataset,
+            output_dir=str(self.workspace_path/iteration_name),
+        )
+        del model
         
-        # # reward model scoring
-        # if self.accelerator.is_main_process:
-        #     print_banner(f'Iterative DPO {iteration_name}: Reward model scoring')
-        #     reward_model = HFTextRegressionModel(
-        #         model_args=reward_model_args,
-        #         tune_strategy='none',
-        #         use_accelerator=self.aligner_args.use_accelerator,
-        #     )
-        #     target_model_inference_result_data_args = copy.deepcopy(dataset.data_args)
-        #     target_model_inference_result_data_args.dataset_path = str(self.workspace_path/iteration_name/"target_model_inference_result")
-        #     target_model_inference_result_data_args.block_size = self.aligner_args.reward_model_inference_block_size
-        #     target_model_inference_result_dataset = Dataset(target_model_inference_result_data_args)
-        #     self._do_reward_model_inference(
-        #         model=reward_model,
-        #         dataset=target_model_inference_result_dataset,
-        #         output_dir=str(self.workspace_path/iteration_name),
-        #     )
-        #     del reward_model
-        # self.accelerator.wait_for_everyone()
+        # reward model scoring
+        print_banner(f'Iterative DPO {iteration_name}: Reward model scoring')
+        reward_model = HFTextRegressionModel(
+            model_args=reward_model_args,
+            tune_strategy='none',
+            use_accelerator=self.aligner_args.use_accelerator,
+        )
+        target_model_inference_result_data_args = copy.deepcopy(dataset.data_args)
+        target_model_inference_result_data_args.dataset_path = str(self.workspace_path/iteration_name/"target_model_inference_result")
+        target_model_inference_result_data_args.block_size = self.aligner_args.reward_model_inference_block_size
+        target_model_inference_result_dataset = Dataset(target_model_inference_result_data_args)
+        self._do_reward_model_inference(
+            model=reward_model,
+            dataset=target_model_inference_result_dataset,
+            output_dir=str(self.workspace_path/iteration_name),
+        )
+        del reward_model
         
         # DPO training
-        if self.accelerator.is_main_process:
-            print_banner(f'Iterative DPO {iteration_name}: DPO training')
-            dpo_train_data_args = copy.deepcopy(dataset.data_args)
-            dpo_train_data_args.dataset_path = str(self.workspace_path/iteration_name/"reward_model_inference_result")
-            self._do_single_dpo_align(
-                model_args=target_model_args,
-                ref_model_args=ref_model_args,
-                data_args=dpo_train_data_args,
-                output_dir=str(self.workspace_path/iteration_name/"model"),
-            )
-        self.accelerator.wait_for_everyone()
+        print_banner(f'Iterative DPO {iteration_name}: DPO training')
+        dpo_train_data_args = copy.deepcopy(dataset.data_args)
+        dpo_train_data_args.dataset_path = str(self.workspace_path/iteration_name/"reward_model_inference_result")
+        self._do_single_dpo_align(
+            model_args=target_model_args,
+            ref_model_args=ref_model_args,
+            data_args=dpo_train_data_args,
+            output_dir=str(self.workspace_path/iteration_name/"model"),
+        )
     
     
     def _do_target_model_inference(
@@ -172,7 +162,6 @@ class IterativeDPOAligner:
             model_args=model.model_args,
             data_args=dataset.data_args,
             inferencer_args=self._parse_reward_model_inference_args(self.aligner_args),
-            accelerator=self.accelerator,
         )
         res = inferencer.inference(
             model=model,

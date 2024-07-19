@@ -14,6 +14,7 @@ def make_shell_args_from_dataclass(
     dataclass_objects: List, 
     format: str="subprocess",
     skip_default: bool=True,
+    ignored_args_list: Optional[List[str]]=None,
 ) -> Union[str, List[str]]:
     """Return a string or a list of strings that can be used as shell arguments.
 
@@ -34,13 +35,25 @@ def make_shell_args_from_dataclass(
     all_args = {}
     for dataclass_object in dataclass_objects:
         for k, v in dataclass_object.__dict__.items():
+            if ignored_args_list and k in ignored_args_list:
+                continue
+            if k not in dataclass_object.__dataclass_fields__:
+                # skip attributes that added dynamically
+                continue
             if not v:
+                # skip attributes with None values
                 continue
             if skip_default:
                 if dataclass_object.__dataclass_fields__[k].default == v:
                     continue
+            
             if k not in all_args:
-                all_args[k] = v
+                if isinstance(v, Path):
+                    all_args[k] = str(v)
+                elif isinstance(v, list):
+                    all_args[k] = ",".join(v)
+                else:
+                    all_args[k] = v
             elif k in all_args:
                 if all_args[k] == v:
                     continue
