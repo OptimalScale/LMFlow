@@ -443,3 +443,86 @@ class Dataset:
                 
         else:
             logger.error(f"Unsupported format when saving the dataset: {format}.")
+        
+            
+    def sample(self, n: int, seed: int=42):
+        r"""
+        Sample n instances from the dataset.
+
+        Parameters
+        ------------
+        n : int.
+            The number of instances to sample from the dataset.
+
+        Returns
+        ---------
+
+        sample_dataset : Dataset object.
+            A new dataset object containing the sampled instances.
+        """
+        if self.backend == "huggingface":
+            sampled_dataset = self.backend_dataset.shuffle(seed=seed).select(range(n))
+            output_dataset = self.create_from_dict(
+                {
+                    "type": self.get_type(),
+                    "instances": [
+                        {
+                            col_name: sampled_dataset[col_name][i] for col_name in sampled_dataset.column_names
+                        } for i in range(n)
+                    ]
+                }
+            )
+            return output_dataset
+        else:
+            raise NotImplementedError(
+                f'Currently .sample is not supported for backend "{self.backend}"'
+            )
+            
+            
+    def train_test_split(self, test_size: float=0.2, shuffle: bool=True, seed: int=42):
+        r"""
+        Split the dataset into training and testing sets.
+
+        Parameters
+        ------------
+        test_size : float, default=0.2.
+            The proportion of the dataset that will be used for testing.
+
+        Returns
+        ---------
+
+        train_dataset : Dataset object.
+            A new dataset object containing the training instances.
+        
+        test_dataset : Dataset object.
+            A new dataset object containing the testing instances.
+        """
+        if self.backend == "huggingface":
+            splited = self.backend_dataset.train_test_split(
+                test_size=test_size, shuffle=shuffle, seed=seed
+            )
+            train_dataset = self.create_from_dict(
+                {
+                    "type": self.get_type(),
+                    "instances": [
+                        {
+                            col_name: splited["train"][col_name][i] for col_name in splited["train"].column_names
+                        } for i in range(len(splited["train"]))
+                    ]
+                }
+            )
+            test_dataset = self.create_from_dict(
+                {
+                    "type": self.get_type(),
+                    "instances": [
+                        {
+                            col_name: splited["test"][col_name][i] for col_name in splited["test"].column_names
+                        } for i in range(len(splited["test"]))
+                    ]
+                }
+            )
+            return train_dataset, test_dataset
+        else:
+            raise NotImplementedError(
+                f'Currently .train_test_split is not supported for backend "{self.backend}"'
+            )
