@@ -2,14 +2,15 @@
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 import os
+import copy
 import hashlib
 import logging
 from pathlib import Path
 from typing import List, Union, Dict, Optional
 
+import ray
+import ray.data
 import torch
-import deepspeed
-import transformers
 from peft import (
     LoraConfig,
     PeftModel,
@@ -22,7 +23,7 @@ from transformers.modeling_outputs import SequenceClassifierOutputWithPast
 from vllm import SamplingParams
 
 from lmflow.args import ModelArguments
-from lmflow.datasets import Dataset
+from lmflow.datasets.dataset import Dataset, KEY_SCORE
 from lmflow.models.interfaces.tunable import Tunable
 from lmflow.models.hf_model_mixin import HFModelMixin
 from lmflow.models.text_regression_model import TextRegressionModel
@@ -40,6 +41,7 @@ from lmflow.utils.constants import (
     TEXT_TO_TEXTLIST_DATASET_DESCRIPTION,
     CONVERSATION_DATASET_DESCRIPTION, 
 )
+from lmflow.utils.data_utils import RewardModelInferenceResultWithInput
 
 
 logger = logging.getLogger(__name__)
@@ -346,6 +348,10 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
                     raise NotImplementedError(
                         f"device \"{self.device}\" is not supported"
                     )
+        
+        if kwargs.get('return_input', False):
+            outputs = {"input": inputs, "output": outputs}
+        
         return outputs
     
     
@@ -370,6 +376,90 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         raise NotImplementedError(
             "VLLM inference is not supported for text regression model."
         )
+        
+        
+    def prepare_inputs_for_inference(
+        self,
+        dataset: Dataset,
+        enable_distributed_inference: bool = False,
+        use_vllm: bool = False,
+        **kwargs,
+    ) -> Union[Dataset, ray.data.Dataset]:
+        if use_vllm:
+            raise NotImplementedError(
+                "VLLM inference is not supported for text regression model."
+            )
+            
+        inference_inputs = self.tokenize(dataset)
+                
+        if enable_distributed_inference:
+            inference_inputs = inference_inputs.get_backend_dataset()
+            data_to_batch = [
+                {
+                    "input": inference_inputs[i]['input'],
+                    "output": inference_inputs[i]['output'],
+                    "input_ids": torch.LongTensor(inference_inputs[i]['input_ids'])
+                } for i in range(len(inference_inputs))
+            ]
+            inference_inputs = ray.data.from_items(data_to_batch) 
+            # -> Dict[str, np.ndarray]
+            # Example (batch size=2):
+            # {'input': array(['...','...'], dtype=object),
+            #  'output': array([array(["...", "..."], dtype=object), array(['...','...'], dtype=object)], dtype=object),
+            #  'input_ids': array([[[128000, 128006,    882, ..., 128256, 128256, 128256],
+            #          [128000, 128006,    882, ..., 128256, 128256, 128256]],
+            #         [[128000, 128006,    882, ..., 128256, 128256, 128256],
+            #          [128000, 128006,    882, ..., 128256, 128256, 128256]]])}
+        
+        return inference_inputs
+            
+    
+    @staticmethod
+    def postprocess_inference_outputs(
+        dataset: Dataset,
+        scores: Union[List[float], List[List[float]]],
+    ):
+        output_dict = {"type": "", "instances": []}
+        if dataset.get_type() == "text_to_textlist":
+            output_dict["type"] = "text_to_scored_textlist"
+            for idx, instance in enumerate(dataset.get_backend_dataset()):
+                if len(instance["output"]) < 2:
+                    logger.warning(f"Instance {idx} has less than 2 outputs, skipping.")
+                output_dict["instances"].append(
+                    {
+                        "input": instance["input"],
+                        "output": [{"text": text} for text in instance["output"]],
+                    }
+                )
+        else:
+            raise NotImplementedError(f"Dataset type {dataset.get_type()} is not supported for reward model inference.")
+        
+        for i, instance_scores in enumerate(scores):
+            for j, score in enumerate(instance_scores):
+                output_dict["instances"][i]["output"][j][KEY_SCORE] = score
+        
+        output_dataset_args = copy.deepcopy(dataset.data_args)
+        output_dataset_args.dataset_path = None
+        output_dataset_args.dataset_name = f"{output_dataset_args.dataset_name}_scored"
+        output_dataset = Dataset(output_dataset_args)
+        output_dataset = output_dataset.from_dict(output_dict)
+
+        return output_dataset
+    
+    
+    @staticmethod
+    def postprocess_distributed_inference_outputs(
+        dataset: Dataset,
+        inference_result: List[RewardModelInferenceResultWithInput],
+    ):
+        output_dict = {"type": "text_to_scored_textlist", "instances": inference_result}
+        output_dataset_args = copy.deepcopy(dataset.data_args)
+        output_dataset_args.dataset_path = None
+        output_dataset_args.dataset_name = f"{output_dataset_args.dataset_name}_scored"
+        output_dataset = Dataset(output_dataset_args)
+        output_dataset = output_dataset.from_dict(output_dict)
+        
+        return output_dataset
         
 
     def save(self, dir, *args, **kwargs):

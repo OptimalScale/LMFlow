@@ -1,10 +1,14 @@
 import copy
+import importlib.resources as pkg_resources
 import logging
 import os
+import subprocess
+import sys
 from typing import Optional, List, Tuple, Dict, Union
 
 import numpy as np
 from tqdm import tqdm
+import torch
 from transformers import TrainingArguments
 
 from lmflow.pipeline.utils.dpov2_trainer import DPOv2Trainer
@@ -14,11 +18,24 @@ from lmflow.args import (
     DatasetArguments,
     DPOv2AlignerArguments
 )
+from lmflow.utils.common import (
+    make_shell_args_from_dataclass, 
+    add_dataclass_attr_prefix, 
+    create_copied_dataclass
+)
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.datasets.dataset import Dataset, KEY_SCORE, KEY_TYPE, KEY_INSTANCES
+from lmflow.utils.constants import MEMORY_SAFE_DPOV2_ALIGN_ENV_VAR_TO_REMOVE
 
 
 logger = logging.getLogger(__name__)
+
+
+ReferenceModelArguments = create_copied_dataclass(
+    original_dataclass=ModelArguments, 
+    field_prefix="reference_",
+    class_prefix="Reference"
+)
 
 
 class DPOv2Aligner(BaseAligner):
@@ -102,6 +119,10 @@ class DPOv2Aligner(BaseAligner):
         output_dir = os.path.join(self.aligner_args.output_dir, "final_checkpoint")
         dpo_trainer.model.save_pretrained(output_dir)
         
+        # step 5. release resources
+        with torch.no_grad():
+            torch.cuda.empty_cache()
+        
         
     def __prepare_training_args(
         self,
@@ -128,7 +149,7 @@ class DPOv2Aligner(BaseAligner):
             run_name=args.run_name,
             remove_unused_columns=False, # DO NOT CHANGE THIS, may cause error https://discuss.huggingface.co/t/indexerror-invalid-key-16-is-out-of-bounds-for-size-0/14298/3
         )
-        logger.warning(f"Actual training arguments for dpo trainer: {training_args}")
+        logger.debug(f"Actual training arguments for dpo trainer: {training_args}")
         
         return training_args
     
@@ -276,4 +297,53 @@ class DPOv2Aligner(BaseAligner):
         
         return chosen_idx, rejected_idx
         
+
+class MemorySafeDPOv2Aligner:
+    def __init__(
+        self,
+        model_args: ModelArguments,
+        data_args: DatasetArguments,
+        aligner_args: DPOv2AlignerArguments,
+        ref_model_args: ModelArguments,
+    ):
+        self.model_args = model_args
+        self.ref_model_args = ReferenceModelArguments(**add_dataclass_attr_prefix(ref_model_args, 'reference_'))
+        self.data_args = data_args
+        self.aligner_args = aligner_args
+        self.aligner_file_path = pkg_resources.files("lmflow.pipeline.utils") / "memory_safe_dpov2_align.py"
+
+    def align(self):
+        aligner_args = make_shell_args_from_dataclass(
+            dataclass_objects=[
+                self.model_args, 
+                self.data_args, 
+                self.aligner_args,
+                self.ref_model_args
+            ],
+            format="shell",
+            ignored_args_list=['accelerator_config', 'fsdp_config', '_n_gpu'],
+        )
+        cmd = (
+            f"accelerate launch --config_file {self.aligner_args.accelerate_config_file}"
+            + " " 
+            + str(self.aligner_file_path) 
+            + " " 
+            + aligner_args
+        )
+        current_env = os.environ.copy()
+        for var in MEMORY_SAFE_DPOV2_ALIGN_ENV_VAR_TO_REMOVE:
+            current_env.pop(var, None)
         
+        cli_res = subprocess.run(
+            args=cmd,
+            stdout=sys.stdout,
+            stderr=sys.stdout,
+            shell=True,
+            preexec_fn=os.setsid,
+            env=current_env,
+        )
+        logger.info(f"MemorySafeDPOv2Aligner subprocess run finished, info at finish: {cli_res}")
+        
+        if cli_res.returncode != 0:
+            print(cli_res.stderr)
+            raise RuntimeError(f"Error during MemorySafeDPOv2Aligner: {cli_res}")

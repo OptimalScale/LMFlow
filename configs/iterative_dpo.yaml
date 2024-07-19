@@ -1,0 +1,81 @@
+# general
+## model
+model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--tensoropera--Fox-1-1.6B-Instruct-v0.1/snapshots/208e4eb147473dce763b889d5974aba38c1f03d3"  # initial model
+reference_model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--tensoropera--Fox-1-1.6B-Instruct-v0.1/snapshots/208e4eb147473dce763b889d5974aba38c1f03d3"
+reward_model_name_or_path: /home/yizhenjia/models/sfairXC-FsfairX-LLaMA3-RM-v0.1
+reward_arch_type: text_regression
+trust_remote_code: True
+
+## data
+dataset_path_list:
+  - "data/iterative-prompt-3it-100/iter1"
+  - "data/iterative-prompt-3it-100/iter2"
+  - "data/iterative-prompt-3it-100/iter3"
+conversation_template: chatml
+preprocessing_num_workers: 16
+
+## pipeline
+output_dir: ./output_models/iterative_dpo_pipelinetest
+run_name: iterative_dpo
+random_seed: 42
+use_accelerator: True
+enable_distributed_inference: True
+distributed_inference_num_instances: 8
+
+
+# inference phase
+## general
+apply_chat_template: True
+num_output_sequences: 3
+use_beam_search: False
+temperature: 1.0
+top_p: 0.9
+max_new_tokens: 4096
+enable_decode_inference_result: True
+
+## vllm
+use_vllm: True
+vllm_gpu_memory_utilization: 0.95
+vllm_tensor_parallel_size: 1
+vllm_inference_batch_size: 16
+
+
+# reward model scoring phase
+reward_model_inference_block_size: 2048
+overwrite_cache: True
+reward_model_inference_batch_size: 8 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
+
+
+# dpo phase
+## model
+do_train: True
+
+## data
+sampling_paired_method: max_min
+margin_scale: 1.0
+length_penalty: 0
+max_prompt_length: 1000
+mask_prompt: True
+
+## pipeline
+### training
+accelerate_config_file: configs/accelerate_dsz0_config.yaml
+bf16: True
+num_train_epochs: 2
+learning_rate: 2.0e-5
+warmup_steps: 100
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 1
+gradient_accumulation_steps: 16
+gradient_checkpointing: True
+loss_type: sigmoid
+lr_scheduler_type: cosine
+optim: paged_adamw_32bit
+
+### logging
+logging_steps: 2
+save_strategy: steps
+save_steps: 100
+evaluation_strategy: steps
+eval_steps: 100
+report_to: wandb

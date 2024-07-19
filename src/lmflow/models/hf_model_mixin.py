@@ -443,6 +443,13 @@ class HFModelMixin(BaseModel):
         if self.model_args.eos_padding:
             self.tokenizer.pad_token = self.tokenizer.eos_token
             
+        if not hasattr(self.backend_model.config, "pad_token_id"):
+            logger.warning("pad_token_id not found in model config. Setting pad_token_id to eos_token_id.")
+            self.backend_model.config.pad_token_id = self.backend_model.config.eos_token_id
+        elif self.backend_model.config.pad_token_id is None:
+            logger.warning("pad_token_id is None in model config. Setting pad_token_id to eos_token_id.")
+            self.backend_model.config.pad_token_id = self.backend_model.config.eos_token_id
+            
 
     def activate_model_for_inference(
         self,
