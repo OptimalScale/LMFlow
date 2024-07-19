@@ -14,6 +14,7 @@ def make_shell_args_from_dataclass(
     dataclass_objects: List, 
     format: str="subprocess",
     skip_default: bool=True,
+    ignored_args_list: Optional[List[str]]=None,
 ) -> Union[str, List[str]]:
     """Return a string or a list of strings that can be used as shell arguments.
 
@@ -34,13 +35,25 @@ def make_shell_args_from_dataclass(
     all_args = {}
     for dataclass_object in dataclass_objects:
         for k, v in dataclass_object.__dict__.items():
+            if ignored_args_list and k in ignored_args_list:
+                continue
+            if k not in dataclass_object.__dataclass_fields__:
+                # skip attributes that added dynamically
+                continue
             if not v:
+                # skip attributes with None values
                 continue
             if skip_default:
                 if dataclass_object.__dataclass_fields__[k].default == v:
                     continue
+            
             if k not in all_args:
-                all_args[k] = v
+                if isinstance(v, Path):
+                    all_args[k] = str(v)
+                elif isinstance(v, list):
+                    all_args[k] = ",".join(v)
+                else:
+                    all_args[k] = v
             elif k in all_args:
                 if all_args[k] == v:
                     continue
@@ -126,3 +139,35 @@ def remove_dataclass_attr_prefix(data_instance, prefix: str) -> Dict:
         new_attributes[new_attr_name] = attr_value
     
     return new_attributes
+
+
+def add_dataclass_attr_prefix(data_instance, prefix: str) -> Dict:
+    """Add the prefix to the attribute names of a dataclass instance.
+
+    Parameters
+    ----------
+    data_instance : dataclass
+    prefix : str
+        The prefix to add to the attribute names of the dataclass instance.
+
+    Returns
+    -------
+    Dict
+    """
+    new_attributes = {}
+    for field in fields(data_instance):
+        attr_name = field.name
+        attr_value = getattr(data_instance, attr_name)
+        new_attr_name = f"{prefix}{attr_name}"
+        new_attributes[new_attr_name] = attr_value
+    
+    return new_attributes
+
+
+def print_banner(message: str):
+    length = len(message) + 8
+    border = "#" * length
+
+    print(border)
+    print(f"#   {message}   #")
+    print(border)
