@@ -26,6 +26,7 @@ def blocking_paired(
     model_max_length: int,
     pad_token_id: int,
     padding_side: str,
+    truncation_side: str='right',
 ) -> Dict:
     block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
@@ -38,7 +39,14 @@ def blocking_paired(
             if pad_length < 0:
                 # Truncates too long samples
                 for key in [f"input_ids_{column_name}", f"attention_mask_{column_name}"]:
-                    token_dict[key][i] = token_dict[key][i][:pad_length]
+                    if truncation_side == 'right':
+                        token_dict[key][i] = token_dict[key][i][:pad_length]
+                    elif truncation_side == 'left':
+                        token_dict[key][i] = token_dict[key][i][-pad_length:]
+                    else:
+                        raise ValueError(
+                            f"truncation_side should be either 'right' or 'left', got {truncation_side}"
+                        )
             else:
                 if padding_side == 'right':
                     # Pads too short samples
@@ -77,6 +85,7 @@ def blocking(
     model_max_length: int,
     pad_token_id: int,
     padding_side: str,
+    truncation_side: str='right',
 ) -> Dict:
     block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
@@ -88,7 +97,14 @@ def blocking(
         if pad_length < 0:
             # Truncates too long samples
             for key in ["input_ids", "attention_mask", "labels"]:
-                token_dict[key][i] = token_dict[key][i][:pad_length]
+                if truncation_side == 'right':
+                    token_dict[key][i] = token_dict[key][i][:pad_length]
+                elif truncation_side == 'left':
+                    token_dict[key][i] = token_dict[key][i][-pad_length:]
+                else:
+                    raise ValueError(
+                        f"truncation_side should be either 'right' or 'left', got {truncation_side}"
+                    )
         else:
             if padding_side == 'right':
                 # Pads too short samples
@@ -133,6 +149,7 @@ def blocking_text_to_textlist(
     model_max_length: int,
     pad_token_id: int,
     padding_side: str,
+    truncation_side: str='right',
 ) -> Dict:
     block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
@@ -145,7 +162,14 @@ def blocking_text_to_textlist(
                 block_size_warning_num += 1
             if pad_length < 0:
                 # Truncates too long samples
-                token_dict["input_ids"][example_idx][content_idx] = token_dict["input_ids"][example_idx][content_idx][:pad_length]
+                if truncation_side == 'right':
+                    token_dict["input_ids"][example_idx][content_idx] = token_dict["input_ids"][example_idx][content_idx][:pad_length]
+                elif truncation_side == 'left':
+                    token_dict["input_ids"][example_idx][content_idx] = token_dict["input_ids"][example_idx][content_idx][-pad_length:]
+                else:
+                    raise ValueError(
+                        f"truncation_side should be either 'right' or 'left', got {truncation_side}"
+                    )
             else:
                 if padding_side == 'right':
                     # Pads too short samples
@@ -186,37 +210,47 @@ def paired_conversation_tokenize_function(
         token_dict[f"attention_mask_{column_name}"] = [[] for _ in range(num_example)]
         
     with CaptureLogger(tok_logger) as cl:
+        num_corrupted = 0
         for i in range(num_example):
-            for column_name in column_names:
-                messages = examples[column_name][i]["messages"]
-                system = examples[column_name][i].get("system", None)
-                tools = examples[column_name][i].get("tools", None)
-                if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
-                    tok_logger.warning(
-                        "Invalid instance encountered. Either the conversation has less than "
-                        "one round or the first message is not from the user."
-                    )
-                    continue
-            
-                if len(messages) % 2 != 0:
-                    logger.warning(
-                        "The number of messages is not even, the last message will be ignored."
-                    )
-                    messages = messages[:-1]
+            try:
+                for column_name in column_names:
+                    messages = examples[column_name][i]["messages"]
+                    system = examples[column_name][i].get("system", None)
+                    tools = examples[column_name][i].get("tools", None)
+                    if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
+                        tok_logger.warning(
+                            "Invalid instance encountered. Either the conversation has less than "
+                            "one round or the first message is not from the user."
+                        )
+                        continue
                 
-                encoded_conversation = conversation_template.encode_conversation(
-                    tokenizer=tokenizer,
-                    messages=messages,
-                    system=system,
-                    tools=tools,
-                )
-
-                input_ids = []
-                for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
-                    input_ids += user_input + assistant_result
+                    if len(messages) % 2 != 0:
+                        logger.warning(
+                            "The number of messages is not even, the last message will be ignored."
+                        )
+                        messages = messages[:-1]
                     
-                token_dict[f"input_ids_{column_name}"][i].extend(input_ids)
-                token_dict[f"attention_mask_{column_name}"][i].extend([1] * len(input_ids))
+                    encoded_conversation = conversation_template.encode_conversation(
+                        tokenizer=tokenizer,
+                        messages=messages,
+                        system=system,
+                        tools=tools,
+                    )
+
+                    input_ids = []
+                    for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
+                        input_ids += user_input + assistant_result
+                        
+                    token_dict[f"input_ids_{column_name}"][i].extend(input_ids)
+                    token_dict[f"attention_mask_{column_name}"][i].extend([1] * len(input_ids))
+                    
+            except:
+                num_corrupted += 1
+                logger.error(f"Error in encoding conversation {i}: {column_name}")
+                logger.error(f"Messages: {messages}")
+                continue
+        if num_corrupted > 0:
+            logger.error(f"Number of corrupted examples: {num_corrupted}")
                 
     if data_args.disable_group_texts:
         token_dict = blocking_paired(
@@ -226,6 +260,7 @@ def paired_conversation_tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
 
     # clm input could be much much longer than block_size
@@ -297,6 +332,7 @@ def conversation_tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
 
     # clm input could be much much longer than block_size
@@ -358,6 +394,7 @@ def tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
 
     # clm input could be much much longer than block_size
@@ -403,6 +440,7 @@ def text_to_textlist_tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
         
     return output_dict

@@ -25,6 +25,7 @@ def blocking(
     model_max_length: int,
     pad_token_id: int,
     padding_side: str,
+    truncation_side: str='right',
 ) -> Dict:
     block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
@@ -36,7 +37,14 @@ def blocking(
         if pad_length < 0:
             # Truncates too long samples
             for key in ["input_ids", "attention_mask", "labels"]:
-                token_dict[key][i] = token_dict[key][i][:pad_length]
+                if truncation_side == 'right':
+                    token_dict[key][i] = token_dict[key][i][:max_length]
+                elif truncation_side == 'left':
+                    token_dict[key][i] = token_dict[key][i][-max_length:]
+                else:
+                    raise ValueError(
+                        f"truncation_side should be either 'right' or 'left', got {truncation_side}"
+                    )
         else:
             if padding_side == 'right':
                 # Pads too short samples
@@ -125,6 +133,7 @@ def tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
 
     # clm input could be much much longer than block_size
@@ -196,6 +205,7 @@ def conversation_tokenize_function(
             model_max_length=tokenizer.model_max_length,
             pad_token_id=tokenizer.pad_token_id,
             padding_side=tokenizer.padding_side,
+            truncation_side=tokenizer.truncation_side,
         )
 
     # clm input could be much much longer than block_size
