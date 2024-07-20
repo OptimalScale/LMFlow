@@ -1,9 +1,8 @@
 # general
 ## model
-model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--tensoropera--Fox-1-1.6B-Instruct-v0.1/snapshots/208e4eb147473dce763b889d5974aba38c1f03d3"  # initial model
-reference_model_name_or_path: "/home/yizhenjia/.cache/huggingface/hub/models--tensoropera--Fox-1-1.6B-Instruct-v0.1/snapshots/208e4eb147473dce763b889d5974aba38c1f03d3"
-reward_model_name_or_path: /home/yizhenjia/models/sfairXC-FsfairX-LLaMA3-RM-v0.1
-reward_arch_type: text_regression
+model_name_or_path: tensoropera/Fox-1-1.6B-Instruct-v0.1  # initial model
+reference_model_name_or_path: tensoropera/Fox-1-1.6B-Instruct-v0.1
+reward_model_name_or_path: sfairXC/FsfairX-LLaMA3-RM-v0.1
 trust_remote_code: True
 
 ## data
@@ -11,11 +10,11 @@ dataset_path_list:
   - "data/iterative-prompt-3it-100/iter1"
   - "data/iterative-prompt-3it-100/iter2"
   - "data/iterative-prompt-3it-100/iter3"
-conversation_template: chatml
+conversation_template: fox
 preprocessing_num_workers: 16
 
 ## pipeline
-output_dir: ./output_models/iterative_dpo_pipelinetest
+output_dir: ./output_models/iterative_dpo
 run_name: iterative_dpo
 random_seed: 42
 use_accelerator: True
@@ -26,11 +25,11 @@ distributed_inference_num_instances: 8
 # inference phase
 ## general
 apply_chat_template: True
-num_output_sequences: 3
+num_output_sequences: 8
 use_beam_search: False
 temperature: 1.0
 top_p: 0.9
-max_new_tokens: 4096
+max_new_tokens: 2048
 enable_decode_inference_result: True
 
 ## vllm
@@ -41,14 +40,18 @@ vllm_inference_batch_size: 16
 
 
 # reward model scoring phase
+reward_arch_type: text_regression
+reward_torch_dtype: bf16
+reward_use_flash_attention: True
 reward_model_inference_block_size: 2048
 overwrite_cache: True
-reward_model_inference_batch_size: 8 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
+reward_model_inference_batch_size: 3 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
 
 
 # dpo phase
 ## model
 do_train: True
+use_flash_attention: True
 
 ## data
 sampling_paired_method: max_min
