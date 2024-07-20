@@ -66,7 +66,7 @@ class IterativeDPOAligner:
                 target_model_args=target_model_args,
                 reward_model_args=self.reward_model_args,
                 ref_model_args=self.ref_model_args,
-                dataset=dataset_list[iter_idx],
+                dataset=dataset_list[iter_idx-1],
             )
     
     
