@@ -197,7 +197,6 @@ class HFModelMixin(BaseModel):
             hf model config.
         """
         config_kwargs = {
-            "torch_dtype": self.torch_dtype,
             "attn_implementation": "flash_attention_2" if model_args.use_flash_attention else None,
             "cache_dir": model_args.cache_dir,
             "revision": model_args.model_revision,
@@ -309,6 +308,7 @@ class HFModelMixin(BaseModel):
         if model_args.model_name_or_path:
             model = hf_auto_model.from_pretrained(
                 model_args.model_name_or_path,
+                torch_dtype=self.torch_dtype,
                 config=self.hf_model_config,
                 quantization_config=self.quant_config,
             )
@@ -381,6 +381,7 @@ class HFModelMixin(BaseModel):
         try:
             self.backend_model = hf_auto_model.from_pretrained(
                 model_args.model_name_or_path,
+                torch_dtype=self.torch_dtype,
                 config=self.hf_model_config,
                 quantization_config=self.quant_config,
                 **inference_load_kwargs,
@@ -391,6 +392,7 @@ class HFModelMixin(BaseModel):
             )
             self.backend_model = hf_auto_model.from_pretrained(
                 model_args.model_name_or_path,
+                torch_dtype=self.torch_dtype,
                 config=self.hf_model_config,
                 quantization_config=self.quant_config,
                 **inference_load_kwargs_bak,
