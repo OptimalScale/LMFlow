@@ -1391,7 +1391,15 @@ class IterativeAlignerArguments(InferencerArguments):
     """
     Arguments for iterative aligners.
     """
-    pass
+    dataset_path_list: List[str] = field(
+        default_factory=list,
+        metadata={"help": "The list of dataset paths for iterative aligners."}
+    )
+    initial_iter_idx: int = field(
+        default=0,
+        metadata={"help": "The initial iteration index, 0 refers to the first dataset in dataset_path_list."}
+    )
+        
 
 
 @dataclass
@@ -1403,10 +1411,6 @@ class IterativeDPOAlignerArguments(IterativeAlignerArguments, DPOv2AlignerArgume
         default="./runs",
         metadata={"help": "Output path for the inferenced results"},
     )
-    dataset_path_list: List[str] = field(
-        default_factory=list,
-        metadata={"help": "The list of dataset paths for iterative aligners."}
-    )
     reward_model_inference_batch_size: int = field(
         default=1,
         metadata={"help": "The batch size for reward model inference."}
@@ -1414,6 +1418,18 @@ class IterativeDPOAlignerArguments(IterativeAlignerArguments, DPOv2AlignerArgume
     reward_model_inference_block_size: int = field(
         default=2048,
         metadata={"help": "The block size for reward model inference."}
+    )
+    do_response_generation: bool = field(
+        default=True,
+        metadata={"help": "Whether to generate responses using the model."}
+    )
+    do_scoring: bool = field(
+        default=True,
+        metadata={"help": "Whether to score the responses using the reward model."}
+    )
+    do_dpo_align: bool = field(
+        default=True,
+        metadata={"help": "Whether to perform DPO alignment."}
     )
                     
 

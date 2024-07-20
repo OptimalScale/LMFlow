@@ -20,6 +20,10 @@ random_seed: 42
 use_accelerator: True
 enable_distributed_inference: True
 distributed_inference_num_instances: 8
+initial_iter_idx: 0 # 0 refers to the first dataset in dataset_path_list
+do_response_generation: True
+do_scoring: True
+do_dpo_align: True
 
 
 # inference phase
