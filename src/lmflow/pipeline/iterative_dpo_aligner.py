@@ -49,23 +49,21 @@ class IterativeDPOAligner:
         dataset_list: List[Dataset]
     ):
         num_iterations = len(dataset_list)
-        iteration_names = [f"iteration_{i+1}" for i in range(num_iterations)]
         
-        for iter_idx, iter_name in tqdm(
-            enumerate(iteration_names), 
+        for iter_idx in tqdm(
+            range(1, num_iterations+1), 
             desc="Iterative DPO Align", 
-            total=num_iterations,
             unit="iteration"
         ):
-            if iter_idx == 0:
+            if iter_idx == 1:
                 target_model_args = self.model_args
             else:
                 target_model_args = copy.deepcopy(self.model_args)
                 target_model_args.model_name_or_path = str(self.workspace_path/f"iteration_{iter_idx-1}"/"model")
                 
             self._align_single_iteration(
-                iteration_name=iter_name,
-                target_model_args=self.model_args,
+                iteration_name=f"iteration_{iter_idx}",
+                target_model_args=target_model_args,
                 reward_model_args=self.reward_model_args,
                 ref_model_args=self.ref_model_args,
                 dataset=dataset_list[iter_idx],
@@ -120,6 +118,7 @@ class IterativeDPOAligner:
             ref_model_args=ref_model_args,
             data_args=dpo_train_data_args,
             output_dir=str(self.workspace_path/iteration_name/"model"),
+            iteration_name=iteration_name,
         )
     
     
@@ -184,6 +183,7 @@ class IterativeDPOAligner:
         ref_model_args: ModelArguments,
         data_args: DatasetArguments,
         output_dir: str,
+        iteration_name: str,
     ):
         aligner = MemorySafeDPOv2Aligner(
             model_args=model_args,
@@ -191,6 +191,7 @@ class IterativeDPOAligner:
             aligner_args=self._parse_dpo_aligner_args(
                 args=self.aligner_args,
                 output_dir=output_dir,
+                iteration_name=iteration_name,
             ),
             ref_model_args=ref_model_args,
         )
@@ -228,12 +229,14 @@ class IterativeDPOAligner:
         self,
         args: IterativeDPOAlignerArguments,
         output_dir: str,
+        iteration_name: str,
     ) -> DPOv2AlignerArguments:
         aligner_args = self.__filter_args(
             mixed_args=args,
             target_cls=DPOv2AlignerArguments,
         )
         aligner_args.output_dir = output_dir
+        aligner_args.run_name = f"{args.run_name}_{iteration_name}"
         
         return aligner_args
     
