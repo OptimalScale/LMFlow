@@ -59,7 +59,7 @@ class IterativeDPOAligner:
                 target_model_args = self.model_args
             else:
                 target_model_args = copy.deepcopy(self.model_args)
-                target_model_args.model_name_or_path = str(self.workspace_path/f"iteration_{iter_idx-1}"/"model")
+                target_model_args.model_name_or_path = str(self.workspace_path/f"iteration_{iter_idx}"/"model")
                 
             self._align_single_iteration(
                 iteration_name=f"iteration_{iter_idx+1}",
