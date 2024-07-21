@@ -526,3 +526,69 @@ class Dataset:
             raise NotImplementedError(
                 f'Currently .train_test_split is not supported for backend "{self.backend}"'
             )
+            
+            
+    def drop_instances(self, indices: list):
+        r"""
+        Drop instances from the dataset.
+
+        Parameters
+        ------------
+        indices : list.
+            A list of indices of the instances to drop from the dataset.
+        """
+        if self.backend == "huggingface":
+            self.backend_dataset = self.backend_dataset.remove_indices(indices)
+        else:
+            raise NotImplementedError(
+                f'Currently .drop_instances is not supported for backend "{self.backend}"'
+            )
+            
+    
+    def sanity_check(
+        self, 
+        drop_invalid: bool=True,
+    ):
+        r"""
+        Perform a sanity check on the dataset.
+        """
+        if self.backend == "huggingface":
+            self.hf_dataset_sanity_check(drop_invalid)
+        else:
+            raise NotImplementedError(
+                f'Currently .sanity_check is not supported for backend "{self.backend}"'
+            )
+            
+            
+    def hf_dataset_sanity_check(
+        self,
+        drop_invalid: bool=True,
+    ):
+        r"""
+        Perform a sanity check on the HuggingFace dataset.
+        """
+        if self.backend_dataset is None or len(self.backend_dataset) == 0:
+            raise ValueError("Dataset is empty.")
+
+        if self.type == 'text_to_textlist':
+            num_output_per_instance = len(self.backend_dataset['output'][0])
+            dataset_cache = self.backend_dataset.filter(lambda x: len(x['input'])!=0)
+            dataset_cache = self.backend_dataset.filter(lambda x: len(x['output']) == num_output_per_instance)
+            dataset_cache = self.backend_dataset.filter(lambda x: not all([len(output) == 0 for output in x['output']]))
+            
+            if len(dataset_cache) != len(self.backend_dataset):
+                warning_info = (
+                    f"Found {len(self.backend_dataset) - len(dataset_cache)} invalid instances "
+                    "during hf_dataset_sanity_check, please check:\n"
+                    "   1. length of input strings should not be empty\n"
+                    "   2. length of output strings should not be all empty\n"
+                    "   3. number of output strings should be consistent\n" # since we will use tensor reshape later
+                )
+                if drop_invalid:
+                    self.backend_dataset = dataset_cache
+                    logger.warning(warning_info+"Invalid instances are dropped.")
+                else:
+                    raise ValueError(warning_info)
+        
+        else:
+            logger.warning(f"No sanity check for {self.type} dataset.")
