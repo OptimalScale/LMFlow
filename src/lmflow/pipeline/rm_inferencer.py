@@ -271,10 +271,13 @@ class RewardModelInferencer(BasePipeline):
                 # there will be only 2 examples for instance 0 to run and then the 
                 # actual batch size changes.
                 actual_batch_size = len(batch['input'])
-                batched_inference_res = self.model.inference(
-                    inputs=torch.LongTensor(batch['input_ids']).flatten(start_dim=0, end_dim=1).to("cuda"),
-                ).logits
-                batched_inference_res = batched_inference_res.to("cpu").reshape(actual_batch_size, -1, 1).squeeze(dim=-1).tolist() # [bs, num_output_sequences]
+                input_tensor = torch.LongTensor([
+                    [list(arr) for arr in batch['input_ids'][batch_idx]] 
+                    for batch_idx in range(actual_batch_size)
+                ]).flatten(start_dim=0, end_dim=1).to("cuda")
+                batched_inference_res = self.model.inference(input_tensor).logits
+                batched_inference_res = batched_inference_res.to("cpu").reshape(actual_batch_size, -1, 1).squeeze(dim=-1).tolist() 
+                # [bs, num_output_sequences]
                 batched_final_res = {
                     "input": batch['input'].tolist(),
                     "output": [

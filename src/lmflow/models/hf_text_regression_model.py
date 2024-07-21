@@ -393,23 +393,22 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         inference_inputs = self.tokenize(dataset)
                 
         if enable_distributed_inference:
+            inference_inputs.sanity_check(drop_invalid=True)
             inference_inputs = inference_inputs.get_backend_dataset()
-            data_to_batch = [
-                {
-                    "input": inference_inputs[i]['input'],
-                    "output": inference_inputs[i]['output'],
-                    "input_ids": torch.LongTensor(inference_inputs[i]['input_ids'])
-                } for i in range(len(inference_inputs))
-            ]
-            inference_inputs = ray.data.from_items(data_to_batch) 
+            inference_inputs = ray.data.from_items(inference_inputs) 
             # -> Dict[str, np.ndarray]
             # Example (batch size=2):
             # {'input': array(['...','...'], dtype=object),
             #  'output': array([array(["...", "..."], dtype=object), array(['...','...'], dtype=object)], dtype=object),
-            #  'input_ids': array([[[128000, 128006,    882, ..., 128256, 128256, 128256],
-            #          [128000, 128006,    882, ..., 128256, 128256, 128256]],
-            #         [[128000, 128006,    882, ..., 128256, 128256, 128256],
-            #          [128000, 128006,    882, ..., 128256, 128256, 128256]]])}
+            #  'input_ids': array(
+            #      [
+            #          array([array([    27,     91,    882, ..., 128256, 128256, 128256]),
+            #                 array([    27,     91,    882, ..., 128256, 128256, 128256])],
+            #                dtype=object),
+            #          array([array([    27,     91,    882, ..., 128256, 128256, 128256]),
+            #                 array([    27,     91,    882, ..., 128256, 128256, 128256])],
+            #                dtype=object)
+            #      ], dtype=object)}
         
         return inference_inputs
             
