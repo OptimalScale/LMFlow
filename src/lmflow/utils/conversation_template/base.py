@@ -9,6 +9,7 @@ import logging
 
 from transformers import PreTrainedTokenizer
 
+from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
 
 logger = logging.getLogger(__name__)
 
@@ -156,6 +157,8 @@ class ListFormatter(Formatter):
 class ConversationTemplate:
     user_formatter: Formatter
     assistant_formatter: Formatter
+    function_formatter: Optional[Formatter] = None,
+    observation_formatter: Optional[Formatter] = None,
     system_formatter: Optional[Formatter] = None
     tools_formatter: Optional[Formatter] = None
     separator: Optional[TemplateComponent] = None
@@ -392,6 +395,166 @@ class ConversationTemplate:
             return obj
         else:
             raise ValueError(f"Object type {type(obj)} is not supported yet.")
+
+@dataclass
+class ConversationTemplateForTool(ConversationTemplate):
+    def encode_conversation(
+        self,
+        tokenizer: PreTrainedTokenizer,
+        messages: List[Dict[str, str]],
+        system: Optional[str] = None,
+        tools: Optional[List[str]] = None,
+        remove_last_sep: bool = False,
+        **kwargs
+    ) -> Sequence[Tuple[List[int], List[int]]]:
+        r'''
+        Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+        Data example: 
+        ```json
+        {
+            "conversation_id": 2,
+            "system": "sysinfo1",
+            "tools": ["tool_1_desc"],
+            "messages": [
+                {
+                    "role": "user",
+                    "content": "hi"
+                },
+                {
+                    "role": "assistant",
+                    "content": "Hello!"
+                }
+            ]
+        }
+        ```
+        '''
+        assert isinstance(messages, list), "Messages must be a list."
+        
+        if tools:
+            tools = ','.join(tools)
+            # logger.warning("Tools are not supported yet. Please include tools in the system message manually.")
+        
+        if system:
+            if system.replace(" ",""):
+                if not self.system_formatter:
+                    raise ValueError("Your dataset contains system message but no system formatter is provided. "
+                                     "Consider either providing a system formatter or removing system prompt from your dataset.")
+            else:
+                system = None
+        encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
+        
+        if self.separator and remove_last_sep:
+            # For models that require a separator between messages, 
+            # user can include the seperator at the end of each template
+            # and specify the separator. Auto formatting will remove the 
+            # last separator once user specifies this option.
+            encoded_pairs = self.remove_last_separator(encoded_pairs, tokenizer)
+            
+        if self.special_starter:
+            # For models that has ONLY ONE bos token at the beginning of 
+            # a conversation session (not a conversation pair), user can
+            # specify a special starter to add that starter to the very
+            # beginning of the conversation session. 
+            # eg:
+            #   llama-2: <s> and </s> at every pair of conversation 
+            #   v.s.
+            #   llama-3: <|begin_of_text|> only at the beginning of a session
+            encoded_pairs = self.add_special_starter(encoded_pairs, tokenizer)
+            
+        if self.special_stopper:
+            encoded_pairs = self.add_special_stopper(encoded_pairs, tokenizer)
+        
+        return encoded_pairs
+        
+    def _encode(
+        self,
+        tokenizer: PreTrainedTokenizer,
+        messages: List[Dict[str, str]],
+        system: Optional[str] = None,
+        tools: Optional[str] = None,
+        **kwargs
+    ) -> Sequence[Tuple[List[int], List[int]]]:
+        # TODO: truncation according to model max length
+        # TODO: make sure the last few tokens are "learnable", not masked with token_id = -100.
+        
+        res_all = []
+        # Concatenate the system and tools strings
+        system = system + tools
+        system_formatted = self.system_formatter.format(content=system) if system else []
+        system_encoded = self._encode_template(system_formatted, tokenizer)
+        ls_for_save = []
+        for i in range(0, len(messages), 1):
+            if messages[i]['role'] == CONVERSATION_ROLE_NAMES['user']:
+                user_message = messages[i]
+                user_formatted = self.user_formatter.format(content=user_message["content"])
+                user_encoded = self._encode_template(user_formatted, tokenizer)
+                if i == 0:
+                    user_encoded = system_encoded + user_encoded
+                ls_for_save.append(user_encoded)
+            elif messages[i]['role'] == CONVERSATION_ROLE_NAMES['function']:
+                function_message = messages[i]
+                function_formatted = self.assistant_formatter.format(content=function_message['content'])
+                function_encoded = self._encode_template(function_formatted, tokenizer)
+                ls_for_save.append(function_encoded)
+            elif messages[i]['role'] == CONVERSATION_ROLE_NAMES['observation']:
+                observation_message = messages[i]
+                observation_formatted = self.user_formatter.format(content=observation_message['content'])
+                observation_encoded = self._encode_template(observation_formatted, tokenizer)
+                ls_for_save.append(observation_encoded)
+            elif messages[i]['role'] == CONVERSATION_ROLE_NAMES['assistant']:
+                assistant_message = messages[i]
+                assistant_formatted = self.assistant_formatter.format(content=assistant_message["content"])
+                assistant_encoded = self._encode_template(assistant_formatted, tokenizer)
+                ls_for_save.append(assistant_encoded)
+                # res_tuple = (ls_for_save[0], ls_for_save[1], ls_for_save[2], ls_for_save[3])
+                res_all.append(tuple(ls_for_save))
+                ls_for_save = []
+        
+        if ls_for_save:
+            res_all.append(tuple(ls_for_save))
+            
+        return res_all
+    
+    def _encode_template(
+        self, 
+        template: List[TemplateComponent],
+        tokenizer: PreTrainedTokenizer,
+        **kwargs
+    ) -> List[int]:
+        """Encode template components into token ids.
+
+        Parameters
+        ----------
+        template : List[TemplateComponent]
+            Formatted template components.
+        tokenizer : PreTrainedTokenizer
+            Tokenizer to convert tokens into token ids.
+
+        Returns
+        -------
+        List[int]
+            Encoded token ids.
+        """
+        encoded_ids = []
+        for component in template:
+            if component.type == 'string':
+                if len(component.content) == 0:
+                    logger.warning("Empty string component found in the template.")
+                    continue
+                else:
+                    encoded_ids += tokenizer.encode(component.content, add_special_tokens=False)
+            elif component.type == 'token':
+                if component.content == 'bos_token':
+                    encoded_ids += [tokenizer.bos_token_id]
+                elif component.content == 'eos_token':
+                    encoded_ids += [tokenizer.eos_token_id]
+                else:
+                    encoded_ids += self._ensure_id_list(tokenizer.convert_tokens_to_ids(component.content))
+            elif component.type == 'token_id':
+                encoded_ids += self._ensure_id_list(component.content)
+            else:
+                raise NotImplementedError(f"Component type {component.type} is not supported yet.")
+        return encoded_ids
 
 
 EMPTY_TEMPLATE = ConversationTemplate(
