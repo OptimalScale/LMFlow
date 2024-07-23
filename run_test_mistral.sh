@@ -1,0 +1,20 @@
+deepspeed --include localhost:0,1,2,3,4,5,6,7 --master_port=31000 examples/finetune.py \
+    --model_name_or_path mistralai/Mistral-7B-v0.1 \
+    --dataset_path data/struct_100m/train \
+    --output_dir output_models/exp_001_Lora_Structlm_epoch_1_lr1e-4_batch_4_lorar8_block512_Mistral \
+    --overwrite_output_dir \
+    --num_train_epochs 1 \
+    --learning_rate 1e-4 \
+    --block_size 512 \
+    --use_lora 1 \
+    --lora_r 8 \
+    --save_aggregated_lora 1 \
+    --per_device_train_batch_size 6 \
+    --deepspeed configs/ds_config_zero2.json \
+    --bf16 \
+    --run_name exp_001_Lora_Structlm_epoch_1_lr1e-4_batch_4_lorar8_block512_Mistral###\
+    --validation_split_percentage 0 \
+    --logging_steps 20 \
+    --do_train \
+    --ddp_timeout 72000  \
+    --save_steps 5000 \
