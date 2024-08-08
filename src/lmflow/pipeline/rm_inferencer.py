@@ -305,7 +305,7 @@ class RewardModelInferencer(BasePipeline):
         logger.info(f"Distributed reward model inference result preview:\n{df_model_output.head(10)}")
         
         model_output = [
-            {"input": row["input"], "output": row["output"]} for _, row in df_model_output.iterrows()
+            {"input": row["input"], "output": row["output"]} for _, row in df_model_output[:].iterrows()
         ]
         
         return model_output

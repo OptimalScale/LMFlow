@@ -209,7 +209,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         elif dataset_type == "text_to_textlist":
             tokenize_fn = text_to_textlist_tokenize_function
             text_to_textlist_tokenize_fn_kwargs = {
-                "add_special_tokens": add_special_tokens,
+                "add_special_tokens": False,
                 "use_truncation": use_truncation,
             }
             tokenize_fn_kwargs.update(text_to_textlist_tokenize_fn_kwargs)

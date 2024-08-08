@@ -62,7 +62,7 @@ sampling_paired_method: max_min
 margin_scale: 1.0
 length_penalty: 0
 max_prompt_length: 1000
-mask_prompt: True
+mask_prompt: False
 
 ## pipeline
 ### training
