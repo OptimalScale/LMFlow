@@ -53,6 +53,7 @@ def main():
         dataset,
         release_gpu=False,
         enable_decode_inference_result=pipeline_args.enable_decode_inference_result,
+        enable_distributed_vllm_inference=pipeline_args.enable_distributed_vllm_inference,
     )
     
 

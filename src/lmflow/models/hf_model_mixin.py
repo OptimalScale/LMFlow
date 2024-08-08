@@ -197,7 +197,6 @@ class HFModelMixin(BaseModel):
             hf model config.
         """
         config_kwargs = {
-            "torch_dtype": self.torch_dtype,
             "attn_implementation": "flash_attention_2" if model_args.use_flash_attention else None,
             "cache_dir": model_args.cache_dir,
             "revision": model_args.model_revision,
@@ -309,6 +308,7 @@ class HFModelMixin(BaseModel):
         if model_args.model_name_or_path:
             model = hf_auto_model.from_pretrained(
                 model_args.model_name_or_path,
+                torch_dtype=self.torch_dtype,
                 config=self.hf_model_config,
                 quantization_config=self.quant_config,
             )
@@ -381,6 +381,7 @@ class HFModelMixin(BaseModel):
         try:
             self.backend_model = hf_auto_model.from_pretrained(
                 model_args.model_name_or_path,
+                torch_dtype=self.torch_dtype,
                 config=self.hf_model_config,
                 quantization_config=self.quant_config,
                 **inference_load_kwargs,
@@ -391,6 +392,7 @@ class HFModelMixin(BaseModel):
             )
             self.backend_model = hf_auto_model.from_pretrained(
                 model_args.model_name_or_path,
+                torch_dtype=self.torch_dtype,
                 config=self.hf_model_config,
                 quantization_config=self.quant_config,
                 **inference_load_kwargs_bak,
@@ -442,6 +444,13 @@ class HFModelMixin(BaseModel):
         
         if self.model_args.eos_padding:
             self.tokenizer.pad_token = self.tokenizer.eos_token
+            
+        if not hasattr(self.backend_model.config, "pad_token_id"):
+            logger.warning("pad_token_id not found in model config. Setting pad_token_id to eos_token_id.")
+            self.backend_model.config.pad_token_id = self.backend_model.config.eos_token_id
+        elif self.backend_model.config.pad_token_id is None:
+            logger.warning("pad_token_id is None in model config. Setting pad_token_id to eos_token_id.")
+            self.backend_model.config.pad_token_id = self.backend_model.config.eos_token_id
             
 
     def activate_model_for_inference(

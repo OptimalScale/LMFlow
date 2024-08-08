@@ -443,3 +443,152 @@ class Dataset:
                 
         else:
             logger.error(f"Unsupported format when saving the dataset: {format}.")
+        
+            
+    def sample(self, n: int, seed: int=42):
+        r"""
+        Sample n instances from the dataset.
+
+        Parameters
+        ------------
+        n : int.
+            The number of instances to sample from the dataset.
+
+        Returns
+        ---------
+
+        sample_dataset : Dataset object.
+            A new dataset object containing the sampled instances.
+        """
+        if self.backend == "huggingface":
+            sampled_dataset = self.backend_dataset.shuffle(seed=seed).select(range(n))
+            output_dataset = self.create_from_dict(
+                {
+                    "type": self.get_type(),
+                    "instances": [
+                        {
+                            col_name: sampled_dataset[col_name][i] for col_name in sampled_dataset.column_names
+                        } for i in range(n)
+                    ]
+                }
+            )
+            return output_dataset
+        else:
+            raise NotImplementedError(
+                f'Currently .sample is not supported for backend "{self.backend}"'
+            )
+            
+            
+    def train_test_split(self, test_size: float=0.2, shuffle: bool=True, seed: int=42):
+        r"""
+        Split the dataset into training and testing sets.
+
+        Parameters
+        ------------
+        test_size : float, default=0.2.
+            The proportion of the dataset that will be used for testing.
+
+        Returns
+        ---------
+
+        train_dataset : Dataset object.
+            A new dataset object containing the training instances.
+        
+        test_dataset : Dataset object.
+            A new dataset object containing the testing instances.
+        """
+        if self.backend == "huggingface":
+            splited = self.backend_dataset.train_test_split(
+                test_size=test_size, shuffle=shuffle, seed=seed
+            )
+            train_dataset = self.create_from_dict(
+                {
+                    "type": self.get_type(),
+                    "instances": [
+                        {
+                            col_name: splited["train"][col_name][i] for col_name in splited["train"].column_names
+                        } for i in range(len(splited["train"]))
+                    ]
+                }
+            )
+            test_dataset = self.create_from_dict(
+                {
+                    "type": self.get_type(),
+                    "instances": [
+                        {
+                            col_name: splited["test"][col_name][i] for col_name in splited["test"].column_names
+                        } for i in range(len(splited["test"]))
+                    ]
+                }
+            )
+            return train_dataset, test_dataset
+        else:
+            raise NotImplementedError(
+                f'Currently .train_test_split is not supported for backend "{self.backend}"'
+            )
+            
+            
+    def drop_instances(self, indices: list):
+        r"""
+        Drop instances from the dataset.
+
+        Parameters
+        ------------
+        indices : list.
+            A list of indices of the instances to drop from the dataset.
+        """
+        if self.backend == "huggingface":
+            self.backend_dataset = self.backend_dataset.remove_indices(indices)
+        else:
+            raise NotImplementedError(
+                f'Currently .drop_instances is not supported for backend "{self.backend}"'
+            )
+            
+    
+    def sanity_check(
+        self, 
+        drop_invalid: bool=True,
+    ):
+        r"""
+        Perform a sanity check on the dataset.
+        """
+        if self.backend == "huggingface":
+            self.hf_dataset_sanity_check(drop_invalid)
+        else:
+            raise NotImplementedError(
+                f'Currently .sanity_check is not supported for backend "{self.backend}"'
+            )
+            
+            
+    def hf_dataset_sanity_check(
+        self,
+        drop_invalid: bool=True,
+    ):
+        r"""
+        Perform a sanity check on the HuggingFace dataset.
+        """
+        if self.backend_dataset is None or len(self.backend_dataset) == 0:
+            raise ValueError("Dataset is empty.")
+
+        if self.type == 'text_to_textlist':
+            num_output_per_instance = len(self.backend_dataset['output'][0])
+            dataset_cache = self.backend_dataset.filter(lambda x: len(x['input'])!=0)
+            dataset_cache = self.backend_dataset.filter(lambda x: len(x['output']) == num_output_per_instance)
+            dataset_cache = self.backend_dataset.filter(lambda x: not all([len(output) == 0 for output in x['output']]))
+            
+            if len(dataset_cache) != len(self.backend_dataset):
+                warning_info = (
+                    f"Found {len(self.backend_dataset) - len(dataset_cache)} invalid instances "
+                    "during hf_dataset_sanity_check, please check:\n"
+                    "   1. length of input strings should not be empty\n"
+                    "   2. length of output strings should not be all empty\n"
+                    "   3. number of output strings should be consistent\n" # since we will use tensor reshape later
+                )
+                if drop_invalid:
+                    self.backend_dataset = dataset_cache
+                    logger.warning(warning_info+"Invalid instances are dropped.")
+                else:
+                    raise ValueError(warning_info)
+        
+        else:
+            logger.warning(f"No sanity check for {self.type} dataset.")
