@@ -1,0 +1,114 @@
+lmflow.tokenization.hf_text_regression_model
+============================================
+
+.. py:module:: lmflow.tokenization.hf_text_regression_model
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.tokenization.hf_text_regression_model.logger
+   lmflow.tokenization.hf_text_regression_model.tok_logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.tokenization.hf_text_regression_model.blocking_paired
+   lmflow.tokenization.hf_text_regression_model.blocking
+   lmflow.tokenization.hf_text_regression_model.blocking_text_to_textlist
+   lmflow.tokenization.hf_text_regression_model.paired_conversation_tokenize_function
+   lmflow.tokenization.hf_text_regression_model.conversation_tokenize_function
+   lmflow.tokenization.hf_text_regression_model.tokenize_function
+   lmflow.tokenization.hf_text_regression_model.text_to_textlist_tokenize_function
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: tok_logger
+
+.. py:function:: blocking_paired(token_dict: Dict, column_names: List, block_size: int, model_max_length: int, pad_token_id: int, padding_side: str, truncation_side: str = 'right') -> Dict
+
+.. py:function:: blocking(token_dict: Dict, block_size: int, model_max_length: int, pad_token_id: int, padding_side: str, truncation_side: str = 'right') -> Dict
+
+.. py:function:: blocking_text_to_textlist(token_dict: Dict, block_size: int, model_max_length: int, pad_token_id: int, padding_side: str, truncation_side: str = 'right') -> Dict
+
+.. py:function:: paired_conversation_tokenize_function(examples, data_args: lmflow.args.DatasetArguments, tokenizer: Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast], column_names, conversation_template: lmflow.utils.conversation_template.ConversationTemplate) -> Dict
+
+.. py:function:: conversation_tokenize_function(examples, data_args: lmflow.args.DatasetArguments, tokenizer: Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast], column_names, conversation_template: lmflow.utils.conversation_template.ConversationTemplate) -> Dict
+
+   
+   Handels conversation datasets tokenization
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: tokenize_function(examples, data_args: lmflow.args.DatasetArguments, tokenizer: Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast], column_names, label_columns, tokenized_column_order, add_special_tokens, use_truncation) -> Dict
+
+   
+   Handels text_only and text2text datasets tokenization
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: text_to_textlist_tokenize_function(examples, data_args: lmflow.args.DatasetArguments, tokenizer: Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast], column_names, add_special_tokens, use_truncation) -> Dict
+
+   
+   For rm inference, and don't need attn mask and labels.
+   NOTE: input_ids here refers to the tokenized input_ids of the input **and** output
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

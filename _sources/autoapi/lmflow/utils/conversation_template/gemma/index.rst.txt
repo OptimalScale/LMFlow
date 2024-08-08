@@ -1,0 +1,38 @@
+lmflow.utils.conversation_template.gemma
+========================================
+
+.. py:module:: lmflow.utils.conversation_template.gemma
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.gemma.logger
+   lmflow.utils.conversation_template.gemma.GEMMA_TEMPLATE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.gemma.GemmaConversationTemplate
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: GemmaConversationTemplate
+
+   Bases: :py:obj:`lmflow.utils.conversation_template.base.ConversationTemplate`
+
+
+   .. py:method:: encode_conversation(*args, **kwargs)
+
+
+.. py:data:: GEMMA_TEMPLATE
+

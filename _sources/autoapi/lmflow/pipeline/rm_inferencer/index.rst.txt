@@ -1,0 +1,104 @@
+lmflow.pipeline.rm_inferencer
+=============================
+
+.. py:module:: lmflow.pipeline.rm_inferencer
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.rm_inferencer.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.rm_inferencer.RewardModelInferencer
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: RewardModelInferencer(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, inferencer_args: lmflow.args.InferencerArguments, **kwargs)
+
+   Bases: :py:obj:`lmflow.pipeline.base_pipeline.BasePipeline`
+
+
+   
+   Initializes the `Inferencer` class with given arguments.
+
+
+   :Parameters:
+
+       **model_args** : ModelArguments object.
+           Contains the arguments required to load the model.
+
+       **data_args** : DatasetArguments object.
+           Contains the arguments required to load the dataset.
+
+       **inferencer_args** : InferencerArguments object.
+           Contains the arguments required to perform inference.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: inferencer_args
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: local_rank
+
+
+   .. py:attribute:: world_size
+
+
+   .. py:method:: inference(model: lmflow.models.hf_text_regression_model.HFTextRegressionModel, dataset: lmflow.datasets.dataset.Dataset, transform_dataset_in_place: bool = True, use_vllm: bool = False, enable_distributed_inference: bool = False, **kwargs) -> lmflow.datasets.dataset.Dataset
+
+
+   .. py:method:: _inference(model: lmflow.models.hf_text_regression_model.HFTextRegressionModel, model_input: Union[lmflow.datasets.dataset.Dataset, ray.data.Dataset], enable_distributed_inference: bool = False, **kwargs)
+
+
+   .. py:method:: __inference(model: lmflow.models.hf_text_regression_model.HFTextRegressionModel, model_input: lmflow.datasets.dataset.Dataset) -> Union[List[float], List[List[float]]]
+
+
+   .. py:method:: __distributed_inference(model: lmflow.models.hf_text_regression_model.HFTextRegressionModel, model_input: ray.data.Dataset, num_instances: int, batch_size: int) -> List[lmflow.utils.data_utils.RewardModelInferenceResultWithInput]
+
+
+   .. py:method:: __vllm_inference(model: lmflow.models.hf_text_regression_model.HFTextRegressionModel, model_input: List[str], enable_distributed_inference: bool = False) -> List[float]
+      :abstractmethod:
+
+
+
+   .. py:method:: __post_process_model_output(model_output: transformers.modeling_outputs.SequenceClassifierOutputWithPast) -> List[float]
+
+
+   .. py:method:: flatten_list(list_of_list: List[List]) -> Tuple[List, List[int]]
+
+
+   .. py:method:: compress_list(list_to_compress: List, sublist_lengths: List[int]) -> List[List]
+
+

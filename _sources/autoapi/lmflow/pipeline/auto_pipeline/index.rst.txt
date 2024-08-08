@@ -1,0 +1,72 @@
+lmflow.pipeline.auto_pipeline
+=============================
+
+.. py:module:: lmflow.pipeline.auto_pipeline
+
+.. autoapi-nested-parse::
+
+   Return a pipeline automatically based on its name.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.auto_pipeline.PIPELINE_MAPPING
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.auto_pipeline.AutoPipeline
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.pipeline.auto_pipeline.is_package_version_at_least
+
+
+Module Contents
+---------------
+
+.. py:function:: is_package_version_at_least(package_name, min_version)
+
+.. py:data:: PIPELINE_MAPPING
+
+.. py:class:: AutoPipeline
+
+   
+   The class designed to return a pipeline automatically based on its name.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: get_pipeline(pipeline_name, model_args, data_args, pipeline_args, *args, **kwargs)
+      :classmethod:
+
+
+

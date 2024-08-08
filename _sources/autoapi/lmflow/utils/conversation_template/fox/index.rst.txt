@@ -1,0 +1,19 @@
+lmflow.utils.conversation_template.fox
+======================================
+
+.. py:module:: lmflow.utils.conversation_template.fox
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.fox.FOX_TEMPLATE
+
+
+Module Contents
+---------------
+
+.. py:data:: FOX_TEMPLATE
+
