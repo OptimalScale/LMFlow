@@ -1344,6 +1344,9 @@ class DPOAlignerArguments:
     run_name: Optional[str] = field(
         default="dpo", metadata={"help": "The name of the run."}
     )
+    eval_dataset_path: Optional[str] = field(
+        default=None, metadata={"help": "The path of the eval dataset."}
+    )
 
 
 @dataclass
