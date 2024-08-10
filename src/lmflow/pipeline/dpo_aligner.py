@@ -71,6 +71,8 @@ class DPOAligner(BaseAligner):
         self.model_args = model_args
         self.data_args = data_args
         self.aligner_args = aligner_args
+        self.train_dataset = None
+        self.eval_dataset = None
 
     def _initialize_trainer(self, model, tokenizer):
         peft_config = LoraConfig(
@@ -118,7 +120,7 @@ class DPOAligner(BaseAligner):
             args=training_args,
             beta=self.aligner_args.beta,
             train_dataset=self.train_dataset,
-            eval_dataset=self.eval_dataset,
+            eval_dataset=self.eval_dataset if self.eval_dataset else None,
             tokenizer=tokenizer,
             peft_config=peft_config,
             max_prompt_length=self.aligner_args.beta,
@@ -136,13 +138,14 @@ class DPOAligner(BaseAligner):
                       and len(x["prompt"]) + len(x["rejected"]) <= self.aligner_args.max_length
         )
         # load evaluation set
-        self.eval_dataset = get_paired_dataset(data_root=self.data_args.dataset_path,
-                                               data_dir="test",
-                                               sanity_check=True)
-        self.eval_dataset = self.eval_dataset.filter(
-            lambda x: len(x["prompt"]) + len(x["chosen"]) <= self.aligner_args.max_length
-                      and len(x["prompt"]) + len(x["rejected"]) <= self.aligner_args.max_length
-        )
+        if self.aligner_args.eval_dataset_path:
+            self.eval_dataset = get_paired_dataset(data_root=self.aligner_args.eval_dataset_path,
+                                                data_dir="test",
+                                                sanity_check=True)
+            self.eval_dataset = self.eval_dataset.filter(
+                lambda x: len(x["prompt"]) + len(x["chosen"]) <= self.aligner_args.max_length
+                        and len(x["prompt"]) + len(x["rejected"]) <= self.aligner_args.max_length
+            )
 
     def align(self, model, dataset, reward_model):
         tokenizer = model.get_tokenizer()
