@@ -20,7 +20,7 @@ xformers==0.0.27
     "instances": [
         {
             "system": "You are a helpful assistant with access to the following functions. Use them if required - ",
-            "tools": "[{\"name\": \"", \"description\": \"", \"parameters\": {\"type\": \"object\", \"properties\": {\"property_1\": {\"type\": \"xxx\", \"description\": \"\"}, \"property_2\": {\"type\": \"xxx\", \"description\": \"\"}}, \"required\": [\"required_1\", \"property_n\"]}}]",
+            "tools": ["{\"name\": \"", \"description\": \"", \"parameters\": {\"type\": \"object\", \"properties\": {\"property_1\": {\"type\": \"xxx\", \"description\": \"\"}, \"property_2\": {\"type\": \"xxx\", \"description\": \"\"}}, \"required\": [\"required_1\", \"property_n\"]}}",]",
             "messages": [
                 {
                     "role": "user",
@@ -42,7 +42,7 @@ xformers==0.0.27
         },
         {
             "system": "You are a helpful assistant, with no access to external functions.",
-            "tools": "[]",
+            "tools": [],
             "messages": [
                 {
                     "role": "user",
