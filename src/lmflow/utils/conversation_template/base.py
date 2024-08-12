@@ -430,9 +430,11 @@ class ConversationTemplateForTool(ConversationTemplate):
         '''
         assert isinstance(messages, list), "Messages must be a list."
         
-        if tools:
+        if tools is not None:
             tools = ','.join(tools)
             # logger.warning("Tools are not supported yet. Please include tools in the system message manually.")
+        else:
+            tools = ''
         
         if system:
             if system.replace(" ",""):
