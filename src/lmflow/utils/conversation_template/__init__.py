@@ -5,7 +5,6 @@ from .base import EMPTY_TEMPLATE, EMPTY_NO_SPECIAL_TOKENS_TEMPLATE, Conversation
 from .chatglm import CHATGLM3_TEMPLATE
 from .chatml import CHATML_TEMPLATE
 from .deepseek import DEEPSEEK_TEMPLATE
-from .fox import FOX_TEMPLATE
 from .gemma import GEMMA_TEMPLATE
 from .internlm import INTERNLM2_TEMPLATE
 from .llama import LLAMA2_TEMPLATE, LLAMA3_TEMPLATE
@@ -22,7 +21,6 @@ PRESET_TEMPLATES = {
     'disable': EMPTY_TEMPLATE,
     'empty': EMPTY_TEMPLATE,
     'empty_no_special_tokens': EMPTY_NO_SPECIAL_TOKENS_TEMPLATE,
-    'fox': FOX_TEMPLATE,
     'gemma': GEMMA_TEMPLATE,
     'internlm2': INTERNLM2_TEMPLATE,
     'llama2': LLAMA2_TEMPLATE,

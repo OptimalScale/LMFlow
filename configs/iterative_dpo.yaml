@@ -1,16 +1,16 @@
 # general
 ## model
-model_name_or_path: tensoropera/Fox-1-1.6B-Instruct-v0.1  # initial model
-reference_model_name_or_path: tensoropera/Fox-1-1.6B-Instruct-v0.1
+model_name_or_path: meta-llama/Meta-Llama-3-8B-Instruct
+reference_model_name_or_path: meta-llama/Meta-Llama-3-8B-Instruct
 reward_model_name_or_path: sfairXC/FsfairX-LLaMA3-RM-v0.1
 trust_remote_code: True
 
 ## data
 dataset_path_list:
-  - "data/iterative-prompt-3it-100/iter1"
-  - "data/iterative-prompt-3it-100/iter2"
-  - "data/iterative-prompt-3it-100/iter3"
-conversation_template: fox
+  - data/iterative-prompt-3it/iter1
+  - data/iterative-prompt-3it/iter2
+  - data/iterative-prompt-3it/iter3
+conversation_template: llama3
 preprocessing_num_workers: 16
 
 ## pipeline
@@ -32,7 +32,7 @@ apply_chat_template: True
 num_output_sequences: 8
 use_beam_search: False
 temperature: 1.0
-top_p: 0.9
+top_p: 1.0
 max_new_tokens: 2048
 enable_decode_inference_result: True
 
@@ -49,7 +49,7 @@ reward_torch_dtype: bf16
 reward_use_flash_attention: True
 reward_model_inference_block_size: 2048
 overwrite_cache: True
-reward_model_inference_batch_size: 3 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
+reward_model_inference_batch_size: 10 # the actual batch size for rm forward will be reward_model_inference_batch_size * num_output_sequences
 
 
 # dpo phase
@@ -66,10 +66,11 @@ mask_prompt: False
 
 ## pipeline
 ### training
-accelerate_config_file: configs/accelerate_dsz0_config.yaml
+accelerate_config_file: configs/accelerate_dsz2_config.yaml
 bf16: True
 num_train_epochs: 2
-learning_rate: 2.0e-5
+max_steps: 1200
+learning_rate: 5.0e-7
 warmup_steps: 100
 per_device_train_batch_size: 1
 per_device_eval_batch_size: 1
@@ -82,7 +83,7 @@ optim: paged_adamw_32bit
 ### logging
 logging_steps: 2
 save_strategy: steps
-save_steps: 100
+save_steps: 500
 evaluation_strategy: steps
-eval_steps: 100
+eval_steps: 500
 report_to: wandb
