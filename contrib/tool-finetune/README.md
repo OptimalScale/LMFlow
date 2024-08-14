@@ -1,6 +1,6 @@
 ## Function-call Finetune
 
-### Conda environment
+### Pip dependency
 
 ```
 bitsandbytes==0.40.0
@@ -70,6 +70,6 @@ xformers==0.0.27
 
 ### Command-Line Arguments
 - `--model-name-or-path` - Specifies the name or path of the model used for
-- `conversation_template` - So far supports the following choices: llama3_for_tool, qwen2_for_tool
-- `dataset_path` - The path to the dataset that has been converted to the specified format
-- `output_model_path` - Directory to store the finetuned model and logs
+- `--conversation_template` - So far supports the following choices: llama3_for_tool, qwen2_for_tool
+- `--dataset_path` - The path to the dataset that has been converted to the specified format
+- `--output_model_path` - Directory to store the finetuned model and logs
