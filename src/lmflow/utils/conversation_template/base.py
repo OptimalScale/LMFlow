@@ -495,12 +495,12 @@ class ConversationTemplateForTool(ConversationTemplate):
                 ls_for_save.append(user_encoded)
             elif messages[i]['role'] == CONVERSATION_ROLE_NAMES['function']:
                 function_message = messages[i]
-                function_formatted = self.assistant_formatter.format(content=function_message['content'])
+                function_formatted = self.function_formatter.format(content=function_message['content'])
                 function_encoded = self._encode_template(function_formatted, tokenizer)
                 ls_for_save.append(function_encoded)
             elif messages[i]['role'] == CONVERSATION_ROLE_NAMES['observation']:
                 observation_message = messages[i]
-                observation_formatted = self.user_formatter.format(content=observation_message['content'])
+                observation_formatted = self.observation_formatter.format(content=observation_message['content'])
                 observation_encoded = self._encode_template(observation_formatted, tokenizer)
                 ls_for_save.append(observation_encoded)
             elif messages[i]['role'] == CONVERSATION_ROLE_NAMES['assistant']:
