@@ -60,7 +60,7 @@ class ModelArguments:
         a string representing the path or name of a pretrained
         model checkpoint for weights initialization. If None, a model will be trained from scratch.
 
-    model_type :  str
+    arch_type :  str
         a string representing the type of model to use if training from
         scratch. If not provided, a pretrained model will be used.
     
@@ -140,7 +140,7 @@ class ModelArguments:
             )
         }
     )
-    model_type: Optional[str] = field(
+    arch_type: Optional[str] = field(
         default=None,
         metadata={"help": "If training from scratch, pass a model type from the list: " + ", ".join(MODEL_TYPES)},
     )
@@ -358,7 +358,63 @@ class ModelArguments:
                 logger.warning("use_qlora is set to True, but use_lora is not set to True. Setting use_lora to True.")
                 self.use_lora = True
 
-
+@dataclass           
+class DiffuserModelArguments:
+    """
+    Arguments for Diffuser model
+    
+    model_name_or_path : str
+        a string representing the path or name of a pretrained
+        model checkpoint for weights initialization. If None, a model will be trained from scratch.
+        
+    arch_type :  str
+        a string representing the type of model to use 
+        
+    use_lora: bool
+        a boolean indicating whether to use lora.
+        
+    lora_r: int
+        an integer indicating the rank of the lora parameters.
+        
+    lora_alpha: int
+        an integer indicating the merging ratio between the fine-tuned model and the original.
+        
+    lora_target_modules: List[str]
+        a list of strings representing the modules to apply lora.
+        
+    lora_dropout: float
+        a float indicating the dropout rate in lora.linear
+    """
+    
+    model_name_or_path: Optional[str] = field(
+        default=None, metadata={"help": "The model name or path."}
+    )
+    
+    arch_type: Optional[str] = field(
+        default=None, metadata={"help": "The model type."}
+    )
+    
+    use_lora: bool = field(
+        default=False,
+        metadata={"help": "Whether to lora."},
+    )
+    
+    lora_r: int = field(
+        default=8,
+        metadata={"help": "the rank of the lora parameters. The smaller lora_r is , the fewer parameters lora has."},
+    )
+    lora_alpha: int = field(
+        default=8,
+        metadata={
+            "help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
+    )
+    lora_target_modules: List[str] = field(
+        default=None, metadata={"help": "Modules to apply lora."}
+    )
+    lora_dropout: float = field(
+        default=0.1,
+        metadata={"help": "The dropout rate in lora.linear."},
+    )
 @dataclass
 class VisModelArguments(ModelArguments):
     low_resource: Optional[bool] = field(
@@ -613,6 +669,77 @@ class DatasetArguments:
                 extension = self.validation_file.split(".")[-1]
                 assert extension in ["csv", "json", "txt"], "`validation_file` should be a csv, a json or a txt file."
 
+@dataclass
+class T2IDatasetArguments(DatasetArguments):
+    """
+    Additional Arguments for T2I dataset
+    
+    image_folder : str
+        a string representing the folder of the image file.
+        
+    image_size : int
+        an integer indicating the size of the image.
+        
+    image_crop_type : str
+        a string representing the type of image crop.
+        
+    preprocessor_kind : str
+        a string representing how to get text embedding.
+        
+    is_t2i : bool
+        a boolean indicating the flag for the modality type.
+    """
+    
+    image_folder: Optional[str] = field(
+        default=None, metadata={"help": "The folder of the image file."}
+    )
+    
+    image_size: Optional[int] = field(
+        default=512, metadata={"help": "The size of the image."}
+    )
+    
+    image_crop_type: Optional[str] = field(
+        default="center", metadata={"help": "The type of image crop."}
+    )
+    
+    preprocessor_kind: Optional[str] = field(
+        default="simple", metadata={"help": "How to get text embedding."}
+    )
+    
+    is_t2i: Optional[bool] = field(
+        default=True, metadata={"help": "Flag for the modality type."}
+    )
+    
+    def __post_init__(self):
+        def check_extension(file_path: str, extension: str):
+            assert file_path.split(".")[-1] == extension, f"The file must be a {extension} file."
+        
+        
+        if self.dataset_path is None or self.image_folder is None:
+            raise ValueError("The dataset_path, image_folder must be provided.")
+            
+        else:
+            root_path = Path(self.dataset_path)
+            if self.train_file is None:
+                if root_path.joinpath("train.json").exists():
+                    self.train_file = "train.json"
+                else:
+                    raise ValueError("The train_file must be provided.")
+        
+            check_extension(self.train_file, "json")
+            if (self.validation_file is not None and self.test_file is None)\
+                or (self.validation_file is None and self.test_file is not None):
+                    same_file = self.validation_file if self.validation_file is not None else self.test_file
+                    self.validation_file = same_file
+                    self.test_file = same_file
+            if self.validation_file is not None:
+                check_extension(self.validation_file, "json")
+                if not root_path.joinpath(self.validation_file).exists():
+                    self.validation_file = None
+            if self.test_file is not None:
+                check_extension(self.test_file, "json")
+                if not root_path.joinpath(self.test_file).exists():
+                    self.test_file = None
 
 @dataclass
 class MultiModalDatasetArguments(DatasetArguments):
@@ -1375,6 +1502,115 @@ class IterativeAlignerArguments(InferencerArguments):
     pass
                     
 
+@dataclass  
+class DiffuserTunerArguments:
+    """
+    Arguments for Diffuser Tuner
+    
+    output_dir : str
+        The output directory.
+        
+    logging_dir : str
+        The logging directory. {output_dir}/{logging_dir}
+    
+    overwrite_output_dir : bool
+        Overwrite the content of the output directory.
+    
+    mixed_precision : str
+        Whether to use mixed precision. ["no", "bf16", "fp16"]
+        
+    do_train : bool
+        Whether to run training.
+    num_train_epochs : int
+        The number of training epochs.
+    train_batch_size : int
+        The number of batch size in training.
+    learning_rate : float
+        The learning rate.
+    weight_decay : float
+        The weight decay.
+    save_steps : int
+        How often to save the model.
+    save_total_limit : int
+        The total number of checkpoints to save.
+        
+    do_valid : bool
+        Whether to run evaluation.
+    valid_steps : int
+        How often to run evaluation.
+    valid_seed : int
+        The seed for evaluation.
+    
+    do_valid : bool
+        Whether to run test.
+    valid_seed : int
+        The seed for test.
+    """
+    
+    output_dir: Optional[str] = field(
+        default="output", metadata={"help": "The output directory."}
+    )
+    
+    logging_dir: Optional[str] = field(
+        default="logs", metadata={"help": "The logging directory."}
+    )
+    
+    overwrite_output_dir: bool = field(
+        default=False, metadata={"help": "Overwrite the content of the output directory."}
+    )
+    
+    mixed_precision: str = field(
+        default="no", metadata={"help": "Whether to use mixed precision."}
+    )
+    
+    do_train: bool = field(
+        default=True, metadata={"help": "Whether to run training."}
+    )
+    
+    num_train_epochs: Optional[int] = field(
+        default=50, metadata={"help": "The number of training epochs."}
+    )
+    
+    train_batch_size: Optional[int] = field(
+        default=1, metadata={"help": "The number of batch size in training."}
+    )
+    
+    learning_rate: Optional[float] = field(
+        default=1e-4, metadata={"help": "The learning rate."}
+    )
+    
+    weight_decay: Optional[float] = field(
+        default=0.0, metadata={"help": "The weight decay."}
+    )
+    
+    do_valid: bool = field(
+        default=True, metadata={"help": "Whether to run evaluation."}
+    )
+    
+    do_test: bool = field(
+        default=True, metadata={"help": "Whether to run testing."}
+    )
+    
+    valid_steps: Optional[int] = field(
+        default=50, metadata={"help": "The evaluation steps."}
+    )
+    
+    valid_seed: Optional[int] = field(
+        default=42, metadata={"help": "The seed for validation."}
+    )
+    
+    test_seed: Optional[int] = field(
+        default=42, metadata={"help": "The seed for testing."}
+    )
+    
+    save_steps: Optional[int] = field(
+        default=500, metadata={"help": "The saving steps."}
+    )
+    
+    save_total_limit: Optional[int] = field(
+        default=None, metadata={"help": "The total number of checkpoints to save."}
+    )
+
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,
     "evaluator": EvaluatorArguments,
@@ -1385,6 +1621,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "dpo_aligner": DPOAlignerArguments,
     "rm_tuner": RewardModelTunerArguments,
     "dpov2_aligner": DPOv2AlignerArguments,
+    "diffuser_tuner": DiffuserTunerArguments,
 }
 
 

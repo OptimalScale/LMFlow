@@ -9,16 +9,22 @@ import os.path as osp
 from tqdm import tqdm
 import logging
 
-import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 
-from diffuser_args import T2IDatasetArguments
+from lmflow.args import T2IDatasetArguments
 
 logger = logging.getLogger(__name__)
 
 class CustomT2IDataset(Dataset):
-    """Dataset for T2I data"""
+    """
+    Dataset for T2I data
+    
+    Parameters
+    ------------
+    data_args: T2IDatasetArguments
+        The arguments for the dataset.
+    """
     
     def __init__(self, data_args: T2IDatasetArguments):
         self.data_args = data_args
@@ -26,7 +32,7 @@ class CustomT2IDataset(Dataset):
         self.data_file = osp.join(data_args.dataset_path, data_args.train_file)
         
         self.data_dict = json.load(open(self.data_file, "r"))
-        assert self.data_dict["type"] == "image_text", "The dataset type must be image_text"
+        assert self.data_dict["type"] == "image_text", "The dataset type must be text-image."
         
         self.data_instances = self.data_dict["instances"]
     
@@ -45,7 +51,30 @@ class CustomT2IDataset(Dataset):
         }
 
 class EncodePreprocessor(object):
-    def __init__(self, data_args: T2IDatasetArguments, kind: str = "simple", **kwargs):
+    """
+    This class implement the preparation of the data for the model.
+    For different Diffusion model, the preparation is different.
+    
+    Parameters
+    ------------
+    data_args: T2IDatasetArguments
+        The arguments for the dataset.
+    
+    **kwargs
+        The arguments for the preprocessor.
+        
+    Example
+    ------------
+    >>> data_args.preprocessor_kind
+    simple
+    >>> kwargs = {"tokenizer": tokenizer, "text_encoder": text_encoder, "vae": vae}
+    >>> raw_dataset = CustomT2IDataset(data_args)
+    >>> preprocessor = EncodePreprocessor(data_args=data_args, **kwargs)
+    >>> dataset = PreprocessedT2IDataset(raw_dataset, data_args, preprocessor)
+    """
+    
+    def __init__(self, data_args: T2IDatasetArguments, 
+                 **kwargs):
         self.transform = transforms.Compose(
             [
                 transforms.Resize(data_args.image_size, interpolation=transforms.InterpolationMode.BILINEAR),
@@ -56,10 +85,15 @@ class EncodePreprocessor(object):
         )
         
         self.pre_func = None
-        if kind == "simple":
+        if data_args.preprocessor_kind == "simple":
             self.register_simple_func(**kwargs)
+        else:
+            raise NotImplementedError(f"The preprocessor kind {data_args.preprocessor_kind} is not implemented.")
     
-    def register_simple_func(self, tokenizer, text_encoder, vae):
+    def register_simple_func(self, 
+                             tokenizer, 
+                             text_encoder, 
+                             vae):
         self.tokenizer = tokenizer
         self.text_encoder = text_encoder
         self.vae = vae
@@ -90,7 +124,10 @@ class EncodePreprocessor(object):
 class PreprocessedT2IDataset(Dataset):
     "Preprocess dataset with prompt"
     
-    def __init__(self, raw_dataset:Dataset, data_args: T2IDatasetArguments, preprocessor:EncodePreprocessor):
+    def __init__(self, raw_dataset:Dataset, 
+                 data_args: T2IDatasetArguments, 
+                 preprocessor:EncodePreprocessor):
+        del data_args # Unused variable
         self.data_dict = []
         
         logger.info("Preprocessing data ...")
@@ -103,10 +140,10 @@ class PreprocessedT2IDataset(Dataset):
     def __getitem__(self, idx):
         return self.data_dict[idx]
 
-def build_t2i_dataset(data_args: T2IDatasetArguments, tokenizer, text_encoder, vae):
+def build_t2i_dataset(data_args: T2IDatasetArguments, 
+                      **kwargs):
     raw_dataset = CustomT2IDataset(data_args)
-    # dataset = SimpleT2IDataset(raw_dataset, data_args, tokenizer, text_encoder, vae)
-    preprocessor = EncodePreprocessor(kind="simple", data_args=data_args, tokenizer=tokenizer, text_encoder=text_encoder, vae=vae)
+    preprocessor = EncodePreprocessor(data_args=data_args, **kwargs)
     dataset = PreprocessedT2IDataset(raw_dataset, data_args, preprocessor)
     
     return dataset

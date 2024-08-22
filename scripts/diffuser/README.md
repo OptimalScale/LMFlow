@@ -1,10 +1,4 @@
-# Fine-tuning Text2Img
-
-Here is a fork function for fine-tuning text2image diffusion model based on diffusers, under the framework of lmflow.
-
-## Environment Preparation
-
-After install the `lmflow`, directly use `pip install -r requirements.txt` for extensive packages of t2i fine-tuning.
+# Diffusers fine-tuning
 
 ## Data Preparation
 
@@ -55,12 +49,16 @@ And the `valid.json` and `test.json` should be the format as follow:
 
 Here is a specific example of the data [dog_t2i_data_example](https://drive.google.com/drive/folders/106ahvIrXbiuZMBw0NuOTjY0vnM_xXARW?usp=sharing)
 
-## Fine-tuning
+## Pretrained Models
 
-For convenience, we provide a script `finetune_t2i.sh` for fine-tuning. It can be used as follow:
+The script will automatically download pretrained weights from huggingface. Just pass the correct path of pretrained weight like `stabilityai/stable-diffusion-2-1` to the script arg `model_name_or_path`.
+
+## Finetune
+
+For convenience, we provide a script `run_finetune_t2i.sh` for fine-tuning. It can be used as follow:
 
 ```bash
-bash finetune_t2i.sh \
+bash scripts/diffuser/run_finetune_t2i.sh \
     --model_name_or_path "stabilityai/stable-diffusion-2-1" \
     --dataset_path "data/example"
 ```
@@ -69,9 +67,9 @@ The `model_name_or_path` is the model name in [huggingface](https://huggingface.
 
 There are also some optional arguments for the script:
 
-- `model_type`: The type of the model, which can be `unet` or `transformer`. Default is `unet`. (The `transformer` is not supported yet.)
-- `output_dir`: The output directory of the fine-tuned model. Default is `output`.
-- `main_port`: The main port of the server. Default is `29500`.
+- `arch_type`: The type of the model, which can be `unet` or `transformer`. Default is `unet`. (The `transformer` is not supported yet.)
+- `output_dir`: The output directory of the fine-tuned model. Default is `output_dir`.
+- `main_process_port`: The main port of the server. Default is `29500`.
 - `img_size`: The size of the image for fine-tuning, validation and testing. Default is `768`.
 
-For more customization, you can refer to the `finetune_t2i.sh` and `finetune_t2i.py`.
+For more customization, you can refer to the [run_finetune_t2i.sh](./run_finetune_t2i.sh) and  example [finetune_t2i.py](../../examples/finetune_t2i.py).
