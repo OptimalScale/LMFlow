@@ -168,6 +168,6 @@ def print_banner(message: str):
     length = len(message) + 8
     border = "#" * length
 
-    print(border)
-    print(f"#   {message}   #")
-    print(border)
+    logger.info(border)
+    logger.info(f"#   {message}   #")
+    logger.info(border)

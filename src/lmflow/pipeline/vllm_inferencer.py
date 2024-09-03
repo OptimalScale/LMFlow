@@ -2,7 +2,6 @@
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 import copy
-from functools import partial
 import importlib.resources as pkg_resources
 import json
 import logging
@@ -10,6 +9,7 @@ import os
 os.environ['VLLM_WORKER_MULTIPROC_METHOD']='spawn'
 import subprocess
 import sys
+from functools import partial
 from typing import List, Union, Optional, Dict, Any
 
 import numpy as np

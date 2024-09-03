@@ -23,6 +23,10 @@ from lmflow.utils.common import remove_dataclass_attr_prefix, create_copied_data
 logger = logging.getLogger(__name__)
 
 
+# NOTE:
+# In training processes that needs more than one model such as dpo (reference & target),
+# ppo (actor & critic), etc., we use the following function to create separate model arguments 
+# to distinguish among them.
 ReferenceModelArguments = create_copied_dataclass(
     original_dataclass=ModelArguments, 
     field_prefix="reference_",
