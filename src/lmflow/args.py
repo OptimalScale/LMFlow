@@ -991,6 +991,10 @@ class InferencerArguments:
         default=1,
         metadata={"help": "batch size for inference"},
     )
+    vllm_inference_batch_size: int = field(
+        default=1,
+        metadata={"help": "The batch size for VLLM inference."}
+    )
     temperature: float = field(
         default=0.0,
         metadata={"help": "Temperature during inference."},
@@ -1071,6 +1075,18 @@ class InferencerArguments:
     enable_decode_inference_result: Optional[bool] = field(
         default=False,
         metadata={"help": "Whether to decode the inference results."},
+    )
+    tensor_parallel_size: Optional[int] = field(
+        default=1,
+        metadata={"help": "The tp size for distributed (multi-instance) inference."}
+    )
+    enable_distributed_inference: Optional[bool] = field(
+        default=False,
+        metadata={"help": "Whether to use multi-instance VLLM inference."}
+    )
+    distributed_inference_num_instances: Optional[int] = field(
+        default=1,
+        metadata={"help": "The number of instances for multi-instance VLLM inference."}
     )
     
     # vllm inference args
@@ -1354,6 +1370,12 @@ class DPOv2AlignerArguments(FinetunerArguments):
     """
     The arguments for the DPOv2 training script.
     """
+    # general args
+    random_seed: Optional[int] = field(default=42, metadata={"help": "the random seed"})
+    accelerate_config_file: Optional[str] = field(
+        default=None, 
+        metadata={"help": "file path for accelerate config file, only used in memory safe dpov2 align."}
+    )
     # pair sampling args
     margin_scale: Optional[float] = field(default=1.0, metadata={"help": "the margin scale"})
     sampling_paired_method: Optional[str] = field(default="max_random", metadata={"help": "the choose type"})
@@ -1372,7 +1394,46 @@ class IterativeAlignerArguments(InferencerArguments):
     """
     Arguments for iterative aligners.
     """
-    pass
+    dataset_path_list: List[str] = field(
+        default_factory=list,
+        metadata={"help": "The list of dataset paths for iterative aligners."}
+    )
+    initial_iter_idx: int = field(
+        default=0,
+        metadata={"help": "The initial iteration index, 0 refers to the first dataset in dataset_path_list."}
+    )
+        
+
+
+@dataclass
+class IterativeDPOAlignerArguments(IterativeAlignerArguments, DPOv2AlignerArguments):
+    """
+    Arguments for iterative DPO aligners.
+    """
+    output_dir: Optional[str] = field(
+        default="./runs",
+        metadata={"help": "Output path for the inferenced results"},
+    )
+    reward_model_inference_batch_size: int = field(
+        default=1,
+        metadata={"help": "The batch size for reward model inference."}
+    )
+    reward_model_inference_block_size: int = field(
+        default=2048,
+        metadata={"help": "The block size for reward model inference."}
+    )
+    do_response_generation: bool = field(
+        default=True,
+        metadata={"help": "Whether to generate responses using the model."}
+    )
+    do_scoring: bool = field(
+        default=True,
+        metadata={"help": "Whether to score the responses using the reward model."}
+    )
+    do_dpo_align: bool = field(
+        default=True,
+        metadata={"help": "Whether to perform DPO alignment."}
+    )
                     
 
 PIPELINE_ARGUMENT_MAPPING = {
@@ -1385,6 +1446,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "dpo_aligner": DPOAlignerArguments,
     "rm_tuner": RewardModelTunerArguments,
     "dpov2_aligner": DPOv2AlignerArguments,
+    "iterative_dpo_aligner": IterativeDPOAlignerArguments,
 }
 
 

@@ -24,6 +24,8 @@ import os, shutil
 from typing import List, Union, Optional, Dict
 from pathlib import Path
 
+import ray
+import ray.data
 import torch
 import transformers
 import bitsandbytes
@@ -56,6 +58,7 @@ from lmflow.utils.constants import (
     CONVERSATION_DATASET_DESCRIPTION,
 )
 from lmflow.utils.conversation_template import PRESET_TEMPLATES
+from lmflow.utils.data_utils import VLLMInferenceResultWithInput
 from lmflow.tokenization.hf_decoder_model import (
     tokenize_function, 
     conversation_tokenize_function
@@ -93,6 +96,7 @@ except Exception as e:
         )
     else:
         logger.warning(f'An error occurred when importing flash_attn, flash attention is disabled: {e}')
+
 
 class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     r"""
@@ -443,7 +447,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         inputs: Union[str, List[str]],
         sampling_params: Optional[SamplingParams] = None,
         **kwargs,
-    ) -> Union[List[List[str]], List[List[List[int]]]]:
+    ) -> List[VLLMInferenceResultWithInput]:
         """Perform VLLM inference process of the model.
 
         Parameters
@@ -455,12 +459,14 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
         Returns
         -------
-        Union[List[List[str]], List[List[List[int]]]]
-            When `sampling_params.detokenize = True`, return a list of list of strings. Inner list
-            contains sampling_params.n samples for a single prompt (i.e., `len(res[i]) = sampling_params.n`).
-            Outer list contains the results for all prompts (i.e., `len(res) = len(inputs)`).
+        List[VLLMInferenceResultWithInput]
+            Return a list of VLLMInferenceResultWithInput, where each
+            element contains the input prompt and the corresponding output.
             
-            When `sampling_params.detokenize = False`, return a list of list of list of ints 
+            When `sampling_params.detokenize = True`, the output would be a list of strings,
+            contains sampling_params.n samples for the corresponding prompt.
+            
+            When `sampling_params.detokenize = False`, return a list of list of ints 
             (token ids, no decoding after generation).
         """
         vllm_outputs = self.backend_model_for_inference.generate(
@@ -469,12 +475,13 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             use_tqdm=True,
         )
         final_output = []
-        if sampling_params.detokenize:
-            for output in vllm_outputs:
-                final_output.append([sentence.text for sentence in output.outputs])
-        else:
-            for output in vllm_outputs:
-                final_output.append([sentence.token_ids for sentence in output.outputs])
+        for output in vllm_outputs:
+            if sampling_params.detokenize:
+                output_list = [sentence.text for sentence in output.outputs]  
+            else:
+                output_list = [sentence.token_ids for sentence in output.outputs]
+                
+            final_output.append({"input": output.prompt, "output": output_list})
                                 
         return final_output
     
@@ -483,8 +490,10 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self,
         dataset: Dataset,
         apply_chat_template: bool = True,
+        enable_distributed_inference: bool = False,
         use_vllm: bool = False,
-    ) -> Union[List[str], Dict[str, torch.Tensor]]:
+        **kwargs,
+    ) -> Union[List[str], ray.data.Dataset, Dict[str, torch.Tensor]]:
         """
         Prepare inputs for inference.
     
@@ -507,10 +516,15 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         if use_vllm:
             inference_inputs = self.__prepare_inputs_for_vllm_inference(
                 dataset=dataset, 
-                apply_chat_template=apply_chat_template
+                apply_chat_template=apply_chat_template,
+                enable_distributed_inference=enable_distributed_inference,
             )
         else:
-            inference_inputs = self.__prepare_inputs_for_inference(dataset)
+            inference_inputs = self.__prepare_inputs_for_inference(
+                dataset,
+                apply_chat_template=apply_chat_template,
+                enable_distributed_inference=enable_distributed_inference,
+            )
             
         return inference_inputs
     
@@ -519,7 +533,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self,
         dataset: Dataset,
         apply_chat_template: bool = True,
-    ) -> List[str]:
+        enable_distributed_inference: bool = False,
+    ) -> Union[List[str], ray.data.Dataset]:
         if dataset.get_type() == 'text_only':
             if apply_chat_template:
                 dataset = dataset.map(
@@ -556,11 +571,13 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         elif dataset.get_type() == 'conversation':
             if apply_chat_template:
                 def preprocess_conversation(sample):
-                    if len(sample['messages'])%2 == 0:
-                        conversation = sample['messages'][:-1]
+                    conversation = sample['messages'][:-1] if len(sample['messages'])%2 == 0 else sample['messages']
                         
-                    if sample['messages'][-1]['role'] != 'assistant':
-                        logger.warning("Not a valid conversation, skip.")
+                    if sample['messages'][-1]['role'] != 'user':
+                        logger.warning(
+                            "Not a valid conversation for generation, since the conversation "
+                            "doesn't end up with an user message. Skip."
+                        )
                         sample_out = {"templated": ""}
                     else:
                         sample_out = {"templated": self.tokenizer.apply_chat_template(
@@ -589,12 +606,16 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
         inference_inputs = [sentence for sentence in inference_inputs if len(sentence) > 0]
         
+        if enable_distributed_inference:            
+            inference_inputs = ray.data.from_items(inference_inputs) # -> Dict[str, np.ndarray], {"item": array(['...', '...', '...'])}
+        
         return inference_inputs
     
     
     def __prepare_inputs_for_inference(
         self,
         dataset: Dataset,
+        **kwargs,
     ):
         raise NotImplementedError("prepare_inputs_for_inference is not implemented")
 

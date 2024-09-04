@@ -1,19 +1,23 @@
 #!/usr/bin/env python
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
-import os
-import sys
-import signal
-import json
-from pathlib import Path
-import logging
-import subprocess
+import copy
 import importlib.resources as pkg_resources
-from typing import List, Union, Optional
-import time
+import json
+import logging
+import os
+os.environ['VLLM_WORKER_MULTIPROC_METHOD']='spawn'
+import subprocess
+import sys
+from functools import partial
+from typing import List, Union, Optional, Dict, Any
 
-from vllm import SamplingParams
+import numpy as np
+import ray
+import ray.data
+from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from transformers import AutoTokenizer
+from vllm import SamplingParams, LLM
 
 from lmflow.datasets import Dataset
 from lmflow.pipeline.base_pipeline import BasePipeline
@@ -24,7 +28,8 @@ from lmflow.args import (
     DatasetArguments,
 )
 from lmflow.utils.common import make_shell_args_from_dataclass
-from lmflow.utils.constants import RETURN_CODE_ERROR_BUFFER
+from lmflow.utils.constants import RETURN_CODE_ERROR_BUFFER, MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE
+from lmflow.utils.data_utils import VLLMInferenceResultWithInput
 
 
 logger = logging.getLogger(__name__)
@@ -78,8 +83,8 @@ class VLLMInferencer(InferencerWithOffloading):
             top_k=inference_args.top_k,
             stop_token_ids=[self.eos_token_id] + inference_args.additional_stop_token_ids
         )
-
-
+        
+        
     def inference(
         self,
         model: HFDecoderModel, 
@@ -87,7 +92,9 @@ class VLLMInferencer(InferencerWithOffloading):
         enable_decode_inference_result: bool = True,
         release_gpu: bool = False,
         inference_args: Optional[InferencerArguments] = None,
-    ) -> Union[List[List[str]], List[List[List[int]]]]:
+        enable_distributed_inference: bool = False,
+        **kwargs,
+    ) -> List[VLLMInferenceResultWithInput]:
         """Perform inference using the provided model and dataset. Will save inference results if
         `save_results` is set to True in `inferencer_args`.
 
@@ -108,13 +115,14 @@ class VLLMInferencer(InferencerWithOffloading):
 
         Returns
         -------
-        Union[List[List[str]], List[List[List[int]]]]
-            When `enable_decode_inference_result = True`, return a list of list of strings. Inner list
-            contains inference_args.num_output_sequences samples for a single prompt 
-            (i.e., `len(res[i]) = inference_args.num_output_sequences`). Outer list 
-            contains the results for all prompts (i.e., `len(res) = len(dataset)`).
+        List[VLLMInferenceResultWithInput]
+            Return a list of VLLMInferenceResultWithInput, where each
+            element contains the input prompt and the corresponding output.
             
-            When `enable_decode_inference_result = False`, return a list of list of list of ints 
+            When `enable_decode_inference_result = True`, the output would be a list of strings,
+            contains sampling_params.n samples for the corresponding prompt.
+            
+            When `enable_decode_inference_result = False`, return a list of list of ints 
             (token ids, no decoding after generation).
         """
         if inference_args:
@@ -128,24 +136,149 @@ class VLLMInferencer(InferencerWithOffloading):
         sampling_params.detokenize = enable_decode_inference_result
         
         model_input = model.prepare_inputs_for_inference(
-            dataset=dataset, 
+            dataset=dataset,
             apply_chat_template=self.inferencer_args.apply_chat_template,
-            use_vllm=self.inferencer_args.use_vllm
+            use_vllm=self.inferencer_args.use_vllm,
+            enable_distributed_inference=enable_distributed_inference,
         )
         
+        if enable_distributed_inference:
+            outputs = self._distributed_inference(
+                model=model, 
+                model_input=model_input, 
+                sampling_params=sampling_params,
+                num_instances=kwargs.get("distributed_inference_num_instances"),
+                batch_size=kwargs.get("inference_batch_size", 4),
+                release_gpu=release_gpu,
+            )
+        else:
+            outputs = self._inference(
+                model=model,
+                model_input=model_input, 
+                sampling_params=sampling_params,
+                release_gpu=release_gpu,
+            )
+
+        if self.inferencer_args.save_results:
+            self.save_inference_results(outputs, self.inferencer_args.results_path)
+            
+        return outputs
+
+
+    def _inference(
+        self,
+        model: HFDecoderModel, 
+        model_input: List[str], 
+        sampling_params: SamplingParams,
+        release_gpu: bool = False,
+    ) -> List[VLLMInferenceResultWithInput]:        
         outputs = model.inference(
             inputs=model_input,
             sampling_params=sampling_params,
             release_gpu=release_gpu,
-            use_vllm=self.inferencer_args.use_vllm,
+            use_vllm=True,
             vllm_gpu_memory_utilization=self.inferencer_args.vllm_gpu_memory_utilization,
             vllm_tensor_parallel_size=self.inferencer_args.vllm_tensor_parallel_size,
         )
-                
-        if self.inferencer_args.save_results:
-            self.save_inference_results(outputs, self.inferencer_args.results_path)
-                    
+        
         return outputs
+    
+    
+    def _distributed_inference(
+        self,
+        model: HFDecoderModel, 
+        model_input: ray.data.Dataset, 
+        sampling_params: SamplingParams,
+        num_instances: int,
+        batch_size: int = 4,
+        release_gpu: bool = False,
+    ) -> List[VLLMInferenceResultWithInput]:
+        # prepare distributed inference resources
+        # from https://github.com/vllm-project/vllm/blob/main/examples/offline_inference_distributed.py
+        ## strategy
+        def scheduling_strategy_fn():
+            # One bundle per tensor parallel worker
+            pg = ray.util.placement_group(
+                [{
+                    "GPU": 1,
+                    "CPU": 1
+                }] * self.inferencer_args.vllm_tensor_parallel_size,
+                strategy="STRICT_PACK",
+            )
+            return dict(
+                scheduling_strategy=PlacementGroupSchedulingStrategy(
+                    pg, placement_group_capture_child_tasks=True
+                )
+            )
+            
+        resources_kwarg: Dict[str, Any] = {}
+        if self.inferencer_args.vllm_tensor_parallel_size == 1:
+            # For tensor_parallel_size == 1, we simply set num_gpus=1.
+            resources_kwarg["num_gpus"] = 1
+        else:
+            # Otherwise, we have to set num_gpus=0 and provide
+            # a function that will create a placement group for
+            # each instance.
+            resources_kwarg["num_gpus"] = 0
+            resources_kwarg["ray_remote_args_fn"] = scheduling_strategy_fn
+            
+        ## predictor
+        class DistributedPredictor:
+            def __init__(
+                self, 
+                model: HFDecoderModel,
+                sampling_params: SamplingParams,
+                vllm_gpu_memory_utilization: float,
+                vllm_tensor_parallel_size: int,
+                release_gpu: bool=False,
+            ):
+                self.model = copy.deepcopy(model)
+                self.model.activate_model_for_inference(
+                    use_vllm=True,
+                    vllm_gpu_memory_utilization=vllm_gpu_memory_utilization,
+                    vllm_tensor_parallel_size=vllm_tensor_parallel_size,
+                )
+                self.sampling_params = sampling_params
+                self.release_gpu = release_gpu
+                
+            def __call__(self, batch: Dict[str, np.ndarray]):
+                """batch: Dict[str, np.ndarray], {"item": array(['...', '...', '...', ...])}
+                """
+                batched_inference_res = self.model.inference(
+                    inputs=batch['item'],
+                    sampling_params=self.sampling_params,
+                    release_gpu=self.release_gpu,
+                    use_vllm=True,
+                ) # this is the postprocessed output, see model.__vllm_inference
+                batched_final_res = {
+                    "input": [sample['input'] for sample in batched_inference_res],
+                    "output": [sample['output'] for sample in batched_inference_res] 
+                } # do this since we're writing to a pandas dataframe
+                return batched_final_res
+            
+        # inference        
+        model_input_mapping = model_input.map_batches(
+            DistributedPredictor,
+            concurrency=num_instances, # Set the concurrency to the number of LLM instances.
+            batch_size=batch_size,
+            fn_constructor_kwargs={
+                "model": model,
+                "sampling_params": sampling_params,
+                "vllm_gpu_memory_utilization": self.inferencer_args.vllm_gpu_memory_utilization,
+                "vllm_tensor_parallel_size": self.inferencer_args.vllm_tensor_parallel_size,
+                "release_gpu": release_gpu,
+            },
+            **resources_kwarg,
+        )
+        
+        df_model_output = model_input_mapping.to_pandas() # the actual forwards are executed here
+        logger.info(f"Distributed vllm inference result preview:\n{df_model_output.head(10)}")
+        
+        model_output = [
+            {"input": row["input"], "output": row["output"]} for _, row in df_model_output[:].iterrows()
+        ]
+        
+        return model_output
     
     
     def save_inference_results(
@@ -181,7 +314,7 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
         self.inferencer_file_path = pkg_resources.files("lmflow.pipeline.utils") / "memory_safe_vllm_inference.py"
         
     
-    def inference(self):
+    def inference(self) -> List[VLLMInferenceResultWithInput]:
         inferencer_args = make_shell_args_from_dataclass(
             dataclass_objects=[
                 self.model_args, 
@@ -191,13 +324,17 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             format="shell",
         )
         cmd = "python " + str(self.inferencer_file_path) + " " + inferencer_args
+        current_env = os.environ.copy()
+        for var in MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE:
+            current_env.pop(var, None)
         
         cli_res = subprocess.run(
             args=cmd,
             stdout=sys.stdout,
             stderr=sys.stdout,
             shell=True,
-            preexec_fn=os.setsid
+            preexec_fn=os.setsid,
+            env=current_env,
         )
         logger.info(f"MemorySafeVLLMInference subprocess run finished, info at finish: {cli_res}")
         
