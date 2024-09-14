@@ -7,7 +7,7 @@ import copy
 import logging
 import os
 import sys
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable, Optional, Tuple, Union
 
 import datasets
 import transformers
@@ -211,7 +211,12 @@ class Finetuner(BaseTuner):
 
         return lm_datasets
 
-    def create_customized_optimizer(self, base_trainer_class, model_args):
+    def create_customized_optimizer(
+        self, 
+        base_trainer_class: Union[Trainer, PeftTrainer], 
+        model_args,
+        use_lisa: bool = False,
+    ):
         class CustomizedOptimTrainer(base_trainer_class):
 
             @staticmethod
@@ -407,8 +412,85 @@ class Finetuner(BaseTuner):
                     )
                 if is_sagemaker_mp_enabled():
                     self.optimizer = smp.DistributedOptimizer(self.optimizer)
-                    
-        return CustomizedOptimTrainer
+                
+        if not use_lisa:
+            return CustomizedOptimTrainer
+        
+        class LISATrainer(CustomizedOptimTrainer):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                setattr(self.args, '_trainer', self)
+                print(self.args, flush=True)
+                print(hasattr(self.args, '_trainer'), flush=True)
+                self.lisa_optim_initialize_finished = False
+
+            def create_optimizer(self):
+                print('customized trainer create optimizer')
+                opt_model = self.model_wrapped if is_sagemaker_mp_enabled() else self.model
+
+                if self.optimizer is None:
+                    decay_parameters = self.get_decay_parameter_names(opt_model)
+                    if not self.lisa_optim_initialize_finished:
+                        optimizer_grouped_parameters = [
+                            {
+                                "params": [
+                                    p for idx, (n, p) in enumerate(opt_model.named_parameters())
+                                        if idx==0
+                                ],
+                                "weight_decay": self.args.weight_decay,
+                            },
+                        ]
+                    else:
+                        optimizer_grouped_parameters = [
+                            {
+                                "params": [
+                                    p for n, p in opt_model.named_parameters()
+                                        if (n in decay_parameters and p.requires_grad)
+                                ],
+                                "weight_decay": self.args.weight_decay,
+                            },
+                            {
+                                "params": [
+                                    p for n, p in opt_model.named_parameters()
+                                        if (n not in decay_parameters and p.requires_grad)
+                                ],
+                                "weight_decay": 0.0,
+                            },
+                        ]
+
+                    optimizer_cls, optimizer_kwargs = CustomizedOptimTrainer.get_optimizer_cls_and_kwargs(self.args, opt_model)
+
+                    # Overwrite `params` in case it's created by
+                    # `get_optimizer_cls_and_kwargs` e.g. for GaLore optimizer.
+                    if "params" in optimizer_kwargs:
+                        optimizer_grouped_parameters = optimizer_kwargs.pop(
+                            "params"
+                        )
+
+                    # For layer-wise dummy optimizers we overwrite
+                    # optimizer_grouped_parameters with `optimizer_dict` to
+                    # avoid arguments conflicts.
+                    if "optimizer_dict" in optimizer_kwargs:
+                        optimizer_grouped_parameters = optimizer_kwargs.pop(
+                            "optimizer_dict"
+                        )
+
+                    self.optimizer = optimizer_cls(
+                        optimizer_grouped_parameters,
+                        **optimizer_kwargs
+                    )
+                if is_sagemaker_mp_enabled():
+                    self.optimizer = smp.DistributedOptimizer(self.optimizer)
+                
+            def switch_optimizer(self):
+                print('switch_optim')
+                self.lisa_optim_initialize_finished = True
+                self.optimizer = None
+                # self.accelerator.free_memory()
+                self.create_optimizer()
+                self.optimizer = self.accelerator.prepare(self.optimizer)
+                
+        return LISATrainer
 
     def tune(self,
              model,
@@ -505,7 +587,7 @@ class Finetuner(BaseTuner):
         if training_args.use_customized_optim:
             BaseTrainer = FinetuningTrainer
             FinetuningTrainer = self.create_customized_optimizer(
-                BaseTrainer, model_args
+                BaseTrainer, model_args, training_args.use_lisa
             )
 
         if training_args.use_lisa:
@@ -544,6 +626,9 @@ class Finetuner(BaseTuner):
                     # Check if it's time to switch active layers, including at step 0
                     if state.global_step % self.interval_steps == 0:
                         self.switch_active_layers()
+                        if hasattr(args, '_trainer'):
+                            trainer = getattr(args, '_trainer')
+                            trainer.switch_optimizer()
 
                 def switch_active_layers(self):
                     # First, disable gradients for all layers
