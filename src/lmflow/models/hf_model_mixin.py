@@ -332,7 +332,16 @@ class HFModelMixin(BaseModel):
         
         if model_args.use_lora:
             model.enable_input_require_grads()
-            model = get_peft_model(model, self.peft_config)
+            if model_args.lora_model_path is not None:
+                # Load model from LoRA weights
+                model = PeftModel.from_pretrained(
+                    model,
+                    model_args.lora_model_path,
+                    is_trainable=True,
+                )
+            else:
+                # New LoRA Finetuning
+                model = get_peft_model(model, self.peft_config)
             model.print_trainable_parameters()
 
         # We resize the embeddings only when necessary to avoid index errors.
