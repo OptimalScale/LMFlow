@@ -1,11 +1,11 @@
 packaging
-numpy==1.24.2
+numpy
 datasets==2.14.6
 tokenizers>=0.13.3
 peft>=0.10.0
 torch>=2.0.1
 wandb==0.14.0
-deepspeed<=0.14.0
+deepspeed>=0.14.4
 trl==0.8.0
 sentencepiece
 transformers>=4.31.0
