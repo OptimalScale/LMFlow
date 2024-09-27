@@ -430,19 +430,21 @@ class ConversationTemplateForTool(ConversationTemplate):
         '''
         assert isinstance(messages, list), "Messages must be a list."
         
-        if tools is not None:
+        if tools is None:
+            tools = ''
+        else:
             tools = ','.join(tools)
             # logger.warning("Tools are not supported yet. Please include tools in the system message manually.")
-        else:
-            tools = ''
         
-        if system:
+        if system is None:
+            system = ""
+        else:
             if system.replace(" ",""):
                 if not self.system_formatter:
                     raise ValueError("Your dataset contains system message but no system formatter is provided. "
                                      "Consider either providing a system formatter or removing system prompt from your dataset.")
             else:
-                system = None
+                system = ""
         encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
         
         if self.separator and remove_last_sep:
