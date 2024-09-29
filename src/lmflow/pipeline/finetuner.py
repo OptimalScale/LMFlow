@@ -317,6 +317,76 @@ class Finetuner(BaseTuner):
                         "betas": (args.optim_beta1, args.optim_beta2),
                     }
                     optimizer_kwargs.update(adam_kwargs)
+                elif args.customized_optim == OptimizerNames.RMSPROP:
+                    optimizer_cls = optim.RMSprop
+                    rmsprop_kwargs = {
+                        "momentum": (args.optim_momentum),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(rmsprop_kwargs)
+                elif args.customized_optim == OptimizerNames.ADAHESSIAN:
+                    optimizer_cls = optim.Adahessian
+                    adahessian_kwargs = {
+                        "betas": (args.optim_beta1, args.optim_beta2),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(adahessian_kwargs)
+                elif args.customized_optim == OptimizerNames.CAME:
+                    optimizer_cls = optim.CAME
+                    came_kwargs = {
+                        "betas": (args.optim_beta1, args.optim_beta2, args.optim_beta3),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(came_kwargs)
+                elif args.customized_optim == OptimizerNames.ADAFACTOR:
+                    optimizer_cls = optim.Adafactor
+                    adafactor_kwargs = {
+                        "betas": (args.optim_beta1, args.optim_beta2),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(adafactor_kwargs)  
+                elif args.customized_optim == OptimizerNames.SWATS:
+                    optimizer_cls = optim.SWATS
+                    swats_kwargs = {
+                        "betas": (args.optim_beta1, args.optim_beta2),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(swats_kwargs) 
+                elif args.customized_optim == OptimizerNames.LION:
+                    optimizer_cls = optim.Lion
+                    lion_kwargs = {
+                        "betas": (args.optim_beta1, args.optim_beta2),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(lion_kwargs)  
+                elif args.customized_optim == OptimizerNames.QHADAM:
+                    optimizer_cls = optim.QHAdam
+                    qhadam_kwargs = {
+                        "betas": (args.optim_beta1, args.optim_beta2),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(qhadam_kwargs) 
+                elif args.customized_optim == OptimizerNames.QHM:
+                    optimizer_cls = optim.QHM
+                    qhm_kwargs = {
+                        "momentum": (args.optim_momentum),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(qhm_kwargs)  
+                elif args.customized_optim == OptimizerNames.ADAMW:
+                    optimizer_cls = optim.AdamW
+                    adamw_kwargs = {
+                        "betas": (args.optim_beta1, args.optim_beta2),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(adamw_kwargs) 
+                elif args.customized_optim == OptimizerNames.SGD:
+                    optimizer_cls = optim.SGD
+                    sgd_kwargs = {
+                        "momentum": (args.optim_momentum),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(sgd_kwargs)
                 elif args.customized_optim == OptimizerNames.NOVOGRAD:
                     optimizer_cls = optim.NovoGrad
                     novograd_kwargs = {
