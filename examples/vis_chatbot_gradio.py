@@ -3,28 +3,30 @@
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A simple Multimodal chatbot implemented with lmflow APIs.
 """
-import logging
+from dataclasses import dataclass, field
 import json
+import logging
 import time
-
-from PIL import Image
-from lmflow.pipeline.inferencer import Inferencer
+import warnings
+from typing import Optional
 
 import numpy as np
-import os
-import sys
+from PIL import Image
 import torch
-import warnings
-import gradio as gr
-from dataclasses import dataclass, field
 from transformers import HfArgumentParser
-from typing import Optional
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
 from lmflow.args import (VisModelArguments, DatasetArguments, \
                          InferencerArguments, AutoArguments)
+from lmflow.utils.versioning import is_gradio_available
+
+if is_gradio_available():
+    import gradio as gr
+else:
+    raise ImportError("Gradio is not available. Please install it via `pip install gradio`.")
+    
 
 MAX_BOXES = 20
 

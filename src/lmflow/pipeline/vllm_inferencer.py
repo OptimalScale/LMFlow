@@ -13,11 +13,7 @@ from functools import partial
 from typing import List, Union, Optional, Dict, Any
 
 import numpy as np
-import ray
-import ray.data
-from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 from transformers import AutoTokenizer
-from vllm import SamplingParams, LLM
 
 from lmflow.datasets import Dataset
 from lmflow.pipeline.base_pipeline import BasePipeline
@@ -30,10 +26,24 @@ from lmflow.args import (
 from lmflow.utils.common import make_shell_args_from_dataclass
 from lmflow.utils.constants import RETURN_CODE_ERROR_BUFFER, MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE
 from lmflow.utils.data_utils import VLLMInferenceResultWithInput
+from lmflow.utils.versioning import is_vllm_available, is_ray_available
 
 
 logger = logging.getLogger(__name__)
 
+
+if is_vllm_available():
+    from vllm import SamplingParams, LLM
+else:
+    raise ImportError("VLLM is not available, please install vllm.")
+
+if is_ray_available():
+    import ray
+    import ray.data
+    from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
+else:
+    logger.warning("Ray is not available, distributed vllm inference will not be supported.")
+    
 
 class InferencerWithOffloading(BasePipeline):
     def __init__(
@@ -343,7 +353,7 @@ class MemorySafeVLLMInferencer(VLLMInferencer):
             # > at interpreter shutdown, possibly due to daemon threads
             logger.warning(
                 "^^^^^^^^^^ Please ignore the above error, as it comes from the subprocess. "
-                "This may due a kill signal with unfinished stdout/stderr writing in the subprocess. "
+                "This may due to a kill signal with unfinished stdout/stderr writing in the subprocess. "
             )
         else:
             if cli_res.returncode != 0:
