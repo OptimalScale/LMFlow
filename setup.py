@@ -41,3 +41,11 @@ setup(
     ],
     requires_python=">=3.9",
 )
+
+# optionals
+# lm-eval==0.3.0
+# vllm>=0.4.3
+# ray>=2.22.0
+# flask
+# flask_cors
+# trl==0.8.0
