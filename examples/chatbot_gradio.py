@@ -3,22 +3,28 @@
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A simple shell chatbot implemented with lmflow APIs.
 """
+from dataclasses import dataclass, field
 import logging
 import json
 import os
 import sys
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
-import torch
-import warnings
-import gradio as gr
-from dataclasses import dataclass, field
-from transformers import HfArgumentParser
 from typing import Optional
+import warnings
+
+import torch
+from transformers import HfArgumentParser
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
 from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
+from lmflow.utils.versioning import is_gradio_available
+
+if is_gradio_available():
+    import gradio as gr
+else:
+    raise ImportError("Gradio is not available. Please install it via `pip install gradio`.")
 
 MAX_BOXES = 20
 
