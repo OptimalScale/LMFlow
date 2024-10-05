@@ -1,0 +1,19 @@
+lmflow.utils.conversation_template.phi
+======================================
+
+.. py:module:: lmflow.utils.conversation_template.phi
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.phi.PHI3_TEMPLATE
+
+
+Module Contents
+---------------
+
+.. py:data:: PHI3_TEMPLATE
+

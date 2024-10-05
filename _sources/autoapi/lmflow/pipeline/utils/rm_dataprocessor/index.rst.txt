@@ -1,0 +1,60 @@
+lmflow.pipeline.utils.rm_dataprocessor
+======================================
+
+.. py:module:: lmflow.pipeline.utils.rm_dataprocessor
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.rm_dataprocessor.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.rm_dataprocessor.RewardDataCollatorWithPadding
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: RewardDataCollatorWithPadding
+
+   .. py:attribute:: tokenizer
+      :type:  transformers.AutoTokenizer
+
+
+   .. py:attribute:: padding
+      :type:  Union[bool, str, transformers.utils.PaddingStrategy]
+      :value: True
+
+
+
+   .. py:attribute:: max_length
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: pad_to_multiple_of
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: return_tensors
+      :type:  str
+      :value: 'pt'
+
+
+
+   .. py:method:: __call__(features: List[Dict[str, Any]]) -> Dict[str, Any]
+
+

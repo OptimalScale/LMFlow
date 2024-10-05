@@ -1,0 +1,22 @@
+lmflow.utils.conversation_template.qwen
+=======================================
+
+.. py:module:: lmflow.utils.conversation_template.qwen
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.qwen.QWEN2_TEMPLATE
+   lmflow.utils.conversation_template.qwen.QWEN2_TEMPLATE_FOR_TOOL
+
+
+Module Contents
+---------------
+
+.. py:data:: QWEN2_TEMPLATE
+
+.. py:data:: QWEN2_TEMPLATE_FOR_TOOL
+
