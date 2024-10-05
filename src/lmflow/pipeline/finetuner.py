@@ -31,6 +31,7 @@ from transformers.utils import (
     send_example_telemetry,
 )
 import numpy as np
+import torch
 
 import lmflow.optim.optimizers as optim
 from lmflow.args import OptimizerNames
@@ -40,7 +41,8 @@ from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 
 
 logger = logging.getLogger(__name__)
-
+torch.manual_seed(42)
+np.random.seed(42)
 
 class Finetuner(BaseTuner):
     """
@@ -544,6 +546,12 @@ class Finetuner(BaseTuner):
                     # Check if it's time to switch active layers, including at step 0
                     if state.global_step % self.interval_steps == 0:
                         self.switch_active_layers()
+                    
+                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    self.previous_params = {
+                        name: param.clone().detach() 
+                        for name, param in layers[self.active_layers_indices[0]].named_parameters()
+                    }
 
                 def switch_active_layers(self):
                     # First, disable gradients for all layers
@@ -558,6 +566,15 @@ class Finetuner(BaseTuner):
                     for idx in self.active_layers_indices:
                         for param in layers[idx].parameters():
                             param.requires_grad = True
+                            
+                def on_step_end(self, args, state, control, **kwargs):
+                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    for name, param in layers[self.active_layers_indices[0]].named_parameters():
+                        if torch.equal(param, self.previous_params[name]):
+                            print(f"No change in parameter: {name}")
+                        else:
+                            print(f"Parameter updated: {name}")
+                    
 
             # Instantiate the callback
             dynamic_layer_activation_callback = DynamicLayerActivationCallback(
