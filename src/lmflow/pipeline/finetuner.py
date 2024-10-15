@@ -41,8 +41,6 @@ from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 
 
 logger = logging.getLogger(__name__)
-torch.manual_seed(42)
-np.random.seed(42)
 
 class Finetuner(BaseTuner):
     """
