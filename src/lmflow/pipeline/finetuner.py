@@ -38,9 +38,11 @@ from lmflow.args import OptimizerNames
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
+from lmflow.utils.model import check_layerwise_requires_grad
 
 
 logger = logging.getLogger(__name__)
+
 
 class Finetuner(BaseTuner):
     """
@@ -545,15 +547,19 @@ class Finetuner(BaseTuner):
                     if state.global_step % self.interval_steps == 0:
                         self.switch_active_layers()
                     
-                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    self.previous_params = {
-                        name: param.clone().detach() 
-                        for name, param in layers[self.active_layers_indices[0]].named_parameters()
-                    }
+                    # layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    # self.previous_params = {
+                    #     name: param.clone().detach() 
+                    #     for name, param in layers[self.active_layers_indices[0]].named_parameters()
+                    # }
 
                 def switch_active_layers(self):
+                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    check_layerwise_requires_grad(layers, note="switch active layers before freeze all")
                     # First, disable gradients for all layers
                     self.freeze_all_layers()
+                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    check_layerwise_requires_grad(layers, note="switch active layers after freeze all")
 
                      # Randomly select n_layers to activate
                     layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
@@ -564,14 +570,18 @@ class Finetuner(BaseTuner):
                     for idx in self.active_layers_indices:
                         for param in layers[idx].parameters():
                             param.requires_grad = True
+                    
+                    layers = eval('self.' + self.layers_attribute)
+                    check_layerwise_requires_grad(layers, note="switch active layers after enable selected layers")
                             
                 def on_step_end(self, args, state, control, **kwargs):
-                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    for name, param in layers[self.active_layers_indices[0]].named_parameters():
-                        if torch.equal(param, self.previous_params[name]):
-                            print(f"No change in parameter: {name}")
-                        else:
-                            print(f"Parameter updated: {name}")
+                    # layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    # for name, param in layers[self.active_layers_indices[0]].named_parameters():
+                    #     if torch.equal(param, self.previous_params[name]):
+                    #         print(f"No change in parameter: {name}")
+                    #     else:
+                    #         print(f"Parameter updated: {name}")
+                    pass
                     
 
             # Instantiate the callback
