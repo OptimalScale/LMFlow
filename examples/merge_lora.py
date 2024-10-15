@@ -66,6 +66,7 @@ def main():
         device=merge_lora_args.device,
         ds_config=merge_lora_args.ds_config
     )
+    model.activate_model_for_inference()
     model.merge_lora_weights()
     model.save(merge_lora_args.output_model_path, save_full_model=True)
 
