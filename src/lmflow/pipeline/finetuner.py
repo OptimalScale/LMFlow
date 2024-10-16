@@ -38,7 +38,7 @@ from lmflow.args import OptimizerNames
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
-from lmflow.utils.model import check_layerwise_requires_grad
+from lmflow.utils.debug import check_layerwise_grad, get_parameter_names_in_param_groups
 
 
 logger = logging.getLogger(__name__)
@@ -541,6 +541,9 @@ class Finetuner(BaseTuner):
                     for layer in layers:
                         for param in layer.parameters():
                             param.requires_grad = False
+                
+                def on_init_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
+                    print(get_parameter_names_in_param_groups(self.model))
 
                 def on_step_begin(self, args, state, control, **kwargs):
                     # Check if it's time to switch active layers, including at step 0
@@ -554,12 +557,8 @@ class Finetuner(BaseTuner):
                     # }
 
                 def switch_active_layers(self):
-                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    check_layerwise_requires_grad(layers, note="switch active layers before freeze all")
                     # First, disable gradients for all layers
                     self.freeze_all_layers()
-                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    check_layerwise_requires_grad(layers, note="switch active layers after freeze all")
 
                      # Randomly select n_layers to activate
                     layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
@@ -570,9 +569,6 @@ class Finetuner(BaseTuner):
                     for idx in self.active_layers_indices:
                         for param in layers[idx].parameters():
                             param.requires_grad = True
-                    
-                    layers = eval('self.' + self.layers_attribute)
-                    check_layerwise_requires_grad(layers, note="switch active layers after enable selected layers")
                             
                 def on_step_end(self, args, state, control, **kwargs):
                     # layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
@@ -582,6 +578,10 @@ class Finetuner(BaseTuner):
                     #     else:
                     #         print(f"Parameter updated: {name}")
                     pass
+                
+                def on_optimizer_step(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
+                    layers = eval('self.' + self.layers_attribute)
+                    check_layerwise_grad(layers, note="optimizer step")
                     
 
             # Instantiate the callback
