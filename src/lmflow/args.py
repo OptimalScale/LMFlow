@@ -755,6 +755,20 @@ class FinetunerArguments(TrainingArguments):
         }
     )
     
+    def __post_init__(self):
+        super().__post_init__()
+        if self.use_lisa:
+            if not self.use_customized_optim:
+                logger.warning(
+                    "You are using lisa while the `use_customized_optim` is `False`. "
+                    "Setting `use_customized_optim` to `True`.")
+                self.use_customized_optim = True
+            if self.customized_optim != "adam":
+                logger.warning(
+                    "Currently only support adam optimizer when using lisa. "
+                    "Setting `customized_optim` to `adam`.")
+                self.customized_optim = "adam"
+    
 @dataclass
 class RewardModelTunerArguments(FinetunerArguments):
     """
