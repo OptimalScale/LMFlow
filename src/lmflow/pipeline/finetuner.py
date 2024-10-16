@@ -580,8 +580,10 @@ class Finetuner(BaseTuner):
                     pass
                 
                 def on_optimizer_step(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
+                    from lmflow.utils.debug import DistributedType, get_distributed_type
                     layers = eval('self.' + self.layers_attribute)
-                    check_layerwise_grad(layers, note="optimizer step")
+                    if get_distributed_type() != DistributedType.DEEPSPEED:
+                        check_layerwise_grad(layers, note=f"optim step {state.global_step}", show_details='has_grads')
                     
 
             # Instantiate the callback
