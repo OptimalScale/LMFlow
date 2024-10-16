@@ -8,12 +8,17 @@ import os
 from pathlib import Path
 from typing import Dict, Optional
 
-from trl import DPOTrainer
 from datasets import Dataset, load_dataset
 from peft import LoraConfig
 from transformers import TrainingArguments
 
 from lmflow.pipeline.base_aligner import BaseAligner
+from lmflow.utils.versioning import is_trl_available
+
+if is_trl_available():
+    from trl import DPOTrainer
+else:
+    raise ImportError("Please install trl package to use dpo_aligner.py")
 
 
 def get_paired_dataset(

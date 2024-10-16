@@ -8,21 +8,27 @@ import wandb
 from colorama import Fore,init
 from typing import Optional, List
 
-from trl.commands.cli_utils import TrlParser
 import torch
 from datasets import load_dataset
 from dataclasses import dataclass, field
 from tqdm.rich import tqdm
 from transformers import AutoTokenizer, TrainingArguments, TrainerCallback
-from trl import (
-    ModelConfig,
-    SFTTrainer,
-    DataCollatorForCompletionOnlyLM,
-    SFTConfig,
-    get_peft_config,
-    get_quantization_config,
-    get_kbit_device_map,
-)
+
+from lmflow.utils.versioning import is_trl_available
+
+if is_trl_available():
+    from trl import (
+        ModelConfig,
+        SFTTrainer,
+        DataCollatorForCompletionOnlyLM,
+        SFTConfig,
+        get_peft_config,
+        get_quantization_config,
+        get_kbit_device_map,
+    )
+    from trl.commands.cli_utils import TrlParser
+else:
+    raise ImportError("Please install trl package to use sft_summarizer.py")
 
 @dataclass
 class UserArguments:
