@@ -1,4 +1,5 @@
 import os
+import re
 import textwrap
 from typing import Dict, Any, List, Tuple, Union, Optional
 
@@ -32,13 +33,21 @@ def inspect_layer(layers, layer_idx: int, note: Optional[str] = None):
     layer_info = {
         "name": [],
         "size": [],
-        "requires_grad": []
+        "requires_grad": [],
+        "grad_norm": [],
     }
     
     for n, p in layers[layer_idx].named_parameters():
         layer_info["name"].append(n)
         layer_info["size"].append(p.size())
         layer_info["requires_grad"].append(p.requires_grad)
+        
+    layer_info["grad_norm"] = [
+        norm_tensor.item() 
+        for norm_tensor in clip_grad_norm_(parameters=layers[layer_idx].parameters(), 
+                                           max_norm=1.0, 
+                                           return_norm_by_layer=True)[1]
+    ]
     
     df = pd.DataFrame(layer_info)
     table_to_print = tabulate.tabulate(df, headers='keys', tablefmt='psql')
@@ -65,7 +74,7 @@ def inspect_layers(
 def check_layerwise_grad(
     layers, 
     layer_idx: Union[str, int, List[int]] = 'all', 
-    show_details: bool = False,
+    show_details: Optional[str] = 'has_grads',
     note: Optional[Union[str, List[str]]] = None,
 ):
     if layer_idx == 'all':
@@ -87,28 +96,35 @@ def check_layerwise_grad(
             "requires_grad": [],
             "requires_grad_meta": False
         }
+        
         for n, p in layers[idx].named_parameters():
             layer_states["names"].append(n)
             layer_states["requires_grad"].append(p.requires_grad)
+            
         if all(layer_states["requires_grad"]):
             layer_states["requires_grad_meta"] = True
-        else:
-            if show_details:
-                inspect_layer(layers, idx, f"Layer {idx}")
+            
+        if show_details == 'all':
+            inspect_layer(layers, idx, f"Layer {idx} detail")
+        elif show_details == 'has_grads':
+            if any(layer_states["requires_grad"]):
+                inspect_layer(layers, idx, f"Layer {idx} detail")
+            
         all_states["requires_grad"].append(layer_states['requires_grad_meta'])
         all_states["grad_norm"].append(clip_grad_norm_(layers[idx].parameters(), 1.0, distributed_type=distributed_type).item())
     
     df = pd.DataFrame(all_states)
     table_to_print = tabulate.tabulate(df, headers='keys', tablefmt='psql', showindex=False)
     
-    print_tabulate_with_header(table_to_print, note+' '+distributed_type)
+    print_tabulate_with_header(table_to_print, f"{note}, {distributed_type=}")
     
     
 def clip_grad_norm_(
         parameters, max_norm: float, norm_type: float = 2.0,
         error_if_nonfinite: bool = False, foreach: Optional[bool] = None,
-        distributed_type: DistributedType = DistributedType.NO
-    ) -> torch.Tensor:
+        distributed_type: DistributedType = DistributedType.NO,
+        return_norm_by_layer: bool = False
+    ) -> Union[Tuple[torch.Tensor, List[torch.Tensor]], torch.Tensor]:
     r"""Clip the gradient norm of an iterable of parameters.
 
     The norm is computed over all gradients together, as if they were
@@ -189,7 +205,7 @@ def clip_grad_norm_(
                 g.mul_(clip_coef_clamped_device)
 
     # print(f'torch total_norm at end {total_norm=}')
-    return total_norm
+    return (total_norm, norms) if return_norm_by_layer else total_norm
 
 
 def get_decay_parameter_names(model: Union[PreTrainedModel, nn.Module]) -> List[str]:
@@ -218,12 +234,12 @@ def get_parameter_names_in_param_groups(
     if ignore_requires_grad:
         parameter_names = [
             {
-                "params": [
+                "parameter_names": [
                     n for n, p in model.named_parameters() if (n in decay_parameters)
                 ],
             },
             {
-                "params": [
+                "parameter_names": [
                     n for n, p in model.named_parameters() if (n not in decay_parameters)
                 ],
             },
@@ -231,15 +247,57 @@ def get_parameter_names_in_param_groups(
     else:
         parameter_names = [
             {
-                "params": [
+                "parameter_names": [
                     n for n, p in model.named_parameters() if (n in decay_parameters and p.requires_grad)
                 ],
             },
             {
-                "params": [
+                "parameter_names": [
                     n for n, p in model.named_parameters() if (n not in decay_parameters and p.requires_grad)
                 ],
             },
         ]
     
     return parameter_names
+
+
+def guess_grad_norms_from_pg(
+    parameter_names: List[Dict[str, str]],
+    all_norms: List[torch.Tensor],
+    show_zero_grads: bool = False,
+    separate_by_layer: bool = False,
+):
+    all_grad_norms = {
+        "name": [],
+        "layer": [],
+        "grad_norm": [],
+    }
+    for pg_names in parameter_names:
+        if len(pg_names["parameter_names"]) == len(all_norms):
+            all_grad_norms["name"] = pg_names["parameter_names"]
+            all_grad_norms["grad_norm"] = [norm_tensor.item() for norm_tensor in all_norms]
+            
+    if not all_grad_norms["name"]:
+        return
+    
+    layer_pattern = re.compile(r'transformer\.h\.(\d+)\.')
+    for name in all_grad_norms["name"]:
+        layer_match = layer_pattern.search(name)
+        if layer_match:
+            all_grad_norms["layer"].append(int(layer_match.group(1)))
+        else:
+            all_grad_norms["layer"].append('other')
+            
+    df = pd.DataFrame(all_grad_norms)
+    if not show_zero_grads:
+        df = df[df["grad_norm"] > 0.0]
+        
+    if not separate_by_layer:
+        table_to_print = tabulate.tabulate(df, headers='keys', tablefmt='psql', showindex=False)
+        print_tabulate_with_header(table_to_print)
+    else:
+        for layer_idx in df["layer"].unique():
+            table_to_print = tabulate.tabulate(
+                df[df["layer"] == layer_idx], headers='keys', tablefmt='psql', showindex=False
+            )
+            print_tabulate_with_header(table_to_print, f"Layer {layer_idx}")
