@@ -38,7 +38,7 @@ from lmflow.args import OptimizerNames
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
-from lmflow.utils.debug import check_layerwise_grad, get_parameter_names_in_param_groups
+from lmflow.utils.debug import get_parameter_names_in_param_groups
 
 
 logger = logging.getLogger(__name__)
@@ -580,10 +580,7 @@ class Finetuner(BaseTuner):
                     pass
                 
                 def on_optimizer_step(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
-                    from lmflow.utils.debug import DistributedType, get_distributed_type
-                    layers = eval('self.' + self.layers_attribute)
-                    if get_distributed_type() != DistributedType.DEEPSPEED:
-                        check_layerwise_grad(layers, note=f"optim step {state.global_step}", show_details='has_grads')
+                    pass
                     
 
             # Instantiate the callback
