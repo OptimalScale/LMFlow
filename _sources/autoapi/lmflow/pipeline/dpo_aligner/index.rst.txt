@@ -1,0 +1,92 @@
+lmflow.pipeline.dpo_aligner
+===========================
+
+.. py:module:: lmflow.pipeline.dpo_aligner
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.dpo_aligner.DPOAligner
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.pipeline.dpo_aligner.get_paired_dataset
+
+
+Module Contents
+---------------
+
+.. py:function:: get_paired_dataset(data_root: str, data_dir: str, sanity_check: bool = False, cache_dir: Optional[str] = None, num_proc=24) -> datasets.Dataset
+
+   
+   Load dataset and convert it to the necessary format.
+
+       The dataset is converted to a dictionary with the following structure:
+       {
+           'prompt': List[str],
+           'chosen': List[str],
+           'rejected': List[str],
+       }
+
+       Prompts are structured as follows:
+         "Question: " + <prompt> + "
+
+   Answer: "
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:class:: DPOAligner(model_args, data_args, aligner_args)
+
+   Bases: :py:obj:`lmflow.pipeline.base_aligner.BaseAligner`
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: aligner_args
+
+
+   .. py:attribute:: train_dataset
+      :value: None
+
+
+
+   .. py:attribute:: eval_dataset
+      :value: None
+
+
+
+   .. py:method:: _initialize_trainer(model, tokenizer)
+
+
+   .. py:method:: _load_dataset()
+
+
+   .. py:method:: align(model, dataset, reward_model)
+
+

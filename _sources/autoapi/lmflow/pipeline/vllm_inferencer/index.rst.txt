@@ -1,0 +1,268 @@
+lmflow.pipeline.vllm_inferencer
+===============================
+
+.. py:module:: lmflow.pipeline.vllm_inferencer
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.vllm_inferencer.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.vllm_inferencer.InferencerWithOffloading
+   lmflow.pipeline.vllm_inferencer.VLLMInferencer
+   lmflow.pipeline.vllm_inferencer.MemorySafeVLLMInferencer
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: InferencerWithOffloading(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, inferencer_args: lmflow.args.InferencerArguments)
+
+   Bases: :py:obj:`lmflow.pipeline.base_pipeline.BasePipeline`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: inferencer_args
+
+
+   .. py:attribute:: eos_token_id
+
+
+   .. py:method:: inference()
+      :abstractmethod:
+
+
+
+   .. py:method:: save_inference_results()
+      :abstractmethod:
+
+
+
+   .. py:method:: load_inference_results()
+      :abstractmethod:
+
+
+
+.. py:class:: VLLMInferencer(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, inferencer_args: lmflow.args.InferencerArguments)
+
+   Bases: :py:obj:`InferencerWithOffloading`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: sampling_params
+
+
+   .. py:method:: parse_to_sampling_params(inference_args: lmflow.args.InferencerArguments) -> vllm.SamplingParams
+
+
+   .. py:method:: inference(model: lmflow.models.hf_decoder_model.HFDecoderModel, dataset: lmflow.datasets.Dataset, enable_decode_inference_result: bool = True, release_gpu: bool = False, inference_args: Optional[lmflow.args.InferencerArguments] = None, enable_distributed_inference: bool = False, **kwargs) -> List[lmflow.utils.data_utils.VLLMInferenceResultWithInput]
+
+      
+      Perform inference using the provided model and dataset. Will save inference results if
+      `save_results` is set to True in `inferencer_args`.
+
+
+      :Parameters:
+
+          **model** : HFDecoderModel
+              LMFlow HFDecoderModel object
+
+          **dataset** : Dataset
+              LMFlow Dataset object
+
+          **apply_chat_template** : bool, optional
+              Whether to apply chat template to the input, by default True.
+
+          **enable_decode_inference_result** : bool, optional
+              Whether to decode after generation, by default False.
+
+          **release_gpu** : bool, optional
+              Whether to release gpu resources, by default False. 
+
+          **inference_args** : InferencerArguments, optional
+              by default None
+
+
+
+      :Returns:
+
+          List[VLLMInferenceResultWithInput]
+              Return a list of VLLMInferenceResultWithInput, where each
+              element contains the input prompt and the corresponding output.
+              
+              When `enable_decode_inference_result = True`, the output would be a list of strings,
+              contains sampling_params.n samples for the corresponding prompt.
+              
+              When `enable_decode_inference_result = False`, return a list of list of ints 
+              (token ids, no decoding after generation).
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _inference(model: lmflow.models.hf_decoder_model.HFDecoderModel, model_input: List[str], sampling_params: vllm.SamplingParams, release_gpu: bool = False) -> List[lmflow.utils.data_utils.VLLMInferenceResultWithInput]
+
+
+   .. py:method:: _distributed_inference(model: lmflow.models.hf_decoder_model.HFDecoderModel, model_input: ray.data.Dataset, sampling_params: vllm.SamplingParams, num_instances: int, batch_size: int = 4, release_gpu: bool = False) -> List[lmflow.utils.data_utils.VLLMInferenceResultWithInput]
+
+
+   .. py:method:: save_inference_results(outputs: Union[List[List[str]], List[List[List[int]]]], save_file_path: str)
+
+
+   .. py:method:: load_inference_results(results_path: str) -> Union[List[List[str]], List[List[List[int]]]]
+
+
+.. py:class:: MemorySafeVLLMInferencer(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, inferencer_args: lmflow.args.InferencerArguments)
+
+   Bases: :py:obj:`VLLMInferencer`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: inferencer_file_path
+
+
+   .. py:method:: inference() -> List[lmflow.utils.data_utils.VLLMInferenceResultWithInput]
+
+      
+      Perform inference using the provided model and dataset. Will save inference results if
+      `save_results` is set to True in `inferencer_args`.
+
+
+      :Parameters:
+
+          **model** : HFDecoderModel
+              LMFlow HFDecoderModel object
+
+          **dataset** : Dataset
+              LMFlow Dataset object
+
+          **apply_chat_template** : bool, optional
+              Whether to apply chat template to the input, by default True.
+
+          **enable_decode_inference_result** : bool, optional
+              Whether to decode after generation, by default False.
+
+          **release_gpu** : bool, optional
+              Whether to release gpu resources, by default False. 
+
+          **inference_args** : InferencerArguments, optional
+              by default None
+
+
+
+      :Returns:
+
+          List[VLLMInferenceResultWithInput]
+              Return a list of VLLMInferenceResultWithInput, where each
+              element contains the input prompt and the corresponding output.
+              
+              When `enable_decode_inference_result = True`, the output would be a list of strings,
+              contains sampling_params.n samples for the corresponding prompt.
+              
+              When `enable_decode_inference_result = False`, return a list of list of ints 
+              (token ids, no decoding after generation).
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
