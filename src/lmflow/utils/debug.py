@@ -1,3 +1,4 @@
+import inspect
 import os
 import re
 import textwrap
@@ -11,6 +12,21 @@ from accelerate.utils import DistributedType
 from torch import Tensor
 from torch.utils._foreach_utils import _group_tensors_by_device_and_dtype, _has_foreach_support, _device_has_foreach_support
 from transformers import PreTrainedModel
+
+
+def trace_calls(func):
+    func.has_called = False
+    
+    def wrapper(*args, **kwargs):
+        if not func.has_called:
+            func.has_called = True
+            stack = inspect.stack()
+            print(f"Function '{func.__name__}' was called. Call stack:")
+            for frame_info in stack[1:]:
+                print(f" - Function '{frame_info.function}' in {frame_info.filename}, line {frame_info.lineno}")
+        return func(*args, **kwargs)
+    
+    return wrapper
 
 
 def get_distributed_type():
@@ -171,3 +187,58 @@ def guess_grad_norms_from_hf_trainer(
                 df[df["layer"] == layer_idx], headers='keys', tablefmt='psql', showindex=False
             )
             print_tabulate_with_header(table_to_print, f"Layer {layer_idx}, {note}")
+            
+            
+def tensor_all_zero(tensor: torch.Tensor) -> bool:
+    return torch.equal(tensor, torch.zeros_like(tensor))
+
+
+def guess_grad_all_zero_from_pg(
+    parameter_names: List[Dict[str, str]],
+    all_grads: List[torch.Tensor],
+    show_zero_grads: bool = False,
+    separate_by_layer: bool = False,
+):
+    all_grad_status = {
+        "name": [],
+        "layer": [],
+        "grad_all_zero": [],
+    }
+    has_guess = False
+    pg_note = None
+    
+    for pg_idx, pg_names in enumerate(parameter_names):
+        if len(pg_names["parameter_names"]) == len(all_grads):
+            all_grad_status["name"] = pg_names["parameter_names"]
+            all_grad_status["grad_all_zero"] = [tensor_all_zero(grad_tensor) for grad_tensor in all_grads]
+            if not has_guess:
+                has_guess = True
+                pg_note = 'Parameter group with weight decay' if pg_idx == 0 else 'Parameter group without weight decay'
+            else:
+                print("Failed to guess grad norms from parameter groups according to group length.")
+                return
+            
+    if not has_guess:
+        return
+    
+    layer_pattern = re.compile(r'transformer\.h\.(\d+)\.')
+    for name in all_grad_status["name"]:
+        layer_match = layer_pattern.search(name)
+        if layer_match:
+            all_grad_status["layer"].append(int(layer_match.group(1)))
+        else:
+            all_grad_status["layer"].append('other')
+            
+    df = pd.DataFrame(all_grad_status)
+    if not show_zero_grads:
+        df = df[df["grad_all_zero"] == False]
+        
+    if not separate_by_layer:
+        table_to_print = tabulate.tabulate(df, headers='keys', tablefmt='psql', showindex=False)
+        print_tabulate_with_header(table_to_print, pg_note)
+    else:
+        for layer_idx in df["layer"].unique():
+            table_to_print = tabulate.tabulate(
+                df[df["layer"] == layer_idx], headers='keys', tablefmt='psql', showindex=False
+            )
+            print_tabulate_with_header(table_to_print, f"Layer {layer_idx}, {pg_note}")
