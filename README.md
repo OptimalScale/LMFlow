@@ -115,6 +115,31 @@ conda install mpi4py
 bash install.sh
 ```
 
+> [!TIP]
+> We use WandB to track and visualize the training process by default. Before running the training scripts, users may need to log in to WandB using the command: 
+>```bash
+>wandb login
+>```
+> For detailed instructions, refer to the [WandB Quickstart Guide](https://docs.wandb.ai/quickstart/). Step 1 (registration) and Step 2 (login using your WandB API key) should be sufficient to set up your environment.
+>
+> <details><summary>Disabling wandb</summary>  
+>
+> One can disable wandb by either:  
+>
+> 1. Adding environment variable before running the training command.
+>
+>```bash
+>export WANDB_MODE=disabled
+>```
+>
+> 2. OR, specifying the integrations to report the results and logs to. In the training script, add:
+>
+>```bash
+>--report_to none \
+>```
+>
+> </details>
+
 ### Prepare Dataset
 
 Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
