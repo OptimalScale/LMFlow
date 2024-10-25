@@ -38,7 +38,7 @@ from lmflow.args import OptimizerNames
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
-from lmflow.utils.debug import get_parameter_names_in_param_groups
+from lmflow.utils.debug.debug import get_parameter_names_in_param_groups
 
 
 logger = logging.getLogger(__name__)
@@ -550,7 +550,10 @@ class Finetuner(BaseTuner):
                     if state.global_step % self.interval_steps == 0:
                         self.switch_active_layers()
                     
-                    # layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    print(f'>>> on step {state.global_step} begin model params')
+                    print(layers[self.active_layers_indices[0]].attn.c_attn.weight)
+                    print(f'<<< on step {state.global_step} begin model params')
                     # self.previous_params = {
                     #     name: param.clone().detach() 
                     #     for name, param in layers[self.active_layers_indices[0]].named_parameters()
@@ -563,6 +566,7 @@ class Finetuner(BaseTuner):
                      # Randomly select n_layers to activate
                     layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
                     self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
+                    self.active_layers_indices.sort()
                     print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.", flush=True)
 
                     # Enable gradients only for the selected layers
@@ -571,13 +575,16 @@ class Finetuner(BaseTuner):
                             param.requires_grad = True
                             
                 def on_step_end(self, args, state, control, **kwargs):
-                    # layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
+                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
                     # for name, param in layers[self.active_layers_indices[0]].named_parameters():
                     #     if torch.equal(param, self.previous_params[name]):
                     #         print(f"No change in parameter: {name}")
                     #     else:
                     #         print(f"Parameter updated: {name}")
-                    pass
+                    print(f'>>> on step {state.global_step-1} end model params')
+                    print(layers[self.active_layers_indices[0]].attn.c_attn.weight.shape)
+                    print(layers[self.active_layers_indices[0]].attn.c_attn.weight)
+                    print(f'<<< on step {state.global_step-1} end model params')
                 
                 def on_optimizer_step(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
                     pass
