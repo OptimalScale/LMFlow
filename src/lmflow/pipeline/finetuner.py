@@ -518,24 +518,15 @@ class Finetuner(BaseTuner):
             class DynamicLayerActivationCallback(TrainerCallback):
                 def __init__(self):
                     super().__init__()
-
+                    
+                def on_init_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
+                    from deepspeed.runtime.utils import see_memory_usage
+                    see_memory_usage("callback on_init_end", force=True)
 
                 def on_step_begin(self, args, state, control, **kwargs):
                     # Check if it's time to switch active layers, including at step 0
                     trainer: LISATrainer = getattr(args, '_trainer')
                     trainer.maybe_switch_active_layers()
-                    
-                    print(f'>>> on step {state.global_step} begin model params')
-                    trainer._inspect_weight()
-                    print(f'<<< on step {state.global_step} begin model params')
-                    
-                            
-                def on_step_end(self, args, state, control, **kwargs):
-                    trainer: LISATrainer = getattr(args, '_trainer')
-                    print(f'>>> on step {state.global_step-1} end model params')
-                    trainer._inspect_weight()
-                    print(f'<<< on step {state.global_step-1} end model params')
-                    
 
             # Instantiate the callback
             dynamic_layer_activation_callback = DynamicLayerActivationCallback()
