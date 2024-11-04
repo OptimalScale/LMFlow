@@ -38,7 +38,8 @@ from lmflow.args import OptimizerNames
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
-from lmflow.utils.debug.debug import get_parameter_names_in_param_groups
+from lmflow.pipeline.utils.lisa_trainer import LISATrainer
+from lmflow.utils.debug.model_params import get_parameter_names_in_param_groups
 
 
 logger = logging.getLogger(__name__)
@@ -494,6 +495,7 @@ class Finetuner(BaseTuner):
 
         # Initialize our Trainer
         training_args = finetuner_args
+        training_kwargs = {}
 
         if model_args.use_lora:
             FinetuningTrainer = PeftTrainer
@@ -511,93 +513,41 @@ class Finetuner(BaseTuner):
             )
 
         if training_args.use_lisa:
+            FinetuningTrainer = LISATrainer
+            
             class DynamicLayerActivationCallback(TrainerCallback):
-                def __init__(self, n_layers, interval_steps, model):
+                def __init__(self):
                     super().__init__()
-                    self.n_layers = n_layers
-                    self.interval_steps = interval_steps
-                    self.model = model
 
-                    # Determine the way to access layers based on the model type
-                    class_to_layers_map = {
-                        'LlamaForCausalLM': 'model.model.layers',
-                        'Qwen2ForCausalLM': 'model.model.layers',
-                        'MistralForCausalLM': 'model.model.layers',
-                        'MixtralForCausalLM': 'model.model.layers',
-                        'GemmaForCausalLM': 'model.model.layers',
-                        'GPT2LMHeadModel': 'model.transformer.h',
-                    }
-                    model_class_name = self.model.__class__.__name__
-                    if model_class_name in class_to_layers_map:
-                        self.layers_attribute = class_to_layers_map[model_class_name]
-                    else:
-                        self.layers_attribute = training_args.lisa_layers_attribute
-                    self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
-
-                    self.active_layers_indices = []
-
-                def freeze_all_layers(self):
-                    layers = eval('self.' + self.layers_attribute)  # Dynamically execute to get layers
-                    for layer in layers:
-                        for param in layer.parameters():
-                            param.requires_grad = False
-                
-                def on_init_end(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
-                    print(get_parameter_names_in_param_groups(self.model))
 
                 def on_step_begin(self, args, state, control, **kwargs):
                     # Check if it's time to switch active layers, including at step 0
-                    if state.global_step % self.interval_steps == 0:
-                        self.switch_active_layers()
+                    trainer: LISATrainer = getattr(args, '_trainer')
+                    trainer.maybe_switch_active_layers()
                     
-                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
                     print(f'>>> on step {state.global_step} begin model params')
-                    print(layers[self.active_layers_indices[0]].attn.c_attn.weight)
+                    trainer._inspect_weight()
                     print(f'<<< on step {state.global_step} begin model params')
-                    # self.previous_params = {
-                    #     name: param.clone().detach() 
-                    #     for name, param in layers[self.active_layers_indices[0]].named_parameters()
-                    # }
-
-                def switch_active_layers(self):
-                    # First, disable gradients for all layers
-                    self.freeze_all_layers()
-
-                     # Randomly select n_layers to activate
-                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
-                    self.active_layers_indices.sort()
-                    print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.", flush=True)
-
-                    # Enable gradients only for the selected layers
-                    for idx in self.active_layers_indices:
-                        for param in layers[idx].parameters():
-                            param.requires_grad = True
+                    
                             
                 def on_step_end(self, args, state, control, **kwargs):
-                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    # for name, param in layers[self.active_layers_indices[0]].named_parameters():
-                    #     if torch.equal(param, self.previous_params[name]):
-                    #         print(f"No change in parameter: {name}")
-                    #     else:
-                    #         print(f"Parameter updated: {name}")
+                    trainer: LISATrainer = getattr(args, '_trainer')
                     print(f'>>> on step {state.global_step-1} end model params')
-                    print(layers[self.active_layers_indices[0]].attn.c_attn.weight.shape)
-                    print(layers[self.active_layers_indices[0]].attn.c_attn.weight)
+                    trainer._inspect_weight()
                     print(f'<<< on step {state.global_step-1} end model params')
-                
-                def on_optimizer_step(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
-                    pass
                     
 
             # Instantiate the callback
-            dynamic_layer_activation_callback = DynamicLayerActivationCallback(
-                n_layers=training_args.lisa_activated_layers,               # Number of layers to activate
-                interval_steps=training_args.lisa_interval_steps,           # Step interval to update active layers
-                model=model.get_backend_model()
-            )
-
+            dynamic_layer_activation_callback = DynamicLayerActivationCallback()
             trainer_callbacks.append(dynamic_layer_activation_callback)
+            
+            lisa_kwargs = {
+                'n_layers': training_args.lisa_activated_layers,               # Number of layers to activate
+                'interval_steps': training_args.lisa_interval_steps,           # Step interval to update active layers
+                'lisa_layer_attr_name': training_args.lisa_layers_attribute
+            }
+            training_kwargs.update(lisa_kwargs)
+
 
         trainer = FinetuningTrainer(
             model=model.get_backend_model(),
@@ -609,7 +559,8 @@ class Finetuner(BaseTuner):
             data_collator=data_collator,
             compute_metrics=compute_metrics if training_args.do_eval else None,
             preprocess_logits_for_metrics=preprocess_logits_for_metrics if training_args.do_eval else None,
-            callbacks=trainer_callbacks
+            callbacks=trainer_callbacks,
+            **training_kwargs
         )
         # Training
         if training_args.do_train:
