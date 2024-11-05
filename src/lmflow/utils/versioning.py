@@ -12,6 +12,7 @@ def get_python_version():
 
 
 def _is_package_available(package_name: str, skippable: bool = False):
+    assert isinstance(package_name, str), f"Invalid type of package_name: {type(package_name)}"
     try:
         importlib.import_module(package_name)
         return True
@@ -57,3 +58,7 @@ def is_flask_available():
 
 def is_trl_available():
     return _is_package_available("trl")
+
+
+def is_multimodal_available():
+    return _is_packages_available(["PIL"])
