@@ -27,14 +27,17 @@ from peft import (
     prepare_model_for_kbit_training
 )
 from peft.utils.constants import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
-from vllm import LLM, SamplingParams
-from vllm.distributed.parallel_state import destroy_model_parallel
 
 from lmflow.models.base_model import BaseModel
 from lmflow.utils.constants import (
     LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
 from lmflow.args import ModelArguments
+from lmflow.utils.versioning import is_vllm_available
+
+if is_vllm_available():
+    from vllm import LLM, SamplingParams
+    from vllm.distributed.parallel_state import destroy_model_parallel
 
 
 logger = logging.getLogger(__name__)
@@ -128,7 +131,7 @@ class HFModelMixin(BaseModel):
             "cache_dir": model_args.cache_dir,
             "use_fast": model_args.use_fast_tokenizer,
             "revision": model_args.model_revision,
-            "use_auth_token": True if model_args.use_auth_token else None,
+            "token": model_args.token,
             "trust_remote_code": model_args.trust_remote_code,
         }
         if model_args.padding_side != 'auto':
@@ -200,7 +203,7 @@ class HFModelMixin(BaseModel):
             "attn_implementation": "flash_attention_2" if model_args.use_flash_attention else None,
             "cache_dir": model_args.cache_dir,
             "revision": model_args.model_revision,
-            "use_auth_token": True if model_args.use_auth_token else None,
+            "token": model_args.token,
             "trust_remote_code": model_args.trust_remote_code,
             "from_tf": bool(".ckpt" in model_args.model_name_or_path),
         }
@@ -429,6 +432,9 @@ class HFModelMixin(BaseModel):
         vllm_gpu_memory_utilization: float,
         vllm_tensor_parallel_size: int,
     ):
+        if not is_vllm_available():
+            raise ImportError('VLLM is not available. Please install via `pip install -e ".[vllm]"`.')
+        
         self.backend_model_for_inference = LLM(
             model=model_args.model_name_or_path,
             tokenizer=model_args.model_name_or_path,

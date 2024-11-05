@@ -22,6 +22,8 @@ from transformers import (
 )
 from transformers.utils.versions import require_version
 
+from lmflow.utils.versioning import is_flash_attn_available
+
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_CAUSAL_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 
@@ -88,9 +90,8 @@ class ModelArguments:
         a string representing the specific model version to use (can be a
         branch name, tag name, or commit id).
 
-    use_auth_token : bool
-        a boolean indicating whether to use the token generated when running
-        huggingface-cli login (necessary to use this script with private models).
+    token : Optional[str]
+        Necessary when accessing a private model/dataset.
 
     torch_dtype :  str
         a string representing the dtype to load the model under. If auto is
@@ -178,13 +179,10 @@ class ModelArguments:
         default="main",
         metadata={"help": "The specific model version to use (can be a branch name, tag name or commit id)."},
     )
-    use_auth_token: bool = field(
-        default=False,
+    token: Optional[str] = field(
+        default=None,
         metadata={
-            "help": (
-                "Will use the token generated when running `huggingface-cli login` (necessary to use this script "
-                "with private models)."
-            )
+            "help": ("Necessary to specify when accessing a private model/dataset.")
         },
     )
     trust_remote_code: bool = field(
@@ -357,6 +355,11 @@ class ModelArguments:
             if not self.use_lora:
                 logger.warning("use_qlora is set to True, but use_lora is not set to True. Setting use_lora to True.")
                 self.use_lora = True
+                
+        if self.use_flash_attention:
+            if not is_flash_attn_available():
+                self.use_flash_attention = False
+                logger.warning("Flash attention is not available in the current environment. Disabling flash attention.")
 
 
 @dataclass

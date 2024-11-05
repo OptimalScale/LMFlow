@@ -30,8 +30,10 @@ from lmflow.utils.constants import (
     FLOAT_ONLY_DATASET_DESCRIPTION,
     INSTANCE_FIELDS_MAP,
 )
+from lmflow.utils.versioning import is_multimodal_available
 
-from .multi_modal_dataset import CustomMultiModalDataset
+if is_multimodal_available():
+    from .multi_modal_dataset import CustomMultiModalDataset
 
 
 logger = logging.getLogger(__name__)
@@ -118,7 +120,6 @@ class Dataset:
                 data_files=data_files,
                 field=KEY_INSTANCES,
                 split="train",
-                use_auth_token=None,
             )
             self.backend_dataset = raw_dataset
             self._check_data_format()
@@ -127,6 +128,10 @@ class Dataset:
             pass
         elif backend == "custom_multi_modal":
             # FIXME refactor the backend name
+            if not is_multimodal_available():
+                raise ValueError(
+                    'Multimodal not available. Please install via `pip install -e ".[multimodal]"`'
+                )
             raw_dataset = CustomMultiModalDataset(self.dataset_path, data_args)
             self.backend_dataset = raw_dataset
         else:

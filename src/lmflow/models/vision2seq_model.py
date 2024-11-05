@@ -22,10 +22,15 @@ from transformers import (
     PreTrainedModel,
 )
 from transformers.modeling_outputs import CausalLMOutputWithPast
-from transformers.deepspeed import is_deepspeed_zero3_enabled
 
 from lmflow.models.base_model import BaseModel
 from lmflow.models.vision_encoder import build_vision_tower
+from lmflow.utils.versioning import is_package_version_at_least
+
+if is_package_version_at_least('transformers', '4.46.0'):
+    from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
+else:
+    from transformers.deepspeed import is_deepspeed_zero3_enabled
 
 
 class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):

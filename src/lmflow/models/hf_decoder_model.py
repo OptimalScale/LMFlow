@@ -22,31 +22,13 @@ import hashlib
 import logging
 import os, shutil
 from typing import List, Union, Optional, Dict
-from pathlib import Path
 
-import ray
-import ray.data
 import torch
-import transformers
-import bitsandbytes
-import deepspeed
-from transformers.deepspeed import HfDeepSpeedConfig
-from transformers import BitsAndBytesConfig
 from transformers import (
-    CONFIG_MAPPING,
     AutoConfig,
-    AutoTokenizer,
     AutoModelForCausalLM,
 )
-from peft import (
-    LoraConfig,
-    PeftModel,
-    TaskType,
-    get_peft_config,
-    get_peft_model,
-    prepare_model_for_kbit_training
-)
-from vllm import SamplingParams
+from peft import PeftModel
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.hf_model_mixin import HFModelMixin
@@ -63,39 +45,23 @@ from lmflow.tokenization.hf_decoder_model import (
     tokenize_function, 
     conversation_tokenize_function
 )
+from lmflow.utils.versioning import is_ray_available, is_vllm_available, is_flash_attn_available
 
 
 logger = logging.getLogger(__name__)
 
 
-MODELS_SUPPORT_FLASH_ATTENTION = [
-    "LlamaForCausalLM",
-    "GPTNeoForCausalLM",
-    "GPT2ForCausalLM",
-    "BloomForCausalLM"
-]
-
-GPU_SUPPORT_FLASH_ATTENTION = {
-    "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
-    "A40": ["GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
-    "A6000": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
-}
-
-try:
+if is_flash_attn_available():
     import flash_attn
-    if int(flash_attn.__version__.split(".")[0]) == 2:
-        GPU_SUPPORT_FLASH_ATTENTION = {
-            "A100": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
-            "A40": ["LlamaForCausalLM","GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"],
-            "A6000": ["LlamaForCausalLM", "GPTNeoForCausalLM", "GPT2ForCausalLM", "BloomForCausalLM"]
-        }
-except Exception as e:
-    if e.__class__ == ModuleNotFoundError:
-        logger.warning(
-            "flash_attn is not installed. Install flash_attn for better performance."
-        )
-    else:
-        logger.warning(f'An error occurred when importing flash_attn, flash attention is disabled: {e}')
+else:
+    logger.warning("Consider install flash_attn for better performance.")
+    
+if is_vllm_available():
+    from vllm import SamplingParams
+    
+if is_ray_available():
+    import ray
+    import ray.data
 
 
 class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
@@ -380,6 +346,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             )
             
         if use_vllm:
+            if not is_vllm_available():
+                raise ImportError("vllm is not installed. Please install vllm to use VLLM inference.")
             res = self.__vllm_inference(inputs, **kwargs)
         else:
             res = self.__inference(inputs, **kwargs)
@@ -445,7 +413,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     def __vllm_inference(
         self, 
         inputs: Union[str, List[str]],
-        sampling_params: Optional[SamplingParams] = None,
+        sampling_params: Optional['SamplingParams'] = None,
         **kwargs,
     ) -> List[VLLMInferenceResultWithInput]:
         """Perform VLLM inference process of the model.
@@ -493,7 +461,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         enable_distributed_inference: bool = False,
         use_vllm: bool = False,
         **kwargs,
-    ) -> Union[List[str], ray.data.Dataset, Dict[str, torch.Tensor]]:
+    ) -> Union[List[str], "ray.data.Dataset", Dict[str, torch.Tensor]]:
         """
         Prepare inputs for inference.
     
@@ -514,6 +482,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             The prepared inputs for inference.
         """
         if use_vllm:
+            if not is_ray_available() and enable_distributed_inference:
+                raise ImportError("ray is not installed. Please install ray to use distributed vllm inference.")
             inference_inputs = self.__prepare_inputs_for_vllm_inference(
                 dataset=dataset, 
                 apply_chat_template=apply_chat_template,
@@ -534,7 +504,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         dataset: Dataset,
         apply_chat_template: bool = True,
         enable_distributed_inference: bool = False,
-    ) -> Union[List[str], ray.data.Dataset]:
+    ) -> Union[List[str], "ray.data.Dataset"]:
         if dataset.get_type() == 'text_only':
             if apply_chat_template:
                 dataset = dataset.map(
@@ -606,7 +576,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
         inference_inputs = [sentence for sentence in inference_inputs if len(sentence) > 0]
         
-        if enable_distributed_inference:            
+        if enable_distributed_inference:
             inference_inputs = ray.data.from_items(inference_inputs) # -> Dict[str, np.ndarray], {"item": array(['...', '...', '...'])}
         
         return inference_inputs
@@ -648,7 +618,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             config_kwargs = {
                 "cache_dir": self.model_args.cache_dir,
                 "revision": self.model_args.model_revision,
-                "use_auth_token": True if self.model_args.use_auth_token else None,
+                "token": self.model_args.token,
             }
             config = AutoConfig.from_pretrained(self.model_args.model_name_or_path, **config_kwargs)
             device_map = "auto"
@@ -662,7 +632,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                 config=config,
                 cache_dir=self.model_args.cache_dir,
                 revision=self.model_args.model_revision,
-                use_auth_token=True if self.model_args.use_auth_token else None,
+                token=self.model_args.token,
                 torch_dtype=torch_dtype,
                 device_map=device_map,
                 trust_remote_code = self.model_args.trust_remote_code,

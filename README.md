@@ -107,12 +107,12 @@ Our package has been tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacO
 CUDA versions 10.3-11.7 are supported in versions `v0.0.5` or older. For CUDA versions greater than 11.7, one can use our stable branch `>= v0.0.6`.
 
 ```bash
-git clone -b v0.0.8 https://github.com/OptimalScale/LMFlow.git
+git clone https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
 conda install mpi4py
-bash install.sh
+pip install -e .
 ```
 
 > [!TIP]

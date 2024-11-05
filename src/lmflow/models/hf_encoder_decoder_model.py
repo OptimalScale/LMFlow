@@ -24,6 +24,7 @@ import time
 from typing import List, Union
 
 import deepspeed
+import torch
 from peft import (
     LoraConfig,
     PeftModel,
@@ -31,12 +32,6 @@ from peft import (
     get_peft_config,
     get_peft_model,
 )
-
-import torch
-from transformers.deepspeed import HfDeepSpeedConfig, HfTrainerDeepSpeedConfig
-
-from transformers.testing_utils import CaptureLogger
-
 from transformers import (
     CONFIG_MAPPING,
     AutoConfig,
@@ -47,12 +42,20 @@ from transformers import (
     AutoProcessor,
     LlamaConfig
 )
+from transformers.testing_utils import CaptureLogger
 
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.encoder_decoder_model import EncoderDecoderModel
 from lmflow.models.interfaces.tunable import Tunable
 from lmflow.models.vision2seq_model import CustomAutoVision2SeqModel
 from lmflow.utils.multimodal import update_custom_config, load_llava_pretrain_model
+from lmflow.utils.versioning import is_package_version_at_least
+
+if is_package_version_at_least("transformers", "4.46.0"):
+    from transformers.integrations.deepspeed import HfDeepSpeedConfig, HfTrainerDeepSpeedConfig
+else:
+    from transformers.deepspeed import HfDeepSpeedConfig, HfTrainerDeepSpeedConfig
+
 
 logger = logging.getLogger(__name__)
 
