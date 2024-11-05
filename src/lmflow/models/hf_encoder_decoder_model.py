@@ -49,9 +49,9 @@ from lmflow.models.encoder_decoder_model import EncoderDecoderModel
 from lmflow.models.interfaces.tunable import Tunable
 from lmflow.models.vision2seq_model import CustomAutoVision2SeqModel
 from lmflow.utils.multimodal import update_custom_config, load_llava_pretrain_model
-from lmflow.utils.versioning import get_package_version
+from lmflow.utils.versioning import is_package_version_at_least
 
-if get_package_version("transformers") >= "4.46.0":
+if is_package_version_at_least("transformers", "4.46.0"):
     from transformers.integrations.deepspeed import HfDeepSpeedConfig, HfTrainerDeepSpeedConfig
 else:
     from transformers.deepspeed import HfDeepSpeedConfig, HfTrainerDeepSpeedConfig
