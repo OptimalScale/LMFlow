@@ -18,10 +18,8 @@ optim=dummy
 # Select an optimizer from the following options:
 # - 'adamw_torch'
 # - 'adafactor'
+# - 'lamb'
 # - 'sgd'
-# - 'lion_8bit'
-# - 'lion_32bit'
-# - 'rmsprop'
 # Additional optimizers are shown below
 learning_rate=1e-5
 lr_schedule=cosine
@@ -187,6 +185,64 @@ elif [ "${optim}" == "lamb" ]; then
   optim_suffix_args+=" --optim_beta1 ${beta1}"
   optim_suffix_args+=" --optim_beta2 ${beta2}"
   optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "lion" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "adamw" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "adafactor" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "came" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_beta3 ${beta3}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "qhadam" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "adahessian" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "swats" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "qhm" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_momentum ${momentum}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "sgd" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_momentum ${momentum}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+elif [ "${optim}" == "rmsprop" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --customized_optim ${optim}"
+  optim_suffix_args+=" --optim_momentum ${momentum}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
 elif [ "${optim}" == "adamax" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
@@ -270,7 +326,7 @@ else
 fi
 
 # Finetune
-exp_id=alpaca_${optim}_lr-${learning_rate}_beta1-${beta1}_beta2-${beta2}_lr-sched-${lr_schedule}_model-$(basename ${model_name_or_path})_batch-size-${batch_size}x${gradient_accumulation_steps}_seed-${seed}
+exp_id=alpaca_${optim}_lr-${learning_rate}_beta1-${beta1}_beta2-${beta2}_beta3-${beta3}_momentum-${momentum}_lr-sched-${lr_schedule}_model-$(basename ${model_name_or_path})_batch-size-${batch_size}x${gradient_accumulation_steps}_seed-${seed}
 echo "$(date): ${exp_id}..."
 
 tmp_dir=tmp
