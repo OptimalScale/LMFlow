@@ -27,14 +27,17 @@ from peft import (
     prepare_model_for_kbit_training
 )
 from peft.utils.constants import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
-from vllm import LLM, SamplingParams
-from vllm.distributed.parallel_state import destroy_model_parallel
 
 from lmflow.models.base_model import BaseModel
 from lmflow.utils.constants import (
     LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
 from lmflow.args import ModelArguments
+from lmflow.utils.versioning import is_vllm_available
+
+if is_vllm_available():
+    from vllm import LLM, SamplingParams
+    from vllm.distributed.parallel_state import destroy_model_parallel
 
 
 logger = logging.getLogger(__name__)
@@ -429,6 +432,9 @@ class HFModelMixin(BaseModel):
         vllm_gpu_memory_utilization: float,
         vllm_tensor_parallel_size: int,
     ):
+        if not is_vllm_available():
+            raise ImportError('VLLM is not available. Please install via `pip install -e ".[vllm]"`.')
+        
         self.backend_model_for_inference = LLM(
             model=model_args.model_name_or_path,
             tokenizer=model_args.model_name_or_path,

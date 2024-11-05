@@ -413,7 +413,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     def __vllm_inference(
         self, 
         inputs: Union[str, List[str]],
-        sampling_params: Optional[SamplingParams] = None,
+        sampling_params: Optional['SamplingParams'] = None,
         **kwargs,
     ) -> List[VLLMInferenceResultWithInput]:
         """Perform VLLM inference process of the model.
