@@ -2,6 +2,7 @@ import importlib
 import sys
 import logging
 from typing import Tuple, List, Union
+from importlib.metadata import version, PackageNotFoundError
 
 
 logger = logging.getLogger(__name__)
@@ -34,6 +35,14 @@ def _is_packages_available(packages: Union[List[str], List[Tuple[str, bool]]]):
         return all([_is_package_available(package, skippable) for package, skippable in packages])
     else:
         raise ValueError(f"Invalid type of packages: {type(packages[0])}")
+    
+
+def get_package_version(package_name: str):
+    try:
+        pkg_version = version(package_name)
+        return pkg_version
+    except PackageNotFoundError as e:
+        raise e
 
 
 def is_gradio_available():
