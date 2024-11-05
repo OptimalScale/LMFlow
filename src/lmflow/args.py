@@ -90,9 +90,8 @@ class ModelArguments:
         a string representing the specific model version to use (can be a
         branch name, tag name, or commit id).
 
-    use_auth_token : bool
-        a boolean indicating whether to use the token generated when running
-        huggingface-cli login (necessary to use this script with private models).
+    token : Optional[str]
+        Necessary when accessing a private model/dataset.
 
     torch_dtype :  str
         a string representing the dtype to load the model under. If auto is
@@ -180,13 +179,10 @@ class ModelArguments:
         default="main",
         metadata={"help": "The specific model version to use (can be a branch name, tag name or commit id)."},
     )
-    use_auth_token: bool = field(
-        default=False,
+    token: Optional[str] = field(
+        default=None,
         metadata={
-            "help": (
-                "Will use the token generated when running `huggingface-cli login` (necessary to use this script "
-                "with private models)."
-            )
+            "help": ("Necessary to specify when accessing a private model/dataset.")
         },
     )
     trust_remote_code: bool = field(

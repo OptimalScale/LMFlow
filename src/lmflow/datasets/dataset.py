@@ -120,7 +120,6 @@ class Dataset:
                 data_files=data_files,
                 field=KEY_INSTANCES,
                 split="train",
-                use_auth_token=None,
             )
             self.backend_dataset = raw_dataset
             self._check_data_format()

@@ -131,7 +131,7 @@ class HFModelMixin(BaseModel):
             "cache_dir": model_args.cache_dir,
             "use_fast": model_args.use_fast_tokenizer,
             "revision": model_args.model_revision,
-            "use_auth_token": True if model_args.use_auth_token else None,
+            "token": model_args.token,
             "trust_remote_code": model_args.trust_remote_code,
         }
         if model_args.padding_side != 'auto':
@@ -203,7 +203,7 @@ class HFModelMixin(BaseModel):
             "attn_implementation": "flash_attention_2" if model_args.use_flash_attention else None,
             "cache_dir": model_args.cache_dir,
             "revision": model_args.model_revision,
-            "use_auth_token": True if model_args.use_auth_token else None,
+            "token": model_args.token,
             "trust_remote_code": model_args.trust_remote_code,
             "from_tf": bool(".ckpt" in model_args.model_name_or_path),
         }
