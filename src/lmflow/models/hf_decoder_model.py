@@ -618,7 +618,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             config_kwargs = {
                 "cache_dir": self.model_args.cache_dir,
                 "revision": self.model_args.model_revision,
-                "use_auth_token": True if self.model_args.use_auth_token else None,
+                "token": self.model_args.token,
             }
             config = AutoConfig.from_pretrained(self.model_args.model_name_or_path, **config_kwargs)
             device_map = "auto"
@@ -632,7 +632,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                 config=config,
                 cache_dir=self.model_args.cache_dir,
                 revision=self.model_args.model_revision,
-                use_auth_token=True if self.model_args.use_auth_token else None,
+                token=self.model_args.token,
                 torch_dtype=torch_dtype,
                 device_map=device_map,
                 trust_remote_code = self.model_args.trust_remote_code,
