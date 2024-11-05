@@ -25,9 +25,9 @@ from transformers.modeling_outputs import CausalLMOutputWithPast
 
 from lmflow.models.base_model import BaseModel
 from lmflow.models.vision_encoder import build_vision_tower
-from lmflow.utils.versioning import get_package_version
+from lmflow.utils.versioning import is_package_version_at_least
 
-if get_package_version("transformers") >= "4.46.0":
+if is_package_version_at_least('transformers', '4.46.0'):
     from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 else:
     from transformers.deepspeed import is_deepspeed_zero3_enabled

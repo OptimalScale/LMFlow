@@ -15,9 +15,6 @@ import logging
 from typing import Dict, List, Union, Tuple, Any
 
 from accelerate import Accelerator
-import ray
-import ray.data
-from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 import torch
 from tqdm import tqdm
 from transformers import AutoConfig
@@ -39,6 +36,12 @@ from lmflow.utils.data_utils import (
     RewardModelInferenceResultWithInput,
 )
 from lmflow.datasets.dataset import KEY_SCORE
+from lmflow.utils.versioning import is_ray_available
+
+if is_ray_available():
+    import ray
+    import ray.data
+    from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
@@ -142,11 +145,14 @@ class RewardModelInferencer(BasePipeline):
     def _inference(
         self,
         model: HFTextRegressionModel,
-        model_input: Union[Dataset, ray.data.Dataset],
+        model_input: Union[Dataset, 'ray.data.Dataset'],
         enable_distributed_inference: bool = False,
         **kwargs,
     ):
         if enable_distributed_inference:
+            if not is_ray_available():
+                raise ImportError('Ray is not installed. Please install via `pip install -e ".[ray]"`.')
+            
             inference_res = self.__distributed_inference(
                 model=model, 
                 model_input=model_input, 
@@ -212,7 +218,7 @@ class RewardModelInferencer(BasePipeline):
     def __distributed_inference(
         self,
         model: HFTextRegressionModel,
-        model_input: ray.data.Dataset,
+        model_input: 'ray.data.Dataset',
         num_instances: int,
         batch_size: int,
     ) -> List[RewardModelInferenceResultWithInput]:
