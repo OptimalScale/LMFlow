@@ -22,6 +22,8 @@ from transformers import (
 )
 from transformers.utils.versions import require_version
 
+from lmflow.utils.versioning import is_flash_attn_available
+
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_CAUSAL_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 
@@ -357,6 +359,11 @@ class ModelArguments:
             if not self.use_lora:
                 logger.warning("use_qlora is set to True, but use_lora is not set to True. Setting use_lora to True.")
                 self.use_lora = True
+                
+        if self.use_flash_attention:
+            if not is_flash_attn_available():
+                self.use_flash_attention = False
+                logger.warning("Flash attention is not available in the current environment. Disabling flash attention.")
 
 
 @dataclass
