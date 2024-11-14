@@ -1,8 +1,7 @@
 import gc
 import logging
 import time
-from collections import defaultdict
-from typing import Union, List, DefaultDict, Any
+from typing import Union, List
 
 import numpy as np
 import torch
@@ -33,8 +32,7 @@ LISA_LAYER_NAME_MAPPING = {
 }
 
 
-LISA_BODY_LAYER_PARAM_GROUPS_IDX = [0, 1]
-NON_LISA_LAYER_PARAM_GROUPS_IDX = [2, 3]
+LISA_BODY_LAYER_PARAM_GROUPS_IDX = [2, 3]
 
 
 class LISATrainer(Trainer):
@@ -65,7 +63,6 @@ class LISATrainer(Trainer):
         self.active_layers_indices = []
         self.histroy_layers_indices = []
         self.active_layers_names = []
-        self._optimizer_param_group_initialized = False
 
         
     def _get_all_body_layers(self) -> List[nn.Module]:
@@ -124,8 +121,8 @@ class LISATrainer(Trainer):
                 
                 
     def maybe_switch_active_layers(self):
-        # if self.state.global_step == 0:
-        #     torch.cuda.memory._dump_snapshot(f'gs_{self.state.global_step}.pickle')
+        if self.state.global_step == 0:
+            torch.cuda.memory._dump_snapshot(f'gs_{self.state.global_step}.pickle')
             
         if (
             self.state.global_step == 0 # skip since already initialized in `create_optimizer`
@@ -133,46 +130,38 @@ class LISATrainer(Trainer):
             self.state.global_step % self.interval_steps != 0 
         ):
             return
-        
-        # cache param groups that don't need to swtich (lmhead, ln)
-        non_lisa_param_groups = [self.optimizer.param_groups[i] for i in NON_LISA_LAYER_PARAM_GROUPS_IDX]
-        
-        # cache states of non-lisa layers
-        non_lisa_states: DefaultDict[torch.Tensor, Any] = defaultdict(dict)
-        for pg in non_lisa_param_groups:
-            for param in pg['params']:
-                non_lisa_states[param] = self.optimizer.state[param]            
-        
-        # clear optimizer to clear the states
-        self.optimizer = None
+                    
         if hasattr(self.accelerator, "deepspeed_engine_wrapped"):
-            if self.accelerator.deepspeed_engine_wrapped is not None:
-                self.accelerator.deepspeed_engine_wrapped.engine.destroy()
-            self.accelerator.deepspeed_engine_wrapped = None
-        gc.collect()
-        torch.cuda.empty_cache()
-            
-        # init new optimizer w/ new lisa layers
-        self.create_optimizer()
-        _, self.optimizer = self.accelerator.prepare(self.model, self.optimizer)
+            keys_to_remove = [
+                statekey for statekey_idx, statekey in enumerate(self.optimizer.state.keys()) 
+                if statekey_idx in LISA_BODY_LAYER_PARAM_GROUPS_IDX
+            ]
+            for key in keys_to_remove:
+                del self.optimizer.state[key]    
+        else:
+            layers = self._get_all_body_layers()
+            for active_layer_idx in self.active_layers_indices:
+                for name, param in layers[active_layer_idx].named_parameters():
+                    print(f"{name=}")
+                    del self.optimizer.state[param]
         
-        # put back non-lisa param groups
-        self.optimizer.param_groups.extend([non_lisa_param_groups[0], non_lisa_param_groups[1]])
-        if hasattr(self.accelerator, "deepspeed_engine_wrapped"):
-            self._post_init_deepspeed_zero_optimizer_params(self.accelerator.deepspeed_engine_wrapped.engine.optimizer)
-            
-        # put back non-lisa states
-        for gindex in NON_LISA_LAYER_PARAM_GROUPS_IDX:
-            for param in self.optimizer.param_groups[gindex]['params']:
-                self.optimizer.state[param] = non_lisa_states[param]
-                
-        del non_lisa_param_groups
-        del non_lisa_states
-        gc.collect()
-        torch.cuda.empty_cache()
+        self._switch_active_layers()
+        
+        # update optimizer pg so that the new layers could be initialized in optimizer.step()
+        opt_model = self.model_wrapped if is_sagemaker_mp_enabled() else self.model
+        decay_parameters = self.get_decay_parameter_names(opt_model)
+        
+        self.optimizer.param_groups[2]['params'] = [
+            p for n, p in opt_model.named_parameters() if (
+                n in self.active_layers_names and n in decay_parameters and p.requires_grad)
+        ]
+        self.optimizer.param_groups[3]['params'] = [
+            p for n, p in opt_model.named_parameters() if (
+                n in self.active_layers_names and n not in decay_parameters and p.requires_grad)
+        ]
         
         if hasattr(self.accelerator, "deepspeed_engine_wrapped"):
-            self.accelerator.deepspeed_engine_wrapped.engine.optimizer._link_all_hp_params()
+            self._reinit_deepspeed_zero_optimizer_params(self.accelerator.deepspeed_engine_wrapped.engine.optimizer)
         
         torch.cuda.memory._dump_snapshot(f'gs_{self.state.global_step}.pickle')
                 
@@ -186,7 +175,43 @@ class LISATrainer(Trainer):
         if self.optimizer is None:
             self._switch_active_layers() # init along with the optimizer
             
-            optimizer_grouped_parameters = self._prepare_optimizer_param_group(opt_model)
+            decay_parameters = self.get_decay_parameter_names(opt_model)
+            optimizer_grouped_parameters = [
+                {
+                    # this should always be lmhead:
+                    # `requires_grad` and `not in active_layers_names` rules out all body layers
+                    # `in decay_parameters` rules out ln
+                    "params": [
+                        p for n, p in opt_model.named_parameters() if (
+                            n not in self.active_layers_names and n in decay_parameters and p.requires_grad)
+                    ],
+                    "weight_decay": self.args.weight_decay,
+                },
+                {
+                    # this should always be ln (outside of body layers)
+                    "params": [
+                        p for n, p in opt_model.named_parameters() if (
+                            n not in self.active_layers_names and n not in decay_parameters and p.requires_grad)
+                    ],
+                    "weight_decay": 0.0,
+                },
+                {
+                    # selected body layers with decay 
+                    "params": [
+                        p for n, p in opt_model.named_parameters() if (
+                            n in self.active_layers_names and n in decay_parameters and p.requires_grad)
+                    ],
+                    "weight_decay": self.args.weight_decay,
+                },
+                {
+                    # selected body layers without decay
+                    "params": [
+                        p for n, p in opt_model.named_parameters() if (
+                            n in self.active_layers_names and n not in decay_parameters and p.requires_grad)
+                    ],
+                    "weight_decay": 0.0,
+                },
+            ]          
 
             optimizer_cls, optimizer_kwargs = self.get_optimizer_cls_and_kwargs(self.args, opt_model)
 
@@ -224,82 +249,35 @@ class LISATrainer(Trainer):
         if is_sagemaker_mp_enabled():
             self.optimizer = smp.DistributedOptimizer(self.optimizer)
 
-        
-        print(f"optim after create_optimizer {[len(pg['params']) for pg in self.optimizer.param_groups]=}")
+        see_memory_usage('[mem usage] after creating optimizer', True)
         return self.optimizer
-    
-    
-    def _prepare_optimizer_param_group(self, opt_model: nn.Module):
-        decay_parameters = self.get_decay_parameter_names(opt_model)
-        print(f"{decay_parameters=}")
-        if not self._optimizer_param_group_initialized:
-            optimizer_grouped_parameters = [
-                {
-                    # selected body layers with decay 
-                    "params": [
-                        p for n, p in opt_model.named_parameters() if (
-                            n in self.active_layers_names and n in decay_parameters and p.requires_grad)
-                    ],
-                    "weight_decay": self.args.weight_decay,
-                },
-                {
-                    # selected body layers without decay
-                    "params": [
-                        p for n, p in opt_model.named_parameters() if (
-                            n in self.active_layers_names and n not in decay_parameters and p.requires_grad)
-                    ],
-                    "weight_decay": 0.0,
-                },
-                {
-                    # this should always be lmhead:
-                    # `requires_grad` and `not in active_layers_names` rules out all body layers
-                    # `in decay_parameters` rules out ln
-                    "params": [
-                        p for n, p in opt_model.named_parameters() if (
-                            n not in self.active_layers_names and n in decay_parameters and p.requires_grad)
-                    ],
-                    "weight_decay": self.args.weight_decay,
-                },
-                {
-                    # this should always be ln (outside of body layers)
-                    "params": [
-                        p for n, p in opt_model.named_parameters() if (
-                            n not in self.active_layers_names and n not in decay_parameters and p.requires_grad)
-                    ],
-                    "weight_decay": 0.0,
-                },
-            ]
-            self._optimizer_param_group_initialized = True
-        else:
-            optimizer_grouped_parameters = [
-                {
-                    # selected body layers with decay 
-                    "params": [
-                        p for n, p in opt_model.named_parameters() if (
-                            n in self.active_layers_names and n in decay_parameters and p.requires_grad)
-                    ],
-                    "weight_decay": self.args.weight_decay,
-                },
-                {
-                    # selected body layers without decay
-                    "params": [
-                        p for n, p in opt_model.named_parameters() if (
-                            n in self.active_layers_names and n not in decay_parameters and p.requires_grad)
-                    ],
-                    "weight_decay": 0.0,
-                },
-            ]
-        
-        return optimizer_grouped_parameters                    
         
         
-    def _post_init_deepspeed_zero_optimizer_params(self, optimizer: DeepSpeedZeroOptimizer):
-        optimizer.real_dp_process_group = [optimizer.dp_process_group for i in range(len(optimizer.optimizer.param_groups))]
-        optimizer.partition_count = [dist.get_world_size(group=optimizer.dp_process_group) for i in range(len(optimizer.optimizer.param_groups))]
+    def _reinit_deepspeed_zero_optimizer_params(self, optimizer: DeepSpeedZeroOptimizer):
+        num_non_lisa_body_layer_pgs = len(self.optimizer.param_groups) - len(LISA_BODY_LAYER_PARAM_GROUPS_IDX)
+        objs = [
+            optimizer.bit16_groups, 
+            optimizer.round_robin_bit16_groups, 
+            optimizer.round_robin_bit16_indices, 
+            optimizer.round_robin_bit16_meta, 
+            optimizer.bit16_groups_flat, 
+            optimizer.groups_padding, 
+            optimizer.parallel_partitioned_bit16_groups, 
+            optimizer.single_partition_of_fp32_groups, 
+            optimizer.partition_size, 
+            optimizer.params_in_partition, 
+            optimizer.params_not_in_partition, 
+            optimizer.first_offset
+        ]
+        for obj in objs:
+            del obj[num_non_lisa_body_layer_pgs:]
+        empty_cache()
+        torch.cuda.empty_cache()
+        gc.collect()
         
         for i, param_group in enumerate(optimizer.optimizer.param_groups):
-            if i in LISA_BODY_LAYER_PARAM_GROUPS_IDX:
-                # skip lisa layers
+            if i in range(num_non_lisa_body_layer_pgs):
+                # skip lmhead, ln, etc.
                 continue
             
             partition_id = dist.get_rank(group=optimizer.real_dp_process_group[i])
