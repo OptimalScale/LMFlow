@@ -147,6 +147,7 @@ class LISATrainer(Trainer):
         self.optimizer = None
         if hasattr(self.accelerator, "deepspeed_engine_wrapped"):
             if self.accelerator.deepspeed_engine_wrapped is not None:
+                self.accelerator.deepspeed_engine_wrapped.engine.empty_partition_cache()
                 self.accelerator.deepspeed_engine_wrapped.engine.destroy()
             self.accelerator.deepspeed_engine_wrapped = None
         gc.collect()

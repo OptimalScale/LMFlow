@@ -38,7 +38,7 @@ from lmflow.args import OptimizerNames
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
-from lmflow.pipeline.utils.lisa_trainer import LISATrainer
+from lmflow.pipeline.utils.lisa_trainer_fsdp import LISATrainer
 from lmflow.utils.debug.model_params import get_parameter_names_in_param_groups
 
 
