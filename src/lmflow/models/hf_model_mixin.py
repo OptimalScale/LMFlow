@@ -329,6 +329,13 @@ class HFModelMixin(BaseModel):
     ):
         assert self.do_train, "To prepare the model for training, please set do_train=True."
         # TODO: change to accelerate
+
+        if 'hymba' in model_args.model_name_or_path:
+            import torch._dynamo
+            torch._dynamo.config.suppress_errors = True
+            torch._dynamo.config.disable = True
+    
+
         logger.info("Preparing model for training")
         if model_args.model_name_or_path:
             model = hf_auto_model.from_pretrained(
@@ -336,6 +343,7 @@ class HFModelMixin(BaseModel):
                 torch_dtype=self.torch_dtype,
                 config=self.hf_model_config,
                 quantization_config=self.quant_config,
+                trust_remote_code=model_args.trust_remote_code,
             )
 
             if model_args.use_qlora:

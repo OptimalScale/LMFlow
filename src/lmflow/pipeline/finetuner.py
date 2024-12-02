@@ -524,6 +524,7 @@ class Finetuner(BaseTuner):
                         'MixtralForCausalLM': 'model.model.layers',
                         'GemmaForCausalLM': 'model.model.layers',
                         'GPT2LMHeadModel': 'model.transformer.h',
+                        'HymbaForCausalLM': 'model.model.layers',
                     }
                     model_class_name = self.model.__class__.__name__
                     if model_class_name in class_to_layers_map:
