@@ -203,6 +203,10 @@ class ModelArguments:
             "choices": ["auto", "bfloat16", "float16", "float32"],
         },
     )
+    use_dora: bool = field(
+        default=False,
+        metadata={"help": "Whether to dora, https://github.com/NVlabs/DoRA."},
+    )
     use_lora: bool = field(
         default=False,
         metadata={"help": "Whether to lora."},

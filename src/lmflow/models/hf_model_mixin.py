@@ -277,7 +277,29 @@ class HFModelMixin(BaseModel):
                 lora_dropout=model_args.lora_dropout,
                 target_modules=lora_target_modules,
             )
+        if model_args.use_dora:
+            if model_args.lora_target_modules:
+                lora_target_modules = model_args.lora_target_modules
+            else:
+                model_config = self.hf_model_config
+                if hasattr(model_config, "to_dict"):
+                    model_config = model_config.to_dict()
+                if "model_type" not in model_config or not model_config["model_type"]:
+                    logger.warning("It seems that your base model is a custom model, since "
+                                   "model_type is not found in model_config when preparing peft config. "
+                                   "Setting model_type to 'custom' as a fallback.")
+                    model_config["model_type"] = "custom"
+                lora_target_modules = LORA_TARGET_MODULES_MAPPING.get(model_config["model_type"], None)
             
+            peft_config = LoraConfig(
+                use_dora=True,
+                task_type=TaskType.CAUSAL_LM,
+                inference_mode=False,
+                r=model_args.lora_r,
+                lora_alpha=model_args.lora_alpha,
+                lora_dropout=model_args.lora_dropout,
+                target_modules=lora_target_modules,
+            )
         return peft_config
     
     
@@ -333,7 +355,7 @@ class HFModelMixin(BaseModel):
                 name for name, buffer in model.named_buffers() if buffer.dtype == torch.bool
             ]
         
-        if model_args.use_lora:
+        if model_args.use_lora or model_args.use_dora:
             model.enable_input_require_grads()
             if model_args.lora_model_path is not None:
                 # Load model from LoRA weights
