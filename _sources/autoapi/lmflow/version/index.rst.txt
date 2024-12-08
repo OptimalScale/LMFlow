@@ -1,0 +1,21 @@
+lmflow.version
+==============
+
+.. py:module:: lmflow.version
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.version.__version__
+
+
+Module Contents
+---------------
+
+.. py:data:: __version__
+   :value: '0.0.9'
+
+

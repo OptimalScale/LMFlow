@@ -1,0 +1,35 @@
+lmflow.utils.conversation_template.hymba
+========================================
+
+.. py:module:: lmflow.utils.conversation_template.hymba
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.hymba.HYMBA_TEMPLATE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.hymba.HymbaConversationTemplate
+
+
+Module Contents
+---------------
+
+.. py:class:: HymbaConversationTemplate
+
+   Bases: :py:obj:`lmflow.utils.conversation_template.base.ConversationTemplateForTool`
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+
+.. py:data:: HYMBA_TEMPLATE
+

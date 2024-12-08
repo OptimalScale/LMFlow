@@ -1,0 +1,100 @@
+lmflow.pipeline.rm_tuner
+========================
+
+.. py:module:: lmflow.pipeline.rm_tuner
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.rm_tuner.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.rm_tuner.RewardModelTuner
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: RewardModelTuner(model_args, data_args, finetuner_args, *args, **kwargs)
+
+   Bases: :py:obj:`lmflow.pipeline.finetuner.Finetuner`
+
+
+   
+   Initializes the `RewardModelTuner` class.
+
+
+   :Parameters:
+
+       **model_args** : ModelArguments object.
+           Contains the arguments required to load the model.
+
+       **data_args** : DatasetArguments object.
+           Contains the arguments required to load the dataset.
+
+       **finetuner_args** : RewardModelTunerArguments object.
+           Contains the arguments required to perform finetuning.
+
+       **args** : Optional.
+           Positional arguments.
+
+       **kwargs** : Optional.
+           Keyword arguments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: tune(model: lmflow.models.hf_text_regression_model.HFTextRegressionModel, dataset, transform_dataset_in_place=True, data_collator=None, **kwargs)
+
+      
+      Perform tuning for a model
+
+
+      :Parameters:
+
+          **model** : TunableModel object.
+              TunableModel to perform tuning.
+
+          **dataset:**
+              dataset to train model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

@@ -1,0 +1,74 @@
+lmflow.pipeline.iterative_dpo_aligner
+=====================================
+
+.. py:module:: lmflow.pipeline.iterative_dpo_aligner
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.iterative_dpo_aligner.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.iterative_dpo_aligner.IterativeDPOAligner
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: IterativeDPOAligner(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, aligner_args: lmflow.args.IterativeDPOAlignerArguments, ref_model_args: lmflow.args.ModelArguments, reward_model_args: lmflow.args.ModelArguments, **kwargs)
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: aligner_args
+
+
+   .. py:attribute:: ref_model_args
+
+
+   .. py:attribute:: reward_model_args
+
+
+   .. py:attribute:: workspace_path
+
+
+   .. py:method:: align(dataset_list: List[lmflow.datasets.dataset.Dataset])
+
+
+   .. py:method:: _align_single_iteration(iteration_name: str, target_model_args: lmflow.args.ModelArguments, reward_model_args: lmflow.args.ModelArguments, ref_model_args: lmflow.args.ModelArguments, dataset: lmflow.datasets.dataset.Dataset)
+
+
+   .. py:method:: _do_target_model_inference(model: lmflow.models.hf_decoder_model.HFDecoderModel, dataset: lmflow.datasets.dataset.Dataset, output_dir: str)
+
+
+   .. py:method:: _do_reward_model_inference(model: lmflow.models.hf_text_regression_model.HFTextRegressionModel, dataset: lmflow.datasets.dataset.Dataset, output_dir: str)
+
+
+   .. py:method:: _do_single_dpo_align(model_args: lmflow.args.ModelArguments, ref_model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, output_dir: str, iteration_name: str)
+
+
+   .. py:method:: _parse_target_model_inference_args(args: lmflow.args.IterativeDPOAlignerArguments, result_cache_path: str) -> lmflow.args.InferencerArguments
+
+
+   .. py:method:: _parse_reward_model_inference_args(args: lmflow.args.IterativeDPOAlignerArguments) -> lmflow.args.InferencerArguments
+
+
+   .. py:method:: _parse_dpo_aligner_args(args: lmflow.args.IterativeDPOAlignerArguments, output_dir: str, iteration_name: str) -> lmflow.args.DPOv2AlignerArguments
+
+
+   .. py:method:: __filter_args(mixed_args, target_cls)
+
+
