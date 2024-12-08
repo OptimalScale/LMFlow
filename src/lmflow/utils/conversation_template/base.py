@@ -170,7 +170,7 @@ class ConversationTemplate:
     
     def __post_init__(self):
         if self.separator:
-            if self.separator.type not in ['string', 'token']:
+            if self.separator.type not in ['string', 'token', 'token_id']:
                 raise NotImplementedError(f"Component type {self.separator.type} cannot be used as a separator.")
             
         if self.special_starter:
@@ -335,6 +335,8 @@ class ConversationTemplate:
             separator_ids = tokenizer.encode(self.separator.content, add_special_tokens=False)
         elif self.separator.type == 'token':
             separator_ids = self._ensure_id_list(tokenizer.convert_tokens_to_ids(self.separator.content))
+        elif self.separator.type == 'token_id':
+            separator_ids = self._ensure_id_list(self.separator.content)
         else:
             raise ValueError(f"Component type {self.separator.type} cannot be used as a separator.")
         
@@ -471,7 +473,10 @@ class ConversationTemplateForTool(ConversationTemplate):
         res_all = []
         # Concatenate the system and tools strings
         system = system + tools
-        system_formatted = self.system_formatter.format(content=system) if system else []
+        if system:
+            system_formatted = self.system_formatter.format(content=system)
+        else:
+            system_formatted = self.system_formatter.format(content='') if self.force_system else []
         system_encoded = self._encode_template(system_formatted, tokenizer)
         ls_for_save = []
         for i in range(0, len(messages), 1):

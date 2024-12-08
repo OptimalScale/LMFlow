@@ -52,9 +52,10 @@ class HymbaConversationTemplate(ConversationTemplateForTool):
         system: Optional[str] = None,
         tools: Optional[str] = None,
         **kwargs
-    ) -> Sequence[Tuple[List[int], List[int]]]:        
-        system_and_tool = system + "<tool> " + tools + " </tool>"
-        return super()._encode(tokenizer=tokenizer,messages=messages, system=system_and_tool, tools='')
+    ) -> Sequence[Tuple[List[int], List[int]]]:
+        if tools:
+            system = system + "<tool> " + tools + " </tool>\n"
+        return super()._encode(tokenizer=tokenizer,messages=messages, system=system, tools='')
     
 
 
@@ -82,10 +83,11 @@ HYMBA_TEMPLATE = HymbaConversationTemplate(
     ),
     system_formatter=StringFormatter(
         template=[
-            TemplateComponent(type='string', content='<extra_id_0>System\n{{content}}\n\n')
+            TemplateComponent(type='string', content='<extra_id_0>System\n{{content}}\n')
         ]
     ),
-    separator=TemplateComponent(type='string', content='\n'),
+    separator=TemplateComponent(type='token_id', content=13),
     remove_last_sep=True,
-    special_stopper=TemplateComponent(type='token', content='eos_token')
+    special_stopper=TemplateComponent(type='token', content='eos_token'),
+    force_system=True
 )
