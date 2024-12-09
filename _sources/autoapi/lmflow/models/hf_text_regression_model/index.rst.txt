@@ -1,0 +1,268 @@
+lmflow.models.hf_text_regression_model
+======================================
+
+.. py:module:: lmflow.models.hf_text_regression_model
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.models.hf_text_regression_model.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.models.hf_text_regression_model.HFTextRegressionModel
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: HFTextRegressionModel(model_args: lmflow.args.ModelArguments, tune_strategy: str = 'normal', ds_config=None, device='gpu', use_accelerator=False, *args, **kwargs)
+
+   Bases: :py:obj:`lmflow.models.text_regression_model.TextRegressionModel`, :py:obj:`lmflow.models.hf_model_mixin.HFModelMixin`, :py:obj:`lmflow.models.interfaces.tunable.Tunable`
+
+
+   
+   Initializes a HFTextRegressionModel instance.
+
+
+   :Parameters:
+
+       **model_args**
+           Model arguments such as model name, path, revision, etc.
+
+       **tune_strategy** : str or none,  default="normal".
+           A string representing the dataset backend. Defaults to "huggingface".
+
+       **ds_config**
+           Deepspeed configuations.
+
+       **args** : Optional.
+           Positional arguments.
+
+       **kwargs** : Optional.
+           Keyword arguments.    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: tokenize(dataset: lmflow.datasets.dataset.Dataset, add_special_tokens=True, *args, **kwargs)
+
+      
+      Tokenize the full dataset.
+
+
+      :Parameters:
+
+          **dataset** : lmflow.datasets.Dataset.
+              ..
+
+          **args** : Optional.
+              Positional arguments.
+
+          **kwargs** : Optional.
+              Keyword arguments.    
+
+
+
+      :Returns:
+
+          tokenized_datasets
+              The tokenized dataset, without any leading or trailing special
+              tokens (normally they are Begin-Of-Sentence or End-Of-Sentence
+              tokens).
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: inference(inputs, release_gpu: bool = False, use_vllm: bool = False, **kwargs) -> Union[List[float], transformers.modeling_outputs.SequenceClassifierOutputWithPast]
+
+      
+      Perform generation process of the model.
+
+
+      :Parameters:
+
+          **inputs**
+              The sequence used as a prompt for the generation or as model inputs to the model.
+              When using vllm inference, this should be a string or a list of strings.
+              When using normal inference, this should be a tensor.
+
+          **release_gpu** : bool, optional
+              Whether to release the GPU resource after inference, by default False.
+
+          **use_vllm** : bool, optional
+              Whether to use VLLM for inference, by default False.
+
+          **kwargs** : Optional.
+              Keyword arguments.    
+
+
+
+      :Returns:
+
+          outputs
+              The generated sequence output 
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: __inference(inputs, **kwargs)
+
+      
+      Perform generation process of the model.
+
+
+      :Parameters:
+
+          **inputs**
+              The **tokenized** sequence used as a prompt for the generation or as model inputs to the model.
+
+          **kwargs** : Optional.
+              Keyword arguments.    
+
+
+
+      :Returns:
+
+          outputs
+              The generated sequence output 
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: __vllm_inference(inputs: Union[str, List[str]], sampling_params: Optional[vllm.SamplingParams] = None, **kwargs) -> Union[List[List[str]], List[List[List[int]]]]
+      :abstractmethod:
+
+
+      
+      Perform VLLM inference process of the model.
+
+
+      :Parameters:
+
+          **inputs** : Union[str, List[str]]
+              Prompt(s), string or a list of strings.
+
+          **sampling_params** : Optional[SamplingParams], optional
+              vllm SamplingParams object, by default None.
+
+
+
+      :Returns:
+
+          
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: prepare_inputs_for_inference(dataset: lmflow.datasets.dataset.Dataset, enable_distributed_inference: bool = False, use_vllm: bool = False, **kwargs) -> Union[lmflow.datasets.dataset.Dataset, ray.data.Dataset]
+
+
+   .. py:method:: postprocess_inference_outputs(dataset: lmflow.datasets.dataset.Dataset, scores: Union[List[float], List[List[float]]])
+      :staticmethod:
+
+
+
+   .. py:method:: postprocess_distributed_inference_outputs(dataset: lmflow.datasets.dataset.Dataset, inference_result: List[lmflow.utils.data_utils.RewardModelInferenceResultWithInput])
+      :staticmethod:
+
+
+
+   .. py:method:: save(dir, *args, **kwargs)
+
+      
+      Perform generation process of the model.
+
+
+      :Parameters:
+
+          **dir**
+              The directory to save model and tokenizer
+
+          **kwargs** : Optional.
+              Keyword arguments.    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

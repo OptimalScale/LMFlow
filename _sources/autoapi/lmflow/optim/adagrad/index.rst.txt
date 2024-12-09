@@ -1,0 +1,25 @@
+lmflow.optim.adagrad
+====================
+
+.. py:module:: lmflow.optim.adagrad
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.adagrad.AdaGrad
+
+
+Module Contents
+---------------
+
+.. py:class:: AdaGrad(params, lr=0.001, eps=1e-08, weight_decay=0)
+
+   Bases: :py:obj:`torch.optim.Optimizer`
+
+
+   .. py:method:: step(closure=None)
+
+

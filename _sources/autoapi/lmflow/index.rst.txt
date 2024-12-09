@@ -1,0 +1,40 @@
+lmflow
+======
+
+.. py:module:: lmflow
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/lmflow/args/index
+   /autoapi/lmflow/datasets/index
+   /autoapi/lmflow/models/index
+   /autoapi/lmflow/optim/index
+   /autoapi/lmflow/pipeline/index
+   /autoapi/lmflow/tokenization/index
+   /autoapi/lmflow/utils/index
+   /autoapi/lmflow/version/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.internal_version
+   lmflow.__version__
+
+
+Package Contents
+----------------
+
+.. py:data:: internal_version
+   :value: '0.0.9'
+
+
+.. py:data:: __version__
+

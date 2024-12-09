@@ -1,0 +1,161 @@
+lmflow.pipeline.dpov2_aligner
+=============================
+
+.. py:module:: lmflow.pipeline.dpov2_aligner
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.dpov2_aligner.logger
+   lmflow.pipeline.dpov2_aligner.ReferenceModelArguments
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.dpov2_aligner.DPOv2Aligner
+   lmflow.pipeline.dpov2_aligner.MemorySafeDPOv2Aligner
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: ReferenceModelArguments
+
+.. py:class:: DPOv2Aligner(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, aligner_args: lmflow.args.DPOv2AlignerArguments, ref_model_args: lmflow.args.ModelArguments)
+
+   Bases: :py:obj:`lmflow.pipeline.base_aligner.BaseAligner`
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: ref_model_args
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: aligner_args
+
+
+   .. py:method:: align(model: lmflow.models.hf_decoder_model.HFDecoderModel, ref_model: lmflow.models.hf_decoder_model.HFDecoderModel, train_dataset: lmflow.datasets.dataset.Dataset, eval_dataset: lmflow.datasets.dataset.Dataset, transform_dataset_in_place: bool = True)
+
+
+   .. py:method:: __prepare_training_args(args: lmflow.args.DPOv2AlignerArguments) -> transformers.TrainingArguments
+
+
+   .. py:method:: convert_to_paired_dataset(source_dataset: lmflow.datasets.dataset.Dataset, sampling_paired_method: str = 'random', length_penalty: float = 0.0, margin_scale: float = 1.0, use_fast: bool = False) -> lmflow.datasets.dataset.Dataset
+
+      
+      Convert a scored one to multiple (text_to_scored_textlist) to a paired dataset by rejection sampling.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _calc_response_lengths(outputs: List[Union[str, Dict[str, str]]], dataset_type: str) -> List[int]
+
+
+   .. py:method:: _calc_reward_with_length_penalty(rewards: List[float], lengths: List[int], length_penalty: float) -> List[float]
+
+      
+      When length_penalty > 0, penalize the longer sequence by subtracting 
+      length_penalty * length from the reward. Vice versa when length_penalty < 0.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: sampling_paired_idx_from_rewards(rewards: List[float], sampling_paired_method: str = 'random', use_fast: bool = False) -> Tuple[int, int]
+
+      
+      Prepare the dataset for DPO training by rejection sampling.
+      We implement different strategies to select pairs, including
+      random: randomly select two instances
+      max_min: best v.s. worst
+      max_max: best v.s. second best
+      max_random: best v.s. random from the remaining
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _sampling_paired_idx_from_rewards(rewards: List[float], sampling_paired_method: str = 'random') -> Tuple[int, int]
+
+
+   .. py:method:: _sampling_paired_idx_from_rewards_fast(rewards: List[float], sampling_paired_method: str = 'random') -> Tuple[int, int]
+
+
+.. py:class:: MemorySafeDPOv2Aligner(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, aligner_args: lmflow.args.DPOv2AlignerArguments, ref_model_args: lmflow.args.ModelArguments)
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: ref_model_args
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: aligner_args
+
+
+   .. py:attribute:: aligner_file_path
+
+
+   .. py:method:: align()
+
+

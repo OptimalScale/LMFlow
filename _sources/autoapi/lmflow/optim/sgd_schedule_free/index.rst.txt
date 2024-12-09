@@ -1,0 +1,82 @@
+lmflow.optim.sgd_schedule_free
+==============================
+
+.. py:module:: lmflow.optim.sgd_schedule_free
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.sgd_schedule_free.SGDScheduleFree
+
+
+Module Contents
+---------------
+
+.. py:class:: SGDScheduleFree(params, lr=1.0, momentum=0.9, weight_decay=0, warmup_steps=0, r=0.0, weight_lr_power=2, foreach=hasattr(torch, '_foreach_mul_'))
+
+   Bases: :py:obj:`torch.optim.Optimizer`
+
+
+   
+   Schedule-Free SGD
+   As the name suggests, no scheduler is needed with this optimizer. 
+   To add warmup, rather than using a learning rate schedule you can just
+   set the warmup_steps parameter.
+
+   This optimizer requires that .train() and .eval() be called before the
+   beginning of training and evaluation respectively. The optimizer should
+   also be placed in eval mode when saving checkpoints.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: eval()
+
+
+   .. py:method:: train()
+
+
+   .. py:method:: step(closure=None)
+
+      
+      Performs a single optimization step.
+
+      Arguments:
+          closure (callable, optional): A closure that reevaluates the model
+              and returns the loss.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

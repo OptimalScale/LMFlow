@@ -1,0 +1,205 @@
+lmflow.models.vision2seq_model
+==============================
+
+.. py:module:: lmflow.models.vision2seq_model
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.models.vision2seq_model.CustomAutoVision2SeqModel
+
+
+Module Contents
+---------------
+
+.. py:class:: CustomAutoVision2SeqModel(config: transformers.Blip2Config, image_encoder_name_or_path=None, qformer_name_or_path=None, language_model_name_or_path=None, low_resource=False)
+
+   Bases: :py:obj:`transformers.Blip2ForConditionalGeneration`, :py:obj:`lmflow.models.base_model.BaseModel`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: custom_vision_model
+
+
+   .. py:attribute:: with_qformer
+
+
+   .. py:attribute:: language_model
+
+
+   .. py:attribute:: hidden_size
+
+
+   .. py:method:: get_backend_model()
+
+
+   .. py:method:: vision_model_from_pretrained(pretrained_path)
+
+
+   .. py:method:: qformer_from_pretrained(pretrained_path)
+
+
+   .. py:method:: language_model_from_pretrained(pretrained_path, low_resource=False, use_prompt_cache=False)
+
+
+   .. py:method:: vision_feature_select(image_forward_outs)
+
+
+   .. py:method:: register_prompt_cache(prompt_ids, prompt_keys_values)
+
+      
+      Udpate the prompt id and embedding for reuse in the future
+
+      Args:
+          prompt_ids (torch.LongTensor): The id of the prompt.
+          prompt_keys_values (torch.FloatTensor): The embedding of the prompt.
+
+      Returns:
+          None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: save_prompt_cache(path)
+
+      
+      Save prompt embedding and id.
+
+      Args:
+          path: The path to save the prompt embedding and id.
+
+      Returns:
+          None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: load_prompt_cache(path)
+
+      
+      Load prompt embedding and id.
+      Args:
+          path: The path to load the prompt embedding and id.
+
+      Returns:
+          None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_tokenizer()
+
+
+   .. py:method:: forward(input_ids: torch.LongTensor = None, pixel_values: Optional[torch.FloatTensor] = None, images: Optional[torch.FloatTensor] = None, attention_mask: Optional[torch.Tensor] = None, past_key_values: Optional[List[torch.FloatTensor]] = None, inputs_embeds: Optional[torch.FloatTensor] = None, labels: Optional[torch.LongTensor] = None, use_cache: Optional[bool] = None, output_attentions: Optional[bool] = None, output_hidden_states: Optional[bool] = None, return_dict: Optional[bool] = None, image_token_indexes: Optional[List] = [0], one_sample_multiple_images: bool = False) -> Union[Tuple, transformers.modeling_outputs.CausalLMOutputWithPast]
+
+
+   .. py:method:: processor_image_token_in_minigpt4(input_ids, language_model_inputs, attention_mask, image_token_indexes, pixel_values, batch_size=1)
+
+
+   .. py:method:: generate(pixel_values: torch.FloatTensor, input_ids: Optional[torch.LongTensor] = None, attention_mask: Optional[torch.LongTensor] = None, image_token_indexes: Optional[List] = [0], one_sample_multiple_images: Optional[bool] = False, images: Optional[torch.LongTensor] = None, **generate_kwargs) -> torch.LongTensor
+
+      
+      Overrides `generate` function to be able to use the model as a conditional generator.
+
+      Args:
+          pixel_values (`torch.FloatTensor` of shape (batch_size, num_channels, height, width)):
+              Input images to be processed.
+          input_ids (`torch.LongTensor` of shape (batch_size, sequence_length), *optional*):
+              The sequence used as a prompt for the generation.
+          attention_mask (`torch.LongTensor` of shape (batch_size, sequence_length), *optional*):
+              Mask to avoid performing attention on padding token indices
+          image_token_indexes (bool, *optional*):
+              The index for inserting the image tokens.
+          one_sample_multiple_images: (bool, *optional*):
+              The flag for inference that the input batch size is 1 and contain multiple images.
+
+      Returns:
+          captions (list): A list of strings of length batch_size * num_captions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

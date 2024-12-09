@@ -1,0 +1,187 @@
+lmflow.utils.llava_conversation_lib
+===================================
+
+.. py:module:: lmflow.utils.llava_conversation_lib
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.llava_conversation_lib.conv_vicuna_v0
+   lmflow.utils.llava_conversation_lib.conv_vicuna_v1
+   lmflow.utils.llava_conversation_lib.conv_llama_2
+   lmflow.utils.llava_conversation_lib.conv_llava_llama_2
+   lmflow.utils.llava_conversation_lib.conv_mpt
+   lmflow.utils.llava_conversation_lib.conv_llava_plain
+   lmflow.utils.llava_conversation_lib.conv_llava_v0
+   lmflow.utils.llava_conversation_lib.conv_llava_v0_mmtag
+   lmflow.utils.llava_conversation_lib.conv_llava_v1
+   lmflow.utils.llava_conversation_lib.conv_llava_v1_mmtag
+   lmflow.utils.llava_conversation_lib.default_conversation
+   lmflow.utils.llava_conversation_lib.conv_templates
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.llava_conversation_lib.SeparatorStyle
+   lmflow.utils.llava_conversation_lib.Conversation
+
+
+Module Contents
+---------------
+
+.. py:class:: SeparatorStyle(*args, **kwds)
+
+   Bases: :py:obj:`enum.Enum`
+
+
+   
+   Different separator style.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: SINGLE
+
+
+   .. py:attribute:: TWO
+
+
+   .. py:attribute:: MPT
+
+
+   .. py:attribute:: PLAIN
+
+
+   .. py:attribute:: LLAMA_2
+
+
+.. py:class:: Conversation
+
+   
+   A class that keeps all conversation history.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: system
+      :type:  str
+
+
+   .. py:attribute:: roles
+      :type:  List[str]
+
+
+   .. py:attribute:: messages
+      :type:  List[List[str]]
+
+
+   .. py:attribute:: offset
+      :type:  int
+
+
+   .. py:attribute:: sep_style
+      :type:  SeparatorStyle
+
+
+   .. py:attribute:: sep
+      :type:  str
+      :value: '###'
+
+
+
+   .. py:attribute:: sep2
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: version
+      :type:  str
+      :value: 'Unknown'
+
+
+
+   .. py:attribute:: skip_next
+      :type:  bool
+      :value: False
+
+
+
+   .. py:method:: get_prompt()
+
+
+   .. py:method:: append_message(role, message)
+
+
+   .. py:method:: get_images(return_pil=False)
+
+
+   .. py:method:: to_gradio_chatbot()
+
+
+   .. py:method:: copy()
+
+
+   .. py:method:: dict()
+
+
+.. py:data:: conv_vicuna_v0
+
+.. py:data:: conv_vicuna_v1
+
+.. py:data:: conv_llama_2
+
+.. py:data:: conv_llava_llama_2
+
+.. py:data:: conv_mpt
+
+.. py:data:: conv_llava_plain
+
+.. py:data:: conv_llava_v0
+
+.. py:data:: conv_llava_v0_mmtag
+
+.. py:data:: conv_llava_v1
+
+.. py:data:: conv_llava_v1_mmtag
+
+.. py:data:: default_conversation
+
+.. py:data:: conv_templates
+

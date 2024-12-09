@@ -1,0 +1,74 @@
+lmflow.utils.conversation_template.hymba
+========================================
+
+.. py:module:: lmflow.utils.conversation_template.hymba
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.hymba.HYMBA_TEMPLATE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.hymba.HymbaConversationTemplate
+
+
+Module Contents
+---------------
+
+.. py:class:: HymbaConversationTemplate
+
+   Bases: :py:obj:`lmflow.utils.conversation_template.base.ConversationTemplateForTool`
+
+
+   .. py:method:: encode_conversation(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[List[str]] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+      
+      Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+      Data example: 
+      ```json
+      {
+          "conversation_id": 2,
+          "system": "sysinfo1",
+          "tools": ["tool_1_desc"],
+          "messages": [
+              {
+                  "role": "user",
+                  "content": "hi"
+              },
+              {
+                  "role": "assistant",
+                  "content": "Hello!"
+              }
+          ]
+      }
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:data:: HYMBA_TEMPLATE
+
