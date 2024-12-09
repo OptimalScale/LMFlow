@@ -5,6 +5,7 @@
   - [ChatML](#chatml)
   - [DeepSeek](#deepseek)
   - [Gemma](#gemma)
+  - [Hymba](#hymba)
   - [InternLM2](#internlm2)
   - [Llama-2](#llama-2)
   - [Llama-3](#llama-3)
@@ -151,6 +152,50 @@ As of now, Gemma does not support system messages officially. `ConversationTempl
 **Filled Example**
 ```
 <bos>You are a chatbot developed by LMFlow team.<start_of_turn>user\nWho are you?<end_of_turn>\n<start_of_turn>model\nI am a chatbot developed by LMFlow team.<end_of_turn>\n<start_of_turn>user\nHow old are you?<end_of_turn>\n<start_of_turn>model\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<end_of_turn>\n
+```
+
+
+## Hymba
+**With a system message** 
+```
+<extra_id_0>System\n{{system_message}}\n\n<extra_id_1>User\n{{user_message_0}}\n
+```
+```
+<extra_id_0>System\n{{system_message}}\n<tool> {{tool_info}} </tool>\n\n<extra_id_1>User\n{{user_message_0}}\n
+```
+
+**Without a system message**
+```{admonition} NOTICE
+:class: warning
+
+During the training, Hymba always uses special tokens for the system messages even if the system message is not provided. 
+```
+```
+<extra_id_0>System\n\n<extra_id_1>User\n{{user_message_0}}\n
+```
+
+**A complete conversation**
+```
+<extra_id_0>System\n{{system_message}}\n\n<extra_id_1>User\n{{user_message_0}}\n<extra_id_1>Assistant\n{{assistant_reply_0}}</s>
+```
+
+**Multiple rounds**
+```
+<extra_id_0>System\n{{system_message}}\n\n<extra_id_1>User\n{{user_message_0}}\n<extra_id_1>Assistant\n{{assistant_reply_0}}\n <extra_id_1>User\n{{user_message_1}}\n<extra_id_1>Assistant\n{{assistant_reply_1}}</s>
+```
+
+**jinja template**  
+[[Reference](https://huggingface.co/nvidia/Hymba-1.5B-Instruct/blob/c02a352b6f7c1138a197d7ae3fd72dcdff919eae/tokenizer_config.json#L40)]
+```
+{{'<extra_id_0>System'}}{% for message in messages %}{% if message['role'] == 'system' %}{{'\n' + message['content'].strip()}}{% if tools or contexts %}{{'\n'}}{% endif %}{% endif %}{% endfor %}{% if tools %}{% for tool in tools %}{{ '\n<tool> ' + tool|tojson + ' </tool>' }}{% endfor %}{% endif %}{% if contexts %}{% if tools %}{{'\n'}}{% endif %}{% for context in contexts %}{{ '\n<context> ' + context.strip() + ' </context>' }}{% endfor %}{% endif %}{{'\n\n'}}{% for message in messages %}{% if message['role'] == 'user' %}{{ '<extra_id_1>User\n' + message['content'].strip() + '\n' }}{% elif message['role'] == 'assistant' %}{{ '<extra_id_1>Assistant\n' + message['content'].strip() + '\n' }}{% elif message['role'] == 'tool' %}{{ '<extra_id_1>Tool\n' + message['content'].strip() + '\n' }}{% endif %}{% endfor %}{%- if add_generation_prompt %}{{'<extra_id_1>Assistant\n'}}{%- endif %}
+```
+
+**Filled Example**
+```
+<extra_id_0>System\nYou are a chatbot developed by LMFlow team.\n\n<extra_id_1>User\nWho are you?\n<extra_id_1>Assistant\nI am a chatbot developed by LMFlow team.\n<extra_id_1>User\nHow old are you?\n<extra_id_1>Assistant\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.</s>
+```
+```
+<extra_id_0>System\nYou are a chatbot developed by LMFlow team.\n<tool> {"name": "generate_qrcode", "description": "Generate a QR code for a given text", "parameters": {"type": "object", "properties": {"text": {"type": "string", "description": "The text to encode in the QR code"}}, "required": ["text"]}} </tool>\n\n<extra_id_1>User\nWho are you?\n<extra_id_1>Assistant\nI am a chatbot developed by LMFlow team.\n<extra_id_1>User\nHow old are you?\n<extra_id_1>Assistant\nI don\'t age like humans do. I exist as a piece of software, so I don\'t have a concept of age in the traditional sense.</s>
 ```
 
 
