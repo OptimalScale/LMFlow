@@ -1,0 +1,301 @@
+lmflow.models.hf_model_mixin
+============================
+
+.. py:module:: lmflow.models.hf_model_mixin
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.models.hf_model_mixin.logger
+   lmflow.models.hf_model_mixin.HF_AUTOMODEL_MAPPING
+   lmflow.models.hf_model_mixin.HF_AUTOMODEL_TYPE
+   lmflow.models.hf_model_mixin.LORA_TARGET_MODULES_MAPPING
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.models.hf_model_mixin.HFModelMixin
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: HF_AUTOMODEL_MAPPING
+
+.. py:data:: HF_AUTOMODEL_TYPE
+
+.. py:data:: LORA_TARGET_MODULES_MAPPING
+
+.. py:class:: HFModelMixin(model_args: lmflow.args.ModelArguments, do_train: bool, ds_config=None, device: Optional[str] = 'gpu', use_accelerator: bool = False, hf_auto_model_additional_args: Optional[Dict] = None, *args, **kwargs)
+
+   Bases: :py:obj:`lmflow.models.base_model.BaseModel`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: device
+      :value: 'gpu'
+
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: hf_auto_model
+
+
+   .. py:attribute:: use_accelerator
+      :value: False
+
+
+
+   .. py:attribute:: ds_config
+      :value: None
+
+
+
+   .. py:attribute:: do_train
+
+
+   .. py:attribute:: tokenizer
+
+
+   .. py:attribute:: torch_dtype
+
+
+   .. py:attribute:: hf_model_config
+
+
+   .. py:attribute:: quant_config
+      :value: None
+
+
+
+   .. py:attribute:: peft_config
+      :value: None
+
+
+
+   .. py:attribute:: _activated
+      :value: False
+
+
+
+   .. py:method:: __prepare_tokenizer(model_args: lmflow.args.ModelArguments) -> Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast]
+
+
+   .. py:method:: __prepare_dtype(model_args: lmflow.args.ModelArguments) -> torch.dtype
+
+
+   .. py:method:: __prepare_model_config(model_args: lmflow.args.ModelArguments, hf_auto_model_additional_args: Optional[Dict] = None)
+
+      
+      Prepare model configuration for hf auto register,
+      Parameters
+      ----------
+      model_args : ModelArguments
+          LMFlow model arguments.
+      hf_auto_model_additional_args : Optional[Dict], optional
+          Special configurations such as `num_labels` in `AutoModelForSequenceClassification` 
+          (commonly used in reward modeling) will not preset in __prepare_model_config, 
+          so it should be passed in hf_auto_model_additional_args.
+      Returns
+      -------
+      config : ModelConfig
+          hf model config.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: __prepare_quant_config(model_args: lmflow.args.ModelArguments)
+
+
+   .. py:method:: __prepare_peft_config(model_args: lmflow.args.ModelArguments)
+
+
+   .. py:method:: __model_module_inject(model_args: lmflow.args.ModelArguments) -> None
+
+      
+      Override some model modules with custom implementations.
+
+      Current implementations:
+      - Position interpolation (model_args.do_rope_scaling): 
+          replace llama embeddings with condense embeddings.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: __prepare_model_for_training(model_args: lmflow.args.ModelArguments, hf_auto_model: HF_AUTOMODEL_TYPE)
+
+
+   .. py:method:: __prepare_model_for_inference(model_args: lmflow.args.ModelArguments, hf_auto_model: HF_AUTOMODEL_TYPE, use_accelerator: bool, ds_config)
+
+
+   .. py:method:: __prepare_model_for_vllm_inference(model_args: lmflow.args.ModelArguments, vllm_gpu_memory_utilization: float, vllm_tensor_parallel_size: int)
+
+
+   .. py:method:: __prepare_model_post_process()
+
+
+   .. py:method:: activate_model_for_inference(use_vllm: bool = False, **kwargs)
+
+
+   .. py:method:: deactivate_model_for_inference(use_vllm: bool = False)
+
+      
+      Deactivate the model and release the resources.
+
+      NOTE: Currently, VLLM doesn't have an official way to do this, and the
+      implementation below cannot release all gpu resources by our observation.
+      Thus this method is just a placeholder for future implementation. See: 
+      [Github issue](https://github.com/vllm-project/vllm/issues/1908)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_max_length()
+
+      
+      Return max acceptable input length in terms of tokens.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_tokenizer()
+
+      
+      Return the tokenizer of the model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_backend_model()
+
+      
+      Return the backend model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

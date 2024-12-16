@@ -1,0 +1,47 @@
+lmflow.pipeline.utils.rm_trainer
+================================
+
+.. py:module:: lmflow.pipeline.utils.rm_trainer
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.rm_trainer.RewardTrainer
+   lmflow.pipeline.utils.rm_trainer.PeftRewardTrainer
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.rm_trainer.compute_metrics
+   lmflow.pipeline.utils.rm_trainer.rm_loss
+
+
+Module Contents
+---------------
+
+.. py:function:: compute_metrics(eval_pred)
+
+.. py:function:: rm_loss(model, inputs, return_outputs=False)
+
+.. py:class:: RewardTrainer
+
+   Bases: :py:obj:`transformers.Trainer`
+
+
+   .. py:method:: compute_loss(model, inputs, return_outputs=False)
+
+
+.. py:class:: PeftRewardTrainer
+
+   Bases: :py:obj:`lmflow.pipeline.utils.peft_trainer.PeftTrainer`
+
+
+   .. py:method:: compute_loss(model, inputs, return_outputs=False)
+
+

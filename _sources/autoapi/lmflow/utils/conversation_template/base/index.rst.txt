@@ -1,0 +1,580 @@
+lmflow.utils.conversation_template.base
+=======================================
+
+.. py:module:: lmflow.utils.conversation_template.base
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.base.logger
+   lmflow.utils.conversation_template.base.EMPTY_TEMPLATE
+   lmflow.utils.conversation_template.base.EMPTY_NO_SPECIAL_TOKENS_TEMPLATE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.base.TemplateComponent
+   lmflow.utils.conversation_template.base.Formatter
+   lmflow.utils.conversation_template.base.EmptyFormatter
+   lmflow.utils.conversation_template.base.StringFormatter
+   lmflow.utils.conversation_template.base.ListFormatter
+   lmflow.utils.conversation_template.base.ConversationTemplate
+   lmflow.utils.conversation_template.base.ConversationTemplateForTool
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: TemplateComponent
+
+   
+   The minimal unit of a template, which can be a token, a string, or a list of tools.
+
+
+   :Parameters:
+
+       **type** : Literal['token', 'token_id', 'string', 'tools']
+           - Type of the component.  
+           
+           - When the component is a token or a string, the content should be `string`. 
+           The difference between the two is that token will be converted to token ids 
+           by the tokenizer.convert_tokens_to_ids() method, while string will be directly 
+           encoded by the tokenizer.encode() method. Specially, since the bos token and eos
+           token are frequently used across different templates, we provide the convenience
+           to use `'bos_token'` and `'eos_token'` to represent the actual bos and eos tokens when
+           `type` of the `TemplateComponent` is `token`. For example:  
+           
+           ```python
+           TemplateComponent(type='token', content='bos_token')
+           ```
+           
+           After encoding, the content will be replaced by the actual token id of the bos token.
+           Please do remember that if you set the `type` to `string`, the tokenizer will try to 
+           encode the string 'bos_token' instead of providing the actual bos token.
+           
+           - When the component is token_id, the content should be `int` or `List[int]`, and 
+           will be directly appended to the encoded token ids.
+           
+           - Tools are not supported yet.
+
+       **content** : Union[str, int, List[str], List[int]]
+           Content of the component.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: type
+      :type:  Literal['token', 'token_id', 'string', 'tools']
+
+
+   .. py:attribute:: content
+      :type:  Union[str, int, List[str], List[int]]
+
+
+   .. py:attribute:: mask
+      :type:  Optional[bool]
+      :value: True
+
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: __repr__() -> str
+
+
+   .. py:method:: __str__() -> str
+
+
+.. py:class:: Formatter
+
+   Bases: :py:obj:`abc.ABC`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: template
+      :type:  List[TemplateComponent]
+      :value: []
+
+
+
+   .. py:method:: format(**kwargs) -> List[TemplateComponent]
+      :abstractmethod:
+
+
+
+   .. py:method:: has_placeholder()
+
+
+.. py:class:: EmptyFormatter
+
+   Bases: :py:obj:`Formatter`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: format(**kwargs) -> list
+
+      
+      Empty formatter for when no formatting is needed.
+      This is useful when user has already applied formatting to the dataset.
+
+
+
+
+
+      :Returns:
+
+          list
+              Original template.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: StringFormatter
+
+   Bases: :py:obj:`Formatter`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: format(**kwargs) -> list
+
+      
+      Format the string components with the provided keyword arguments. 
+      Mostly used for formatting system prompt, user and assistant messages.
+
+
+      :Parameters:
+
+          **\*\*kwargs** : dict
+              Keyword arguments containing values to replace in the template components.
+
+
+
+      :Returns:
+
+          list
+              Formatted template.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: ListFormatter
+
+   Bases: :py:obj:`Formatter`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: format(**kwargs) -> list
+
+
+.. py:class:: ConversationTemplate
+
+   .. py:attribute:: user_formatter
+      :type:  Formatter
+
+
+   .. py:attribute:: assistant_formatter
+      :type:  Formatter
+
+
+   .. py:attribute:: function_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: observation_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: system_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: force_system
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: tools_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: separator
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: remove_last_sep
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: special_starter
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: special_stopper
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: template_name
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: encode_conversation(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[List[str]] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+      
+      Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+      Data example: 
+      ```json
+      {
+          "conversation_id": 2,
+          "system": "sysinfo1",
+          "tools": ["tool_1_desc"],
+          "messages": [
+              {
+                  "role": "user",
+                  "content": "hi"
+              },
+              {
+                  "role": "assistant",
+                  "content": "Hello!"
+              }
+          ]
+      }
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: _encode_template(template: List[TemplateComponent], tokenizer: transformers.PreTrainedTokenizer, **kwargs) -> List[int]
+
+      
+      Encode template components into token ids.
+
+
+      :Parameters:
+
+          **template** : List[TemplateComponent]
+              Formatted template components.
+
+          **tokenizer** : PreTrainedTokenizer
+              Tokenizer to convert tokens into token ids.
+
+
+
+      :Returns:
+
+          List[int]
+              Encoded token ids.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: post_process_pairs(encoded_pairs, tokenizer)
+
+
+   .. py:method:: remove_last_separator(encoded_pairs: Sequence[Tuple[List[int], List[int]]], tokenizer: transformers.PreTrainedTokenizer) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: add_special_starter(encoded_pairs: Sequence[Tuple[List[int], List[int]]], tokenizer: transformers.PreTrainedTokenizer) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: add_special_stopper(encoded_pairs: Sequence[Tuple[List[int], List[int]]], tokenizer: transformers.PreTrainedTokenizer) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: _ensure_id_list(obj: Union[int, List[int]]) -> List[int]
+
+      
+      Make sure the object is a list of integers. Useful for handling token ids.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: ConversationTemplateForTool
+
+   Bases: :py:obj:`ConversationTemplate`
+
+
+   .. py:method:: encode_conversation(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[List[str]] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+      
+      Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+      Data example: 
+      ```json
+      {
+          "conversation_id": 2,
+          "system": "sysinfo1",
+          "tools": ["tool_1_desc"],
+          "messages": [
+              {
+                  "role": "user",
+                  "content": "hi"
+              },
+              {
+                  "role": "assistant",
+                  "content": "Hello!"
+              }
+          ]
+      }
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: _encode_template(template: List[TemplateComponent], tokenizer: transformers.PreTrainedTokenizer, **kwargs) -> List[int]
+
+      
+      Encode template components into token ids.
+
+
+      :Parameters:
+
+          **template** : List[TemplateComponent]
+              Formatted template components.
+
+          **tokenizer** : PreTrainedTokenizer
+              Tokenizer to convert tokens into token ids.
+
+
+
+      :Returns:
+
+          List[int]
+              Encoded token ids.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:data:: EMPTY_TEMPLATE
+
+.. py:data:: EMPTY_NO_SPECIAL_TOKENS_TEMPLATE
+

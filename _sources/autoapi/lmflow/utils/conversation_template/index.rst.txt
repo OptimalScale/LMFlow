@@ -1,0 +1,370 @@
+lmflow.utils.conversation_template
+==================================
+
+.. py:module:: lmflow.utils.conversation_template
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/lmflow/utils/conversation_template/base/index
+   /autoapi/lmflow/utils/conversation_template/chatglm/index
+   /autoapi/lmflow/utils/conversation_template/chatml/index
+   /autoapi/lmflow/utils/conversation_template/deepseek/index
+   /autoapi/lmflow/utils/conversation_template/gemma/index
+   /autoapi/lmflow/utils/conversation_template/hymba/index
+   /autoapi/lmflow/utils/conversation_template/internlm/index
+   /autoapi/lmflow/utils/conversation_template/llama/index
+   /autoapi/lmflow/utils/conversation_template/phi/index
+   /autoapi/lmflow/utils/conversation_template/qwen/index
+   /autoapi/lmflow/utils/conversation_template/yi/index
+   /autoapi/lmflow/utils/conversation_template/zephyr/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.EMPTY_TEMPLATE
+   lmflow.utils.conversation_template.EMPTY_NO_SPECIAL_TOKENS_TEMPLATE
+   lmflow.utils.conversation_template.CHATGLM3_TEMPLATE
+   lmflow.utils.conversation_template.CHATML_TEMPLATE
+   lmflow.utils.conversation_template.DEEPSEEK_TEMPLATE
+   lmflow.utils.conversation_template.GEMMA_TEMPLATE
+   lmflow.utils.conversation_template.HYMBA_TEMPLATE
+   lmflow.utils.conversation_template.INTERNLM2_TEMPLATE
+   lmflow.utils.conversation_template.LLAMA2_TEMPLATE
+   lmflow.utils.conversation_template.LLAMA3_TEMPLATE
+   lmflow.utils.conversation_template.LLAMA3_TEMPLATE_FOR_TOOL
+   lmflow.utils.conversation_template.PHI3_TEMPLATE
+   lmflow.utils.conversation_template.QWEN2_TEMPLATE
+   lmflow.utils.conversation_template.QWEN2_TEMPLATE_FOR_TOOL
+   lmflow.utils.conversation_template.YI1_5_TEMPLATE
+   lmflow.utils.conversation_template.ZEPHYR_TEMPLATE
+   lmflow.utils.conversation_template.PRESET_TEMPLATES
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.ConversationTemplate
+   lmflow.utils.conversation_template.ConversationTemplateForTool
+
+
+Package Contents
+----------------
+
+.. py:data:: EMPTY_TEMPLATE
+
+.. py:data:: EMPTY_NO_SPECIAL_TOKENS_TEMPLATE
+
+.. py:class:: ConversationTemplate
+
+   .. py:attribute:: user_formatter
+      :type:  Formatter
+
+
+   .. py:attribute:: assistant_formatter
+      :type:  Formatter
+
+
+   .. py:attribute:: function_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: observation_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: system_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: force_system
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: tools_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: separator
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: remove_last_sep
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: special_starter
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: special_stopper
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: template_name
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: encode_conversation(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[List[str]] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+      
+      Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+      Data example: 
+      ```json
+      {
+          "conversation_id": 2,
+          "system": "sysinfo1",
+          "tools": ["tool_1_desc"],
+          "messages": [
+              {
+                  "role": "user",
+                  "content": "hi"
+              },
+              {
+                  "role": "assistant",
+                  "content": "Hello!"
+              }
+          ]
+      }
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: _encode_template(template: List[TemplateComponent], tokenizer: transformers.PreTrainedTokenizer, **kwargs) -> List[int]
+
+      
+      Encode template components into token ids.
+
+
+      :Parameters:
+
+          **template** : List[TemplateComponent]
+              Formatted template components.
+
+          **tokenizer** : PreTrainedTokenizer
+              Tokenizer to convert tokens into token ids.
+
+
+
+      :Returns:
+
+          List[int]
+              Encoded token ids.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: post_process_pairs(encoded_pairs, tokenizer)
+
+
+   .. py:method:: remove_last_separator(encoded_pairs: Sequence[Tuple[List[int], List[int]]], tokenizer: transformers.PreTrainedTokenizer) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: add_special_starter(encoded_pairs: Sequence[Tuple[List[int], List[int]]], tokenizer: transformers.PreTrainedTokenizer) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: add_special_stopper(encoded_pairs: Sequence[Tuple[List[int], List[int]]], tokenizer: transformers.PreTrainedTokenizer) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: _ensure_id_list(obj: Union[int, List[int]]) -> List[int]
+
+      
+      Make sure the object is a list of integers. Useful for handling token ids.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: ConversationTemplateForTool
+
+   Bases: :py:obj:`ConversationTemplate`
+
+
+   .. py:method:: encode_conversation(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[List[str]] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+      
+      Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+      Data example: 
+      ```json
+      {
+          "conversation_id": 2,
+          "system": "sysinfo1",
+          "tools": ["tool_1_desc"],
+          "messages": [
+              {
+                  "role": "user",
+                  "content": "hi"
+              },
+              {
+                  "role": "assistant",
+                  "content": "Hello!"
+              }
+          ]
+      }
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+
+   .. py:method:: _encode_template(template: List[TemplateComponent], tokenizer: transformers.PreTrainedTokenizer, **kwargs) -> List[int]
+
+      
+      Encode template components into token ids.
+
+
+      :Parameters:
+
+          **template** : List[TemplateComponent]
+              Formatted template components.
+
+          **tokenizer** : PreTrainedTokenizer
+              Tokenizer to convert tokens into token ids.
+
+
+
+      :Returns:
+
+          List[int]
+              Encoded token ids.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:data:: CHATGLM3_TEMPLATE
+
+.. py:data:: CHATML_TEMPLATE
+
+.. py:data:: DEEPSEEK_TEMPLATE
+
+.. py:data:: GEMMA_TEMPLATE
+
+.. py:data:: HYMBA_TEMPLATE
+
+.. py:data:: INTERNLM2_TEMPLATE
+
+.. py:data:: LLAMA2_TEMPLATE
+
+.. py:data:: LLAMA3_TEMPLATE
+
+.. py:data:: LLAMA3_TEMPLATE_FOR_TOOL
+
+.. py:data:: PHI3_TEMPLATE
+
+.. py:data:: QWEN2_TEMPLATE
+
+.. py:data:: QWEN2_TEMPLATE_FOR_TOOL
+
+.. py:data:: YI1_5_TEMPLATE
+
+.. py:data:: ZEPHYR_TEMPLATE
+
+.. py:data:: PRESET_TEMPLATES
+

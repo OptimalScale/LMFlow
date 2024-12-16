@@ -1,0 +1,179 @@
+lmflow.utils.common
+===================
+
+.. py:module:: lmflow.utils.common
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.common.logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.utils.common.make_shell_args_from_dataclass
+   lmflow.utils.common.create_copied_dataclass
+   lmflow.utils.common.remove_dataclass_attr_prefix
+   lmflow.utils.common.add_dataclass_attr_prefix
+   lmflow.utils.common.print_banner
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:function:: make_shell_args_from_dataclass(dataclass_objects: List, format: str = 'subprocess', skip_default: bool = True, ignored_args_list: Optional[List[str]] = None) -> Union[str, List[str]]
+
+   
+   Return a string or a list of strings that can be used as shell arguments.
+
+
+   :Parameters:
+
+       **dataclass_objects** : List
+           A list of dataclass objects.
+
+       **format** : str, optional
+           Return format, can be "shell" or "subprocess", by default "subprocess".
+
+       **skip_default** : bool, optional
+           Whether to skip attributes with default values, by default True. 
+
+
+
+   :Returns:
+
+       Union[str, List[str]]
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: create_copied_dataclass(original_dataclass, field_prefix: str, class_prefix: str, new_default: Dict = None)
+
+   
+   Create a copied dataclass with new field names and default values.
+
+
+   :Parameters:
+
+       **original_dataclass** : dataclass
+           ..
+
+       **field_prefix** : str
+           The prefix to add to the **field** names of the copied dataclass.
+
+       **class_prefix** : str
+           The prefix to add to the **class** name of the copied dataclass.
+
+       **new_default** : Dict, optional
+           The new default values for the copied dataclass. When None, the 
+           default values of the original dataclass are used.
+
+
+
+   :Returns:
+
+       dataclass
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: remove_dataclass_attr_prefix(data_instance, prefix: str) -> Dict
+
+   
+   Remove the prefix from the attribute names of a dataclass instance.
+
+
+   :Parameters:
+
+       **data_instance** : dataclass
+           ..
+
+       **prefix** : str
+           The prefix to remove from the attribute names of the dataclass instance.
+
+
+
+   :Returns:
+
+       Dict
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: add_dataclass_attr_prefix(data_instance, prefix: str) -> Dict
+
+   
+   Add the prefix to the attribute names of a dataclass instance.
+
+
+   :Parameters:
+
+       **data_instance** : dataclass
+           ..
+
+       **prefix** : str
+           The prefix to add to the attribute names of the dataclass instance.
+
+
+
+   :Returns:
+
+       Dict
+           ..
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: print_banner(message: str)
+
