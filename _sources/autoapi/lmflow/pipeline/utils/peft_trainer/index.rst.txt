@@ -1,0 +1,135 @@
+lmflow.pipeline.utils.peft_trainer
+==================================
+
+.. py:module:: lmflow.pipeline.utils.peft_trainer
+
+.. autoapi-nested-parse::
+
+   Trainer for Peft models
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.peft_trainer.PeftTrainer
+   lmflow.pipeline.utils.peft_trainer.PeftSavingCallback
+
+
+Module Contents
+---------------
+
+.. py:class:: PeftTrainer
+
+   Bases: :py:obj:`transformers.Trainer`
+
+
+   .. py:method:: _save_checkpoint(_, trial, metrics=None)
+
+      
+      Don't save base model, optimizer etc.
+      but create checkpoint folder (needed for saving adapter) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: PeftSavingCallback
+
+   Bases: :py:obj:`transformers.trainer_callback.TrainerCallback`
+
+
+   
+   Correctly save PEFT model and not full model 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: _save(model, folder)
+
+
+   .. py:method:: on_train_end(args: transformers.training_args.TrainingArguments, state: transformers.trainer_callback.TrainerState, control: transformers.trainer_callback.TrainerControl, **kwargs)
+
+      
+      Save final best model adapter 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: on_epoch_end(args: transformers.training_args.TrainingArguments, state: transformers.trainer_callback.TrainerState, control: transformers.trainer_callback.TrainerControl, **kwargs)
+
+      
+      Save intermediate model adapters in case of interrupted training 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: on_save(args: transformers.training_args.TrainingArguments, state: transformers.trainer_callback.TrainerState, control: transformers.trainer_callback.TrainerControl, **kwargs)
+
+

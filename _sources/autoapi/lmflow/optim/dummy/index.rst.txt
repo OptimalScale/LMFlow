@@ -1,0 +1,81 @@
+lmflow.optim.dummy
+==================
+
+.. py:module:: lmflow.optim.dummy
+
+.. autoapi-nested-parse::
+
+   Dummy Optimizer.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.dummy.Dummy
+
+
+Module Contents
+---------------
+
+.. py:class:: Dummy(params: Iterable[torch.nn.parameter.Parameter], lr: float = 0.0, betas: Tuple[float, float] = (0.9, 0.999), weight_decay: float = 0.0)
+
+   Bases: :py:obj:`torch.optim.Optimizer`
+
+
+   
+   An dummy optimizer that does nothing.
+
+   Parameters:
+       params (:obj:`Iterable[nn.parameter.Parameter]`):
+           Iterable of parameters to optimize or dictionaries defining parameter groups.
+       lr (:obj:`float`, `optional`, defaults to 0):
+           The learning rate to use.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: step(closure: Callable = None)
+
+      
+      Performs a single optimization step.
+
+      Arguments:
+          closure (:obj:`Callable`, `optional`): A closure that reevaluates the model and returns the loss.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

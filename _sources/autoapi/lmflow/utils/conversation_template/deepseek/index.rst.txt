@@ -1,0 +1,19 @@
+lmflow.utils.conversation_template.deepseek
+===========================================
+
+.. py:module:: lmflow.utils.conversation_template.deepseek
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.deepseek.DEEPSEEK_TEMPLATE
+
+
+Module Contents
+---------------
+
+.. py:data:: DEEPSEEK_TEMPLATE
+

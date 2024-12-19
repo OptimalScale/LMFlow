@@ -1,0 +1,945 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>lmflow.models.hf_decoder_model &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/lmflow/models/hf_decoder_model/index';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="lmflow.models.hf_encoder_decoder_model" href="../hf_encoder_decoder_model/index.html" />
+    <link rel="prev" title="lmflow.models.encoder_decoder_model" href="../encoder_decoder_model/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">lmflow</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../args/index.html">lmflow.args</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../datasets/index.html">lmflow.datasets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../datasets/dataset/index.html">lmflow.datasets.dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../datasets/multi_modal_dataset/index.html">lmflow.datasets.multi_modal_dataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">lmflow.models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../auto_model/index.html">lmflow.models.auto_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../base_model/index.html">lmflow.models.base_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../decoder_model/index.html">lmflow.models.decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../encoder_decoder_model/index.html">lmflow.models.encoder_decoder_model</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">lmflow.models.hf_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hf_encoder_decoder_model/index.html">lmflow.models.hf_encoder_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hf_model_mixin/index.html">lmflow.models.hf_model_mixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hf_text_regression_model/index.html">lmflow.models.hf_text_regression_model</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../interfaces/index.html">lmflow.models.interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../interfaces/tunable/index.html">lmflow.models.interfaces.tunable</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../regression_model/index.html">lmflow.models.regression_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../text_regression_model/index.html">lmflow.models.text_regression_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../vision2seq_model/index.html">lmflow.models.vision2seq_model</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../vision_encoder/index.html">lmflow.models.vision_encoder</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../vision_encoder/clip_encoder/index.html">lmflow.models.vision_encoder.clip_encoder</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../optim/index.html">lmflow.optim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adabelief/index.html">lmflow.optim.adabelief</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adabound/index.html">lmflow.optim.adabound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adadelta/index.html">lmflow.optim.adadelta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adagrad/index.html">lmflow.optim.adagrad</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adam/index.html">lmflow.optim.adam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adamax/index.html">lmflow.optim.adamax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adamp/index.html">lmflow.optim.adamp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adamw_schedule_free/index.html">lmflow.optim.adamw_schedule_free</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adan/index.html">lmflow.optim.adan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/dummy/index.html">lmflow.optim.dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/lamb/index.html">lmflow.optim.lamb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/lars/index.html">lmflow.optim.lars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/nadam/index.html">lmflow.optim.nadam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/novograd/index.html">lmflow.optim.novograd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/optimizers/index.html">lmflow.optim.optimizers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/radam/index.html">lmflow.optim.radam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/sgd_schedule_free/index.html">lmflow.optim.sgd_schedule_free</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/sgdp/index.html">lmflow.optim.sgdp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/sophia/index.html">lmflow.optim.sophia</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/yogi/index.html">lmflow.optim.yogi</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../pipeline/index.html">lmflow.pipeline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/auto_pipeline/index.html">lmflow.pipeline.auto_pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/base_aligner/index.html">lmflow.pipeline.base_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/base_pipeline/index.html">lmflow.pipeline.base_pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/base_tuner/index.html">lmflow.pipeline.base_tuner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/dpo_aligner/index.html">lmflow.pipeline.dpo_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/dpov2_aligner/index.html">lmflow.pipeline.dpov2_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/evaluator/index.html">lmflow.pipeline.evaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/finetuner/index.html">lmflow.pipeline.finetuner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/inferencer/index.html">lmflow.pipeline.inferencer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/iterative_dpo_aligner/index.html">lmflow.pipeline.iterative_dpo_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/raft_aligner/index.html">lmflow.pipeline.raft_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/rm_inferencer/index.html">lmflow.pipeline.rm_inferencer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/rm_tuner/index.html">lmflow.pipeline.rm_tuner</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../pipeline/utils/index.html">lmflow.pipeline.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/dpov2_dataprocessor/index.html">lmflow.pipeline.utils.dpov2_dataprocessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/dpov2_trainer/index.html">lmflow.pipeline.utils.dpov2_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/memory_safe_dpov2_align/index.html">lmflow.pipeline.utils.memory_safe_dpov2_align</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/memory_safe_vllm_inference/index.html">lmflow.pipeline.utils.memory_safe_vllm_inference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/peft_trainer/index.html">lmflow.pipeline.utils.peft_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/raft_trainer/index.html">lmflow.pipeline.utils.raft_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/rm_dataprocessor/index.html">lmflow.pipeline.utils.rm_dataprocessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/rm_trainer/index.html">lmflow.pipeline.utils.rm_trainer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/vllm_inferencer/index.html">lmflow.pipeline.vllm_inferencer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../tokenization/index.html">lmflow.tokenization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tokenization/hf_decoder_model/index.html">lmflow.tokenization.hf_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tokenization/hf_text_regression_model/index.html">lmflow.tokenization.hf_text_regression_model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../utils/index.html">lmflow.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/common/index.html">lmflow.utils.common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/constants/index.html">lmflow.utils.constants</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/conversation_template/index.html">lmflow.utils.conversation_template</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/base/index.html">lmflow.utils.conversation_template.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/chatglm/index.html">lmflow.utils.conversation_template.chatglm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/chatml/index.html">lmflow.utils.conversation_template.chatml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/deepseek/index.html">lmflow.utils.conversation_template.deepseek</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/gemma/index.html">lmflow.utils.conversation_template.gemma</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/hymba/index.html">lmflow.utils.conversation_template.hymba</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/internlm/index.html">lmflow.utils.conversation_template.internlm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/llama/index.html">lmflow.utils.conversation_template.llama</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/phi/index.html">lmflow.utils.conversation_template.phi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/qwen/index.html">lmflow.utils.conversation_template.qwen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/yi/index.html">lmflow.utils.conversation_template.yi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/conversation_template/zephyr/index.html">lmflow.utils.conversation_template.zephyr</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/data_utils/index.html">lmflow.utils.data_utils</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/flash_attention/index.html">lmflow.utils.flash_attention</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/flash_attention/bloom_flash_attention/index.html">lmflow.utils.flash_attention.bloom_flash_attention</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/flash_attention/gpt2_flash_attention/index.html">lmflow.utils.flash_attention.gpt2_flash_attention</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/flash_attention/gpt_neo_flash_attention/index.html">lmflow.utils.flash_attention.gpt_neo_flash_attention</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/flash_attention/llama_flash_attention/index.html">lmflow.utils.flash_attention.llama_flash_attention</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/flash_attention/triton_flash_attention/index.html">lmflow.utils.flash_attention.triton_flash_attention</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/llava_conversation_lib/index.html">lmflow.utils.llava_conversation_lib</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/model/index.html">lmflow.utils.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/multimodal/index.html">lmflow.utils.multimodal</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/position_interpolation/index.html">lmflow.utils.position_interpolation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/position_interpolation/llama_rope_scaled_monkey_patch/index.html">lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/versioning/index.html">lmflow.utils.versioning</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version/index.html">lmflow.version</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">lmflow</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">lmflow.models</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.models.hf_decoder_model</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-lmflow.models.hf_decoder_model">
+<span id="lmflow-models-hf-decoder-model"></span><h1>lmflow.models.hf_decoder_model<a class="headerlink" href="#module-lmflow.models.hf_decoder_model" title="Link to this heading">#</a></h1>
+<p>This is a class called HFDecoderModel which is a wrapper around transformers model and
+tokenizer classes. It has several methods such as __init__, tokenize, and train that are
+used for training and fine-tuning the model. The __init__ method takes in several arguments
+such as model_args, tune_strategy, and ds_config, which are used to load the pretrained
+model and tokenizer, and initialize the training settings.</p>
+<p>The tokenize method is used to tokenize the input text and return the input IDs and attention
+masks that can be fed to the model for training or inference.</p>
+<p>This class supports different tune_strategy options such as ‘normal’, ‘none’, ‘lora’, and
+‘adapter’, which allow for different fine-tuning settings of the model. However, the ‘lora’
+and ‘adapter’ strategies are not yet implemented.</p>
+<p>Overall, this class provides a convenient interface for loading and fine-tuning transformer
+models and can be used for various NLP tasks such as language modeling, text classification,
+and question answering.</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.models.hf_decoder_model.logger" title="lmflow.models.hf_decoder_model.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.models.hf_decoder_model.HFDecoderModel" title="lmflow.models.hf_decoder_model.HFDecoderModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HFDecoderModel</span></code></a></p></td>
+<td><p>Initializes a HFDecoderModel instance.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.logger">
+<span class="sig-prename descclassname"><span class="pre">lmflow.models.hf_decoder_model.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.logger" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.models.hf_decoder_model.</span></span><span class="sig-name descname"><span class="pre">HFDecoderModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tune_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_accelerator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../decoder_model/index.html#lmflow.models.decoder_model.DecoderModel" title="lmflow.models.decoder_model.DecoderModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lmflow.models.decoder_model.DecoderModel</span></code></a>, <a class="reference internal" href="../hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin" title="lmflow.models.hf_model_mixin.HFModelMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lmflow.models.hf_model_mixin.HFModelMixin</span></code></a>, <a class="reference internal" href="../interfaces/tunable/index.html#lmflow.models.interfaces.tunable.Tunable" title="lmflow.models.interfaces.tunable.Tunable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lmflow.models.interfaces.tunable.Tunable</span></code></a></p>
+<p>Initializes a HFDecoderModel instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_args</strong></dt><dd><p>Model arguments such as model name, path, revision, etc.</p>
+</dd>
+<dt><strong>tune_strategy</strong><span class="classifier">str or none,  default=”normal”.</span></dt><dd><p>A string representing the dataset backend. Defaults to “huggingface”.</p>
+</dd>
+<dt><strong>ds_config</strong></dt><dd><p>Deepspeed configuations.</p>
+</dd>
+<dt><strong>args</strong><span class="classifier">Optional.</span></dt><dd><p>Positional arguments.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">Optional.</span></dt><dd><p>Keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.tokenize">
+<span class="sig-name descname"><span class="pre">tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_special_tokens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../datasets/dataset/index.html#lmflow.datasets.dataset.Dataset" title="lmflow.datasets.dataset.Dataset"><span class="pre">lmflow.datasets.dataset.Dataset</span></a></span></span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.tokenize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.tokenize" title="Link to this definition">#</a></dt>
+<dd><p>Tokenize the full dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset</strong><span class="classifier">lmflow.datasets.Dataset.</span></dt><dd></dd>
+<dt><strong>args</strong><span class="classifier">Optional.</span></dt><dd><p>Positional arguments.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">Optional.</span></dt><dd><p>Keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tokenized_datasets</dt><dd><p>The tokenized dataset, without any leading or trailing special
+tokens (normally they are Begin-Of-Sentence or End-Of-Sentence
+tokens).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.encode">
+<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.encode" title="Link to this definition">#</a></dt>
+<dd><p>Perform encoding process of the tokenizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inputs</strong><span class="classifier">str or list.</span></dt><dd><p>The text sequence.</p>
+</dd>
+<dt><strong>args</strong><span class="classifier">Optional.</span></dt><dd><p>Positional arguments.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">Optional.</span></dt><dd><p>Keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>outputs</dt><dd><p>if string input,return the tokenized inputs.
+“Hello,world!”-&gt; [101, 7592, 1010, 2088, 102]
+if batch input,return {input_ids,attention_mask,token_type_ids}
+[“Hello,world!”,”Hello!”]-&gt; {‘input_ids’: tensor([[  101,  7592,  1010,  2088,   102],…),’attention_mask’: tensor([[1, 1, 1, 1, 1],[0,0,1,1,1]])}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.decode">
+<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.decode" title="Link to this definition">#</a></dt>
+<dd><p>Perform decoding process of the tokenizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inputs</strong><span class="classifier">list or tensor.</span></dt><dd><p>The token sequence.</p>
+</dd>
+<dt><strong>args</strong><span class="classifier">Optional.</span></dt><dd><p>Positional arguments.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">Optional.</span></dt><dd><p>Keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>outputs</dt><dd><p>The text decoded from the token inputs.
+if batch input,return the list of text
+[[101, 7592, 1010, 2088, 102],[101, 7592, 1010, 2088, 102]]-&gt; [“Hello,world!”,”Hello,world!”
+if single input,return the text
+[101, 7592, 1010, 2088, 102]-&gt; “Hello,world!”</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.inference">
+<span class="sig-name descname"><span class="pre">inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release_gpu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_vllm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.inference" title="Link to this definition">#</a></dt>
+<dd><p>Perform generation process of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inputs</strong></dt><dd><p>The sequence used as a prompt for the generation or as model inputs to the model.
+When using vllm inference, this should be a string or a list of strings.
+When using normal inference, this should be a tensor.</p>
+</dd>
+<dt><strong>release_gpu</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to release the GPU resource after inference, by default False.</p>
+</dd>
+<dt><strong>use_vllm</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to use VLLM for inference, by default False.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">Optional.</span></dt><dd><p>Keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>outputs</dt><dd><p>The generated sequence output</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.__inference">
+<span class="sig-name descname"><span class="pre">__inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.__inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.__inference" title="Link to this definition">#</a></dt>
+<dd><p>Perform generation process of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inputs</strong></dt><dd><p>The <strong>tokenized</strong> sequence used as a prompt for the generation or as model inputs to the model.</p>
+</dd>
+<dt><strong>args</strong><span class="classifier">Optional.</span></dt><dd><p>Positional arguments.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">Optional.</span></dt><dd><p>Keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>outputs</dt><dd><p>The generated sequence output</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.__vllm_inference">
+<span class="sig-name descname"><span class="pre">__vllm_inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vllm.SamplingParams</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../utils/data_utils/index.html#lmflow.utils.data_utils.VLLMInferenceResultWithInput" title="lmflow.utils.data_utils.VLLMInferenceResultWithInput"><span class="pre">lmflow.utils.data_utils.VLLMInferenceResultWithInput</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.__vllm_inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.__vllm_inference" title="Link to this definition">#</a></dt>
+<dd><p>Perform VLLM inference process of the model.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inputs</strong><span class="classifier">Union[str, List[str]]</span></dt><dd><p>Prompt(s), string or a list of strings.</p>
+</dd>
+<dt><strong>sampling_params</strong><span class="classifier">Optional[SamplingParams], optional</span></dt><dd><p>vllm SamplingParams object, by default None.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt>List[VLLMInferenceResultWithInput]</dt><dd><p>Return a list of VLLMInferenceResultWithInput, where each
+element contains the input prompt and the corresponding output.</p>
+<p>When <cite>sampling_params.detokenize = True</cite>, the output would be a list of strings,
+contains sampling_params.n samples for the corresponding prompt.</p>
+<p>When <cite>sampling_params.detokenize = False</cite>, return a list of list of ints
+(token ids, no decoding after generation).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.prepare_inputs_for_inference">
+<span class="sig-name descname"><span class="pre">prepare_inputs_for_inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../datasets/dataset/index.html#lmflow.datasets.dataset.Dataset" title="lmflow.datasets.dataset.Dataset"><span class="pre">lmflow.datasets.dataset.Dataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_chat_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_distributed_inference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_vllm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ray.data.Dataset</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.prepare_inputs_for_inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.prepare_inputs_for_inference" title="Link to this definition">#</a></dt>
+<dd><p>Prepare inputs for inference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset</strong><span class="classifier">lmflow.datasets.Dataset.</span></dt><dd><p>The dataset used for inference.</p>
+</dd>
+<dt><strong>args</strong><span class="classifier">Optional.</span></dt><dd><p>Positional arguments.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">Optional.</span></dt><dd><p>Keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>outputs</dt><dd><p>The prepared inputs for inference.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.__prepare_inputs_for_vllm_inference">
+<span class="sig-name descname"><span class="pre">__prepare_inputs_for_vllm_inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../datasets/dataset/index.html#lmflow.datasets.dataset.Dataset" title="lmflow.datasets.dataset.Dataset"><span class="pre">lmflow.datasets.dataset.Dataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_chat_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_distributed_inference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ray.data.Dataset</span></span></span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.__prepare_inputs_for_vllm_inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.__prepare_inputs_for_vllm_inference" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.__prepare_inputs_for_inference">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__prepare_inputs_for_inference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../datasets/dataset/index.html#lmflow.datasets.dataset.Dataset" title="lmflow.datasets.dataset.Dataset"><span class="pre">lmflow.datasets.dataset.Dataset</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.__prepare_inputs_for_inference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.__prepare_inputs_for_inference" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.merge_lora_weights">
+<span class="sig-name descname"><span class="pre">merge_lora_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.merge_lora_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.merge_lora_weights" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.get_peft_without_qlora">
+<span class="sig-name descname"><span class="pre">get_peft_without_qlora</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.get_peft_without_qlora"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.get_peft_without_qlora" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.models.hf_decoder_model.HFDecoderModel.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_full_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/models/hf_decoder_model.html#HFDecoderModel.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.models.hf_decoder_model.HFDecoderModel.save" title="Link to this definition">#</a></dt>
+<dd><p>Perform generation process of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dir</strong></dt><dd><p>The directory to save model and tokenizer</p>
+</dd>
+<dt><strong>save_full_model</strong><span class="classifier">Optional.</span></dt><dd><p>Whether to save full model.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">Optional.</span></dt><dd><p>Keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>outputs</dt><dd><p>The generated sequence output</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../encoder_decoder_model/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">lmflow.models.encoder_decoder_model</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../hf_encoder_decoder_model/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">lmflow.models.hf_encoder_decoder_model</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.tokenize"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.tokenize()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.encode"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.encode()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.decode"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.decode()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.inference"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.inference()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.__inference"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.__inference()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.__vllm_inference"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.__vllm_inference()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.prepare_inputs_for_inference"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.prepare_inputs_for_inference()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.__prepare_inputs_for_vllm_inference"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.__prepare_inputs_for_vllm_inference()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.__prepare_inputs_for_inference"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.__prepare_inputs_for_inference()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.merge_lora_weights"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.merge_lora_weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.get_peft_without_qlora"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.get_peft_without_qlora()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.models.hf_decoder_model.HFDecoderModel.save"><code class="docutils literal notranslate"><span class="pre">HFDecoderModel.save()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../_sources/autoapi/lmflow/models/hf_decoder_model/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1181 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lmflow.pipeline.inferencer &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lmflow/pipeline/inferencer';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../lmflow.html" class="nav-link">lmflow</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.pipeline.inferencer</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lmflow.pipeline.inferencer</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># coding=utf-8</span>
+<span class="sd">&quot;&quot;&quot;The Inferencer class simplifies the process of model inferencing.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">wandb</span>
+<span class="kn">import</span> <span class="nn">deepspeed</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">from</span> <span class="nn">accelerate</span> <span class="kn">import</span> <span class="n">Accelerator</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoConfig</span>
+<span class="kn">import</span> <span class="nn">torch.distributed</span> <span class="k">as</span> <span class="nn">dist</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+
+<span class="kn">from</span> <span class="nn">lmflow.args</span> <span class="kn">import</span> <span class="n">DatasetArguments</span>
+<span class="kn">from</span> <span class="nn">lmflow.datasets.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">lmflow.pipeline.base_pipeline</span> <span class="kn">import</span> <span class="n">BasePipeline</span>
+<span class="kn">from</span> <span class="nn">lmflow.models.hf_decoder_model</span> <span class="kn">import</span> <span class="n">HFDecoderModel</span>
+<span class="kn">from</span> <span class="nn">lmflow.utils.data_utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">set_random_seed</span><span class="p">,</span> <span class="n">batchlize</span><span class="p">,</span>
+                                     <span class="n">answer_extraction</span><span class="p">,</span> <span class="n">process_image_flag</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">lmflow.utils.constants</span> <span class="kn">import</span> <span class="n">IMAGE_TOKEN_INDEX</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;TOKENIZERS_PARALLELISM&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>  <span class="c1"># To avoid warnings about parallelism in tokenizers</span>
+<div class="viewcode-block" id="rstrip_partial_utf8">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.rstrip_partial_utf8">[docs]</a>
+<span class="k">def</span> <span class="nf">rstrip_partial_utf8</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\ufffd</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="supported_dataset_type">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.supported_dataset_type">[docs]</a>
+<span class="n">supported_dataset_type</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;text_only&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;image_text&quot;</span><span class="p">,</span>
+<span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Inferencer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer">[docs]</a>
+<span class="k">class</span> <span class="nc">Inferencer</span><span class="p">(</span><span class="n">BasePipeline</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes the `Inferencer` class with given arguments.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ------------</span>
+<span class="sd">    model_args : ModelArguments object.</span>
+<span class="sd">        Contains the arguments required to load the model.</span>
+
+<span class="sd">    data_args : DatasetArguments object.</span>
+<span class="sd">        Contains the arguments required to load the dataset.</span>
+
+<span class="sd">    inferencer_args : InferencerArguments object.</span>
+<span class="sd">        Contains the arguments required to perform inference.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">,</span> <span class="n">inferencer_args</span><span class="p">):</span>
+<div class="viewcode-block" id="Inferencer.data_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.data_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span> <span class="o">=</span> <span class="n">data_args</span></div>
+
+<div class="viewcode-block" id="Inferencer.inferencer_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.inferencer_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span> <span class="o">=</span> <span class="n">inferencer_args</span></div>
+
+<div class="viewcode-block" id="Inferencer.model_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.model_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span> <span class="o">=</span> <span class="n">model_args</span></div>
+
+
+        <span class="n">set_random_seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">random_seed</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Inferencer.local_rank">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.local_rank">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;LOCAL_RANK&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Inferencer.world_size">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.world_size">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;WORLD_SIZE&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">))</span></div>
+
+        <span class="k">if</span> <span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;gpu&quot;</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span><span class="p">)</span>  <span class="c1"># NOTE: cpu-only machine will have error</span>
+            <span class="n">deepspeed</span><span class="o">.</span><span class="n">init_distributed</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MASTER_ADDR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MASTER_PORT&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;15000&quot;</span>
+            <span class="n">dist</span><span class="o">.</span><span class="n">init_process_group</span><span class="p">(</span>
+                <span class="s2">&quot;gloo&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span><span class="p">,</span> <span class="n">world_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">world_size</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="Inferencer.config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_hidden_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_size</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error in setting hidden size, use the default size 1024&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_hidden_size</span> <span class="o">=</span> <span class="mi">1024</span> <span class="c1"># gpt2 seems do not have hidden_size in config</span>
+
+        <span class="k">if</span> <span class="n">inferencer_args</span><span class="o">.</span><span class="n">use_accelerator</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span> <span class="o">=</span> <span class="n">Accelerator</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span><span class="o">.</span><span class="n">wait_for_everyone</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Inferencer.create_dataloader">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.create_dataloader">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Batchlize dataset and format it to dataloader.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dataset (Dataset): the dataset object</span>
+
+<span class="sd">        Output:</span>
+<span class="sd">            dataloader (batchlize): the dataloader object</span>
+<span class="sd">            dataset_size (int): the length of the dataset</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;text_only&quot;</span><span class="p">:</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">instance</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;instances&quot;</span><span class="p">]</span> <span class="p">]</span>
+        <span class="k">elif</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;image_text&quot;</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+        <span class="n">dataset_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">dataset_buf</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dataset_size</span><span class="p">):</span>
+            <span class="n">dataset_buf</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">inputs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                <span class="s2">&quot;input_idx&quot;</span><span class="p">:</span> <span class="n">idx</span>
+            <span class="p">})</span>
+
+        <span class="n">dataloader</span> <span class="o">=</span> <span class="n">batchlize</span><span class="p">(</span>
+            <span class="n">dataset_buf</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">random_shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">dataset_size</span></div>
+
+
+
+<div class="viewcode-block" id="Inferencer.inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span>
+        <span class="n">max_new_tokens</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">prompt_structure</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{input}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">remove_image_flag</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">chatbot_type</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;mini_gpt&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform inference for a model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        model : TunableModel object.</span>
+<span class="sd">            TunableModel to perform inference</span>
+
+<span class="sd">        dataset : Dataset object.</span>
+
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        output_dataset: Dataset object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_dataset_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s1">&#39;input dataset should have type </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                        <span class="n">supported_dataset_type</span><span class="p">))</span>
+        <span class="n">dataloader</span><span class="p">,</span> <span class="n">data_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_dataloader</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+        <span class="c1"># The output dataset</span>
+        <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text_only&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;instances&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">batch_index</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="p">):</span>
+            <span class="n">current_batch</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>        <span class="c1"># batch size is 1</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_batch</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="nb">input</span> <span class="o">=</span> <span class="n">prompt_structure</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">current_batch</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">input</span> <span class="o">=</span> <span class="n">current_batch</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">]</span>
+                <span class="nb">input</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prompt_structure</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="kc">False</span> <span class="ow">and</span> <span class="s1">&#39;images&#39;</span> <span class="ow">in</span> <span class="nb">input</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="nb">input</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">input</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">remove_image_flag</span><span class="p">:</span>
+                <span class="c1"># remove the image flag &lt;ImageHere&gt; in tokenization;</span>
+                <span class="k">if</span> <span class="n">chatbot_type</span> <span class="o">==</span> <span class="s2">&quot;mini_gpt&quot;</span><span class="p">:</span>
+                    <span class="n">image_split_flag</span> <span class="o">=</span> <span class="s2">&quot;&lt;ImageHere&gt;&quot;</span>
+                <span class="k">elif</span> <span class="n">chatbot_type</span><span class="p">:</span>
+                    <span class="n">image_split_flag</span> <span class="o">=</span> <span class="s2">&quot;&lt;image&gt;&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+                <span class="nb">input</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">image_split_flag</span><span class="p">)</span>
+                <span class="c1"># TODO remove this code by update the tokenizer</span>
+                <span class="n">input_ids</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">attention_mask</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">image_token_indexes</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">temp_input</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])):</span>
+                    <span class="n">temp_input</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="n">temp_inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                        <span class="n">temp_input</span><span class="p">,</span>
+                        <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span>
+                        <span class="n">add_special_tokens</span><span class="o">=</span><span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span><span class="p">)</span>
+                    <span class="n">input_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_inputs</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">])</span>
+                    <span class="n">attention_mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_inputs</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">chatbot_type</span> <span class="o">==</span> <span class="s2">&quot;llava&quot;</span><span class="p">:</span>
+                        <span class="c1"># add the flag for inserting the image.</span>
+                        <span class="c1"># TODO should merge the way of handling image flag in minigpt and llava.</span>
+                        <span class="n">index_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">IMAGE_TOKEN_INDEX</span><span class="p">]</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span><span class="p">)</span>
+                        <span class="n">index_tensor</span> <span class="o">=</span> <span class="n">index_tensor</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="n">input_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index_tensor</span><span class="p">)</span>
+                        <span class="n">attention_mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span><span class="p">))</span>
+                    <span class="n">image_token_indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">temp_inputs</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_token_indexes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">image_token_indexes</span> <span class="o">=</span> <span class="n">image_token_indexes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">chatbot_type</span> <span class="o">==</span> <span class="s2">&quot;llava&quot;</span><span class="p">:</span>
+                        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">input_ids</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">attention_mask</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">inputs</span> <span class="o">=</span> <span class="n">temp_inputs</span>
+                <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">attention_mask</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;gpu&quot;</span><span class="p">:</span>
+                    <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                        <span class="nb">input</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
+                    <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                        <span class="nb">input</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;device </span><span class="se">\&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> is not supported&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">use_accelerator</span><span class="p">:</span>
+                    <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+
+            <span class="k">if</span> <span class="n">remove_image_flag</span><span class="p">:</span>
+                <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;image_token_indexes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_token_indexes</span>
+                <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;one_sample_multiple_images&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">use_accelerator</span><span class="p">:</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span><span class="o">.</span><span class="n">autocast</span><span class="p">():</span>
+                    <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span>
+                        <span class="n">inputs</span><span class="p">,</span>
+                        <span class="n">max_new_tokens</span><span class="o">=</span><span class="n">max_new_tokens</span><span class="p">,</span>
+                        <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span>
+                        <span class="n">repetition_penalty</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">repetition_penalty</span><span class="p">,</span>
+                        <span class="n">do_sample</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">do_sample</span><span class="p">,</span>
+                        <span class="n">use_accelerator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span>
+                    <span class="n">inputs</span><span class="p">,</span>
+                    <span class="n">max_new_tokens</span><span class="o">=</span><span class="n">max_new_tokens</span><span class="p">,</span>
+                    <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span>
+                    <span class="n">repetition_penalty</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">repetition_penalty</span><span class="p">,</span>
+                    <span class="n">do_sample</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">do_sample</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="c1"># only return the generation, trucating the input</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span><span class="o">.</span><span class="n">arch_type</span> <span class="o">!=</span> <span class="s2">&quot;vision_encoder_decoder&quot;</span><span class="p">:</span>
+                <span class="n">text_out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">prompt_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">,))</span>
+                <span class="n">text_out</span> <span class="o">=</span> <span class="n">text_out</span><span class="p">[</span><span class="n">prompt_length</span><span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># to avoid redundant/missing leading space problem, we use a</span>
+                <span class="c1"># part of the input text</span>
+                <span class="n">input_text</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="n">text_out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">input_text</span><span class="p">,</span> <span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]),</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">prompt_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">input_text</span><span class="p">,</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">,))</span>
+                <span class="n">text_out</span> <span class="o">=</span> <span class="n">text_out</span><span class="p">[</span><span class="n">prompt_length</span><span class="p">:]</span>
+
+            <span class="n">output_dict</span><span class="p">[</span><span class="s2">&quot;instances&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text_out</span> <span class="p">})</span>
+
+        <span class="n">output_dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">DatasetArguments</span><span class="p">(</span><span class="n">dataset_path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">output_dataset</span> <span class="o">=</span> <span class="n">output_dataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">output_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output_dataset</span></div>
+
+
+<div class="viewcode-block" id="Inferencer.stream_inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.Inferencer.stream_inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">stream_inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">max_new_tokens</span><span class="p">,</span>
+        <span class="n">token_per_step</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="p">,</span>
+        <span class="n">end_string</span><span class="p">,</span>
+        <span class="n">input_dataset</span><span class="p">,</span>
+        <span class="n">remove_image_flag</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="s2">&quot;ChatGLMModel&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">architectures</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">response</span><span class="p">,</span> <span class="n">history</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">get_backend_model</span><span class="p">()</span><span class="o">.</span><span class="n">stream_chat</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">(),</span> <span class="n">context</span><span class="p">,</span> <span class="n">history</span><span class="o">=</span><span class="n">history</span><span class="p">):</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">rstrip_partial_utf8</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="n">response</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">max_new_tokens</span> <span class="o">//</span> <span class="n">token_per_step</span><span class="p">):</span>
+                <span class="n">output_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span>
+                    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                    <span class="n">dataset</span><span class="o">=</span><span class="n">input_dataset</span><span class="p">,</span>
+                    <span class="n">max_new_tokens</span><span class="o">=</span><span class="n">token_per_step</span><span class="p">,</span>
+                    <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">temperature</span><span class="p">,</span>
+                    <span class="n">remove_image_flag</span><span class="o">=</span><span class="n">remove_image_flag</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">new_append_text</span> <span class="o">=</span> <span class="n">output_dataset</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()[</span><span class="s2">&quot;instances&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+                <span class="n">new_append_text</span> <span class="o">=</span> <span class="n">rstrip_partial_utf8</span><span class="p">(</span><span class="n">new_append_text</span><span class="p">)</span>
+                <span class="n">response</span> <span class="o">+=</span> <span class="n">new_append_text</span>
+
+                <span class="n">input_dict</span> <span class="o">=</span> <span class="n">input_dataset</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                <span class="n">input_dict</span><span class="p">[</span><span class="s2">&quot;instances&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">new_append_text</span>
+                <span class="n">input_dataset</span> <span class="o">=</span> <span class="n">input_dataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">input_dict</span><span class="p">)</span>
+
+                <span class="n">flag_break</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">end_string</span><span class="p">)</span>
+                    <span class="n">flag_break</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">response</span> <span class="o">+=</span> <span class="n">end_string</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">end_string</span><span class="p">)</span>
+
+                <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="p">[:</span><span class="n">index</span><span class="p">]</span>
+
+                <span class="k">yield</span> <span class="n">response</span><span class="p">,</span> <span class="n">flag_break</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SpeculativeInferencer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer">[docs]</a>
+<span class="k">class</span> <span class="nc">SpeculativeInferencer</span><span class="p">(</span><span class="n">Inferencer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ref: [arXiv:2211.17192v2](https://arxiv.org/abs/2211.17192)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ------------</span>
+<span class="sd">    target_model_args : ModelArguments object.</span>
+<span class="sd">        Contains the arguments required to load the target model.</span>
+<span class="sd">        </span>
+<span class="sd">    draft_model_args : ModelArguments object.</span>
+<span class="sd">        Contains the arguments required to load the draft model.</span>
+<span class="sd">    </span>
+<span class="sd">    data_args : DatasetArguments object.</span>
+<span class="sd">        Contains the arguments required to load the dataset.</span>
+
+<span class="sd">    inferencer_args : InferencerArguments object.</span>
+<span class="sd">        Contains the arguments required to perform inference.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_args</span><span class="p">,</span> <span class="n">draft_model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">,</span> <span class="n">inferencer_args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">,</span> <span class="n">inferencer_args</span><span class="p">)</span>
+<div class="viewcode-block" id="SpeculativeInferencer.draft_model_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer.draft_model_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draft_model_args</span> <span class="o">=</span> <span class="n">draft_model_args</span></div>
+
+
+<div class="viewcode-block" id="SpeculativeInferencer.draft_config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer.draft_config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draft_config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">draft_model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+        <span class="k">try</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">draft_model_hidden_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">draft_config</span><span class="o">.</span><span class="n">hidden_size</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error in setting hidden size for draft model, use the default size 1024&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">draft_model_hidden_size</span> <span class="o">=</span> <span class="mi">768</span>
+            
+    
+    <span class="nd">@staticmethod</span>        
+<div class="viewcode-block" id="SpeculativeInferencer.score_to_prob">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer.score_to_prob">[docs]</a>
+    <span class="k">def</span> <span class="nf">score_to_prob</span><span class="p">(</span><span class="n">scores</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> 
+                      <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
+                      <span class="n">top_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert scores (NOT softmaxed tensor) to probabilities with support for temperature, top-p sampling, and argmax.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scores : torch.Tensor</span>
+<span class="sd">            Input scores.</span>
+<span class="sd">        temperature : float, optional</span>
+<span class="sd">            Temperature parameter for controlling randomness. Higher values make the distribution more uniform, </span>
+<span class="sd">            lower values make it peakier. When temperature &lt;= 1e-6, argmax is used. by default 0.0</span>
+<span class="sd">        top_p : float, optional</span>
+<span class="sd">            Top-p sampling parameter for controlling the cumulative probability threshold, by default 1.0 (no threshold)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Probability distribution after adjustments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">temperature</span> <span class="o">&gt;=</span> <span class="mf">0.0</span>
+        <span class="k">assert</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">top_p</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
+        
+        <span class="k">if</span> <span class="n">temperature</span> <span class="o">&lt;=</span> <span class="mf">1e-6</span><span class="p">:</span>
+            <span class="n">final_prob</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">scores</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">/=</span> <span class="n">temperature</span>
+            <span class="k">if</span> <span class="n">top_p</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">sorted_scores</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">probs</span> <span class="o">=</span> <span class="n">sorted_scores</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">cumulative_probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">cumulative_probs</span> <span class="o">&lt;=</span> <span class="n">top_p</span>
+                <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="n">thresholded_probs</span> <span class="o">=</span> <span class="n">probs</span> <span class="o">*</span> <span class="n">mask</span>
+                    <span class="n">thresholded_probs</span> <span class="o">=</span> <span class="n">thresholded_probs</span> <span class="o">/</span> <span class="n">thresholded_probs</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">final_prob</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+                    <span class="n">final_prob</span><span class="o">.</span><span class="n">scatter_add_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">sorted_scores</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">thresholded_probs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">final_prob</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">final_prob</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">final_prob</span></div>
+
+    
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SpeculativeInferencer.sample">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer.sample">[docs]</a>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">prob</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample from a tensor of probabilities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sampled_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;sampled_token&#39;</span><span class="p">:</span> <span class="n">sampled_indices</span><span class="p">,</span> <span class="s1">&#39;sampled_prob&#39;</span><span class="p">:</span> <span class="n">prob</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">sampled_indices</span><span class="p">),</span> <span class="s1">&#39;all_prob&#39;</span><span class="p">:</span> <span class="n">prob</span><span class="p">}</span></div>
+
+    
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SpeculativeInferencer.predict_next_token">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer.predict_next_token">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict_next_token</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">HFDecoderModel</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">num_new_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict the next token given the input_ids.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> 
+                                 <span class="n">use_accelerator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                 <span class="n">max_new_tokens</span><span class="o">=</span><span class="n">num_new_tokens</span><span class="p">,</span>
+                                 <span class="n">return_dict_in_generate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">output_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">num_beams</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+    
+    
+<div class="viewcode-block" id="SpeculativeInferencer.autoregressive_sampling">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer.autoregressive_sampling">[docs]</a>
+    <span class="k">def</span> <span class="nf">autoregressive_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                                <span class="n">input_ids</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> 
+                                <span class="n">model</span><span class="p">:</span> <span class="n">HFDecoderModel</span><span class="p">,</span> 
+                                <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> 
+                                <span class="n">num_new_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ref: [arXiv:2211.17192v2](https://arxiv.org/abs/2211.17192) Section 2.2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sequence</span> <span class="o">=</span> <span class="n">input_ids</span>
+        <span class="n">new_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_new_tokens</span><span class="p">):</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_next_token</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">input_ids</span><span class="o">=</span><span class="n">sequence</span><span class="p">,</span> <span class="n">num_new_tokens</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># predict next one token</span>
+            <span class="n">prob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_to_prob</span><span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">)</span>
+            <span class="n">sampled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">prob</span><span class="o">=</span><span class="n">prob</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">new_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sampled</span><span class="p">)</span>
+            <span class="n">sequence</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">sequence</span><span class="p">,</span> <span class="n">sampled</span><span class="p">[</span><span class="s1">&#39;sampled_token&#39;</span><span class="p">]],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;sequence&quot;</span><span class="p">:</span> <span class="n">sequence</span><span class="p">,</span> <span class="s2">&quot;new_tokens&quot;</span><span class="p">:</span> <span class="n">new_tokens</span><span class="p">}</span></div>
+
+    
+    
+<div class="viewcode-block" id="SpeculativeInferencer.inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer.inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">HFDecoderModel</span><span class="p">,</span>
+        <span class="n">draft_model</span><span class="p">:</span> <span class="n">HFDecoderModel</span><span class="p">,</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
+        <span class="n">gamma</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">max_new_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform inference for a model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        model : HFDecoderModel object.</span>
+<span class="sd">            TunableModel to verify tokens generated by the draft model.</span>
+<span class="sd">            </span>
+<span class="sd">        draft_model : HFDecoderModel object.</span>
+<span class="sd">            TunableModel that provides approximations of the target model.</span>
+
+<span class="sd">        input : str.</span>
+<span class="sd">            The input text (i.e., the prompt) for the model.</span>
+<span class="sd">            </span>
+<span class="sd">        gamma : int.</span>
+<span class="sd">            The number of tokens to be generated by the draft model within each iter.</span>
+<span class="sd">            </span>
+<span class="sd">        max_new_tokens : int.</span>
+<span class="sd">            The maximum number of tokens to be generated by the target model.</span>
+<span class="sd">            </span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output: str.</span>
+<span class="sd">            The output text generated by the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">gamma</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;gpu&quot;</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;device </span><span class="se">\&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> is not supported&quot;</span>
+            <span class="p">)</span>
+
+
+        <span class="k">def</span> <span class="nf">speculative_sampling</span><span class="p">(</span><span class="n">input_ids</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                                 <span class="n">model</span><span class="p">:</span> <span class="n">HFDecoderModel</span><span class="p">,</span>
+                                 <span class="n">draft_model</span><span class="p">:</span> <span class="n">HFDecoderModel</span><span class="p">,</span>
+                                 <span class="n">temperature</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Ref: [arXiv:2211.17192v2](https://arxiv.org/abs/2211.17192)</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            input_ids : torch.Tensor</span>
+<span class="sd">            draft_model : TunableModel object</span>
+<span class="sd">            model_list : List[TunableModel object]</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">len_input_ids</span><span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;len of input_ids: </span><span class="si">{</span><span class="n">len_input_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># STEP 1: Sample γ guesses x1, ..., xγ from Mq (draft model) autoregressively</span>
+            <span class="n">output_draft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autoregressive_sampling</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">draft_model</span><span class="p">,</span> <span class="n">num_new_tokens</span><span class="o">=</span><span class="n">gamma</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;draft result: </span><span class="si">{</span><span class="n">output_draft</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;draft result decoded: </span><span class="si">{</span><span class="n">draft_model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output_draft</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            
+            <span class="c1"># STEP 2: Run Mp (target model) in parallel</span>
+            <span class="c1"># generate sequences [prefix, x1, x2, ..., xγ]</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_backend_model</span><span class="p">()(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">output_draft</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">],</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;shape of output: </span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">logits</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            
+            <span class="c1"># STEP 3: Determine the number of accepted guesses n</span>
+            <span class="n">accepted</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">gamma</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gamma</span><span class="p">):</span>
+                <span class="n">draft_sampled_token_id</span> <span class="o">=</span> <span class="n">output_draft</span><span class="p">[</span><span class="s1">&#39;new_tokens&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;sampled_token&#39;</span><span class="p">]</span>
+                <span class="n">draft_sampled_token_prob</span> <span class="o">=</span> <span class="n">output_draft</span><span class="p">[</span><span class="s1">&#39;new_tokens&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;sampled_prob&#39;</span><span class="p">]</span>
+                <span class="n">token_prob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_to_prob</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">logits</span><span class="p">[:,</span><span class="n">len_input_ids</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,:],</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="n">draft_sampled_token_id</span><span class="p">]</span>
+
+                <span class="c1"># reject the sample with probability 1 - p(x)/q(x)</span>
+                <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand_like</span><span class="p">(</span><span class="n">token_prob</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">token_prob</span><span class="o">/</span><span class="n">draft_sampled_token_prob</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">accepted</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Speculative Sampling: Accepted: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">accepted</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">gamma</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+            <span class="c1"># STEP 4: Adjust the distribution from Mp if needed</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">accepted</span><span class="p">):</span>
+                <span class="n">all_prob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_to_prob</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">logits</span><span class="p">[:,</span><span class="n">len_input_ids</span><span class="o">+</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,:],</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">)</span>
+                <span class="n">draft_all_prob</span> <span class="o">=</span> <span class="n">output_draft</span><span class="p">[</span><span class="s1">&#39;new_tokens&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;all_prob&#39;</span><span class="p">]</span>
+                <span class="n">adjusted_prob</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">all_prob</span><span class="p">),</span> <span class="n">all_prob</span> <span class="o">-</span> <span class="n">draft_all_prob</span><span class="p">)</span>
+                <span class="n">prob</span> <span class="o">=</span> <span class="n">adjusted_prob</span> <span class="o">/</span> <span class="n">adjusted_prob</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_to_prob</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">logits</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">,:],</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">)</span>
+
+
+            <span class="c1"># STEP 5: Return n tokens from Mq, and one token from Mp</span>
+            <span class="n">token_from_target_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">prob</span><span class="p">)[</span><span class="s1">&#39;sampled_token&#39;</span><span class="p">]</span>
+            <span class="n">final_sequence</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">output_draft</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">][:,:</span><span class="n">len_input_ids</span><span class="o">+</span><span class="nb">sum</span><span class="p">(</span><span class="n">accepted</span><span class="p">)],</span> <span class="n">token_from_target_model</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">final_sequence</span>
+        
+
+        <span class="n">num_generated_new_tokens</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">len_raw_input</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">while</span> <span class="n">num_generated_new_tokens</span> <span class="o">&lt;</span> <span class="n">max_new_tokens</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;===== New iter =====&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input_ids: </span><span class="si">{</span><span class="n">inputs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">sampling_result</span> <span class="o">=</span> <span class="n">speculative_sampling</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+                                                   <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                                                   <span class="n">draft_model</span><span class="o">=</span><span class="n">draft_model</span><span class="p">,</span>
+                                                   <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sampling result: </span><span class="si">{</span><span class="n">sampling_result</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sampling result decoded: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">sampling_result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">num_generated_new_tokens</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sampling_result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">sampling_result</span>
+        
+        
+        <span class="c1"># if, say, num_generated_new_tokens = 19, and the model accept 3 </span>
+        <span class="c1"># tokens, the actual generated tokens would be 22.</span>
+        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">,:</span><span class="n">len_raw_input</span><span class="o">+</span><span class="n">max_new_tokens</span><span class="p">])</span></div>
+
+        
+
+<div class="viewcode-block" id="SpeculativeInferencer.stream_inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.SpeculativeInferencer.stream_inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">stream_inference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Streaming output for SpeculativeInferencer is not supported yet&quot;</span><span class="p">)</span></div>
+</div>
+
+
+<div class="viewcode-block" id="ToolInferencer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.ToolInferencer">[docs]</a>
+<span class="k">class</span> <span class="nc">ToolInferencer</span><span class="p">(</span><span class="n">Inferencer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes the `ToolInferencer` class with given arguments.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ------------</span>
+<span class="sd">    model_args : ModelArguments object.</span>
+<span class="sd">        Contains the arguments required to load the model.</span>
+
+<span class="sd">    data_args : DatasetArguments object.</span>
+<span class="sd">        Contains the arguments required to load the dataset.</span>
+
+<span class="sd">    inferencer_args : InferencerArguments object.</span>
+<span class="sd">        Contains the arguments required to perform inference.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">,</span> <span class="n">inferencer_args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">,</span> <span class="n">inferencer_args</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ToolInferencer.model">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.ToolInferencer.model">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">HFDecoderModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_args</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ToolInferencer.inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.ToolInferencer.inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">HFDecoderModel</span><span class="p">,</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">max_new_tokens</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform inference for a model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        model : HFDecoderModel object.</span>
+<span class="sd">            TunableModel to perform inference</span>
+
+<span class="sd">        input : str.</span>
+<span class="sd">            The input text (i.e., the prompt) for the model. </span>
+<span class="sd">            </span>
+<span class="sd">        max_new_tokens : int.</span>
+<span class="sd">            The maximum number of tokens to be generated by the model.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        output : str.</span>
+<span class="sd">            The output text generated by the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;gpu&quot;</span><span class="p">:</span>
+            <span class="n">input_id</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">local_rank</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">inferencer_args</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
+            <span class="n">input_id</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input_id: </span><span class="si">{</span><span class="n">input_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">input_length</span> <span class="o">=</span> <span class="n">input_id</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">output_id</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">inference</span><span class="p">(</span>
+            <span class="n">input_id</span><span class="p">,</span>
+            <span class="n">use_accelerator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">max_new_tokens</span><span class="o">=</span><span class="n">max_new_tokens</span><span class="p">,</span>
+            <span class="c1"># pad_token_id=model.tokenizer.eos_token_id,</span>
+        <span class="p">)</span>
+        <span class="c1"># logger.debug(f&quot;output: {output_id}&quot;)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+    
+<div class="viewcode-block" id="ToolInferencer.code_exec">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/inferencer/index.html#lmflow.pipeline.inferencer.ToolInferencer.code_exec">[docs]</a>
+    <span class="k">def</span> <span class="nf">code_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="c1"># Execute the code</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="n">code</span><span class="p">],</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Print the result</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successfully Executed, the result is:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+            
+        
+            
+        
+        
+        
+        
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

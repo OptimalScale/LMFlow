@@ -1,0 +1,892 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>lmflow.utils.flash_attention.triton_flash_attention &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/lmflow/utils/flash_attention/triton_flash_attention/index';</script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="lmflow.utils.llava_conversation_lib" href="../../llava_conversation_lib/index.html" />
+    <link rel="prev" title="lmflow.utils.flash_attention.llama_flash_attention" href="../llama_flash_attention/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../index.html">lmflow</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../args/index.html">lmflow.args</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../datasets/index.html">lmflow.datasets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../datasets/dataset/index.html">lmflow.datasets.dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../datasets/multi_modal_dataset/index.html">lmflow.datasets.multi_modal_dataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../models/index.html">lmflow.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/auto_model/index.html">lmflow.models.auto_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/base_model/index.html">lmflow.models.base_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/decoder_model/index.html">lmflow.models.decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/encoder_decoder_model/index.html">lmflow.models.encoder_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/hf_decoder_model/index.html">lmflow.models.hf_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/hf_encoder_decoder_model/index.html">lmflow.models.hf_encoder_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/hf_model_mixin/index.html">lmflow.models.hf_model_mixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/hf_text_regression_model/index.html">lmflow.models.hf_text_regression_model</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../models/interfaces/index.html">lmflow.models.interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../models/interfaces/tunable/index.html">lmflow.models.interfaces.tunable</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/regression_model/index.html">lmflow.models.regression_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/text_regression_model/index.html">lmflow.models.text_regression_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../models/vision2seq_model/index.html">lmflow.models.vision2seq_model</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../models/vision_encoder/index.html">lmflow.models.vision_encoder</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../models/vision_encoder/clip_encoder/index.html">lmflow.models.vision_encoder.clip_encoder</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../optim/index.html">lmflow.optim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adabelief/index.html">lmflow.optim.adabelief</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adabound/index.html">lmflow.optim.adabound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adadelta/index.html">lmflow.optim.adadelta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adagrad/index.html">lmflow.optim.adagrad</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adam/index.html">lmflow.optim.adam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adamax/index.html">lmflow.optim.adamax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adamp/index.html">lmflow.optim.adamp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adamw_schedule_free/index.html">lmflow.optim.adamw_schedule_free</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/adan/index.html">lmflow.optim.adan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/dummy/index.html">lmflow.optim.dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/lamb/index.html">lmflow.optim.lamb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/lars/index.html">lmflow.optim.lars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/nadam/index.html">lmflow.optim.nadam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/novograd/index.html">lmflow.optim.novograd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/optimizers/index.html">lmflow.optim.optimizers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/radam/index.html">lmflow.optim.radam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/sgd_schedule_free/index.html">lmflow.optim.sgd_schedule_free</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/sgdp/index.html">lmflow.optim.sgdp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/sophia/index.html">lmflow.optim.sophia</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../optim/yogi/index.html">lmflow.optim.yogi</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../pipeline/index.html">lmflow.pipeline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/auto_pipeline/index.html">lmflow.pipeline.auto_pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/base_aligner/index.html">lmflow.pipeline.base_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/base_pipeline/index.html">lmflow.pipeline.base_pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/base_tuner/index.html">lmflow.pipeline.base_tuner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/dpo_aligner/index.html">lmflow.pipeline.dpo_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/dpov2_aligner/index.html">lmflow.pipeline.dpov2_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/evaluator/index.html">lmflow.pipeline.evaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/finetuner/index.html">lmflow.pipeline.finetuner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/inferencer/index.html">lmflow.pipeline.inferencer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/iterative_dpo_aligner/index.html">lmflow.pipeline.iterative_dpo_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/raft_aligner/index.html">lmflow.pipeline.raft_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/rm_inferencer/index.html">lmflow.pipeline.rm_inferencer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/rm_tuner/index.html">lmflow.pipeline.rm_tuner</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../pipeline/utils/index.html">lmflow.pipeline.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../pipeline/utils/dpov2_dataprocessor/index.html">lmflow.pipeline.utils.dpov2_dataprocessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../pipeline/utils/dpov2_trainer/index.html">lmflow.pipeline.utils.dpov2_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../pipeline/utils/memory_safe_dpov2_align/index.html">lmflow.pipeline.utils.memory_safe_dpov2_align</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../pipeline/utils/memory_safe_vllm_inference/index.html">lmflow.pipeline.utils.memory_safe_vllm_inference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../pipeline/utils/peft_trainer/index.html">lmflow.pipeline.utils.peft_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../pipeline/utils/raft_trainer/index.html">lmflow.pipeline.utils.raft_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../pipeline/utils/rm_dataprocessor/index.html">lmflow.pipeline.utils.rm_dataprocessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../pipeline/utils/rm_trainer/index.html">lmflow.pipeline.utils.rm_trainer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../pipeline/vllm_inferencer/index.html">lmflow.pipeline.vllm_inferencer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../tokenization/index.html">lmflow.tokenization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tokenization/hf_decoder_model/index.html">lmflow.tokenization.hf_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tokenization/hf_text_regression_model/index.html">lmflow.tokenization.hf_text_regression_model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html">lmflow.utils</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../common/index.html">lmflow.utils.common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../constants/index.html">lmflow.utils.constants</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../conversation_template/index.html">lmflow.utils.conversation_template</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/base/index.html">lmflow.utils.conversation_template.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/chatglm/index.html">lmflow.utils.conversation_template.chatglm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/chatml/index.html">lmflow.utils.conversation_template.chatml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/deepseek/index.html">lmflow.utils.conversation_template.deepseek</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/gemma/index.html">lmflow.utils.conversation_template.gemma</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/hymba/index.html">lmflow.utils.conversation_template.hymba</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/internlm/index.html">lmflow.utils.conversation_template.internlm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/llama/index.html">lmflow.utils.conversation_template.llama</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/phi/index.html">lmflow.utils.conversation_template.phi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/qwen/index.html">lmflow.utils.conversation_template.qwen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/yi/index.html">lmflow.utils.conversation_template.yi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../conversation_template/zephyr/index.html">lmflow.utils.conversation_template.zephyr</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../data_utils/index.html">lmflow.utils.data_utils</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">lmflow.utils.flash_attention</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../bloom_flash_attention/index.html">lmflow.utils.flash_attention.bloom_flash_attention</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../gpt2_flash_attention/index.html">lmflow.utils.flash_attention.gpt2_flash_attention</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../gpt_neo_flash_attention/index.html">lmflow.utils.flash_attention.gpt_neo_flash_attention</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../llama_flash_attention/index.html">lmflow.utils.flash_attention.llama_flash_attention</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">lmflow.utils.flash_attention.triton_flash_attention</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../llava_conversation_lib/index.html">lmflow.utils.llava_conversation_lib</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/index.html">lmflow.utils.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../multimodal/index.html">lmflow.utils.multimodal</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../position_interpolation/index.html">lmflow.utils.position_interpolation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../position_interpolation/llama_rope_scaled_monkey_patch/index.html">lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../versioning/index.html">lmflow.utils.versioning</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../version/index.html">lmflow.version</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">lmflow</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">lmflow.utils</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">lmflow.utils.flash_attention</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.utils.flash_attention.triton_flash_attention</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-lmflow.utils.flash_attention.triton_flash_attention">
+<span id="lmflow-utils-flash-attention-triton-flash-attention"></span><h1>lmflow.utils.flash_attention.triton_flash_attention<a class="headerlink" href="#module-lmflow.utils.flash_attention.triton_flash_attention" title="Link to this heading">#</a></h1>
+<p><em>Experimental</em> implementation of FlashAttention in Triton.
+Tested with triton==2.0.0.dev20221202.
+Triton 2.0 has a new backend (MLIR) but seems like it doesn’t yet work for head dimensions
+other than 64:
+<a class="github reference external" href="https://github.com/openai/triton/blob/d376020f90002757eea3ea9475d4f7cfc2ec5ead/python/triton/ops/flash_attention.py#L207">openai/triton</a>
+We’ll update this implementation with the new Triton backend once this is fixed.</p>
+<p>We use the FlashAttention implementation from Phil Tillet a starting point.
+<a class="github reference external" href="https://github.com/openai/triton/blob/master/python/tutorials/06-fused-attention.py">openai/triton</a></p>
+<p>Changes:
+- Implement both causal and non-causal attention.
+- Implement both self-attention and cross-attention.
+- Support arbitrary seqlens (not just multiples of 128), for both forward and backward.
+- Support all head dimensions up to 128 (not just 16, 32, 64, 128), for both forward and backward.
+- Support attention bias.
+- Speed up the forward pass a bit, and only store the LSE instead of m and l.
+- Make the backward for d=128 much faster by reducing register spilling.
+- Optionally parallelize the backward pass across seqlen_k, to deal with the case of
+small batch size * nheads.</p>
+<p>Caution:
+- This is an <em>experimental</em> implementation. The forward pass should be quite robust but
+I’m not 100% sure that the backward pass doesn’t have race conditions (due to the Triton compiler).
+- This implementation has only been tested on A100.
+- If you plan to use headdim other than 64 and 128, you should test for race conditions
+(due to the Triton compiler), as done in tests/test_flash_attn.py
+“test_flash_attn_triton_race_condition”. I’ve tested and fixed many race conditions
+for different head dimensions (40, 48, 64, 128, 80, 88, 96), but I’m still not 100% confident
+that there are none left for other head dimensions.</p>
+<p>Differences between this Triton version and the CUDA version:
+- Triton version doesn’t support dropout.
+- Triton forward is generally faster than CUDA forward, while Triton backward is
+generally slower than CUDA backward. Overall Triton forward + backward is slightly slower
+than CUDA forward + backward.
+- Triton version doesn’t support different sequence lengths in a batch (i.e., RaggedTensor/NestedTensor).
+- Triton version supports attention bias, while CUDA version doesn’t.</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_qkvpacked_func" title="lmflow.utils.flash_attention.triton_flash_attention.flash_attn_qkvpacked_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flash_attn_qkvpacked_func</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_kvpacked_func" title="lmflow.utils.flash_attention.triton_flash_attention.flash_attn_kvpacked_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flash_attn_kvpacked_func</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_func" title="lmflow.utils.flash_attention.triton_flash_attention.flash_attn_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flash_attn_func</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc" title="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlashAttnQKVPackedFunc</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc" title="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlashAttnKVPackedFunc</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc" title="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlashAttnFunc</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention._fwd_kernel" title="lmflow.utils.flash_attention.triton_flash_attention._fwd_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_fwd_kernel</span></code></a>(Q, K, V, Bias, Out, Lse, TMP, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_preprocess_do_o_dot" title="lmflow.utils.flash_attention.triton_flash_attention._bwd_preprocess_do_o_dot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_bwd_preprocess_do_o_dot</span></code></a>(Out, DO, Delta, stride_ob, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_store_dk_dv" title="lmflow.utils.flash_attention.triton_flash_attention._bwd_store_dk_dv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_bwd_store_dk_dv</span></code></a>(dk_ptrs, dv_ptrs, dk, dv, offs_n, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel_one_col_block" title="lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel_one_col_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_bwd_kernel_one_col_block</span></code></a>(start_n, Q, K, V, Bias, DO, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention.init_to_zero" title="lmflow.utils.flash_attention.triton_flash_attention.init_to_zero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_to_zero</span></code></a>(name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel" title="lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_bwd_kernel</span></code></a>(Q, K, V, Bias, DO, DQ, DK, DV, LSE, D, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention._flash_attn_forward" title="lmflow.utils.flash_attention.triton_flash_attention._flash_attn_forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_flash_attn_forward</span></code></a>(q, k, v[, bias, causal, softmax_scale])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.flash_attention.triton_flash_attention._flash_attn_backward" title="lmflow.utils.flash_attention.triton_flash_attention._flash_attn_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_flash_attn_backward</span></code></a>(do, q, k, v, o, lse, dq, dk, dv)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention._fwd_kernel">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">_fwd_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Bias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TMP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softmax_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_qb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_qh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_qm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_kb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_kh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_kn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_vb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_vh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_vn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_bb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_bh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_bm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_ob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_oh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_om</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nheads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_q_rounded</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CACHE_KEY_SEQLEN_Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CACHE_KEY_SEQLEN_K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BIAS_TYPE</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IS_CAUSAL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_HEADDIM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_HEADDIM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#_fwd_kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention._fwd_kernel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention._bwd_preprocess_do_o_dot">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">_bwd_preprocess_do_o_dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_ob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_oh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_om</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_doh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nheads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_q_rounded</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_HEADDIM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#_bwd_preprocess_do_o_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_preprocess_do_o_dot" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention._bwd_store_dk_dv">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">_bwd_store_dk_dv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dk_ptrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv_ptrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offs_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offs_d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_HEADDIM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#_bwd_store_dk_dv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_store_dk_dv" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel_one_col_block">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">_bwd_kernel_one_col_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Bias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DK</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LSE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softmax_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_qm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_kn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_vn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_bm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dqm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dkn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dvn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ATOMIC_ADD</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BIAS_TYPE</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IS_CAUSAL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_HEADDIM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_HEADDIM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#_bwd_kernel_one_col_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel_one_col_block" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.init_to_zero">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">init_to_zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#init_to_zero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.init_to_zero" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">_bwd_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Bias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DQ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DK</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LSE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softmax_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_qb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_qh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_qm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_kb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_kh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_kn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_vb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_vh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_vn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_bb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_bh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_bm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_doh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dqb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dqh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dqm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dkb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dkh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dkn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dvb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dvh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride_dvn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nheads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqlen_q_rounded</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CACHE_KEY_SEQLEN_Q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CACHE_KEY_SEQLEN_K</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BIAS_TYPE</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IS_CAUSAL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_HEADDIM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SEQUENCE_PARALLEL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EVEN_HEADDIM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_M</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BLOCK_N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">triton.language.constexpr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#_bwd_kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention._flash_attn_forward">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">_flash_attn_forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">causal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softmax_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#_flash_attn_forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention._flash_attn_forward" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention._flash_attn_backward">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">_flash_attn_backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">do</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">o</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lse</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">causal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softmax_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#_flash_attn_backward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention._flash_attn_backward" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">FlashAttnQKVPackedFunc</span></span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnQKVPackedFunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.autograd.Function</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc.forward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qkv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">causal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softmax_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnQKVPackedFunc.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc.forward" title="Link to this definition">#</a></dt>
+<dd><p>qkv: (batch, seqlen, 3, nheads, headdim)
+bias: optional, shape broadcastible to (batch, nheads, seqlen, seqlen).</p>
+<blockquote>
+<div><p>For example, ALiBi mask for causal would have shape (1, nheads, 1, seqlen).
+ALiBi mask for non-causal would have shape (1, nheads, seqlen, seqlen)</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc.backward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnQKVPackedFunc.backward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc.backward" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.flash_attn_qkvpacked_func">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">flash_attn_qkvpacked_func</span></span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#flash_attn_qkvpacked_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_qkvpacked_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">FlashAttnKVPackedFunc</span></span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnKVPackedFunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.autograd.Function</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc.forward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">causal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softmax_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnKVPackedFunc.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc.forward" title="Link to this definition">#</a></dt>
+<dd><p>q: (batch, seqlen_q, nheads, headdim)
+kv: (batch, seqlen_k, 2, nheads, headdim)
+bias: optional, shape broadcastible to (batch, nheads, seqlen_q, seqlen_k).</p>
+<blockquote>
+<div><p>For example, ALiBi mask for causal would have shape (1, nheads, 1, seqlen_k).
+ALiBi mask for non-causal would have shape (1, nheads, seqlen_q, seqlen_k)</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc.backward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnKVPackedFunc.backward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc.backward" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.flash_attn_kvpacked_func">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">flash_attn_kvpacked_func</span></span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#flash_attn_kvpacked_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_kvpacked_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">FlashAttnFunc</span></span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnFunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.autograd.Function</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc.forward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">causal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softmax_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnFunc.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc.forward" title="Link to this definition">#</a></dt>
+<dd><p>q: (batch_size, seqlen_q, nheads, headdim)
+k, v: (batch_size, seqlen_k, nheads, headdim)
+bias: optional, shape broadcastible to (batch, nheads, seqlen_q, seqlen_k).</p>
+<blockquote>
+<div><p>For example, ALiBi mask for causal would have shape (1, nheads, 1, seqlen_k).
+ALiBi mask for non-causal would have shape (1, nheads, seqlen_q, seqlen_k)</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc.backward">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#FlashAttnFunc.backward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc.backward" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="lmflow.utils.flash_attention.triton_flash_attention.flash_attn_func">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.flash_attention.triton_flash_attention.</span></span><span class="sig-name descname"><span class="pre">flash_attn_func</span></span><a class="reference internal" href="../../../../../_modules/lmflow/utils/flash_attention/triton_flash_attention.html#flash_attn_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../llama_flash_attention/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">lmflow.utils.flash_attention.llama_flash_attention</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../llava_conversation_lib/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">lmflow.utils.llava_conversation_lib</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention._fwd_kernel"><code class="docutils literal notranslate"><span class="pre">_fwd_kernel()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_preprocess_do_o_dot"><code class="docutils literal notranslate"><span class="pre">_bwd_preprocess_do_o_dot()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_store_dk_dv"><code class="docutils literal notranslate"><span class="pre">_bwd_store_dk_dv()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel_one_col_block"><code class="docutils literal notranslate"><span class="pre">_bwd_kernel_one_col_block()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.init_to_zero"><code class="docutils literal notranslate"><span class="pre">init_to_zero()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel"><code class="docutils literal notranslate"><span class="pre">_bwd_kernel()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention._flash_attn_forward"><code class="docutils literal notranslate"><span class="pre">_flash_attn_forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention._flash_attn_backward"><code class="docutils literal notranslate"><span class="pre">_flash_attn_backward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc"><code class="docutils literal notranslate"><span class="pre">FlashAttnQKVPackedFunc</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc.forward"><code class="docutils literal notranslate"><span class="pre">FlashAttnQKVPackedFunc.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc.backward"><code class="docutils literal notranslate"><span class="pre">FlashAttnQKVPackedFunc.backward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_qkvpacked_func"><code class="docutils literal notranslate"><span class="pre">flash_attn_qkvpacked_func</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc"><code class="docutils literal notranslate"><span class="pre">FlashAttnKVPackedFunc</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc.forward"><code class="docutils literal notranslate"><span class="pre">FlashAttnKVPackedFunc.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc.backward"><code class="docutils literal notranslate"><span class="pre">FlashAttnKVPackedFunc.backward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_kvpacked_func"><code class="docutils literal notranslate"><span class="pre">flash_attn_kvpacked_func</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc"><code class="docutils literal notranslate"><span class="pre">FlashAttnFunc</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc.forward"><code class="docutils literal notranslate"><span class="pre">FlashAttnFunc.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc.backward"><code class="docutils literal notranslate"><span class="pre">FlashAttnFunc.backward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_func"><code class="docutils literal notranslate"><span class="pre">flash_attn_func</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../../_sources/autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

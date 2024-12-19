@@ -1,0 +1,1101 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lmflow.pipeline.finetuner &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lmflow/pipeline/finetuner';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../lmflow.html" class="nav-link">lmflow</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.pipeline.finetuner</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lmflow.pipeline.finetuner</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># coding=utf-8</span>
+<span class="sd">&quot;&quot;&quot;The Finetuner class simplifies the process of running finetuning process on a language model for a TunableModel instance with given dataset.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">datasets</span>
+<span class="kn">import</span> <span class="nn">transformers</span>
+<span class="kn">import</span> <span class="nn">evaluate</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Trainer</span><span class="p">,</span>
+    <span class="n">default_data_collator</span><span class="p">,</span>
+    <span class="n">set_seed</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">PreTrainedModel</span><span class="p">,</span> <span class="n">TrainingArguments</span>
+<span class="kn">from</span> <span class="nn">transformers.trainer_utils</span> <span class="kn">import</span> <span class="n">get_last_checkpoint</span>
+<span class="kn">from</span> <span class="nn">transformers.trainer_callback</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TrainerCallback</span><span class="p">,</span>
+    <span class="n">TrainerControl</span><span class="p">,</span>
+    <span class="n">TrainerState</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">transformers.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_sagemaker_mp_enabled</span><span class="p">,</span>
+    <span class="n">send_example_telemetry</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">lmflow.optim.optimizers</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">from</span> <span class="nn">lmflow.args</span> <span class="kn">import</span> <span class="n">OptimizerNames</span>
+<span class="kn">from</span> <span class="nn">lmflow.datasets.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">lmflow.pipeline.base_tuner</span> <span class="kn">import</span> <span class="n">BaseTuner</span>
+<span class="kn">from</span> <span class="nn">lmflow.pipeline.utils.peft_trainer</span> <span class="kn">import</span> <span class="n">PeftTrainer</span><span class="p">,</span> <span class="n">PeftSavingCallback</span>
+
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Finetuner">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.Finetuner">[docs]</a>
+<span class="k">class</span> <span class="nc">Finetuner</span><span class="p">(</span><span class="n">BaseTuner</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes the `Finetuner` class with given arguments.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ------------</span>
+<span class="sd">    model_args : ModelArguments object.</span>
+<span class="sd">        Contains the arguments required to load the model.</span>
+
+<span class="sd">    data_args : DatasetArguments object.</span>
+<span class="sd">        Contains the arguments required to load the dataset.</span>
+
+<span class="sd">    finetuner_args : FinetunerArguments object.</span>
+<span class="sd">        Contains the arguments required to perform finetuning.</span>
+
+<span class="sd">    args : Optional.</span>
+<span class="sd">        Positional arguments.</span>
+
+<span class="sd">    kwargs : Optional.</span>
+<span class="sd">        Keyword arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">,</span> <span class="n">finetuner_args</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Finetuner.model_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.Finetuner.model_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span> <span class="o">=</span> <span class="n">model_args</span></div>
+
+<div class="viewcode-block" id="Finetuner.data_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.Finetuner.data_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span> <span class="o">=</span> <span class="n">data_args</span></div>
+
+<div class="viewcode-block" id="Finetuner.finetuner_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.Finetuner.finetuner_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finetuner_args</span> <span class="o">=</span> <span class="n">finetuner_args</span></div>
+
+
+        <span class="c1"># Sending telemetry. Tracking the example usage helps us better</span>
+        <span class="c1"># allocate resources to maintain them. The information sent is the one</span>
+        <span class="c1"># passed as arguments along with your Python/PyTorch versions.</span>
+        <span class="n">send_example_telemetry</span><span class="p">(</span><span class="s2">&quot;run_clm&quot;</span><span class="p">,</span> <span class="n">model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">)</span>
+
+        <span class="c1"># Setup logging</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(name)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%Y %H:%M:%S&quot;</span><span class="p">,</span>
+            <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)],</span>
+        <span class="p">)</span>
+
+        <span class="n">log_level</span> <span class="o">=</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">get_process_log_level</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+        <span class="n">datasets</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+        <span class="n">transformers</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+        <span class="n">transformers</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">enable_default_handler</span><span class="p">()</span>
+        <span class="n">transformers</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">enable_explicit_format</span><span class="p">()</span>
+
+        <span class="c1"># Log on each process the small summary:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Process rank: </span><span class="si">{</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">local_rank</span><span class="si">}</span><span class="s2">,&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; device: </span><span class="si">{</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2">,&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; n_gpu: </span><span class="si">{</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">n_gpu</span><span class="si">}</span><span class="s2">,&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;distributed training: </span><span class="si">{</span><span class="nb">bool</span><span class="p">(</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">local_rank</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">,&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; 16-bits training: </span><span class="si">{</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">fp16</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training/evaluation parameters </span><span class="si">{</span><span class="n">finetuner_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Detecting last checkpoint.</span>
+        <span class="n">last_checkpoint</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">do_train</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">overwrite_output_dir</span><span class="p">:</span>
+            <span class="n">last_checkpoint</span> <span class="o">=</span> <span class="n">get_last_checkpoint</span><span class="p">(</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">last_checkpoint</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Output directory (</span><span class="si">{</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">) already&quot;</span>
+                    <span class="s2">&quot; exists and is not empty. &quot;</span>
+                    <span class="s2">&quot;Use --overwrite_output_dir to overcome.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">last_checkpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">resume_from_checkpoint</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Checkpoint detected, resuming training at&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">last_checkpoint</span><span class="si">}</span><span class="s2">. To avoid this behavior, change&quot;</span>
+                    <span class="s2">&quot; the `--output_dir` or add `--overwrite_output_dir` to&quot;</span>
+                    <span class="s2">&quot; train from scratch.&quot;</span>
+                <span class="p">)</span>
+<div class="viewcode-block" id="Finetuner.last_checkpoint">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.Finetuner.last_checkpoint">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_checkpoint</span> <span class="o">=</span> <span class="n">last_checkpoint</span></div>
+
+
+        <span class="c1"># Set seed before initializing model.</span>
+        <span class="n">set_seed</span><span class="p">(</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Finetuner.group_text">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.Finetuner.group_text">[docs]</a>
+    <span class="k">def</span> <span class="nf">group_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokenized_datasets</span><span class="p">,</span> <span class="n">model_max_length</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Groups texts together to form blocks of maximum length `model_max_length` and returns the processed data as</span>
+<span class="sd">        a dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span>
+        <span class="n">finetuner_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finetuner_args</span>
+
+        <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">block_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">block_size</span> <span class="o">=</span> <span class="n">model_max_length</span>
+            <span class="k">if</span> <span class="n">block_size</span> <span class="o">&gt;</span> <span class="mi">1024</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;The chosen tokenizer supports a `model_max_length` that is&quot;</span>
+                    <span class="s2">&quot; longer than the default `block_size` value&quot;</span>
+                    <span class="s2">&quot; of 1024. If you would like to use a longer `block_size`&quot;</span>
+                    <span class="s2">&quot; up to `tokenizer.model_max_length` you can override this &quot;</span>
+                    <span class="s2">&quot; default with `--block_size xxx`.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">block_size</span> <span class="o">=</span> <span class="mi">1024</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">block_size</span> <span class="o">&gt;</span> <span class="n">model_max_length</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span><span class="o">.</span><span class="n">truncate_to_model_max_length</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;The block_size passed (</span><span class="si">{</span><span class="n">data_args</span><span class="o">.</span><span class="n">block_size</span><span class="si">}</span><span class="s2">) is larger&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; than the maximum length for the model&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">model_max_length</span><span class="si">}</span><span class="s2">).&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; Using block_size=</span><span class="si">{</span><span class="n">model_max_length</span><span class="si">}</span><span class="s2">.&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;If you would like to use a longer &#39;block_size&#39; that is&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; longer than the maximum length supported by the model,&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; you can override this behavior with&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;default with `--truncate_to_model_max_length False`.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">block_size</span> <span class="o">=</span> <span class="n">model_max_length</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;The block_size passed (</span><span class="si">{</span><span class="n">data_args</span><span class="o">.</span><span class="n">block_size</span><span class="si">}</span><span class="s2">) is larger&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;than the maximum length for the model&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">model_max_length</span><span class="si">}</span><span class="s2">).&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Using block_size=</span><span class="si">{</span><span class="n">data_args</span><span class="o">.</span><span class="n">block_size</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                    <span class="n">block_size</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">block_size</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">block_size</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">block_size</span>
+        <span class="c1"># Main data processing function that will concatenate all texts from</span>
+        <span class="c1"># our dataset and generate chunks of block_size.</span>
+        <span class="k">def</span> <span class="nf">group_texts</span><span class="p">(</span><span class="n">examples</span><span class="p">):</span>
+            <span class="c1"># Concatenate all texts.</span>
+            <span class="n">concatenated_examples</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">examples</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">examples</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+            <span class="n">total_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">concatenated_examples</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">examples</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="c1"># We drop the small remainder, we could add padding if the model</span>
+            <span class="c1"># supported it instead of this drop, you can customize this part to</span>
+            <span class="c1"># your needs.</span>
+            <span class="n">total_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_length</span> <span class="o">//</span> <span class="n">block_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">block_size</span>
+            <span class="c1"># Split by chunks of max_len.</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">block_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_length</span><span class="p">,</span> <span class="n">block_size</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">concatenated_examples</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Note that with `batched=True`, this map processes 1,000 texts</span>
+        <span class="c1"># together, so group_texts throws away a remainder for each of those</span>
+        <span class="c1"># groups of 1,000 texts. You can adjust that batch_size here but a</span>
+        <span class="c1"># higher value might be slower to preprocess.</span>
+        <span class="c1">#</span>
+        <span class="c1"># To speed up this part, we use multiprocessing. See the documentation</span>
+        <span class="c1"># of the map method for more information:</span>
+        <span class="c1"># https://huggingface.co/docs/datasets/package_reference/main_classes.html#datasets.Dataset.map</span>
+        <span class="k">with</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">main_process_first</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s2">&quot;grouping texts together&quot;</span><span class="p">):</span>
+            <span class="n">group_batch_size</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">group_texts_batch_size</span>
+            <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">disable_group_texts</span><span class="p">:</span>
+                <span class="n">group_batch_size</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data_args</span><span class="o">.</span><span class="n">streaming</span><span class="p">:</span>
+                <span class="n">lm_datasets</span> <span class="o">=</span> <span class="n">tokenized_datasets</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                    <span class="n">group_texts</span><span class="p">,</span>
+                    <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">batch_size</span><span class="o">=</span><span class="n">group_batch_size</span><span class="p">,</span>
+                    <span class="n">num_proc</span><span class="o">=</span><span class="n">data_args</span><span class="o">.</span><span class="n">preprocessing_num_workers</span><span class="p">,</span>
+                    <span class="n">load_from_cache_file</span><span class="o">=</span><span class="ow">not</span> <span class="n">data_args</span><span class="o">.</span><span class="n">overwrite_cache</span><span class="p">,</span>
+                    <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Grouping texts in chunks of </span><span class="si">{</span><span class="n">block_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lm_datasets</span> <span class="o">=</span> <span class="n">tokenized_datasets</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                    <span class="n">group_texts</span><span class="p">,</span>
+                    <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">batch_size</span><span class="o">=</span><span class="n">group_batch_size</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">lm_datasets</span></div>
+
+
+<div class="viewcode-block" id="Finetuner.create_customized_optimizer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.Finetuner.create_customized_optimizer">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_customized_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_trainer_class</span><span class="p">,</span> <span class="n">model_args</span><span class="p">):</span>
+        <span class="k">class</span> <span class="nc">CustomizedOptimTrainer</span><span class="p">(</span><span class="n">base_trainer_class</span><span class="p">):</span>
+
+            <span class="nd">@staticmethod</span>
+            <span class="k">def</span> <span class="nf">get_optimizer_cls_and_kwargs</span><span class="p">(</span>
+                <span class="n">args</span><span class="p">:</span> <span class="n">TrainingArguments</span><span class="p">,</span>
+                <span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PreTrainedModel</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+                <span class="c1"># parse args.optim_args</span>
+                <span class="n">optim_args</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim_args</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim_args</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
+                        <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+                        <span class="n">optim_args</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+                <span class="n">optimizer_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">}</span>
+
+                <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">DUMMY</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Dummy</span>
+                    <span class="n">dummy_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_dummy_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_dummy_beta2</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dummy_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADABELIEF</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdaBelief</span>
+                    <span class="n">adabelief_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">)</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adabelief_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADABOUND</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdaBound</span>
+                    <span class="n">adabound_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">)</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adabound_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">LARS</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">LARS</span>
+                    <span class="n">lars_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;momentum&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_momentum</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">lars_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">LAMB</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Lamb</span>
+                    <span class="n">lamb_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">lamb_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADAMAX</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adamax</span>
+                    <span class="n">adamax_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adamax_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">NADAM</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">NAdam</span>
+                    <span class="n">nadam_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">nadam_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">RADAM</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">RAdam</span>
+                    <span class="n">radam_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">radam_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADAMP</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamP</span>
+                    <span class="n">adamp_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adamp_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">SGDP</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGDP</span>
+                    <span class="n">sgdp_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;momentum&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_momentum</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sgdp_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">YOGI</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Yogi</span>
+                    <span class="n">yogi_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">yogi_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">SOPHIA</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SophiaG</span>
+                    <span class="n">sophia_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sophia_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADAM</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span>
+                    <span class="n">adam_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adam_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">NOVOGRAD</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">NovoGrad</span>
+                    <span class="n">novograd_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">novograd_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADADELTA</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adadelta</span>
+                    <span class="n">adadelta_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adadelta_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADAGRAD</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdaGrad</span>
+                    <span class="n">adagrad_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adagrad_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADAMW_SCHEDULE_FREE</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamWScheduleFree</span>
+                    <span class="n">adamw_schedule_free_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adamw_schedule_free_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">SGD_SCHEDULE_FREE</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGDScheduleFree</span>
+                    <span class="n">sgd_schedule_free_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;momentum&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_momentum</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sgd_schedule_free_kwargs</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span> <span class="o">==</span> <span class="n">OptimizerNames</span><span class="o">.</span><span class="n">ADAN</span><span class="p">:</span>
+                    <span class="n">optimizer_cls</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adan</span>
+                    <span class="n">adan_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;betas&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_beta1</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta2</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">optim_beta3</span><span class="p">),</span>
+                        <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">optim_weight_decay</span><span class="p">),</span>
+                    <span class="p">}</span>
+                    <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adan_kwargs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Trainer cannot instantiate unsupported optimizer: &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">customized_optim</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">return</span> <span class="n">optimizer_cls</span><span class="p">,</span> <span class="n">optimizer_kwargs</span>
+
+            <span class="k">def</span> <span class="nf">create_optimizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">opt_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_wrapped</span> <span class="k">if</span> <span class="n">is_sagemaker_mp_enabled</span><span class="p">()</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">decay_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_decay_parameter_names</span><span class="p">(</span><span class="n">opt_model</span><span class="p">)</span>
+                    <span class="n">optimizer_grouped_parameters</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">opt_model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span>
+                                    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="ow">in</span> <span class="n">decay_parameters</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+                            <span class="p">],</span>
+                            <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>
+                        <span class="p">},</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">opt_model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span>
+                                    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">decay_parameters</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+                            <span class="p">],</span>
+                            <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                        <span class="p">},</span>
+                    <span class="p">]</span>
+
+                    <span class="n">optimizer_cls</span><span class="p">,</span> <span class="n">optimizer_kwargs</span> <span class="o">=</span> <span class="n">CustomizedOptimTrainer</span><span class="o">.</span><span class="n">get_optimizer_cls_and_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">opt_model</span><span class="p">)</span>
+
+                    <span class="c1"># Overwrite `params` in case it&#39;s created by</span>
+                    <span class="c1"># `get_optimizer_cls_and_kwargs` e.g. for GaLore optimizer.</span>
+                    <span class="k">if</span> <span class="s2">&quot;params&quot;</span> <span class="ow">in</span> <span class="n">optimizer_kwargs</span><span class="p">:</span>
+                        <span class="n">optimizer_grouped_parameters</span> <span class="o">=</span> <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+                            <span class="s2">&quot;params&quot;</span>
+                        <span class="p">)</span>
+
+                    <span class="c1"># For layer-wise dummy optimizers we overwrite</span>
+                    <span class="c1"># optimizer_grouped_parameters with `optimizer_dict` to</span>
+                    <span class="c1"># avoid arguments conflicts.</span>
+                    <span class="k">if</span> <span class="s2">&quot;optimizer_dict&quot;</span> <span class="ow">in</span> <span class="n">optimizer_kwargs</span><span class="p">:</span>
+                        <span class="n">optimizer_grouped_parameters</span> <span class="o">=</span> <span class="n">optimizer_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+                            <span class="s2">&quot;optimizer_dict&quot;</span>
+                        <span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer_cls</span><span class="p">(</span>
+                        <span class="n">optimizer_grouped_parameters</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">optimizer_kwargs</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">is_sagemaker_mp_enabled</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">smp</span><span class="o">.</span><span class="n">DistributedOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
+                    
+        <span class="k">return</span> <span class="n">CustomizedOptimTrainer</span></div>
+
+
+<div class="viewcode-block" id="Finetuner.tune">
+<a class="viewcode-back" href="../../../autoapi/lmflow/pipeline/finetuner/index.html#lmflow.pipeline.finetuner.Finetuner.tune">[docs]</a>
+    <span class="k">def</span> <span class="nf">tune</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">model</span><span class="p">,</span>
+             <span class="n">dataset</span><span class="p">,</span>
+             <span class="n">transform_dataset_in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+             <span class="n">data_collator</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform tuning for a model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        model : TunableModel object.</span>
+<span class="sd">            TunableModel to perform tuning.</span>
+
+<span class="sd">        dataset:</span>
+<span class="sd">            dataset to train model.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span>
+        <span class="n">data_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span>
+        <span class="n">finetuner_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finetuner_args</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">transform_dataset_in_place</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+        <span class="c1"># Tokenization and text grouping must be done in the main process</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;custom_multi_modal&quot;</span><span class="p">:</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">register_tokenizer</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">image_processor</span><span class="p">)</span>
+            <span class="n">lm_dataset</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">main_process_first</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s2">&quot;dataset map tokenization&quot;</span><span class="p">):</span>
+                <span class="n">tokenized_dataset</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">disable_group_texts</span><span class="p">:</span>
+                    <span class="n">lm_dataset</span> <span class="o">=</span> <span class="n">tokenized_dataset</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">lm_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_text</span><span class="p">(</span>
+                        <span class="n">tokenized_dataset</span><span class="p">,</span>
+                        <span class="n">model_max_length</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_max_length</span><span class="p">(),</span>
+                    <span class="p">)</span>
+
+        <span class="n">train_dataset</span> <span class="o">=</span> <span class="n">lm_dataset</span><span class="o">.</span><span class="n">get_backend_dataset</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of train samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">do_eval</span><span class="p">:</span>
+            <span class="n">eval_dataset_args</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">data_args</span><span class="p">)</span>
+            <span class="n">eval_dataset_args</span><span class="o">.</span><span class="n">dataset_path</span> <span class="o">=</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">eval_dataset_path</span>
+            <span class="n">eval_dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">eval_dataset_args</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">main_process_first</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s2">&quot;dataset map tokenization&quot;</span><span class="p">):</span>
+                <span class="n">tokenized_dataset</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">eval_dataset</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">disable_group_texts</span><span class="p">:</span>
+                    <span class="n">lm_dataset</span> <span class="o">=</span> <span class="n">tokenized_dataset</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">lm_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_text</span><span class="p">(</span>
+                        <span class="n">tokenized_dataset</span><span class="p">,</span>
+                        <span class="n">model_max_length</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_max_length</span><span class="p">(),</span>
+                    <span class="p">)</span>
+            <span class="n">eval_dataset</span> <span class="o">=</span> <span class="n">lm_dataset</span><span class="o">.</span><span class="n">get_backend_dataset</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of eval samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">eval_dataset</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">preprocess_logits_for_metrics</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="c1"># Depending on the model and config, logits may contain extra tensors,</span>
+                    <span class="c1"># like past_key_values, but logits always come first</span>
+                    <span class="n">logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">metric</span> <span class="o">=</span> <span class="n">evaluate</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">compute_metrics</span><span class="p">(</span><span class="n">eval_preds</span><span class="p">):</span>
+                <span class="n">preds</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">eval_preds</span>
+                <span class="c1"># preds have the same shape as the labels, after the argmax(-1) has been calculated</span>
+                <span class="c1"># by preprocess_logits_for_metrics but we need to shift the labels</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">preds</span> <span class="o">=</span> <span class="n">preds</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">metric</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">predictions</span><span class="o">=</span><span class="n">preds</span><span class="p">,</span> <span class="n">references</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">finetuner_args</span><span class="o">.</span><span class="n">do_train</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">max_train_samples</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">max_train_samples</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">),</span> <span class="n">data_args</span><span class="o">.</span><span class="n">max_train_samples</span><span class="p">)</span>
+                <span class="n">train_dataset</span> <span class="o">=</span> <span class="n">train_dataset</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">max_train_samples</span><span class="p">))</span>
+
+        <span class="c1"># Initialize our Trainer</span>
+        <span class="n">training_args</span> <span class="o">=</span> <span class="n">finetuner_args</span>
+
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_lora</span><span class="p">:</span>
+            <span class="n">FinetuningTrainer</span> <span class="o">=</span> <span class="n">PeftTrainer</span>
+            <span class="n">trainer_callbacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">PeftSavingCallback</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">FinetuningTrainer</span> <span class="o">=</span> <span class="n">Trainer</span>
+            <span class="n">trainer_callbacks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">data_collator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_collator</span> <span class="o">=</span> <span class="n">default_data_collator</span>
+
+        <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">use_customized_optim</span><span class="p">:</span>
+            <span class="n">BaseTrainer</span> <span class="o">=</span> <span class="n">FinetuningTrainer</span>
+            <span class="n">FinetuningTrainer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_customized_optimizer</span><span class="p">(</span>
+                <span class="n">BaseTrainer</span><span class="p">,</span> <span class="n">model_args</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">use_lisa</span><span class="p">:</span>
+            <span class="k">class</span> <span class="nc">DynamicLayerActivationCallback</span><span class="p">(</span><span class="n">TrainerCallback</span><span class="p">):</span>
+                <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">interval_steps</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+                    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interval_steps</span> <span class="o">=</span> <span class="n">interval_steps</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+                    <span class="c1"># Determine the way to access layers based on the model type</span>
+                    <span class="n">class_to_layers_map</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;LlamaForCausalLM&#39;</span><span class="p">:</span> <span class="s1">&#39;model.model.layers&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Qwen2ForCausalLM&#39;</span><span class="p">:</span> <span class="s1">&#39;model.model.layers&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;MistralForCausalLM&#39;</span><span class="p">:</span> <span class="s1">&#39;model.model.layers&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;MixtralForCausalLM&#39;</span><span class="p">:</span> <span class="s1">&#39;model.model.layers&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;GemmaForCausalLM&#39;</span><span class="p">:</span> <span class="s1">&#39;model.model.layers&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;GPT2LMHeadModel&#39;</span><span class="p">:</span> <span class="s1">&#39;model.transformer.h&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;HymbaForCausalLM&#39;</span><span class="p">:</span> <span class="s1">&#39;model.model.layers&#39;</span><span class="p">,</span>
+                    <span class="p">}</span>
+                    <span class="n">model_class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+                    <span class="k">if</span> <span class="n">model_class_name</span> <span class="ow">in</span> <span class="n">class_to_layers_map</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">layers_attribute</span> <span class="o">=</span> <span class="n">class_to_layers_map</span><span class="p">[</span><span class="n">model_class_name</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">layers_attribute</span> <span class="o">=</span> <span class="n">training_args</span><span class="o">.</span><span class="n">lisa_layers_attribute</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">total_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;self.&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_attribute</span><span class="p">))</span>  <span class="c1"># Dynamically execute to get the number of layers</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">active_layers_indices</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">def</span> <span class="nf">freeze_all_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                    <span class="n">layers</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;self.&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_attribute</span><span class="p">)</span>  <span class="c1"># Dynamically execute to get layers</span>
+                    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">layer</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+                            <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">def</span> <span class="nf">on_step_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    <span class="c1"># Check if it&#39;s time to switch active layers, including at step 0</span>
+                    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">global_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">switch_active_layers</span><span class="p">()</span>
+
+                <span class="k">def</span> <span class="nf">switch_active_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                    <span class="c1"># First, disable gradients for all layers</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">freeze_all_layers</span><span class="p">()</span>
+
+                     <span class="c1"># Randomly select n_layers to activate</span>
+                    <span class="n">layers</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;self.&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_attribute</span><span class="p">)</span>  <span class="c1"># Re-fetch layer references</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">active_layers_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_layers</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Activating layers at indices: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">active_layers_indices</span><span class="si">}</span><span class="s2"> for the next steps.&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                    <span class="c1"># Enable gradients only for the selected layers</span>
+                    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_layers_indices</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+                            <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># Instantiate the callback</span>
+            <span class="n">dynamic_layer_activation_callback</span> <span class="o">=</span> <span class="n">DynamicLayerActivationCallback</span><span class="p">(</span>
+                <span class="n">n_layers</span><span class="o">=</span><span class="n">training_args</span><span class="o">.</span><span class="n">lisa_activated_layers</span><span class="p">,</span>               <span class="c1"># Number of layers to activate</span>
+                <span class="n">interval_steps</span><span class="o">=</span><span class="n">training_args</span><span class="o">.</span><span class="n">lisa_interval_steps</span><span class="p">,</span>           <span class="c1"># Step interval to update active layers</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_backend_model</span><span class="p">()</span>
+            <span class="p">)</span>
+
+            <span class="n">trainer_callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dynamic_layer_activation_callback</span><span class="p">)</span>
+
+        <span class="n">trainer</span> <span class="o">=</span> <span class="n">FinetuningTrainer</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_backend_model</span><span class="p">(),</span>
+            <span class="n">args</span><span class="o">=</span><span class="n">training_args</span><span class="p">,</span>
+            <span class="n">train_dataset</span><span class="o">=</span><span class="n">train_dataset</span> <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">do_train</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">eval_dataset</span><span class="o">=</span><span class="n">eval_dataset</span> <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">do_eval</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">tokenizer</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">(),</span>
+            <span class="c1"># Data collator will default to DataCollatorWithPadding, so we change it.</span>
+            <span class="n">data_collator</span><span class="o">=</span><span class="n">data_collator</span><span class="p">,</span>
+            <span class="n">compute_metrics</span><span class="o">=</span><span class="n">compute_metrics</span> <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">do_eval</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">preprocess_logits_for_metrics</span><span class="o">=</span><span class="n">preprocess_logits_for_metrics</span> <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">do_eval</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">callbacks</span><span class="o">=</span><span class="n">trainer_callbacks</span>
+        <span class="p">)</span>
+        <span class="c1"># Training</span>
+        <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">do_train</span><span class="p">:</span>
+            <span class="n">checkpoint</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">last_checkpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_checkpoint</span>
+            <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">resume_from_checkpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">training_args</span><span class="o">.</span><span class="n">resume_from_checkpoint</span>
+            <span class="k">elif</span> <span class="n">last_checkpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">last_checkpoint</span>
+            <span class="n">train_result</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">resume_from_checkpoint</span><span class="o">=</span><span class="n">checkpoint</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_lora</span><span class="p">:</span>
+                <span class="n">trainer</span><span class="o">.</span><span class="n">save_model</span><span class="p">()</span>  <span class="c1"># Saves the tokenizer too for easy upload</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">save_aggregated_lora</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">merge_lora_weights</span><span class="p">()</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">model_args</span><span class="o">.</span><span class="n">save_aggregated_lora</span><span class="p">)</span>
+            <span class="c1"># save language_projection for multi-modal model;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">save_language_projection</span><span class="p">:</span>
+                <span class="n">language_projection_state</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">language_projection</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+                    <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">finetuner_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                        <span class="s2">&quot;language_projection.pth&quot;</span><span class="p">),</span>
+                    <span class="n">language_projection_state</span><span class="p">)</span>
+            <span class="n">metrics</span> <span class="o">=</span> <span class="n">train_result</span><span class="o">.</span><span class="n">metrics</span>
+
+            <span class="n">max_train_samples</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">data_args</span><span class="o">.</span><span class="n">max_train_samples</span> <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">max_train_samples</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;train_samples&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_train_samples</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">))</span>
+
+            <span class="n">trainer</span><span class="o">.</span><span class="n">log_metrics</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">save_metrics</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">save_state</span><span class="p">()</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;finetuned_from&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span> <span class="s2">&quot;tasks&quot;</span><span class="p">:</span> <span class="s2">&quot;text-generation&quot;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">dataset_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dataset_tags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">dataset_name</span>
+            <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">dataset_config_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dataset_args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">dataset_config_name</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_args</span><span class="o">.</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">data_args</span><span class="o">.</span><span class="n">dataset_config_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dataset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">dataset_name</span>
+
+        <span class="k">if</span> <span class="n">training_args</span><span class="o">.</span><span class="n">push_to_hub</span><span class="p">:</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">push_to_hub</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trainer</span><span class="o">.</span><span class="n">create_model_card</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">model</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

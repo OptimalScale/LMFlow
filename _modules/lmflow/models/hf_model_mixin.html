@@ -1,0 +1,1110 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lmflow.models.hf_model_mixin &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lmflow/models/hf_model_mixin';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../lmflow.html" class="nav-link">lmflow</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.models.hf_model_mixin</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lmflow.models.hf_model_mixin</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># coding=utf-8</span>
+<span class="c1"># Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.</span>
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">deepspeed</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CONFIG_MAPPING</span><span class="p">,</span>
+    <span class="n">AutoConfig</span><span class="p">,</span>
+    <span class="n">BitsAndBytesConfig</span><span class="p">,</span>
+    <span class="n">AutoTokenizer</span><span class="p">,</span>
+    <span class="n">PreTrainedTokenizer</span><span class="p">,</span>
+    <span class="n">PreTrainedTokenizerFast</span><span class="p">,</span>
+    <span class="n">AutoModelForCausalLM</span><span class="p">,</span>
+    <span class="n">AutoModelForSequenceClassification</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">peft</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LoraConfig</span><span class="p">,</span>
+    <span class="n">PeftModel</span><span class="p">,</span>
+    <span class="n">TaskType</span><span class="p">,</span>
+    <span class="n">get_peft_model</span><span class="p">,</span>
+    <span class="n">prepare_model_for_kbit_training</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">peft.utils.constants</span> <span class="kn">import</span> <span class="n">TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING</span>
+
+<span class="kn">from</span> <span class="nn">lmflow.models.base_model</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">lmflow.utils.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LMFLOW_LORA_TARGET_MODULES_MAPPING</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">lmflow.args</span> <span class="kn">import</span> <span class="n">ModelArguments</span>
+<span class="kn">from</span> <span class="nn">lmflow.utils.versioning</span> <span class="kn">import</span> <span class="n">is_vllm_available</span>
+
+<span class="k">if</span> <span class="n">is_vllm_available</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">vllm</span> <span class="kn">import</span> <span class="n">LLM</span><span class="p">,</span> <span class="n">SamplingParams</span>
+    <span class="kn">from</span> <span class="nn">vllm.distributed.parallel_state</span> <span class="kn">import</span> <span class="n">destroy_model_parallel</span>
+
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HF_AUTOMODEL_MAPPING">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HF_AUTOMODEL_MAPPING">[docs]</a>
+<span class="n">HF_AUTOMODEL_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;decoder_only&quot;</span><span class="p">:</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span>
+    <span class="s2">&quot;text_regression&quot;</span><span class="p">:</span> <span class="n">AutoModelForSequenceClassification</span>
+<span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="HF_AUTOMODEL_TYPE">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HF_AUTOMODEL_TYPE">[docs]</a>
+<span class="n">HF_AUTOMODEL_TYPE</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">AutoModelForSequenceClassification</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="LORA_TARGET_MODULES_MAPPING">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.LORA_TARGET_MODULES_MAPPING">[docs]</a>
+<span class="n">LORA_TARGET_MODULES_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">k</span><span class="p">:</span> <span class="n">TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">LMFLOW_LORA_TARGET_MODULES_MAPPING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> 
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">LMFLOW_LORA_TARGET_MODULES_MAPPING</span><span class="p">)</span>
+<span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="HFModelMixin">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin">[docs]</a>
+<span class="k">class</span> <span class="nc">HFModelMixin</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+        <span class="n">do_train</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">ds_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span>
+        <span class="n">use_accelerator</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">hf_auto_model_additional_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes a HFModel instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model_args : </span>
+<span class="sd">            Dictionary with model arguments such as model name, path, revision, etc.</span>
+<span class="sd">        do_train : bool</span>
+<span class="sd">            To prepare the model for training or inference.</span>
+<span class="sd">        ds_config : optional</span>
+<span class="sd">            Deepspeed configuration for distributed training, by default None</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            By default &quot;gpu&quot;</span>
+<span class="sd">        use_accelerator : bool, optional</span>
+<span class="sd">            By default False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># See more about loading any type of standard or custom dataset (from</span>
+        <span class="c1"># files, python dict, pandas DataFrame, etc) at</span>
+        <span class="c1"># https://huggingface.co/docs/datasets/loading_datasets.html.</span>
+
+        <span class="c1"># Load pretrained model and tokenizer</span>
+        <span class="c1">#</span>
+        <span class="c1"># Distributed training: The .from_pretrained methods guarantee that</span>
+        <span class="c1"># only one local process can concurrently download model &amp; vocab.</span>
+
+<div class="viewcode-block" id="HFModelMixin.device">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.device">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.model_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.model_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span> <span class="o">=</span> <span class="n">model_args</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.hf_auto_model">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.hf_auto_model">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hf_auto_model</span> <span class="o">=</span> <span class="n">HF_AUTOMODEL_MAPPING</span><span class="p">[</span><span class="n">model_args</span><span class="o">.</span><span class="n">arch_type</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.use_accelerator">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.use_accelerator">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_accelerator</span> <span class="o">=</span> <span class="n">use_accelerator</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.ds_config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.ds_config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ds_config</span> <span class="o">=</span> <span class="n">ds_config</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.do_train">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.do_train">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_train</span> <span class="o">=</span> <span class="n">do_train</span></div>
+
+        
+<div class="viewcode-block" id="HFModelMixin.tokenizer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.tokenizer">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_tokenizer</span><span class="p">(</span><span class="n">model_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.torch_dtype">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.torch_dtype">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_dtype</span><span class="p">(</span><span class="n">model_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.hf_model_config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.hf_model_config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hf_model_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_model_config</span><span class="p">(</span><span class="n">model_args</span><span class="p">,</span> <span class="n">hf_auto_model_additional_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.quant_config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.quant_config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quant_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_quant_config</span><span class="p">(</span><span class="n">model_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HFModelMixin.peft_config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.peft_config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peft_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_peft_config</span><span class="p">(</span><span class="n">model_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HFModelMixin._activated">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin._activated">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># for inference load and offload</span></div>
+
+        
+        <span class="c1"># Some implementations require custom modules to be injected into the model.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__model_module_inject</span><span class="p">(</span><span class="n">model_args</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_train</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_model_for_training</span><span class="p">(</span><span class="n">model_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hf_auto_model</span><span class="p">)</span>
+                        
+
+<div class="viewcode-block" id="HFModelMixin.__prepare_tokenizer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_tokenizer">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_tokenizer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">PreTrainedTokenizer</span><span class="p">,</span> <span class="n">PreTrainedTokenizerFast</span><span class="p">]:</span>
+        <span class="n">tokenizer_name</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">tokenizer_name</span> <span class="ow">or</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tokenizer_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;You are instantiating a new tokenizer from scratch. This is&quot;</span>
+                <span class="s2">&quot; not supported by this script. You can do it from another&quot;</span>
+                <span class="s2">&quot; script, save it, and load it from here, using&quot;</span>
+                <span class="s2">&quot; --tokenizer_name.&quot;</span>
+            <span class="p">)</span>
+        
+        <span class="n">tokenizer_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;cache_dir&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span>
+            <span class="s2">&quot;use_fast&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_fast_tokenizer</span><span class="p">,</span>
+            <span class="s2">&quot;revision&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_revision</span><span class="p">,</span>
+            <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+            <span class="s2">&quot;trust_remote_code&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">trust_remote_code</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">padding_side</span> <span class="o">!=</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">tokenizer_kwargs</span><span class="p">[</span><span class="s2">&quot;padding_side&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">padding_side</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">tokenizer_name</span><span class="p">,</span> <span class="o">**</span><span class="n">tokenizer_kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RecursionError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;The tokenizer_config.json file doesn&#39;t set the special tokens. Using default values: &quot;</span>
+                <span class="s2">&quot;&lt;unk&gt;, &lt;s&gt;, &lt;/s&gt; for unknown token, bos token and eos token respectively.&quot;</span><span class="p">)</span>
+            <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">tokenizer_name</span><span class="p">,</span> <span class="n">unk_token</span><span class="o">=</span><span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">,</span>
+                                                <span class="n">bos_token</span><span class="o">=</span><span class="s2">&quot;&lt;s&gt;&quot;</span><span class="p">,</span>
+                                                <span class="n">eos_token</span><span class="o">=</span><span class="s2">&quot;&lt;/s&gt;&quot;</span><span class="p">,</span>
+                                                <span class="o">**</span><span class="n">tokenizer_kwargs</span><span class="p">)</span>
+
+        <span class="n">tokenizer</span><span class="o">.</span><span class="n">truncation_side</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">truncation_side</span> <span class="ow">or</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">truncation_side</span>
+        <span class="n">tokenizer</span><span class="o">.</span><span class="n">model_max_length</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_max_length</span> <span class="ow">or</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">model_max_length</span>
+        
+        <span class="k">return</span> <span class="n">tokenizer</span></div>
+
+    
+    
+<div class="viewcode-block" id="HFModelMixin.__prepare_dtype">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_dtype">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_dtype</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">arch_type</span> <span class="o">==</span> <span class="s1">&#39;text_regression&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">torch_dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;bf16&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">]:</span>
+                <span class="n">torch_dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">torch_dtype</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">torch</span><span class="p">,</span> <span class="n">model_args</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;If you are doing reward modeling,&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; InstructGPT uses torch.bfloat16 for reward model, but you&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; are using </span><span class="si">{</span><span class="n">torch_dtype</span><span class="si">}</span><span class="s2"> for your reward model init. Ignore&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; this warning if it is intended.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torch_dtype</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">model_args</span><span class="o">.</span><span class="n">torch_dtype</span>
+                <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">torch_dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+                <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">torch</span><span class="p">,</span> <span class="n">model_args</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">)</span>
+            <span class="p">)</span>
+            
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;torch_dtype on init: </span><span class="si">{</span><span class="n">torch_dtype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">torch_dtype</span></div>
+
+
+
+<div class="viewcode-block" id="HFModelMixin.__prepare_model_config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_model_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_model_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+        <span class="n">hf_auto_model_additional_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare model configuration for hf auto register,</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model_args : ModelArguments</span>
+<span class="sd">            LMFlow model arguments.</span>
+<span class="sd">        hf_auto_model_additional_args : Optional[Dict], optional</span>
+<span class="sd">            Special configurations such as `num_labels` in `AutoModelForSequenceClassification` </span>
+<span class="sd">            (commonly used in reward modeling) will not preset in __prepare_model_config, </span>
+<span class="sd">            so it should be passed in hf_auto_model_additional_args.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        config : ModelConfig</span>
+<span class="sd">            hf model config.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">config_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;attn_implementation&quot;</span><span class="p">:</span> <span class="s2">&quot;flash_attention_2&quot;</span> <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_flash_attention</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;cache_dir&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span>
+            <span class="s2">&quot;revision&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_revision</span><span class="p">,</span>
+            <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+            <span class="s2">&quot;trust_remote_code&quot;</span><span class="p">:</span> <span class="n">model_args</span><span class="o">.</span><span class="n">trust_remote_code</span><span class="p">,</span>
+            <span class="s2">&quot;from_tf&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="s2">&quot;.ckpt&quot;</span> <span class="ow">in</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">hf_auto_model_additional_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">config_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hf_auto_model_additional_args</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">config_name</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_args</span><span class="o">.</span><span class="n">config_name</span><span class="p">,</span> <span class="o">**</span><span class="n">config_kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span> <span class="o">**</span><span class="n">config_kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">CONFIG_MAPPING</span><span class="p">[</span><span class="n">model_args</span><span class="o">.</span><span class="n">model_type</span><span class="p">]()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;You are instantiating a new config instance from scratch.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">config_overrides</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overriding config: </span><span class="si">{</span><span class="n">model_args</span><span class="o">.</span><span class="n">config_overrides</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">config</span><span class="o">.</span><span class="n">update_from_string</span><span class="p">(</span><span class="n">model_args</span><span class="o">.</span><span class="n">config_overrides</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New config: </span><span class="si">{</span><span class="n">config</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">config</span></div>
+
+    
+    
+<div class="viewcode-block" id="HFModelMixin.__prepare_quant_config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_quant_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_quant_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">quant_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_train</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_qlora</span><span class="p">:</span>
+                <span class="n">quant_config</span> <span class="o">=</span> <span class="n">BitsAndBytesConfig</span><span class="p">(</span>
+                    <span class="n">load_in_4bit</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">bits</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span>
+                    <span class="n">load_in_8bit</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">bits</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span>
+                    <span class="n">llm_int8_threshold</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span>
+                    <span class="n">llm_int8_has_fp16_weight</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">bnb_4bit_compute_dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">,</span>
+                    <span class="n">bnb_4bit_use_double_quant</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">double_quant</span><span class="p">,</span>
+                    <span class="n">bnb_4bit_quant_type</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">quant_type</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># inference</span>
+            <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_int8</span><span class="p">:</span>
+                <span class="n">quant_config</span> <span class="o">=</span> <span class="n">BitsAndBytesConfig</span><span class="p">(</span>
+                    <span class="n">load_in_8bit</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_int8</span><span class="p">,</span>
+                <span class="p">)</span>
+                
+        <span class="k">return</span> <span class="n">quant_config</span></div>
+
+
+    
+<div class="viewcode-block" id="HFModelMixin.__prepare_peft_config">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_peft_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_peft_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">peft_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_lora</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">lora_target_modules</span><span class="p">:</span>
+                <span class="n">lora_target_modules</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">lora_target_modules</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hf_model_config</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model_config</span><span class="p">,</span> <span class="s2">&quot;to_dict&quot;</span><span class="p">):</span>
+                    <span class="n">model_config</span> <span class="o">=</span> <span class="n">model_config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;model_type&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_config</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;It seems that your base model is a custom model, since &quot;</span>
+                                   <span class="s2">&quot;model_type is not found in model_config when preparing peft config. &quot;</span>
+                                   <span class="s2">&quot;Setting model_type to &#39;custom&#39; as a fallback.&quot;</span><span class="p">)</span>
+                    <span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;custom&quot;</span>
+                <span class="n">lora_target_modules</span> <span class="o">=</span> <span class="n">LORA_TARGET_MODULES_MAPPING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="n">peft_config</span> <span class="o">=</span> <span class="n">LoraConfig</span><span class="p">(</span>
+                <span class="n">task_type</span><span class="o">=</span><span class="n">TaskType</span><span class="o">.</span><span class="n">CAUSAL_LM</span><span class="p">,</span>
+                <span class="n">inference_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">r</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">lora_r</span><span class="p">,</span>
+                <span class="n">lora_alpha</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">lora_alpha</span><span class="p">,</span>
+                <span class="n">lora_dropout</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">lora_dropout</span><span class="p">,</span>
+                <span class="n">target_modules</span><span class="o">=</span><span class="n">lora_target_modules</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_dora</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">lora_target_modules</span><span class="p">:</span>
+                <span class="n">lora_target_modules</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">lora_target_modules</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hf_model_config</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model_config</span><span class="p">,</span> <span class="s2">&quot;to_dict&quot;</span><span class="p">):</span>
+                    <span class="n">model_config</span> <span class="o">=</span> <span class="n">model_config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;model_type&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">model_config</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;It seems that your base model is a custom model, since &quot;</span>
+                                   <span class="s2">&quot;model_type is not found in model_config when preparing peft config. &quot;</span>
+                                   <span class="s2">&quot;Setting model_type to &#39;custom&#39; as a fallback.&quot;</span><span class="p">)</span>
+                    <span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;custom&quot;</span>
+                <span class="n">lora_target_modules</span> <span class="o">=</span> <span class="n">LORA_TARGET_MODULES_MAPPING</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">model_config</span><span class="p">[</span><span class="s2">&quot;model_type&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+            
+            <span class="n">peft_config</span> <span class="o">=</span> <span class="n">LoraConfig</span><span class="p">(</span>
+                <span class="n">use_dora</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">task_type</span><span class="o">=</span><span class="n">TaskType</span><span class="o">.</span><span class="n">CAUSAL_LM</span><span class="p">,</span>
+                <span class="n">inference_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">r</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">lora_r</span><span class="p">,</span>
+                <span class="n">lora_alpha</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">lora_alpha</span><span class="p">,</span>
+                <span class="n">lora_dropout</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">lora_dropout</span><span class="p">,</span>
+                <span class="n">target_modules</span><span class="o">=</span><span class="n">lora_target_modules</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">peft_config</span></div>
+
+    
+    
+<div class="viewcode-block" id="HFModelMixin.__model_module_inject">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__model_module_inject">[docs]</a>
+    <span class="k">def</span> <span class="nf">__model_module_inject</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override some model modules with custom implementations.</span>
+<span class="sd">        </span>
+<span class="sd">        Current implementations:</span>
+<span class="sd">        - Position interpolation (model_args.do_rope_scaling): </span>
+<span class="sd">            replace llama embeddings with condense embeddings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># position interpolation</span>
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">do_rope_scaling</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;LlamaForCausalLM&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_config</span><span class="o">.</span><span class="n">architectures</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch</span> <span class="kn">import</span> <span class="p">(</span>
+                        <span class="n">replace_llama_with_condense</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">replace_llama_with_condense</span><span class="p">(</span><span class="n">model_args</span><span class="o">.</span><span class="n">rope_pi_ratio</span><span class="p">,</span> <span class="n">model_args</span><span class="o">.</span><span class="n">rope_ntk_ratio</span><span class="p">)</span></div>
+
+                
+                
+<div class="viewcode-block" id="HFModelMixin.__prepare_model_for_training">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_model_for_training">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_model_for_training</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+        <span class="n">hf_auto_model</span><span class="p">:</span> <span class="n">HF_AUTOMODEL_TYPE</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_train</span><span class="p">,</span> <span class="s2">&quot;To prepare the model for training, please set do_train=True.&quot;</span>
+        <span class="c1"># TODO: change to accelerate</span>
+
+        <span class="k">if</span> <span class="s1">&#39;hymba&#39;</span> <span class="ow">in</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">torch._dynamo</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">_dynamo</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">suppress_errors</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">_dynamo</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">disable</span> <span class="o">=</span> <span class="kc">True</span>
+    
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing model for training&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">hf_auto_model</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+                <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span>
+                <span class="n">torch_dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hf_model_config</span><span class="p">,</span>
+                <span class="n">quantization_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quant_config</span><span class="p">,</span>
+                <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">trust_remote_code</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_qlora</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">gradient_checkpointing_enable</span><span class="p">()</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">prepare_model_for_kbit_training</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">hf_auto_model</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hf_model_config</span><span class="p">)</span>
+            <span class="n">n_params</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">dict</span><span class="p">((</span><span class="n">p</span><span class="o">.</span><span class="n">data_ptr</span><span class="p">(),</span> <span class="n">p</span><span class="o">.</span><span class="n">numel</span><span class="p">())</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training new model from scratch - Total size=</span><span class="si">{</span><span class="n">n_params</span><span class="o">/</span><span class="mi">2</span><span class="o">**</span><span class="mi">20</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">M params&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_model_full</span> <span class="o">=</span> <span class="n">model</span>
+        
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">ignore_bias_buffers</span><span class="p">:</span>
+            <span class="c1"># torch distributed hack</span>
+            <span class="c1"># fix for DDP issues with LM bias/mask buffers - invalid scalar type, inplace operation. </span>
+            <span class="c1"># See: https://github.com/huggingface/transformers/issues/22482#issuecomment-1595790992</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">_ddp_params_and_buffers_to_ignore</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">buffer</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_buffers</span><span class="p">()</span> <span class="k">if</span> <span class="n">buffer</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">bool</span>
+            <span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_lora</span> <span class="ow">or</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_dora</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">enable_input_require_grads</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">lora_model_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Load model from LoRA weights</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">PeftModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+                    <span class="n">model</span><span class="p">,</span>
+                    <span class="n">model_args</span><span class="o">.</span><span class="n">lora_model_path</span><span class="p">,</span>
+                    <span class="n">is_trainable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># New LoRA Finetuning</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">get_peft_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">peft_config</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">print_trainable_parameters</span><span class="p">()</span>
+
+        <span class="c1"># We resize the embeddings only when necessary to avoid index errors.</span>
+        <span class="c1"># If you are creating a model from scratch on a small vocab and want a</span>
+        <span class="c1"># smaller embedding size, remove this test.</span>
+        <span class="k">with</span> <span class="n">deepspeed</span><span class="o">.</span><span class="n">zero</span><span class="o">.</span><span class="n">GatheredParameters</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_input_embeddings</span><span class="p">()</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">modifier_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_input_embeddings</span><span class="p">()</span><span class="o">.</span><span class="n">weight</span>
+            <span class="n">embedding_size</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">embedding_size</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">resize_token_embeddings</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_model_post_process</span><span class="p">()</span></div>
+
+
+    
+<div class="viewcode-block" id="HFModelMixin.__prepare_model_for_inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_model_for_inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_model_for_inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+        <span class="n">hf_auto_model</span><span class="p">:</span> <span class="n">HF_AUTOMODEL_TYPE</span><span class="p">,</span>
+        <span class="n">use_accelerator</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">ds_config</span>
+    <span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Backend model already initialized, moving to device: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;backend_model&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">return</span>
+            
+        <span class="c1"># TODO: change to accelerate</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing model for inference&quot;</span><span class="p">)</span>
+        <span class="n">inference_load_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">inference_load_kwargs_bak</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">inference_load_kwargs</span><span class="p">)</span>
+        <span class="n">ram_optimized_load_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;device_map&quot;</span><span class="p">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;offload_folder&quot;</span><span class="p">:</span> <span class="s2">&quot;offload&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;offload_state_dict&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">use_accelerator</span> <span class="ow">or</span> <span class="n">model_args</span><span class="o">.</span><span class="n">use_ram_optimized_load</span><span class="p">:</span>
+            <span class="n">inference_load_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ram_optimized_load_kwargs</span><span class="p">)</span>
+                   
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">use_accelerator</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">transformers.integrations</span> <span class="kn">import</span> <span class="n">HfDeepSpeedConfig</span>
+            <span class="n">dschf</span> <span class="o">=</span> <span class="n">HfDeepSpeedConfig</span><span class="p">(</span><span class="n">ds_config</span><span class="p">)</span>
+            
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span> <span class="o">=</span> <span class="n">hf_auto_model</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+                <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span>
+                <span class="n">torch_dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hf_model_config</span><span class="p">,</span>
+                <span class="n">quantization_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quant_config</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">inference_load_kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to use RAM optimized load. Using original load instead.&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span> <span class="o">=</span> <span class="n">hf_auto_model</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+                <span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span>
+                <span class="n">torch_dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hf_model_config</span><span class="p">,</span>
+                <span class="n">quantization_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quant_config</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">inference_load_kwargs_bak</span><span class="p">,</span>
+            <span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_model_full</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span>
+        
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">lora_model_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span> <span class="o">=</span> <span class="n">PeftModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="p">,</span> 
+                <span class="n">model_args</span><span class="o">.</span><span class="n">lora_model_path</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">use_accelerator</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;gpu&quot;</span><span class="p">:</span>
+            <span class="n">deepspeed</span><span class="o">.</span><span class="n">init_distributed</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ds_engine</span> <span class="o">=</span> <span class="n">deepspeed</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="p">,</span> <span class="n">config_params</span><span class="o">=</span><span class="n">ds_config</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ds_engine</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_model_post_process</span><span class="p">()</span></div>
+
+                    
+        
+<div class="viewcode-block" id="HFModelMixin.__prepare_model_for_vllm_inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_model_for_vllm_inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_model_for_vllm_inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">ModelArguments</span><span class="p">,</span>
+        <span class="n">vllm_gpu_memory_utilization</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">vllm_tensor_parallel_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_vllm_available</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;VLLM is not available. Please install via `pip install -e &quot;.[vllm]&quot;`.&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_model_for_inference</span> <span class="o">=</span> <span class="n">LLM</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span>
+            <span class="n">tokenizer</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">torch_dtype</span> <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">torch_dtype</span> <span class="k">else</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+            <span class="n">load_format</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+            <span class="n">gpu_memory_utilization</span><span class="o">=</span><span class="n">vllm_gpu_memory_utilization</span><span class="p">,</span>
+            <span class="n">tensor_parallel_size</span><span class="o">=</span><span class="n">vllm_tensor_parallel_size</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+        
+    
+<div class="viewcode-block" id="HFModelMixin.__prepare_model_post_process">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.__prepare_model_post_process">[docs]</a>
+    <span class="k">def</span> <span class="nf">__prepare_model_post_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># old models/tokenizers may not have these attributes, fixing            </span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">eos_token</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">eos_token_id</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token_id</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span><span class="o">.</span><span class="n">eos_padding</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;pad_token_id&quot;</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;pad_token_id not found in model config. Setting pad_token_id to eos_token_id.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pad_token_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">eos_token_id</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pad_token_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;pad_token_id is None in model config. Setting pad_token_id to eos_token_id.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">pad_token_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">eos_token_id</span></div>
+
+            
+
+<div class="viewcode-block" id="HFModelMixin.activate_model_for_inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.activate_model_for_inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">activate_model_for_inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">use_vllm</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;You are trying to activate the model for inference, but it is already activated.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="n">use_vllm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_model_for_vllm_inference</span><span class="p">(</span>
+                <span class="n">model_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_args</span><span class="p">,</span>
+                <span class="n">vllm_gpu_memory_utilization</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vllm_gpu_memory_utilization&quot;</span><span class="p">),</span>
+                <span class="n">vllm_tensor_parallel_size</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vllm_tensor_parallel_size&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__prepare_model_for_inference</span><span class="p">(</span>
+                <span class="n">model_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_args</span><span class="p">,</span>
+                <span class="n">hf_auto_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hf_auto_model</span><span class="p">,</span>
+                <span class="n">use_accelerator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_accelerator</span><span class="p">,</span>
+                <span class="n">ds_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ds_config</span><span class="p">,</span>
+            <span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+            
+            
+<div class="viewcode-block" id="HFModelMixin.deactivate_model_for_inference">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.deactivate_model_for_inference">[docs]</a>
+    <span class="k">def</span> <span class="nf">deactivate_model_for_inference</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">use_vllm</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivate the model and release the resources.</span>
+<span class="sd">        </span>
+<span class="sd">        NOTE: Currently, VLLM doesn&#39;t have an official way to do this, and the</span>
+<span class="sd">        implementation below cannot release all gpu resources by our observation.</span>
+<span class="sd">        Thus this method is just a placeholder for future implementation. See: </span>
+<span class="sd">        [Github issue](https://github.com/vllm-project/vllm/issues/1908)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;You are trying to deactivate the model for inference, but it is already deactivated.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="n">use_vllm</span><span class="p">:</span>
+            <span class="n">destroy_model_parallel</span><span class="p">()</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model_for_inference</span><span class="o">.</span><span class="n">llm_engine</span><span class="o">.</span><span class="n">model_executor</span><span class="o">.</span><span class="n">driver_worker</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model_for_inference</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="k">pass</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+    
+<div class="viewcode-block" id="HFModelMixin.get_max_length">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.get_max_length">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_max_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return max acceptable input length in terms of tokens.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">model_max_length</span></div>
+
+
+
+<div class="viewcode-block" id="HFModelMixin.get_tokenizer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.get_tokenizer">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tokenizer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the tokenizer of the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span></div>
+
+
+
+<div class="viewcode-block" id="HFModelMixin.get_backend_model">
+<a class="viewcode-back" href="../../../autoapi/lmflow/models/hf_model_mixin/index.html#lmflow.models.hf_model_mixin.HFModelMixin.get_backend_model">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_backend_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the backend model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_model</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

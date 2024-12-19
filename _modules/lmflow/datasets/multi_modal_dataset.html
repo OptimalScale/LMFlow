@@ -1,0 +1,783 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lmflow.datasets.multi_modal_dataset &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lmflow/datasets/multi_modal_dataset';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../lmflow.html" class="nav-link">lmflow</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.datasets.multi_modal_dataset</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lmflow.datasets.multi_modal_dataset</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># coding=utf-8</span>
+<span class="c1"># FIXME update the doc string.</span>
+<span class="sd">&quot;&quot;&quot;This Python code defines a class Multi Modal Dataset.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
+<span class="kn">import</span> <span class="nn">transformers</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span>
+
+<span class="kn">from</span> <span class="nn">lmflow.args</span> <span class="kn">import</span> <span class="n">DatasetArguments</span>
+<span class="kn">from</span> <span class="nn">lmflow.utils</span> <span class="kn">import</span> <span class="n">llava_conversation_lib</span> <span class="k">as</span> <span class="n">conversation_lib</span>
+
+<span class="kn">from</span> <span class="nn">lmflow.utils.constants</span> <span class="kn">import</span> <span class="n">IGNORE_INDEX</span><span class="p">,</span> <span class="n">IMAGE_TOKEN_INDEX</span><span class="p">,</span> <span class="n">DEFAULT_IMAGE_TOKEN</span><span class="p">,</span> <span class="n">DEFAULT_IM_START_TOKEN</span><span class="p">,</span> <span class="n">DEFAULT_IM_END_TOKEN</span>
+
+<div class="viewcode-block" id="CustomMultiModalDataset">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.CustomMultiModalDataset">[docs]</a>
+<span class="k">class</span> <span class="nc">CustomMultiModalDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dataset for Multi Modal data&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">data_args</span><span class="p">:</span> <span class="n">DatasetArguments</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomMultiModalDataset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">))</span>
+<div class="viewcode-block" id="CustomMultiModalDataset.data_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.CustomMultiModalDataset.data_dict">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span> <span class="o">=</span> <span class="n">data_dict</span></div>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Finish loading json file in dataset.&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="CustomMultiModalDataset.data_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.CustomMultiModalDataset.data_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span> <span class="o">=</span> <span class="n">data_args</span></div>
+
+<div class="viewcode-block" id="CustomMultiModalDataset.image_folder">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.CustomMultiModalDataset.image_folder">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_folder</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">image_folder</span></div>
+
+
+<div class="viewcode-block" id="CustomMultiModalDataset.__len__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.CustomMultiModalDataset.__len__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CustomMultiModalDataset.register_tokenizer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.CustomMultiModalDataset.register_tokenizer">[docs]</a>
+    <span class="k">def</span> <span class="nf">register_tokenizer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">image_processor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_processor</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">tokenizer</span><span class="p">,</span> <span class="s2">&quot;image_processor&quot;</span><span class="p">,</span> <span class="n">image_processor</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CustomMultiModalDataset.__getitem__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.CustomMultiModalDataset.__getitem__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">processor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_processor</span>
+        <span class="k">if</span> <span class="s1">&#39;image&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">image_file</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+                <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_folder</span><span class="p">,</span> <span class="n">image_file</span><span class="p">))</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span><span class="o">.</span><span class="n">image_aspect_ratio</span> <span class="o">==</span> <span class="s1">&#39;pad&#39;</span><span class="p">:</span>
+                <span class="k">def</span> <span class="nf">expand2square</span><span class="p">(</span><span class="n">pil_img</span><span class="p">,</span> <span class="n">background_color</span><span class="p">):</span>
+                    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">pil_img</span><span class="o">.</span><span class="n">size</span>
+                    <span class="k">if</span> <span class="n">width</span> <span class="o">==</span> <span class="n">height</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">pil_img</span>
+                    <span class="k">elif</span> <span class="n">width</span> <span class="o">&gt;</span> <span class="n">height</span><span class="p">:</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">pil_img</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span><span class="p">),</span> <span class="n">background_color</span><span class="p">)</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">pil_img</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="n">height</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+                        <span class="k">return</span> <span class="n">result</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">pil_img</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">background_color</span><span class="p">)</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">pil_img</span><span class="p">,</span> <span class="p">((</span><span class="n">height</span> <span class="o">-</span> <span class="n">width</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                        <span class="k">return</span> <span class="n">result</span>    
+                <span class="n">image</span> <span class="o">=</span> <span class="n">expand2square</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="mi">255</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">processor</span><span class="o">.</span><span class="n">image_mean</span><span class="p">))</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">)[</span><span class="s1">&#39;pixel_values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">)[</span><span class="s1">&#39;pixel_values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">preprocess_multimodal_llava</span><span class="p">(</span>
+                <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">([</span><span class="n">e</span><span class="p">[</span><span class="s2">&quot;conversations&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">([</span><span class="n">e</span><span class="p">[</span><span class="s2">&quot;conversations&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span><span class="o">.</span><span class="n">sep_style</span> <span class="o">==</span> <span class="s2">&quot;plain&quot;</span><span class="p">:</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="n">preprocess_llama_from_llava_plain</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span>
+                <span class="n">has_image</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;image&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="n">preprocess_llama_from_llava_v1</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="p">,</span>
+                <span class="n">has_image</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;image&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                             <span class="n">labels</span><span class="o">=</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="c1"># image exist in the data</span>
+        <span class="k">if</span> <span class="s1">&#39;image&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># image does not exist in the data, but the model is multimodal</span>
+            <span class="n">crop_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_processor</span><span class="o">.</span><span class="n">crop_size</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="mi">3</span><span class="p">,</span> <span class="n">crop_size</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">],</span> <span class="n">crop_size</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">data_dict</span></div>
+</div>
+
+
+
+
+<div class="viewcode-block" id="preprocess_multimodal_llava">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.preprocess_multimodal_llava">[docs]</a>
+<span class="k">def</span> <span class="nf">preprocess_multimodal_llava</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">data_args</span><span class="p">):</span>
+    <span class="n">is_multimodal</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">is_multimodal</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_multimodal</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">sources</span>
+
+    <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">source</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">DEFAULT_IMAGE_TOKEN</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]:</span>
+                <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                                <span class="n">DEFAULT_IMAGE_TOKEN</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_TOKEN</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;mmtag&quot;</span> <span class="ow">in</span> <span class="n">conversation_lib</span><span class="o">.</span><span class="n">default_conversation</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
+                    <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                        <span class="n">DEFAULT_IMAGE_TOKEN</span><span class="p">,</span> <span class="s1">&#39;&lt;Image&gt;&#39;</span> <span class="o">+</span> <span class="n">DEFAULT_IMAGE_TOKEN</span> <span class="o">+</span> <span class="s1">&#39;&lt;/Image&gt;&#39;</span><span class="p">)</span>
+            <span class="n">replace_token</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_TOKEN</span>
+            <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">use_image_start_end</span><span class="p">:</span>
+                <span class="n">replace_token</span> <span class="o">=</span> <span class="n">DEFAULT_IM_START_TOKEN</span> <span class="o">+</span> \
+                    <span class="n">replace_token</span> <span class="o">+</span> <span class="n">DEFAULT_IM_END_TOKEN</span>
+            <span class="n">sentence</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="n">DEFAULT_IMAGE_TOKEN</span><span class="p">,</span> <span class="n">replace_token</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sources</span></div>
+
+
+
+<div class="viewcode-block" id="tokenizer_image_token">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.tokenizer_image_token">[docs]</a>
+<span class="k">def</span> <span class="nf">tokenizer_image_token</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span>
+                          <span class="n">tokenizer</span><span class="p">,</span>
+                          <span class="n">image_token_index</span><span class="o">=</span><span class="n">IMAGE_TOKEN_INDEX</span><span class="p">,</span>
+                          <span class="n">return_tensors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">prompt_chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span><span class="o">.</span><span class="n">input_ids</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">prompt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&lt;image&gt;&#39;</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">insert_separator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sep</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ele</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">[</span><span class="n">sep</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompt_chunks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompt_chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">prompt_chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">bos_token_id</span><span class="p">:</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">input_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prompt_chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">insert_separator</span><span class="p">(</span><span class="n">prompt_chunks</span><span class="p">,</span> <span class="p">[</span><span class="n">image_token_index</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="n">input_ids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">offset</span><span class="p">:])</span>
+
+    <span class="k">if</span> <span class="n">return_tensors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">return_tensors</span> <span class="o">==</span> <span class="s1">&#39;pt&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported tensor type: </span><span class="si">{</span><span class="n">return_tensors</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">input_ids</span></div>
+
+
+
+<div class="viewcode-block" id="preprocess_llama_from_llava_plain">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.preprocess_llama_from_llava_plain">[docs]</a>
+<span class="k">def</span> <span class="nf">preprocess_llama_from_llava_plain</span><span class="p">(</span>
+    <span class="n">sources</span><span class="p">,</span>
+    <span class="n">tokenizer</span><span class="p">:</span> <span class="n">transformers</span><span class="o">.</span><span class="n">PreTrainedTokenizer</span><span class="p">,</span>
+    <span class="n">has_image</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function just add the image in the front of text.</span>
+<span class="sd">    And don&#39;t add any prompt.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        sources: The input data with text and image.</span>
+<span class="sd">        tokenizer: The tokenizer to process text.</span>
+<span class="sd">        has_image: Whether the input data has image.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The input_ids and labels for the model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conversations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="n">DEFAULT_IMAGE_TOKEN</span> <span class="ow">in</span> <span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_TOKEN</span>
+        <span class="n">conversation</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">source</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">conversation_lib</span><span class="o">.</span><span class="n">default_conversation</span><span class="o">.</span><span class="n">sep</span>
+        <span class="n">conversations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conversation</span><span class="p">)</span>
+    <span class="c1"># tokenize conversations</span>
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenizer_image_token</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">conversations</span><span class="p">]</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">target</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">sources</span><span class="p">):</span>
+        <span class="n">tokenized_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer_image_token</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">tokenizer</span><span class="p">))</span>
+        <span class="n">target</span><span class="p">[:</span><span class="n">tokenized_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">IGNORE_INDEX</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">targets</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="preprocess_llama_from_llava_v1">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.preprocess_llama_from_llava_v1">[docs]</a>
+<span class="k">def</span> <span class="nf">preprocess_llama_from_llava_v1</span><span class="p">(</span>
+    <span class="n">sources</span><span class="p">,</span>
+    <span class="n">tokenizer</span><span class="p">:</span> <span class="n">transformers</span><span class="o">.</span><span class="n">PreTrainedTokenizer</span><span class="p">,</span>
+    <span class="n">has_image</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function add the prompt and then put the image after the prompt.</span>
+<span class="sd">    So it needs additional code to generate the target label.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        sources: The input data with text and image.</span>
+<span class="sd">        tokenizer: The tokenizer to process text.</span>
+<span class="sd">        has_image: Whether the input data has image.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The input_ids and labels for the model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">conv</span> <span class="o">=</span> <span class="n">conversation_lib</span><span class="o">.</span><span class="n">default_conversation</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">roles</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;human&quot;</span><span class="p">:</span> <span class="n">conv</span><span class="o">.</span><span class="n">roles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;gpt&quot;</span><span class="p">:</span> <span class="n">conv</span><span class="o">.</span><span class="n">roles</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+
+    <span class="c1"># Apply prompt templates</span>
+    <span class="n">conversations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sources</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">roles</span><span class="p">[</span><span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;from&quot;</span><span class="p">]]</span> <span class="o">!=</span> <span class="n">conv</span><span class="o">.</span><span class="n">roles</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="c1"># Skip the first one if it is not from human</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="n">conv</span><span class="o">.</span><span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+            <span class="n">role</span> <span class="o">=</span> <span class="n">roles</span><span class="p">[</span><span class="n">sentence</span><span class="p">[</span><span class="s2">&quot;from&quot;</span><span class="p">]]</span>
+            <span class="k">assert</span> <span class="n">role</span> <span class="o">==</span> <span class="n">conv</span><span class="o">.</span><span class="n">roles</span><span class="p">[</span><span class="n">j</span> <span class="o">%</span> <span class="mi">2</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">conv</span><span class="o">.</span><span class="n">append_message</span><span class="p">(</span><span class="n">role</span><span class="p">,</span> <span class="n">sentence</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
+        <span class="n">conversations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conv</span><span class="o">.</span><span class="n">get_prompt</span><span class="p">())</span>
+
+    <span class="c1"># Tokenize conversations</span>
+
+    <span class="k">if</span> <span class="n">has_image</span><span class="p">:</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tokenizer_image_token</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">conversations</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span>
+            <span class="n">conversations</span><span class="p">,</span>
+            <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;longest&quot;</span><span class="p">,</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">model_max_length</span><span class="p">,</span>
+            <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">input_ids</span>
+
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">conv</span><span class="o">.</span><span class="n">sep_style</span> <span class="o">==</span> <span class="n">conversation_lib</span><span class="o">.</span><span class="n">SeparatorStyle</span><span class="o">.</span><span class="n">TWO</span>
+
+    <span class="c1"># Mask targets</span>
+    <span class="n">sep</span> <span class="o">=</span> <span class="n">conv</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">conv</span><span class="o">.</span><span class="n">roles</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span>
+    <span class="k">for</span> <span class="n">conversation</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">conversations</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+        <span class="n">total_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token_id</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+        <span class="n">rounds</span> <span class="o">=</span> <span class="n">conversation</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">conv</span><span class="o">.</span><span class="n">sep2</span><span class="p">)</span>
+        <span class="n">cur_len</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">target</span><span class="p">[:</span><span class="n">cur_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">IGNORE_INDEX</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">rou</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rounds</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">rou</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">rou</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sep</span>
+
+            <span class="k">if</span> <span class="n">has_image</span><span class="p">:</span>
+                <span class="n">round_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer_image_token</span><span class="p">(</span><span class="n">rou</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">))</span>
+                <span class="n">instruction_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer_image_token</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tokenizer</span><span class="p">))</span> <span class="o">-</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">round_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">rou</span><span class="p">)</span><span class="o">.</span><span class="n">input_ids</span><span class="p">)</span>
+                <span class="n">instruction_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">input_ids</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
+
+            <span class="n">target</span><span class="p">[</span><span class="n">cur_len</span> <span class="p">:</span> <span class="n">cur_len</span> <span class="o">+</span> <span class="n">instruction_len</span><span class="p">]</span> <span class="o">=</span> <span class="n">IGNORE_INDEX</span>
+
+            <span class="n">cur_len</span> <span class="o">+=</span> <span class="n">round_len</span>
+        <span class="n">target</span><span class="p">[</span><span class="n">cur_len</span><span class="p">:]</span> <span class="o">=</span> <span class="n">IGNORE_INDEX</span>
+
+        <span class="k">if</span> <span class="n">cur_len</span> <span class="o">&lt;</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">model_max_length</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cur_len</span> <span class="o">!=</span> <span class="n">total_len</span><span class="p">:</span>
+                <span class="n">target</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">IGNORE_INDEX</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;WARNING: tokenization mismatch: </span><span class="si">{</span><span class="n">cur_len</span><span class="si">}</span><span class="s2"> vs. </span><span class="si">{</span><span class="n">total_len</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; (ignored)&quot;</span>
+                <span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span>
+        <span class="n">labels</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="DataCollatorForSupervisedDataset">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.DataCollatorForSupervisedDataset">[docs]</a>
+<span class="k">class</span> <span class="nc">DataCollatorForSupervisedDataset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collate examples for supervised fine-tuning.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DataCollatorForSupervisedDataset.tokenizer">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.DataCollatorForSupervisedDataset.tokenizer">[docs]</a>
+    <span class="n">tokenizer</span><span class="p">:</span> <span class="n">transformers</span><span class="o">.</span><span class="n">PreTrainedTokenizer</span></div>
+
+
+<div class="viewcode-block" id="DataCollatorForSupervisedDataset.__call__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/multi_modal_dataset/index.html#lmflow.datasets.multi_modal_dataset.DataCollatorForSupervisedDataset.__call__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instances</span><span class="p">):</span>
+        <span class="n">input_ids</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">instance</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">]</span>
+                                  <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;input_ids&quot;</span><span class="p">,</span> <span class="s2">&quot;labels&quot;</span><span class="p">))</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">pad_sequence</span><span class="p">(</span>
+            <span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">padding_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token_id</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">pad_sequence</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span>
+                                                 <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                 <span class="n">padding_value</span><span class="o">=</span><span class="n">IGNORE_INDEX</span><span class="p">)</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">input_ids</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">model_max_length</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">model_max_length</span><span class="p">]</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+            <span class="n">attention_mask</span><span class="o">=</span><span class="n">input_ids</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token_id</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;image&#39;</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">instance</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">images</span><span class="p">):</span>
+                <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">images</span>
+        <span class="k">return</span> <span class="n">batch</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

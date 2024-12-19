@@ -1,0 +1,972 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Dataset &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/DATASETS';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Checkpoints" href="checkpoints.html" />
+    <link rel="prev" title="Examples" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Dataset</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="checkpoints.html">Checkpoints</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="finetuning.html">Finetuning</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="reward_modeling.html">Reward Modeling</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="raft.html">RAFT</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="TASK_GUIDE.html">LMFlow Benchmark Guide</a></li>
+
+
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Dataset</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="dataset">
+<h1>Dataset<a class="headerlink" href="#dataset" title="Link to this heading">#</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="../autoapi/lmflow/datasets/dataset/index.html#module-lmflow.datasets.dataset" title="lmflow.datasets.dataset"><span class="xref myst py py-mod">Dataset</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#dataset-format-in-general"><span class="xref myst">Dataset Format in General</span></a></p></li>
+<li><p><a class="reference internal" href="#supported-dataset-and-detailed-formats"><span class="xref myst">Supported Dataset and Detailed Formats</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#conversation"><span class="xref myst">Conversation</span></a></p>
+<ul>
+<li><p><a class="reference internal" href="#data-format"><span class="xref myst">Data Format</span></a></p></li>
+<li><p><a class="reference internal" href="#conversation-template"><span class="xref myst">Conversation Template</span></a></p></li>
+<li><p><a class="reference internal" href="#customize-conversation-template"><span class="xref myst">Customize Conversation Template</span></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#textonly"><span class="xref myst">TextOnly</span></a></p></li>
+<li><p><a class="reference internal" href="#text2text"><span class="xref myst">Text2Text</span></a></p></li>
+<li><p><a class="reference internal" href="#paired-conversation"><span class="xref myst">Paired Conversation</span></a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>We provide several available datasets under <code class="docutils literal notranslate"><span class="pre">data</span></code>. You may download them all by running:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>data<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./download.sh<span class="w"> </span>all<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>-
+</pre></div>
+</div>
+<p>You can replace <code class="docutils literal notranslate"><span class="pre">all</span></code> with a specific dataset name to only download that dataset (e.g. <code class="docutils literal notranslate"><span class="pre">./download.sh</span> <span class="pre">alpaca</span></code>).</p>
+<p>Customized datasets are strongly encouraged, since this way users can apply
+their own prompt engineering techniques over various source datasets. As long
+as the generated dataset following the format below, they can be accepted as
+the input of our pipelines :hugs:</p>
+<section id="dataset-format-in-general">
+<h2>Dataset Format in General<a class="headerlink" href="#dataset-format-in-general" title="Link to this heading">#</a></h2>
+<p>To specify the input for model finetune, users can provide a list of <code class="docutils literal notranslate"><span class="pre">.json</span></code>
+files under a specified dataset directory. For example,</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="p">|</span>-<span class="w"> </span>path_to_dataset
+<span class="w">  </span><span class="p">|</span>-<span class="w"> </span>data_1.json
+<span class="w">  </span><span class="p">|</span>-<span class="w"> </span>data_2.json
+<span class="w">  </span><span class="p">|</span>-<span class="w"> </span>another_data.json
+<span class="w">  </span><span class="p">|</span>-<span class="w"> </span>...
+</pre></div>
+</div>
+<p>For inference, we currently only support a single <code class="docutils literal notranslate"><span class="pre">.json</span></code> file.</p>
+<p>Each json file shall have the following format (three instances with four keys
+for example),</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TYPE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;KEY_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_1.1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_1.2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_1.3&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_1.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;KEY_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_2.1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_2.2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_2.3&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_2.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;KEY_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_3.1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_3.2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_3.3&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;KEY_4&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE_3.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>where the <code class="docutils literal notranslate"><span class="pre">TYPE</span></code> indicates the dataset type and defines the set of keys
+<code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">KEY_1,</span> <span class="pre">KEY_2,</span> <span class="pre">...</span> <span class="pre">}</span></code> and their corresponding interpretations. The list of
+supported types are listed as follows.</p>
+</section>
+<section id="supported-dataset-and-detailed-formats">
+<h2>Supported Dataset and Detailed Formats<a class="headerlink" href="#supported-dataset-and-detailed-formats" title="Link to this heading">#</a></h2>
+<section id="conversation">
+<h3>Conversation<a class="headerlink" href="#conversation" title="Link to this heading">#</a></h3>
+<section id="data-format">
+<h4>Data Format<a class="headerlink" href="#data-format" title="Link to this heading">#</a></h4>
+<p>Conversational data are commonly used in sft process. We currently support conversational data in ShareGPT format:</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">A conversation dataset</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;conversation&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;conversation_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONVERSATION_ID&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SYSTEM_PROPMT&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;TOOL_DESCRIPTION_1&quot;</span><span class="p">,</span><span class="s2">&quot;TOOL_DESCRIPTION_2&quot;</span><span class="p">,</span><span class="s2">&quot;TOOL_DESCRIPTION_X&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_1&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_1&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_2&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_2&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;conversation_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONVERSATION_ID&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SYSTEM_PROPMT&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;TOOL_DESCRIPTION_1&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_1&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_1&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</details><p>Data types:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">conversation_id</span></code>: <code class="docutils literal notranslate"><span class="pre">Optional[Any]</span></code>. An identifier for the conversation. <code class="docutils literal notranslate"><span class="pre">conversation_id</span></code> is only for convience of tracking the conversation and will not be used in the pipeline.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">system</span></code>: <code class="docutils literal notranslate"><span class="pre">Optional[string]</span></code>. A system prompt that is used to start the conversation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tools</span></code>: <code class="docutils literal notranslate"><span class="pre">Optional[List[string]]</span></code>. A list of tools that are used in the conversation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">messages</span></code>: <code class="docutils literal notranslate"><span class="pre">List[Dict]</span></code>. A list of messages in the conversation. Each message contains the following fields:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">role</span></code>: <code class="docutils literal notranslate"><span class="pre">string</span></code>. The role of the message. It can be either <code class="docutils literal notranslate"><span class="pre">user</span></code> or <code class="docutils literal notranslate"><span class="pre">assistant</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">content</span></code>: <code class="docutils literal notranslate"><span class="pre">string</span></code>. The content of the message.</p></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<div><p>We are working on supporting customized message keys and role names. Please stay tuned.</p>
+</div></blockquote>
+<p>Tips:</p>
+<ul class="simple">
+<li><p>Please make sure the messages are:</p>
+<ol class="arabic simple">
+<li><p>Start with an user message.</p></li>
+<li><p>In the correct order. The pipeline will not check the order of the messages.</p></li>
+<li><p>In pairs of user and assistant (i.e., the length of the messages should be even). If the conversation ends with the user, the pipeline will trim the last user message.</p></li>
+<li><p>Make sure the <code class="docutils literal notranslate"><span class="pre">content</span></code>s are not empty. If the <code class="docutils literal notranslate"><span class="pre">content</span></code> is empty, the pipeline will add a space to it.</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="conversation-template">
+<h4>Conversation Template<a class="headerlink" href="#conversation-template" title="Link to this heading">#</a></h4>
+<p>Conversations should be formatted before feeding into the model. As of now, we’ve preset the conversation template for following models:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Template Name</p></th>
+<th class="head"><p>Filled Example</p></th>
+<th class="head"><p>Detailed Template</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">chatglm3</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[gMASK]sop&lt;|system|&gt;</span></code><br><code class="docutils literal notranslate"> <span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|user|&gt;</span></code><br><code class="docutils literal notranslate"> <span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;|assistant|&gt;</span></code><br><code class="docutils literal notranslate"> <span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|user|&gt;</span></code><br><code class="docutils literal notranslate"> <span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;|assistant|&gt;</span></code><br><code class="docutils literal notranslate"> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.</span></code></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#chatglm3"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">chatml</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;system</span></code><br><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;|im_end|&gt;</span></code><br></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#chatml"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">deepseek</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;｜begin▁of▁sentence｜&gt;You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.</span></code><br><br><code class="docutils literal notranslate"><span class="pre">User:</span> <span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?</span></code><br><br><code class="docutils literal notranslate"><span class="pre">Assistant:</span> <span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;｜end▁of▁sentence｜&gt;User:</span> <span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?</span></code><br><br><code class="docutils literal notranslate"><span class="pre">Assistant:</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;｜end▁of▁sentence｜&gt;</span></code></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#deepseek"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gemma</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;bos&gt;You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;start_of_turn&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;end_of_turn&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;start_of_turn&gt;model</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;end_of_turn&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;start_of_turn&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;end_of_turn&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;start_of_turn&gt;model</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;end_of_turn&gt;</span></code><br></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#gemma"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hymba</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;extra_id_0&gt;System</span></code><br><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;tool&gt;</span> <span class="pre">{&quot;name&quot;:</span> <span class="pre">&quot;generate_qrcode&quot;,</span> <span class="pre">&quot;description&quot;:</span> <span class="pre">&quot;Generate</span> <span class="pre">a</span> <span class="pre">QR</span> <span class="pre">code</span> <span class="pre">for</span> <span class="pre">a</span> <span class="pre">given</span> <span class="pre">text&quot;,</span> <span class="pre">&quot;parameters&quot;:</span> <span class="pre">{&quot;type&quot;:</span> <span class="pre">&quot;object&quot;,</span> <span class="pre">&quot;properties&quot;:</span> <span class="pre">{&quot;text&quot;:</span> <span class="pre">{&quot;type&quot;:</span> <span class="pre">&quot;string&quot;,</span> <span class="pre">&quot;description&quot;:</span> <span class="pre">&quot;The</span> <span class="pre">text</span> <span class="pre">to</span> <span class="pre">encode</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">QR</span> <span class="pre">code&quot;}},</span> <span class="pre">&quot;required&quot;:</span> <span class="pre">[&quot;text&quot;]}}</span> <span class="pre">&lt;/tool&gt;</span></code><br><br><code class="docutils literal notranslate"><span class="pre">&lt;extra_id_1&gt;User</span></code><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;extra_id_1&gt;Assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;extra_id_1&gt;User</span></code><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;extra_id_1&gt;Assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;/s&gt;</span></code></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#hymba"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">internlm2</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;s&gt;&lt;|im_start|&gt;system</span></code><br><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;|im_end|&gt;</span></code><br></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#internlm2"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">llama3</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;|begin_of_text|&gt;&lt;|start_header_id|&gt;system&lt;|end_header_id|&gt;</span></code><br><br><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|eot_id|&gt;&lt;|start_header_id|&gt;user&lt;|end_header_id|&gt;</span></code><br><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;|eot_id|&gt;&lt;|start_header_id|&gt;assistant&lt;|end_header_id|&gt;</span></code><br><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|eot_id|&gt;&lt;|start_header_id|&gt;user&lt;|end_header_id|&gt;</span></code><br><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;|eot_id|&gt;&lt;|start_header_id|&gt;assistant&lt;|end_header_id|&gt;</span></code><br><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;|eot_id|&gt;</span></code></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#llama-3"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">llama2</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;s&gt;[INST]</span> <span class="pre">&lt;&lt;SYS&gt;&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;&lt;/SYS&gt;&gt;</span></code><br><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?</span> <span class="pre">[/INST]</span> <span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;/s&gt;&lt;s&gt;[INST]</span> <span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?</span> <span class="pre">[/INST]</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;/s&gt;</span></code></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#llama-2"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">phi3</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;s&gt;&lt;|system|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|user|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;|end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|assistant|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|user|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;|end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|assistant|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;|end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|endoftext|&gt;</span></code></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#phi-3"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">qwen2</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;system</span></code><br><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;|im_end|&gt;</span></code><br></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#qwen-2"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">yi</span></code></p></td>
+<td><p>Same as <code class="docutils literal notranslate"><span class="pre">chatml</span></code></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#yi"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">yi1_5</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|im_start|&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;user</span></code><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;|im_end|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|im_start|&gt;assistant</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;|im_end|&gt;</span></code><br></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#yi-15"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zephyr</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;|system|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">are</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;/s&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|user|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">Who</span> <span class="pre">are</span> <span class="pre">you?&lt;/s&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|assistant|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">am</span> <span class="pre">a</span> <span class="pre">chatbot</span> <span class="pre">developed</span> <span class="pre">by</span> <span class="pre">LMFlow</span> <span class="pre">team.&lt;/s&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|user|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">How</span> <span class="pre">old</span> <span class="pre">are</span> <span class="pre">you?&lt;/s&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">&lt;|assistant|&gt;</span></code><br><code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">don't</span> <span class="pre">age</span> <span class="pre">like</span> <span class="pre">humans</span> <span class="pre">do.</span> <span class="pre">I</span> <span class="pre">exist</span> <span class="pre">as</span> <span class="pre">a</span> <span class="pre">piece</span> <span class="pre">of</span> <span class="pre">software,</span> <span class="pre">so</span> <span class="pre">I</span> <span class="pre">don't</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">concept</span> <span class="pre">of</span> <span class="pre">age</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">traditional</span> <span class="pre">sense.&lt;/s&gt;</span></code><br></p></td>
+<td><p><a class="reference internal" href="supported_conversation_template.html#zephyr"><span class="std std-ref">Link</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Passing the template name to the <code class="docutils literal notranslate"><span class="pre">--conversation_template</span></code> argument to apply the corresponding conversation template:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># scripts/run_finetune.sh</span>
+<span class="c1"># ...</span>
+deepspeed<span class="w"> </span><span class="si">${</span><span class="nv">deepspeed_args</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>examples/finetune.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model_name_or_path<span class="w"> </span>meta-llama/Llama-2-7b-chat-hf<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--dataset_path<span class="w"> </span><span class="si">${</span><span class="nv">dataset_path</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--conversation_template<span class="w"> </span>llama2<span class="w"> </span><span class="se">\</span>
+<span class="c1"># ...</span>
+</pre></div>
+</div>
+<div class="info admonition">
+<p class="admonition-title">Formatted Dataset</p>
+<p>For dataset that system prompts, tool prompts and templates are already applied (like the one below), user can run the finetune shell by passing <code class="docutils literal notranslate"><span class="pre">empty</span></code> or <code class="docutils literal notranslate"><span class="pre">empty_no_special_tokens</span></code> to the <code class="docutils literal notranslate"><span class="pre">--conversation_template</span></code> argument. <code class="docutils literal notranslate"><span class="pre">empty</span></code> template will add a bos token to the beginning of every round of conversation as well as a eos token to the end of every round of conversation. <code class="docutils literal notranslate"><span class="pre">empty_no_special_tokens</span></code> will not add any special tokens to the conversation, just concatenates the user and assistant messages.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">A formatted dataset</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;conversation&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[INST] &lt;&lt;SYS&gt;&gt;\nYou are a helpful assistant.\n&lt;&lt;/SYS&gt;&gt;\n\nHello! [/INST]&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hi, how are you?&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[INST] Good. [/INST]&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Glad to hear that.&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[INST] &lt;&lt;SYS&gt;&gt;\nYou are a helpful assistant.\n&lt;&lt;/SYS&gt;&gt;\n\nWhat&#39;s the weather like now? [/INST]&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I&#39;m sorry for any confusion, but as an AI, I don&#39;t have access to real-time data such as current weather conditions.&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</details></div>
+</section>
+<section id="customize-conversation-template">
+<h4>Customize Conversation Template<a class="headerlink" href="#customize-conversation-template" title="Link to this heading">#</a></h4>
+<p>Please refer to the <a class="reference internal" href="customize_conversation_template.html"><span class="std std-doc">Customize Conversation Template</span></a> for more details.</p>
+</section>
+</section>
+<section id="textonly">
+<h3>TextOnly<a class="headerlink" href="#textonly" title="Link to this heading">#</a></h3>
+<p>This is the most common dataset type, which only contains raw texts in each
+sample. This type of dataset can be used as the training set for text decoder
+models, or the input of decoder models / encoder-decoder models. Its format is
+as follows (three instances for example),</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">A textonly dataset</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text_only&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_TEXT_1&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_TEXT_2&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_TEXT_3&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</details><p>For example, <code class="docutils literal notranslate"><span class="pre">data/example_dataset/train/train_50.json</span></code> has the aboved format.</p>
+</section>
+<section id="text2text">
+<h3>Text2Text<a class="headerlink" href="#text2text" title="Link to this heading">#</a></h3>
+<p>This is the dataset type mostly used for inferencing, which contains a pair of
+texts in each sample. This type of dataset can be used as the training set for
+text encoder-decoder models, or question-answer pair for evaluating model
+inferences. Its format is as follows (three instances for example):</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">A text2text dataset</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text2text&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;input&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_INPUT_1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;output&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_OUTPUT_1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;input&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_INPUT_2&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;output&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_OUTPUT_2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;input&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_INPUT_3&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;output&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE_OUTPUT_3&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</details><p>For example, <code class="docutils literal notranslate"><span class="pre">data/example_dataset/test/test_13.json</span></code> has the aboved format.</p>
+</section>
+<section id="paired-conversation">
+<h3>Paired Conversation<a class="headerlink" href="#paired-conversation" title="Link to this heading">#</a></h3>
+<div class="info admonition">
+<p class="admonition-title"><strong>Work in Progress</strong></p>
+<p>We are working on paired conversation dataset and will update it soon.</p>
+</div>
+<p>This type of dataset are commonly used for alignment such as <a class="reference external" href="https://arxiv.org/abs/2203.02155">reward modeling</a>,
+<a class="reference external" href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization (DPO)</a>, etc. For requirements of the conversations,
+please refer to <a class="reference internal" href="#conversation"><span class="xref myst">conversation data</span></a>.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">A paired conversation dataset</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paired_conversation&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;chosen&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;conversation_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONVERSATION_ID&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SYSTEM_PROPMT&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;tools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;TOOL_DESCRIPTION_1&quot;</span><span class="p">,</span><span class="s2">&quot;TOOL_DESCRIPTION_2&quot;</span><span class="p">,</span><span class="s2">&quot;TOOL_DESCRIPTION_3&quot;</span><span class="p">],</span>
+<span class="w">                </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_1&quot;</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_1_GOOD&quot;</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_2&quot;</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_2_GOOD&quot;</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">]</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;rejected&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;conversation_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONVERSATION_ID&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SYSTEM_PROPMT&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;tools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;TOOL_DESCRIPTION_1&quot;</span><span class="p">,</span><span class="s2">&quot;TOOL_DESCRIPTION_2&quot;</span><span class="p">,</span><span class="s2">&quot;TOOL_DESCRIPTION_3&quot;</span><span class="p">],</span>
+<span class="w">                </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_1&quot;</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_1_BAD&quot;</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_2&quot;</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_2_BAD&quot;</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;chosen&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;conversation_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONVERSATION_ID&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SYSTEM_PROPMT&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;tools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;TOOL_DESCRIPTION_1&quot;</span><span class="p">],</span>
+<span class="w">                </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_1&quot;</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_1_GOOD&quot;</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">]</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;rejected&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;conversation_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CONVERSATION_ID&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;system&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SYSTEM_PROPMT&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;tools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;TOOL_DESCRIPTION_1&quot;</span><span class="p">],</span>
+<span class="w">                </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USER_INPUT_1&quot;</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ASSISTANT_RESPONSE_1_BAD&quot;</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Examples</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="checkpoints.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Checkpoints</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-format-in-general">Dataset Format in General</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-dataset-and-detailed-formats">Supported Dataset and Detailed Formats</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conversation">Conversation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#data-format">Data Format</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#conversation-template">Conversation Template</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#customize-conversation-template">Customize Conversation Template</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#textonly">TextOnly</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#text2text">Text2Text</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paired-conversation">Paired Conversation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/DATASETS.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

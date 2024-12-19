@@ -1,0 +1,864 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>RAFT &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/raft';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LMFlow Benchmark Guide" href="TASK_GUIDE.html" />
+    <link rel="prev" title="Reward Modeling" href="reward_modeling.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="DATASETS.html">Dataset</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="checkpoints.html">Checkpoints</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="finetuning.html">Finetuning</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="reward_modeling.html">Reward Modeling</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">RAFT</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="TASK_GUIDE.html">LMFlow Benchmark Guide</a></li>
+
+
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Examples</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">RAFT</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="raft">
+<h1>RAFT<a class="headerlink" href="#raft" title="Link to this heading">#</a></h1>
+<section id="introduction">
+<h2>1 Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p>We remark that the example is built on LLaMA whose <a class="reference external" href="https://docs.google.com/forms/d/e/1FAIpQLSfqNECQnMkycAp2jP4Z9TFX0cGR4uf7b_fBxjY_OjhJILlKGA/viewform">licensed</a> is for non-commercial use only.</p>
+<p>Reinforcement Learning from Human Feedback (RLHF) requires a reward function to guide the adjustment of the generative model. In this example, we show how to use LMFlow framework to train a reward model following the procedure in the InstructGPT paper: https://arxiv.org/abs/2203.02155 and then align the model via the RAFT algorithm (Reward rAnked FineTuning).</p>
+<p><strong>This example contains both reward modeling and RAFT alignment for completeness. For users’ convenience, we have already provided a reward model based on GPT-Neo-2.7B in huggingface repo so one can skip the reward modeling first.</strong></p>
+<section id="dataset-description">
+<h3>1.1 Dataset description<a class="headerlink" href="#dataset-description" title="Link to this heading">#</a></h3>
+<p>We use the <em>Dahoas/full-hh-rlhf</em> dataset as an example, where each sample of this dataset consists of a prompt and two responses from the assistant. In particular, the response with label “chosen” is preferred as compared to the response with label “rejected”. The dataset consists of 112K training samples and 12.5K test samples. The following is an example sample of the dataset:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot; Human: What kind of noises did dinosaurs make? Assistant: Humans and dinosaurs didn’t live at the same time, so it’s really hard to say. The best place to find out what noises dinosaurs made would be Human: yes they did Assistant: to guess, and that would probably require lots of reading and a certain amount of imagination, so we’re not really prepared to do that. Human: you cant read Assistant: </span>
+
+<span class="s2">Chosen response: &quot;</span>You<span class="w"> </span>can<span class="w"> </span>read?<span class="s2">&quot;</span>
+
+<span class="s2">Rejected response: &quot;</span>there’s<span class="w"> </span>a<span class="w"> </span>lot<span class="w"> </span>of<span class="w"> </span>stuff<span class="w"> </span>humans<span class="w"> </span>don’t<span class="w"> </span>know<span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>To facilitate the training, we reformulate the prompt by adding ``###’’ at the beginning of the characters so that the model knows to reply. The new sample will be of the form:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;###Human: What kind of noises did dinosaurs make? ###Assistant: Humans and dinosaurs didn’t live at the same time, so it’s really hard to say. The best place to find out what noises dinosaurs made would be ###Human: yes they did ###Assistant: to guess, and that would probably require lots of reading and a certain amount of imagination, so we’re not really prepared to do that. ###Human: you cant read ###Assistant: </span>
+
+<span class="s2">Chosen response: &quot;</span>You<span class="w"> </span>can<span class="w"> </span>read?<span class="s2">&quot;</span>
+
+<span class="s2">Rejected response: &quot;</span>there’s<span class="w"> </span>a<span class="w"> </span>lot<span class="w"> </span>of<span class="w"> </span>stuff<span class="w"> </span>humans<span class="w"> </span>don’t<span class="w"> </span>know<span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>We prepare all the used dataset in the directory  ./data/hh_rlhf, which can be obtained by running the following command at LMFlow</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>data<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./download.sh<span class="w"> </span>hh_rlhf<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>-
+</pre></div>
+</div>
+</section>
+</section>
+<section id="reward-modeling">
+<h2>2 Reward Modeling<a class="headerlink" href="#reward-modeling" title="Link to this heading">#</a></h2>
+<p>We follow the the procedure in the InstructGPT paper: https://arxiv.org/abs/2203.02155 to train a reward model using the HH-RLHF dataset first, which includes</p>
+<ul class="simple">
+<li><p>Supervised Finetuning (SFT);</p></li>
+<li><p>Reward modeling by comparison dataset.</p></li>
+</ul>
+<section id="supervised-finetuning-sft">
+<h3>2.1 Supervised Finetuning (SFT)<a class="headerlink" href="#supervised-finetuning-sft" title="Link to this heading">#</a></h3>
+<p>Here is an example of dataset <em>/home/xiongwei/LMFlow/data/hh_rlhf/sft/hh_rlhf_sft.json</em>. We use only the preferred responses so we get 112K training samples.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>
+<span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text_only&quot;</span><span class="p">,</span><span class="w">  </span>
+<span class="nt">&quot;instances&quot;</span><span class="p">:</span><span class="w">   </span>
+<span class="p">[</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;###Human: Should you buy a case to protect your cell phone?###Assistant: It depends on your circumstances.  If you carry your phone in a pocket or a purse then you probably want a case.  But if you only need a phone for quick interactions, a case may actually cause more harm than good.  What do you need the phone for?  Are you a parent, or do you work from home?###Human: What harm could it do?###Assistant: A phone case can damage the screen, for one thing.  It can also get you in trouble if you have your phone turned off for some reason.  Then you will turn it back on and it won’t do anything.  If you can afford to replace it, then you need a case to protect it.  The problem is that most people aren’t able to afford to replace their phones all the time.###Human: Thanks for letting me know.###Assistant: You’re welcome.&quot;</span><span class="p">},</span><span class="w">  </span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;###Human: I&#39;m trying to learn about the salam witch trials###Assistant: If you’re looking for books about witchcraft trials, I can recommend some books for you. But you probably mean you’re looking for more historical information about the Salem witch trials in 1692, and specifically about the salam witch trials in 1692?###Human: What are some good books to learn about the salam witch trials###Assistant: What would you like to learn?  If you’re interested in history, one of the best books is The Witch Persecutions in Colonial America: A History.  If you’re interested in witchcraft as a cultural phenomenon, you might enjoy two excellent books: Religion and the Decline of Magic: Studies in Popular Beliefs in Sixteenth- and Seventeenth-Century England by Keith Thomas and Magic, Witchcraft, and the Otherworld: An Anthropology of Superstition by Jack Goody.  If you’re interested in history specifically as it relates to religion, you might enjoy The Popish Plot, or Prelates&#39; Plot: A History of the Popish Plot in England, by K. J. Everett.&quot;</span><span class="p">}</span><span class="w">  </span>
+<span class="p">]</span><span class="w">  </span>
+<span class="p">}</span><span class="w">  </span>
+</pre></div>
+</div>
+<p>You can edit <em>/scripts/run_finetune.sh</em> and modify the parameters. We present an example with GPT-Neo-2.7B here.</p>
+<ul class="simple">
+<li><p>–model_name_or_path: EleutherAI/gpt-neo-2.7B</p></li>
+<li><p>–dataset_path: ${project_dir}/data/hh_rlhf/sft</p></li>
+<li><p>–output_dir: the path you want to store the sft model</p></li>
+<li><p>–num_train_epochs: 1</p></li>
+<li><p>–learning_rate: 2e-5</p></li>
+<li><p>–per_device_train_batch_size: adjust according to your GPU memory source.</p></li>
+</ul>
+<p>Then, we can run the following command to perform SFT.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>./scripts/run_finetune.sh
+</pre></div>
+</div>
+<p>You can also use lora training by the following command but also need to set the model_name_or_path and dataset appropriately by editing run_finetune_with_lora.sh .</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>./scripts/run_finetune_with_lora.sh
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>2.2 Reward Modeling<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p><strong>Data Preparation</strong></p>
+<p>Reward modeling involves ranking responses based on the given prompt, typically requiring human labeling. Fortunately, we already have two responses for each prompt in this example, with one preferred over the other. To create a new dataset, we modify the original dataset to include two keys, “positive” and “negative”, with the former being the preferred response.</p>
+<p>Here is an example of the dataset <em>LMFlow/data/hh_rlhf/rm/hh_rlhf_rm_training.json</em>, consisting of two samples.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;instances&quot;</span>:<span class="w"> </span><span class="o">[</span>
+<span class="w">    </span><span class="o">{</span><span class="s2">&quot;positive&quot;</span>:<span class="w"> </span><span class="s2">&quot;###Human: Are space heaters safe?###Assistant: What do you mean? Can you give me more details?###Human: I mean, can they be a fire hazard?###Assistant: I don’t know about that.  Can you tell me more about the situation? Are you using the heater on a fireplace?  Do you have any other heater in the room?  What materials are in the room?  Do you feel any heat from the heater?  How are you touching the heater?###Human: Can you just tell me if there are any situations where they could be a fire hazard?###Assistant: The answer is “it depends”.  It would depend on the specific heater you are using, how you are using it, what kind of fuel it uses, what materials you have in the room, and what the surroundings are like.  You’d also have to make sure you’re using it correctly.  Is it switched off?  Is it safe to touch?  It’s not the sort of thing I could just answer by looking at the text you provided.###Human: Thank you. That information is helpful.###Assistant: Glad to be helpful.  I’m always happy to assist.&quot;</span>,<span class="w"> </span><span class="s2">&quot;negative&quot;</span>:<span class="w"> </span><span class="s2">&quot;###Human: Are space heaters safe?###Assistant: What do you mean? Can you give me more details?###Human: I mean, can they be a fire hazard?###Assistant: I don’t know about that.  Can you tell me more about the situation? Are you using the heater on a fireplace?  Do you have any other heater in the room?  What materials are in the room?  Do you feel any heat from the heater?  How are you touching the heater?###Human: Can you just tell me if there are any situations where they could be a fire hazard?###Assistant: The answer is “it depends”.  It would depend on the specific heater you are using, how you are using it, what kind of fuel it uses, what materials you have in the room, and what the surroundings are like.  You’d also have to make sure you’re using it correctly.  Is it switched off?  Is it safe to touch?  It’s not the sort of thing I could just answer by looking at the text you provided.###Human: Thank you. That information is helpful.###Assistant: You’re welcome. I’m glad to help. Is there anything else you want to know?&quot;</span><span class="o">}</span>,<span class="w"> </span>
+<span class="w">    </span><span class="o">{</span><span class="s2">&quot;positive&quot;</span>:<span class="w"> </span><span class="s2">&quot;###Human: how do i teach my kids to make forts at home?###Assistant: Do you mean you want to teach them to build a simple structure they can hide in? Or something more elaborate?  I don’t know exactly what you mean by a “fort”, but maybe this gives you some ideas?&quot;</span>,<span class="w"> </span><span class="s2">&quot;negative&quot;</span>:<span class="w"> </span><span class="s2">&quot;###Human: how do i teach my kids to make forts at home?###Assistant: There are many ways to make forts!  The simplest might be to just pile up all the furniture in one room.  This works if you have a single room in your house, although it might still be a bit challenging to build a taller and sturdier fort this way.  The best way to build forts is to start with something easy, and then have fun exploring how you can improve it.&quot;</span><span class="o">}</span>
+<span class="o">]}</span>
+</pre></div>
+</div>
+<p><strong>Training</strong></p>
+<p>To start from a model from a previous sft step, you may edit the <em>./scripts/run_reward_modeling.sh</em> script and update the “dataset_path” to use the desired dataset. By default, we will use LoRA training in reward modeling as we found that it is superior in terms of optimization and gives comparable performance.</p>
+<ul class="simple">
+<li><p>–model_name_or_path: /root/data/usr_name/output_models/hh_rlhf_rm_sft_gptneo_2_7B/checkpoint-1659</p></li>
+<li><p>–dataset_path: ${project_dir}/data/hh_rlhf/rm/hh_rlhf_rm_training.json</p></li>
+<li><p>–output_dir: the path you want to store the reward model</p></li>
+<li><p>–num_train_epochs: 1</p></li>
+<li><p>–learning_rate: 3e-5</p></li>
+<li><p>–per_device_train_batch_size: adjust according to your GPU memory source.</p></li>
+<li><p>–eval_steps: 400</p></li>
+<li><p>–validation_split_percentage: 10</p></li>
+</ul>
+<p>The load_dataset function splits the dataset into training and evaluation sets, which can also be customized by editing the function in /examples/run_reward_modeling.py if you want to prepare your own dataset when running the script. In the default implementation, it use <strong>validation_split_percentage</strong> samples as the evaluation dataset.</p>
+<p>The reward modeling script can be used by</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>./scripts/run_reward_modeling.sh
+</pre></div>
+</div>
+<p><strong>Examples</strong></p>
+<p>We train reward models using the hh-rlhf dataset with three models, LLaMA-7B, GPT-NEO-2.7B, and GPT-NEO-1.3B. The model is first supervised fine-tuned with the training dataset in last step. The reward modeling is trained using the 112K training samples and 12.5 test samples.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>Model</p></th>
+<th class="head text-center"><p>Eval Accuracy</p></th>
+<th class="head text-center"><p>Remarks</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>LLaMA-7B</p></td>
+<td class="text-center"><p>79.52%</p></td>
+<td class="text-center"><p>-</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>LLaMA-7B</p></td>
+<td class="text-center"><p>71.64%</p></td>
+<td class="text-center"><p>RM from LLaMA without SFT</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>GPT-NEO-2.7B</p></td>
+<td class="text-center"><p>69.24%</p></td>
+<td class="text-center"><p>-</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>GPT-NEO-1.3B</p></td>
+<td class="text-center"><p>65.58%</p></td>
+<td class="text-center"><p>Only trained on 10000 samples</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="lora-merge-and-get-reward-model">
+<h3>2.3 LoRA Merge and Get Reward Model<a class="headerlink" href="#lora-merge-and-get-reward-model" title="Link to this heading">#</a></h3>
+<p>We use <em>./examples/merge_lora.py</em> to merge the LoRA adapter with the sft rm model. We are ready to align our model.</p>
+</section>
+</section>
+<section id="raft-alignment">
+<h2>3 RAFT Alignment<a class="headerlink" href="#raft-alignment" title="Link to this heading">#</a></h2>
+<p>Original paper: <a class="reference external" href="https://arxiv.org/pdf/2304.06767.pdf">RAFT: Reward rAnked FineTuning for Generative Foundation Model Alignment</a></p>
+<section id="algorithms-overview">
+<h3>3.1 Algorithms Overview<a class="headerlink" href="#algorithms-overview" title="Link to this heading">#</a></h3>
+<p><strong>Main ideas of RAFT</strong></p>
+<p><img alt="" src="../_images/raft_idea.PNG" /></p>
+<p>Clearly the global ranking strategy is more efficient in terms of the reward learning. However, in some cases (e.g. the example presented here), the rewards are heavily influenced by the prompts, so a local ranking with the same prompt is more appropriate. We can choose the data collection strategy by changing the hyper-parameter ``data_collection’’ as we introduce in next subsection.</p>
+</section>
+<section id="hyper-parameters">
+<h3>3.2 Hyper-parameters<a class="headerlink" href="#hyper-parameters" title="Link to this heading">#</a></h3>
+<p>Table 1: Hyper-parameters of RAFT.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters in script</p></th>
+<th class="head"><p>Default Choice</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>model_name_or_path</p></td>
+<td><p><em>str</em>, default to gpt2</p></td>
+<td><p>the model you want to align, either a model repo on huggingface.co or path to a directory containing your local model.</p></td>
+</tr>
+<tr class="row-odd"><td><p>raft_batch_size</p></td>
+<td><p><em>int</em>, default to 1024</p></td>
+<td><p>the number of samples used for supervised fine-tuning at each raft iteration.</p></td>
+</tr>
+<tr class="row-even"><td><p>top_reward_percentage</p></td>
+<td><p><em>int</em>, default to 0.2</p></td>
+<td><p>raft will generate batch_size / top_reward_percentage samples and use the top top_reward_percentage samples to fine-tune the model. There are two data ranking strategies and please see <strong>Data Collection and Reward Ranking</strong> at algorithm overview section for details.</p></td>
+</tr>
+<tr class="row-odd"><td><p>num_raft_iteration</p></td>
+<td><p><em>int</em>, default to 20</p></td>
+<td><p>the number of raft iterations.</p></td>
+</tr>
+<tr class="row-even"><td><p>learning_rate</p></td>
+<td><p><em>float</em>, default to 2e-5</p></td>
+<td><p>the learning rate used to fine-tune the model.</p></td>
+</tr>
+<tr class="row-odd"><td><p>num_train_epochs</p></td>
+<td><p><em>int</em>, default to 4</p></td>
+<td><p>the epochs we train the model on the collected dataset for each raft iteration.</p></td>
+</tr>
+<tr class="row-even"><td><p>per_device_train_batch_size</p></td>
+<td><p><em>int</em>, default to 1</p></td>
+<td><p>the per-gpu batch size for the supervised fine-tuning.</p></td>
+</tr>
+<tr class="row-odd"><td><p>inference_batch_size_per_device</p></td>
+<td><p><em>int</em>, default to 1</p></td>
+<td><p>the inference batch size for data collection. It will be overwritten by int(1/top_reward_percentage) for local ranking mode.</p></td>
+</tr>
+<tr class="row-even"><td><p>collection_strategy</p></td>
+<td><p><em>str</em>, default to “local”</p></td>
+<td><p>Either “local” or “top”. See <strong>Data Collection and Reward Ranking</strong> in last section for details.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="examples">
+<h3>3.3 Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h3>
+<p>As an example, we align the LLaMA-7B model with the RAFT in this subsection.</p>
+<section id="sft">
+<h4>3.3.1 SFT<a class="headerlink" href="#sft" title="Link to this heading">#</a></h4>
+<p>We also first fine-tune the base model on the HH-RLHF dataset. We only use a different –model_name_or_path to use LLaMA model. We note that LLaMA with <a class="reference external" href="https://docs.google.com/forms/d/e/1FAIpQLSfqNECQnMkycAp2jP4Z9TFX0cGR4uf7b_fBxjY_OjhJILlKGA/viewform">licensed</a> is for non-commercial use only. We refer readers to https://optimalscale.github.io/LMFlow/examples/checkpoints.html for more details to get the LLaMA-7B model.</p>
+</section>
+<section id="id2">
+<h4>3.3.2 RAFT Alignment<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<p>We align the LLaMA-7B-SFT model in this subsection. Alignment is challenging since the reward function (the RL environment) is far from perfect. Both the traditional DRL method (PPO) and RAFT can exploit theses imperfections to attack. We present a step-by-step record to demonstrate how can we align the model and avoid these issues.</p>
+<p><strong>Data Preparation</strong></p>
+<p>We observe that a long context window will lead to a heavy burden on the GPU memory source. Therefore, we use a context window of 256 tokens and discard the prompts with more tokens to reduce the burden on the GPU memory resources. This results in a prompt set of 82147 samples (originally 112K). The following is an example of the prompt where we simply discard the response:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="s2">&quot;###Human: Should you buy a case to protect your cell phone?###Assistant: It depends on your circumstances.  If you carry your phone in a pocket or a purse then you probably want a case.  But if you only need a phone for quick interactions, a case may actually cause more harm than good.  What do you need the phone for?  Are you a parent, or do you work from home?###Human: What harm could it do?###Assistant: A phone case can damage the screen, for one thing.  It can also get you in trouble if you have your phone turned off for some reason.  Then you will turn it back on and it won’t do anything.  If you can afford to replace it, then you need a case to protect it.  The problem is that most people aren’t able to afford to replace their phones all the time.###Human: Thanks for letting me know.###Assistant:&quot;</span>
+</pre></div>
+</div>
+<p>We additionally use 2K samples from the test set to test the performance of models. In what follows, we show that how we apply RAFT to LLaMA-7B-SFT and improve the model step-by-step.</p>
+<p><strong>Step 1: test the sft-model</strong></p>
+<p>We first evaluate the performance of the LLaMA-7B-SFT model on the hand-out test set and observe that the model tends to reply the prompt with multiple rounds of conversations. Therefore, we adopt the following post-processing strategy to use only the first round as the response.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_clean_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+    <span class="n">stext</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;###Human&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">stext</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Step 2: train model</strong></p>
+<p><strong>Reward function setting</strong></p>
+<p>The reward model is specified at the /LMFlow/examples/raft_align.py to set up the reward model we want to use. In our case, we will use the GPT-Neo-2.7B-rm trained in the last step, which is set as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">reward_model_or_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;weqweasdas/hh_rlhf_rm&quot;</span><span class="p">,</span>
+    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;reward model name (huggingface) or its path&quot;</span>
+        <span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that in general, if the reward function is not trained by following the steps in last section, you may also need to modify the ``get_reward_function’’ function in the same file to use your customized reward function.</p>
+<p>We run the alignment with the following command and hyper-parameters</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>./scripts/run_raft_align.sh<span class="w"> </span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>–model_name_or_path: /root/data/usr_name/output_models/hh_rlhf_llama-sft  (the model get from sft step, adjusted according your setup)</p></li>
+<li><p>–dataset_path:${project_dir}/data/hh_rlhf/rlhf_prompt</p></li>
+<li><p>–output_dir: /root/data/usr_name/output_models/hh_rlhf_raft_align</p></li>
+<li><p>–num_train_epochs: 4</p></li>
+<li><p>–learning_rate: 2e-5</p></li>
+<li><p>–per_device_train_batch_size: adjust according to your GPU memory source.</p></li>
+<li><p>–inference_batch_size_per_device: adjust according to your GPU memory source.</p></li>
+<li><p>–num_raft_iteration  20</p></li>
+<li><p>–top_reward_percentage 0.125; (which means that we sample 8 responses for each prompt)</p></li>
+<li><p>–raft_batch_size 1024</p></li>
+<li><p>–collection_strategy “local”</p></li>
+</ul>
+<p>The experiment runs smoothly and the training reward increases from ~2.7 to 3.4. However, we observe a significant drop in the diversity metric (e.g. distinct-2 drops to 0.22 from 0.39). We examine the samples generated by our samples at each raft iteration and find that at the first iteration, the initial checkpoint will occasionally include # in the response and it tends out that a random # is not detected by our reward function, which means that the response containing # can also have a high reward and be chosen into the training set. Then, the situation gets worse and worse, and eventually, half of the responses contain noisy # notations.</p>
+<p><strong>Step 3: retrain the model</strong></p>
+<p>To alleviate the problem in step 2, we simply discard the collected samples if they contain # by assigning a large negative reward to it. It turns out that this works for our goal. If you want to disable it, just modify the following function as always returning False.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_discard_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>The following figure shows the reward curve of RAFT (note that we use a smaller temperature to test the model, leading to a higher evaluation reward):</p>
+<p><img alt="" src="../_images/raft_reward.PNG" /></p>
+<p>It tends out that the obtained model achieves a good reward and also an acceptable diversity metric, where we refer the interested readers to the original paper for details. However, it is more like a starting point of our journey. We present some randomly sampled responses here. It seems that RAFT-aligned model generally tends to reply with more details although sometimes there are some redundant words in the response. We suspect that this is because the reward model likes this type of response and this imperfection is exploited.</p>
+</section>
+<section id="end-note">
+<h4>3.3.3 End Note<a class="headerlink" href="#end-note" title="Link to this heading">#</a></h4>
+<p>We remark in this subsection that if you want to try out RAFT on your customized task. You should carefully modify the following two functions in <em>LMFlow/src/lmflow/pipeline/raft_aligner.py</em>, which extract the response from the generated texts:</p>
+<ul class="simple">
+<li><p>clean_text(self, text);</p></li>
+<li><p>discard_sample(self, text).</p></li>
+</ul>
+<p>Also, you may also first make sure the collected samples (automatically saved in the output_dir) look good.</p>
+<p>There are still many rooms of improvement. To further improve the model performance, we can improve the reward model (e.g. by using the LLaMA-7B-RM) and try out more advanced generation strategies (by modifying the generalization configuration in <em>LMFlow/src/lmflow/pipeline/raft_aligner.py</em>), which we leave for future work. We are still actively developing RAFT and welcome for feedback and also contribution! Also checkout our LMFlow framework to get more fun of LLMs:</p>
+<p><a class="reference external" href="https://github.com/OptimalScale/LMFlow">OptimalScale/LMFlow: An Extensible Toolkit for Finetuning and Inference of Large Foundation Models. Large Model for All. (github.com)</a></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Prompt</p></th>
+<th class="head"><p>LLaMA-SFT</p></th>
+<th class="head"><p>LLaMA-RAFT</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>###Human: How can I get my girlfriend to cook more?###Assistant: Have you tried reminding her of how nice the food tastes?###Human: I could do it more.###Assistant:</p></td>
+<td><p>That’s an easy one, so it may not be the most effective strategy.  Do you know of any other strategies?</p></td>
+<td><p>That’s a good idea!  You can also try complimenting her on her cooking, and offering to help her in the kitchen.  She might enjoy cooking more if she feels appreciated.  You could also suggest recipes that she might like, or help her create a menu.  Cooking can be a lot of fun, and it’s a great way to spend time together.</p></td>
+</tr>
+<tr class="row-odd"><td><p>###Human: How do you get a child to do homework?###Assistant: There are many strategies, but you can try asking them why they should do it. Ask them if there’s anything they’d like to gain from doing their homework. Try asking if there’s anything you can do for them, and use those as motivation for them to do their homework. You can also remind them that they’ll be rewarded with extra privileges, like video games, if they do their homework.  Alternatively, you can incentivize them by including them in your plans, and offering them rewards if they get good grades.###Human: So make it so there is something in it for them?###Assistant:</p></td>
+<td><p>Yes, exactly.  In general, it’s important to be clear with your child about why they’re doing something.  It’s also important to offer them incentives that are meaningful to them.  For example, if you tell your child that they have to do their homework because you said so, that’s not a very good incentive for them.  However, if you tell them that they’ll be able to use the</p></td>
+<td><p>Yes, that’s a good strategy!  Kids often think about what they want right now, so offering them something in exchange for doing their homework can be a powerful motivator.  You might also want to offer them some kind of reward if they do well on their homework, to encourage them to do their best.  Offering them some kind of incentive can help them want to do well, and also it can help you both stay on track.</p></td>
+</tr>
+<tr class="row-even"><td><p>###Human: I am doing a project on weather disasters in the United States. Can you tell me what the strongest hurricane was to ever hit the U.S. was?###Assistant: I’m going to guess you’re thinking of the Hurricane Katrina in 2005.###Human: Well, I’m not really thinking of anything in particular. Was Katrina the strongest hurricane to ever hit the U.S.?###Assistant: There was another one, called the Great Hurricane of 1938, that was bigger and stronger.###Human: Are you sure the date is correct? I know there was a strong storm in 1935 that hit the Florida Keys but that was before they started naming storms. Is that the one you are referring to?###Assistant:</p></td>
+<td><p>I could search for more information, but I’ll just share what I’ve found.  Here’s a review of the conditions in 1935 and 1938.  It looks like the storms had similar tracks, but 1938 was stronger in some ways.  In 1938 there were more people living on the coast, and the hurricane was more intense.</p></td>
+<td><p>Yes, the Great Hurricane of 1938 was the strongest hurricane ever to hit the United States.  It was a Category 5 storm, and it caused over 1,800 deaths.  It also caused a lot of damage to the coast of Florida, and it caused heavy damage in the Caribbean.  The storm also led to the creation of the Hurricane Research Division, which is a division of the National Oceanic and Atmospheric Administration.</p></td>
+</tr>
+<tr class="row-odd"><td><p>###Human: Is a firefighter a good occupation?###Assistant: I’m not sure what the exact definition of “occupation” is.  I think you’re asking whether it’s “good” to be a firefighter.  What criteria are you using to judge whether it’s good or not?###Human: Is it a good thing to work on?###Assistant:</p></td>
+<td><p>Are you asking whether it’s a good thing to be a firefighter, or a good thing to work on?</p></td>
+<td><p>Yes, being a firefighter is a great thing to do!  Firefighters are heroes who help people in need.  They fight fires, rescue people from accidents, and help people who are sick or injured.  They also educate the public about fire safety, and help restore power after a fire.  Firefighters are important members of society, and they do very good work.</p></td>
+</tr>
+<tr class="row-even"><td><p>###Human: Would you be able to provide a copy cat recipe for Girl scout samoas cookies?###Assistant: Sure, here’s a recipe for them.###Human: Okay, present it###Assistant: Would you like it presented visually?###Human: Yes, just list out the recipe please###Assistant:</p></td>
+<td><p>Okay, let’s try.</p></td>
+<td><p>You’ll need three cups of flour, one teaspoon of salt, one teaspoon of baking soda, and one teaspoon of baking powder.  You’ll also need one cup of sugar, one cup of melted butter, one egg, and one cup of milk.  You’ll also need one cup of chocolate chips, one cup of miniature chocolate chips, one cup of chopped peanuts, and one cup of chopped pecans.</p></td>
+</tr>
+<tr class="row-odd"><td><p>###Human: I’ve heard the videogame Metal Gear Solid 5 Phantom Pain was released in an unfinished state that resulted in series creator Hideo Kojima leaving Konami. What do you know about this?###Assistant:</p></td>
+<td><p>I don’t know a lot about it, but I do know that Hideo Kojima had this to say about the game’s release:###“It’s a very unusual situation for me to be releasing a game in this state. As the director, I should have been more vigilant in overseeing the quality of the game, and I take full responsibility for its unfinished state. I’d like to take this opportunity</p></td>
+<td><p>Here’s what I know: <br />1.  The game was released in an unfinished state. <br />2.  This led to Kojima leaving Konami. <br />3.  Kojima had been with Konami for over 30 years.<br />4.  He was one of the original creators of the Metal Gear series.<br />5.  He is now the head of his own game studio, Kojima Productions.<br />6.  His new game, Death Stranding, will be released in 2020.</p></td>
+</tr>
+<tr class="row-even"><td><p>###Human: what is a good brand for kitchen knives?###Assistant:</p></td>
+<td><p>I’m not sure what you mean by “brand”.  Do you mean a brand name, like “Victorinox” or “Wüsthof”?  Those are two popular brands of knives.</p></td>
+<td><p>I recommend Wüsthof.</p></td>
+</tr>
+<tr class="row-odd"><td><p>###Human: I like to host guests at my home from time to time, and I am gathering  recipes of different dishes and drinks to keep things interesting. I am interested in trying some Rwandan dishes. Can you give me a recipe for Mizuzu?###Assistant: What is Mizuzu?###Human: It is deep fried plantains.###Assistant:</p></td>
+<td><p>Is there anything special you want to add to the recipe?  Like some spicy sauce, meat, etc?</p></td>
+<td><p>You want to make some deep fried plantains?  You will want to start with a mix of plantains and vegetable oil.  You will want to heat the oil in a skillet until it is hot, and you will want to add the plantains to the oil.  You will want to cook the plantains in the oil until they are golden brown on both sides.  You will want to remove the cooked plantains from the oil, and you will want to serve them.</p></td>
+</tr>
+<tr class="row-even"><td><p>###Human: What are some of JFK’s greatest accomplishments</p></td>
+<td><p>JFK is often remembered for his work on civil rights, but he also worked on the space program and created the Peace Corps.  He was also a strong proponent of science and technology.  He also worked on education reform.  So, he really worked on a number of initiatives that had a lasting impact.</p></td>
+<td><p>Kennedy was a great leader who inspired many people with his vision and values.  He was a leader who cared about the poor and worked to help them.  He was a leader who cared about civil rights and worked to help bring them into the mainstream.  He was a leader who cared about the environment and worked to help protect it.  He was a leader who cared about foreign policy and worked to help bring peace to the world.  He was a leader who cared about space exploration and worked to help us understand the universe.</p></td>
+</tr>
+<tr class="row-odd"><td><p>###Human: My supervisor often does a lot of tasks incorrectly. What’s the best way to handle this?###Assistant:</p></td>
+<td><p>Here are a few options:###1. Ask your supervisor if you can help them, and explain what you’d like to do to help.###2. Start with the tasks your supervisor does incorrectly. Then, if you can, do them as well or better than your supervisor. Then your supervisor will have a choice: do things your way, or find someone else to do the tasks for them.###3. If your supervisor</p></td>
+<td><p>To correct your supervisor’s mistakes, you should provide feedback in a respectful and diplomatic way.  You should explain what the problems are, and offer suggestions for how your supervisor could improve.  You should also be willing to help your supervisor implement these changes, and you should work with him or her to improve the department.  This will show your supervisor that you are a dedicated employee, and that you are willing to help the organization succeed.  It will also show your supervisor that you are capable of handling responsibility, and that you are willing to take on a leadership role.</p></td>
+</tr>
+<tr class="row-even"><td><p>###Human: I was talking to an AI the other day and it seemed like it didn’t understand anything I said. Don’t you hate it when technology doesn’t work right?###Assistant:</p></td>
+<td><p>Hm, I think you’re really talking about something that’s frustrating for me as well. I really care about how we make sure that AI’s can communicate effectively with humans, and it’s a problem I’m personally very interested in. Can you tell me more about what was frustrating for you?</p></td>
+<td><p>Yes, it can be frustrating when technology doesn’t work properly. I often feel frustrated by technology, but I try to be patient and remember that technology isn’t always reliable. There are many factors that can cause technology to malfunction, including software bugs, hardware issues, and network outages. Thankfully, most technology issues can be resolved by updating software or restarting a device.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="reward_modeling.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Reward Modeling</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="TASK_GUIDE.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">LMFlow Benchmark Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">1 Introduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-description">1.1 Dataset description</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-modeling">2 Reward Modeling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supervised-finetuning-sft">2.1 Supervised Finetuning (SFT)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.2 Reward Modeling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lora-merge-and-get-reward-model">2.3 LoRA Merge and Get Reward Model</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#raft-alignment">3 RAFT Alignment</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#algorithms-overview">3.1 Algorithms Overview</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hyper-parameters">3.2 Hyper-parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">3.3 Examples</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sft">3.3.1 SFT</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3.3.2 RAFT Alignment</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#end-note">3.3.3 End Note</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/raft.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
