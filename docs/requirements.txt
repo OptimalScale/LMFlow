@@ -1,7 +1,0 @@
-sphinx
-pydata-sphinx-theme
-sphinx_design
-myst-parser
-sphinx-autoapi
-matplotlib
-numpydoc
