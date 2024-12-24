@@ -386,12 +386,17 @@ DEFAULT_IM_START_TOKEN = "<im_start>"
 DEFAULT_IM_END_TOKEN = "<im_end>"
 
 # Lora
-# NOTE: Be careful, when passing lora_target_modules through arg parser, the 
-# value should be like'--lora_target_modules q_proj, v_proj \', while specifying
-# here, it should be in list format.
+# NOTE: This work as a mapping for those models that `peft` library doesn't support yet, and will be 
+# overwritten by peft.utils.constants.TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
+# if the model is supported (see hf_model_mixin.py).
+# NOTE: When passing lora_target_modules through arg parser, the 
+# value should be a string. Using commas to separate the module names, e.g.
+# "--lora_target_modules 'q_proj, v_proj'". 
+# However, when specifying here, they should be lists.
 LMFLOW_LORA_TARGET_MODULES_MAPPING = {
     'qwen2': ["q_proj", "v_proj"],
     'internlm2': ["wqkv"],
+    'hymba': ["x_proj.0", "in_proj", "out_proj", "dt_proj.0"]
 }
 
 # vllm inference
