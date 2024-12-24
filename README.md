@@ -70,28 +70,10 @@ To process your own dataset, please refer to our [doc](https://optimalscale.gith
 
 LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
 ```sh
-cd data && ./download.sh alpaca && cd -
-
-bash ./scripts/run_finetune_with_lora.sh \
-  --model_name_or_path facebook/galactica-1.3b \
-  --dataset_path data/alpaca/train_conversation \
-  --output_lora_path output_models/finetuned_galactica_lora
+bash run_finetune_with_lora.sh
 ```
 
 > [!TIP]
-> <details><summary>Llama-2-7B conversation dataset example</summary>  
-> 
->```bash
->cd data && ./download.sh alpaca && cd -
->
->bash ./scripts/run_finetune_with_lora.sh \
->  --model_name_or_path meta-llama/Llama-2-7b-hf \
->  --dataset_path data/alpaca/train_conversation \
->  --conversation_template llama2 \
->  --output_model_path output_models/finetuned_llama2_7b_lora \
->```
-> </details>
->
 > <details><summary>Merge LoRA Weight</summary>
 >
 >Merge LoRA weight and the base model into one using:  
@@ -102,25 +84,6 @@ bash ./scripts/run_finetune_with_lora.sh \
 >  --output_model_path output_models/lora_merged \
 >```
 ></details>
-
-### Inference
-After finetuning, you can run the following command to chat with the model.
-```sh
-bash ./scripts/run_chatbot.sh output_models/finetuned_gpt2
-```
-
-> [!TIP]
-> We recommend using vLLM for faster inference.
-> 
-> <details><summary>Faster inference using vLLM</summary>  
->
->```bash
->bash ./scripts/run_vllm_inference.sh \
->   --model_name_or_path Qwen/Qwen2-0.5B \
->   --dataset_path data/alpaca/test_conversation \
->   --output_dir data/inference_results \
->```
-> </details>
 
 
 ### Evaluation
