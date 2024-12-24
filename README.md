@@ -1,7 +1,3 @@
-<p align="center" width="50%">
-<img src="assets/logo.png" alt="LMFlow" style="width: 50%; min-width: 200px; display: block; margin: auto; background-color: transparent;">
-</p>
-
 # LMFlow
 
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
@@ -12,12 +8,9 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
   - [Quick Start](#quick-start)
     - [Setup](#setup)
     - [Prepare Dataset](#prepare-dataset)
-    - [Finetuning](#finetuning)
-      - [Full Finetuning](#full-finetuning)
-      - [LISA](#lisa)
+    - [Training](#training)
       - [LoRA](#lora)
     - [Inference](#inference)
-    - [Deployment](#deployment)
     - [Evaluation](#evaluation)
   - [Support](#support)
   - [License](#license)
@@ -67,69 +60,11 @@ pip install -e .
 
 ### Prepare Dataset
 
-Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
+For sanity check, we provide [a small dataset](./data/wikitext-2-raw-v1/test) for you to test the finetuning process.
 
-### Finetuning
+To process your own dataset, please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
-#### Full Finetuning
-
-Full training updates all the parameters to finetune a language model.
-Here is an example to finetune a GPT-2 base model.
-
-```sh
-cd data && ./download.sh alpaca && cd -
-
-bash ./scripts/run_finetune.sh \
-  --model_name_or_path gpt2 \
-  --dataset_path data/alpaca/train_conversation \
-  --output_model_path output_models/finetuned_gpt2
-```
-
-> [!TIP]
-> For conversation dataset, specify a conversation template for better performance by adding `--conversation_template` to the command. 
-> 
-> <details><summary>Llama-3-8B conversation dataset example</summary>  
-> 
->```bash
->cd data && ./download.sh alpaca && cd -
->
->bash ./scripts/run_finetune.sh \
->  --model_name_or_path meta-llama/Meta-Llama-3-8B \
->  --dataset_path data/alpaca/train_conversation \
->  --conversation_template llama3 \
->  --output_model_path output_models/finetuned_llama3_8b
->```
-> </details>
-
-#### LISA
-
-[LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile:
-```sh
-cd data && ./download.sh alpaca && cd -
-
-bash ./scripts/run_finetune_with_lisa.sh \
-  --model_name_or_path meta-llama/Llama-2-7b-hf \
-  --dataset_path data/alpaca/train_conversation \
-  --output_model_path output_models/finetuned_llama2_7b \
-  --lisa_activated_layers 1 \
-  --lisa_interval_steps 20
-```
-
-> [!TIP]
-> <details><summary>Llama-2-7B conversation dataset example</summary>  
-> 
->```bash
->cd data && ./download.sh alpaca && cd -
->
->bash ./scripts/run_finetune_with_lisa.sh \
->  --model_name_or_path meta-llama/Llama-2-7b-hf \
->  --dataset_path data/alpaca/train_conversation \
->  --conversation_template llama2 \
->  --output_model_path output_models/finetuned_llama2_7b_lisa \
->  --lisa_activated_layers 1 \
->  --lisa_interval_steps 20
->```
-> </details>
+### Training
 
 #### LoRA
 
@@ -187,30 +122,9 @@ bash ./scripts/run_chatbot.sh output_models/finetuned_gpt2
 >```
 > </details>
 
-### Deployment
-If you want to deploy your own model locally, we provide a gradio-based UI for building chatbots. 
-Running the following command will launch the demo for robin-7b:
-
-```sh
-pip install gradio
-python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
-```
-
 
 ### Evaluation
-[LMFlow Benchmark](https://blog.gopenai.com/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418) is an automatic evaluation framework for open-source large language models.
-We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
-
-You can directly run the LMFlow benchmark evaluation to obtain the results to participate in the
-[LLM comparision](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing).
-For example, to run GPT2 XL, one may execute
-```sh
-bash ./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
-```
-`--model_name_or_path` is required, you may fill in huggingface model name or local model path here.
-
-To check the evaluation results, you may check `benchmark.log` in `./output_dir/gpt2-xl_lmflow_chat_nll_eval`,
-`./output_dir/gpt2-xl_all_nll_eval` and `./output_dir/gpt2-xl_commonsense_qa_eval`.
+[TODO]
 
 ## Support
 
