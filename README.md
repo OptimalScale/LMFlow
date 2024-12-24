@@ -9,8 +9,6 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
     - [Setup](#setup)
     - [Prepare Dataset](#prepare-dataset)
     - [Training](#training)
-      - [LoRA](#lora)
-    - [Inference](#inference)
     - [Evaluation](#evaluation)
   - [Support](#support)
   - [License](#license)
@@ -65,9 +63,6 @@ For sanity check, we provide [a small dataset](./data/wikitext-2-raw-v1/test) fo
 To process your own dataset, please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
 ### Training
-
-#### LoRA
-
 LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
 ```sh
 bash run_finetune_with_lora.sh
