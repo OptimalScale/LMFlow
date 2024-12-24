@@ -55,6 +55,11 @@ class LISATrainer(Trainer):
         self.active_layers_indices = []
         self.histroy_layers_indices = []
         self.active_layers_names = []
+        
+        layers = self._get_all_body_layers()
+        for layer in layers:
+            for param in layer.parameters():
+                param.requires_grad = False        
 
         
     def _get_all_body_layers(self) -> List[nn.Module]:
@@ -112,7 +117,8 @@ class LISATrainer(Trainer):
                 param.requires_grad = True
                 
                 
-    def maybe_switch_active_layers(self):            
+    def maybe_switch_active_layers(self):
+        print('maybe_switch')
         if (
             self.state.global_step == 0 # skip since already initialized in `create_optimizer`
             or 
