@@ -387,7 +387,7 @@ DEFAULT_IM_END_TOKEN = "<im_end>"
 
 # Lora
 # NOTE: This work as a mapping for those models that `peft` library doesn't support yet, and will be 
-# overridden by peft.utils.constants.TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
+# overwritten by peft.utils.constants.TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
 # if the model is supported (see hf_model_mixin.py).
 # NOTE: When passing lora_target_modules through arg parser, the 
 # value should be a string. Using commas to separate the module names, e.g.
