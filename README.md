@@ -10,6 +10,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
     - [Prepare Dataset](#prepare-dataset)
     - [Training](#training)
     - [Evaluation](#evaluation)
+  - [FAQ](#faq)
   - [Support](#support)
   - [License](#license)
   - [Citation](#citation)
@@ -65,6 +66,7 @@ LoRA is a parameter-efficient finetuning algorithm and is more efficient than fu
 ```sh
 bash run_finetune_with_lora.sh
 ```
+Note: Please double-check that you have updated the [training script](https://raw.githubusercontent.com/OptimalScale/LMFlow/refs/heads/data-challenge/run_finetune_with_lora.sh) with the correct arguments for your use case.
 
 > [!TIP]
 > <details><summary>Merge LoRA Weight</summary>
@@ -80,6 +82,9 @@ bash run_finetune_with_lora.sh
 
 
 ### Evaluation
+[TODO]
+
+## FAQ
 [TODO]
 
 ## Support
