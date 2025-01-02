@@ -1,0 +1,161 @@
+lmflow.pipeline.utils.lisa_trainer_del
+======================================
+
+.. py:module:: lmflow.pipeline.utils.lisa_trainer_del
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.lisa_trainer_del.logger
+   lmflow.pipeline.utils.lisa_trainer_del.LISA_LAYER_NAME_MAPPING
+   lmflow.pipeline.utils.lisa_trainer_del.LISA_BODY_LAYER_PARAM_GROUPS_IDX
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.lisa_trainer_del.LISATrainer
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.lisa_trainer_del.tag
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: LISA_LAYER_NAME_MAPPING
+
+.. py:data:: LISA_BODY_LAYER_PARAM_GROUPS_IDX
+   :value: [2, 3]
+
+
+.. py:class:: LISATrainer(n_layers: int, interval_steps: int, lisa_layer_attr_name: str = None, *args, **kwargs)
+
+   Bases: :py:obj:`transformers.Trainer`
+
+
+   .. py:attribute:: n_layers
+
+
+   .. py:attribute:: interval_steps
+
+
+   .. py:attribute:: num_body_layers
+
+
+   .. py:attribute:: active_layers_indices
+      :value: []
+
+
+
+   .. py:attribute:: histroy_layers_indices
+      :value: []
+
+
+
+   .. py:attribute:: active_layers_names
+      :value: []
+
+
+
+   .. py:method:: _get_all_body_layers() -> List[torch.nn.Module]
+
+      
+      Fetch all the layers of the model excluding the head
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _get_active_layers_names() -> List[str]
+
+
+   .. py:method:: _update_active_layer_info()
+
+
+   .. py:method:: _switch_active_layers()
+
+      
+      Switch the active layers for the next interval. Objects that will be updated after calling:
+      1. self.active_layers_indices
+      2. self.active_layers_names
+      3. requires_grad of the parameters
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: maybe_switch_active_layers()
+
+
+   .. py:method:: create_optimizer()
+
+      
+      Setup the optimizer. Adopted from transformers.Trainer.create_optimizer.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _reinit_deepspeed_zero_optimizer_params(optimizer: deepspeed.runtime.zero.stage_1_and_2.DeepSpeedZeroOptimizer)
+
+
+.. py:function:: tag(info='')
+

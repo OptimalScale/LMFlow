@@ -1,0 +1,646 @@
+lmflow.datasets.dataset
+=======================
+
+.. py:module:: lmflow.datasets.dataset
+
+.. autoapi-nested-parse::
+
+   This Python code defines a class Dataset with methods for initializing, loading,
+   and manipulating datasets from different backends such as Hugging Face and JSON.
+    
+   The `Dataset` class includes methods for loading datasets from a dictionary and a Hugging
+   Face dataset, mapping datasets, and retrieving the backend dataset and arguments.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.datasets.dataset.logger
+   lmflow.datasets.dataset.DATASET_TYPES
+   lmflow.datasets.dataset.KEY_TYPE
+   lmflow.datasets.dataset.KEY_INSTANCES
+   lmflow.datasets.dataset.KEY_SCORE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.datasets.dataset.Dataset
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: DATASET_TYPES
+   :value: ['text_only', 'text2text', 'float_only', 'image_text', 'conversation', 'paired_conversation',...
+
+
+.. py:data:: KEY_TYPE
+   :value: 'type'
+
+
+.. py:data:: KEY_INSTANCES
+   :value: 'instances'
+
+
+.. py:data:: KEY_SCORE
+   :value: 'score'
+
+
+.. py:class:: Dataset(data_args: lmflow.args.DatasetArguments = None, backend: str = 'huggingface', *args, **kwargs)
+
+   
+   Initializes the Dataset object with the given parameters.
+
+
+   :Parameters:
+
+       **data_args** : DatasetArguments object.
+           Contains the arguments required to load the dataset.
+
+       **backend** : str,  default="huggingface"
+           A string representing the dataset backend. Defaults to "huggingface".
+
+       **args** : Optional.
+           Positional arguments.
+
+       **kwargs** : Optional.
+           Keyword arguments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: data_args
+      :value: None
+
+
+
+   .. py:attribute:: backend
+      :value: 'huggingface'
+
+
+
+   .. py:attribute:: backend_dataset
+      :value: None
+
+
+
+   .. py:attribute:: type
+      :value: None
+
+
+
+   .. py:attribute:: dataset_path
+
+
+   .. py:method:: __len__()
+
+
+   .. py:method:: _check_data_format()
+
+      
+      Checks if data type and data structure matches
+
+      Raise messages with hints if not matched.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: from_dict(dict_obj: dict, *args, **kwargs)
+
+      
+      Create a Dataset object from a dictionary.
+
+      Return a Dataset given a dict with format:
+          {
+              "type": TYPE,
+              "instances": [
+                  {
+                      "key_1": VALUE_1.1,
+                      "key_2": VALUE_1.2,
+                      ...
+                  },
+                  {
+                      "key_1": VALUE_2.1,
+                      "key_2": VALUE_2.2,
+                      ...
+                  },
+                  ...
+              ]
+          }
+
+      :Parameters:
+
+          **dict_obj** : dict.
+              A dictionary containing the dataset information.
+
+          **args** : Optional.
+              Positional arguments.
+
+          **kwargs** : Optional.
+              Keyword arguments.
+
+
+
+      :Returns:
+
+          **self** : Dataset object.
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: create_from_dict(dict_obj, *args, **kwargs)
+      :classmethod:
+
+
+      
+
+
+
+
+
+
+      :Returns:
+
+          Returns a Dataset object given a dict.
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: to_dict()
+
+      
+
+
+
+
+
+
+      :Returns:
+
+          Return a dict represents the dataset:
+              {
+                  "type": TYPE,
+                  "instances": [
+                      {
+                          "key_1": VALUE_1.1,
+                          "key_2": VALUE_1.2,
+                          ...
+                      },
+                      {
+                          "key_1": VALUE_2.1,
+                          "key_2": VALUE_2.2,
+                          ...
+                      },
+                      ...
+                  ]
+              }
+
+          A python dict object represents the content of this dataset.
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: to_list()
+
+      
+      Returns a list of instances.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: map(*args, **kwargs)
+
+      
+
+
+
+      :Parameters:
+
+          **args** : Optional.
+              Positional arguments.
+
+          **kwargs** : Optional.
+              Keyword arguments.
+
+
+
+      :Returns:
+
+          **self** : Dataset object.
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_backend() -> Optional[str]
+
+      
+
+
+
+
+
+
+      :Returns:
+
+          self.backend
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_backend_dataset()
+
+      
+
+
+
+
+
+
+      :Returns:
+
+          self.backend_dataset
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_fingerprint()
+
+      
+
+
+
+
+
+
+      :Returns:
+
+          Fingerprint of the backend_dataset which controls the cache
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_data_args()
+
+      
+
+
+
+
+
+
+      :Returns:
+
+          self.data_args
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_type() -> str
+
+      
+
+
+
+
+
+
+      :Returns:
+
+          self.type
+              ..
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: save(file_path: str, format: str = 'json')
+
+      
+      Save the dataset to a json file.
+
+
+      :Parameters:
+
+          **file_path** : str.
+              The path to the file where the dataset will be saved.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: sample(n: int, seed: int = 42)
+
+      
+      Sample n instances from the dataset.
+
+
+      :Parameters:
+
+          **n** : int.
+              The number of instances to sample from the dataset.
+
+
+
+      :Returns:
+
+          **sample_dataset** : Dataset object.
+              A new dataset object containing the sampled instances.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: train_test_split(test_size: float = 0.2, shuffle: bool = True, seed: int = 42)
+
+      
+      Split the dataset into training and testing sets.
+
+
+      :Parameters:
+
+          **test_size** : float, default=0.2.
+              The proportion of the dataset that will be used for testing.
+
+
+
+      :Returns:
+
+          **train_dataset** : Dataset object.
+              A new dataset object containing the training instances.
+
+          **test_dataset** : Dataset object.
+              A new dataset object containing the testing instances.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: drop_instances(indices: list)
+
+      
+      Drop instances from the dataset.
+
+
+      :Parameters:
+
+          **indices** : list.
+              A list of indices of the instances to drop from the dataset.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: sanity_check(drop_invalid: bool = True)
+
+      
+      Perform a sanity check on the dataset.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: hf_dataset_sanity_check(drop_invalid: bool = True)
+
+      
+      Perform a sanity check on the HuggingFace dataset.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

@@ -1,0 +1,25 @@
+common
+======
+
+.. py:module:: common
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   common.trace_calls
+   common.timer
+   common.print_tabulate_with_header
+
+
+Module Contents
+---------------
+
+.. py:function:: trace_calls(func)
+
+.. py:function:: timer(func)
+
+.. py:function:: print_tabulate_with_header(tabulate_df, header: Optional[str] = None)
+

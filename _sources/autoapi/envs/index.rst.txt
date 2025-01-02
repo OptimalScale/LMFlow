@@ -1,0 +1,19 @@
+envs
+====
+
+.. py:module:: envs
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   envs.get_distributed_type
+
+
+Module Contents
+---------------
+
+.. py:function:: get_distributed_type()
+

@@ -1,0 +1,1333 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lmflow.utils.flash_attention.triton_flash_attention &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lmflow/utils/flash_attention/triton_flash_attention';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../../lmflow.html" class="nav-link">lmflow</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.utils.flash_attention.triton_flash_attention</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lmflow.utils.flash_attention.triton_flash_attention</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">*Experimental* implementation of FlashAttention in Triton.</span>
+<span class="sd">Tested with triton==2.0.0.dev20221202.</span>
+<span class="sd">Triton 2.0 has a new backend (MLIR) but seems like it doesn&#39;t yet work for head dimensions</span>
+<span class="sd">other than 64:</span>
+<span class="sd">https://github.com/openai/triton/blob/d376020f90002757eea3ea9475d4f7cfc2ec5ead/python/triton/ops/flash_attention.py#L207</span>
+<span class="sd">We&#39;ll update this implementation with the new Triton backend once this is fixed.</span>
+
+<span class="sd">We use the FlashAttention implementation from Phil Tillet a starting point.</span>
+<span class="sd">https://github.com/openai/triton/blob/master/python/tutorials/06-fused-attention.py</span>
+
+<span class="sd">Changes:</span>
+<span class="sd">- Implement both causal and non-causal attention.</span>
+<span class="sd">- Implement both self-attention and cross-attention.</span>
+<span class="sd">- Support arbitrary seqlens (not just multiples of 128), for both forward and backward.</span>
+<span class="sd">- Support all head dimensions up to 128 (not just 16, 32, 64, 128), for both forward and backward.</span>
+<span class="sd">- Support attention bias.</span>
+<span class="sd">- Speed up the forward pass a bit, and only store the LSE instead of m and l.</span>
+<span class="sd">- Make the backward for d=128 much faster by reducing register spilling.</span>
+<span class="sd">- Optionally parallelize the backward pass across seqlen_k, to deal with the case of</span>
+<span class="sd">small batch size * nheads.</span>
+
+<span class="sd">Caution:</span>
+<span class="sd">- This is an *experimental* implementation. The forward pass should be quite robust but</span>
+<span class="sd">I&#39;m not 100% sure that the backward pass doesn&#39;t have race conditions (due to the Triton compiler).</span>
+<span class="sd">- This implementation has only been tested on A100.</span>
+<span class="sd">- If you plan to use headdim other than 64 and 128, you should test for race conditions</span>
+<span class="sd">(due to the Triton compiler), as done in tests/test_flash_attn.py</span>
+<span class="sd">&quot;test_flash_attn_triton_race_condition&quot;. I&#39;ve tested and fixed many race conditions</span>
+<span class="sd">for different head dimensions (40, 48, 64, 128, 80, 88, 96), but I&#39;m still not 100% confident</span>
+<span class="sd">that there are none left for other head dimensions.</span>
+
+<span class="sd">Differences between this Triton version and the CUDA version:</span>
+<span class="sd">- Triton version doesn&#39;t support dropout.</span>
+<span class="sd">- Triton forward is generally faster than CUDA forward, while Triton backward is</span>
+<span class="sd">generally slower than CUDA backward. Overall Triton forward + backward is slightly slower</span>
+<span class="sd">than CUDA forward + backward.</span>
+<span class="sd">- Triton version doesn&#39;t support different sequence lengths in a batch (i.e., RaggedTensor/NestedTensor).</span>
+<span class="sd">- Triton version supports attention bias, while CUDA version doesn&#39;t.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">import</span> <span class="nn">triton</span>
+<span class="kn">import</span> <span class="nn">triton.language</span> <span class="k">as</span> <span class="nn">tl</span>
+
+
+<span class="c1"># Disabling autotune for now, set num_warps=4 if headdim=64 and num_warps=8 if headdim=128</span>
+<span class="c1"># @triton.autotune(</span>
+<span class="c1">#     configs=[</span>
+<span class="c1">#         triton.Config({&quot;BLOCK_M&quot;: 128, &quot;BLOCK_N&quot;: 128}, num_warps=4, num_stages=1),</span>
+<span class="c1">#         # This config has a race condition when EVEN_M == False, disabling it for now.</span>
+<span class="c1">#         # triton.Config({&quot;BLOCK_M&quot;: 64, &quot;BLOCK_N&quot;: 64}, num_warps=4, num_stages=1),</span>
+<span class="c1">#     ],</span>
+<span class="c1">#     key=[&#39;CACHE_KEY_SEQLEN_Q&#39;, &#39;CACHE_KEY_SEQLEN_K&#39;, &#39;BIAS_TYPE&#39;, &#39;IS_CAUSAL&#39;, &#39;BLOCK_HEADDIM&#39;]</span>
+<span class="c1"># )</span>
+<span class="nd">@triton</span><span class="o">.</span><span class="n">heuristics</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;EVEN_M&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;seqlen_q&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;BLOCK_M&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;EVEN_N&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;seqlen_k&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;BLOCK_N&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;EVEN_HEADDIM&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;headdim&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;BLOCK_HEADDIM&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="nd">@triton</span><span class="o">.</span><span class="n">jit</span>
+<div class="viewcode-block" id="_fwd_kernel">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention._fwd_kernel">[docs]</a>
+<span class="k">def</span> <span class="nf">_fwd_kernel</span><span class="p">(</span>
+    <span class="n">Q</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Bias</span><span class="p">,</span> <span class="n">Out</span><span class="p">,</span>
+    <span class="n">Lse</span><span class="p">,</span> <span class="n">TMP</span><span class="p">,</span>  <span class="c1"># NOTE: TMP is a scratchpad buffer to workaround a compiler bug</span>
+    <span class="n">softmax_scale</span><span class="p">,</span>
+    <span class="n">stride_qb</span><span class="p">,</span> <span class="n">stride_qh</span><span class="p">,</span> <span class="n">stride_qm</span><span class="p">,</span>
+    <span class="n">stride_kb</span><span class="p">,</span> <span class="n">stride_kh</span><span class="p">,</span> <span class="n">stride_kn</span><span class="p">,</span>
+    <span class="n">stride_vb</span><span class="p">,</span> <span class="n">stride_vh</span><span class="p">,</span> <span class="n">stride_vn</span><span class="p">,</span>
+    <span class="n">stride_bb</span><span class="p">,</span> <span class="n">stride_bh</span><span class="p">,</span> <span class="n">stride_bm</span><span class="p">,</span>
+    <span class="n">stride_ob</span><span class="p">,</span> <span class="n">stride_oh</span><span class="p">,</span> <span class="n">stride_om</span><span class="p">,</span>
+    <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+    <span class="n">CACHE_KEY_SEQLEN_Q</span><span class="p">,</span> <span class="n">CACHE_KEY_SEQLEN_K</span><span class="p">,</span>
+    <span class="n">BIAS_TYPE</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">IS_CAUSAL</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">BLOCK_HEADDIM</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">EVEN_M</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">EVEN_N</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">BLOCK_M</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">start_m</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">program_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">off_hb</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">program_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">off_b</span> <span class="o">=</span> <span class="n">off_hb</span> <span class="o">//</span> <span class="n">nheads</span>
+    <span class="n">off_h</span> <span class="o">=</span> <span class="n">off_hb</span> <span class="o">%</span> <span class="n">nheads</span>
+    <span class="c1"># off_b = tl.program_id(1)</span>
+    <span class="c1"># off_h = tl.program_id(2)</span>
+    <span class="c1"># off_hb = off_b * nheads + off_h</span>
+    <span class="c1"># initialize offsets</span>
+    <span class="n">offs_m</span> <span class="o">=</span> <span class="n">start_m</span> <span class="o">*</span> <span class="n">BLOCK_M</span> <span class="o">+</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_M</span><span class="p">)</span>
+    <span class="n">offs_n</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">)</span>
+    <span class="n">offs_d</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">)</span>
+    <span class="c1"># Initialize pointers to Q, K, V</span>
+    <span class="c1"># Adding parenthesis around indexing might use int32 math instead of int64 math?</span>
+    <span class="c1"># https://github.com/openai/triton/issues/741</span>
+    <span class="c1"># I&#39;m seeing a tiny bit of difference (5-7us)</span>
+    <span class="n">q_ptrs</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_qb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_qh</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_qm</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">k_ptrs</span> <span class="o">=</span> <span class="n">K</span> <span class="o">+</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_kb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_kh</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_kn</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">v_ptrs</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_vb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_vh</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_vn</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;vector&#39;</span><span class="p">:</span>
+        <span class="n">b_ptrs</span> <span class="o">=</span> <span class="n">Bias</span> <span class="o">+</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_bb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_bh</span> <span class="o">+</span> <span class="n">offs_n</span>
+    <span class="k">elif</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;matrix&#39;</span><span class="p">:</span>
+        <span class="n">b_ptrs</span> <span class="o">=</span> <span class="n">Bias</span> <span class="o">+</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_bb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_bh</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_bm</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="c1"># initialize pointer to m and l</span>
+    <span class="n">t_ptrs</span> <span class="o">=</span> <span class="n">TMP</span> <span class="o">+</span> <span class="n">off_hb</span> <span class="o">*</span> <span class="n">seqlen_q_rounded</span> <span class="o">+</span> <span class="n">offs_m</span>
+    <span class="n">lse_i</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">BLOCK_M</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+    <span class="n">m_i</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">BLOCK_M</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+    <span class="n">acc_o</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">BLOCK_M</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="c1"># load q: it will stay in SRAM throughout</span>
+    <span class="c1"># [2022-10-30] TD: Triton bug - in the case of EVEN_M=True and EVEN_N=False, if we just call</span>
+    <span class="c1"># tl.load(q_ptrs), we get the wrong output!</span>
+    <span class="k">if</span> <span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_N</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">q_ptrs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">q_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">q_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">q_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span>
+                        <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="c1"># loop over k, v and update accumulator</span>
+    <span class="n">end_n</span> <span class="o">=</span> <span class="n">seqlen_k</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">IS_CAUSAL</span> <span class="k">else</span> <span class="n">tl</span><span class="o">.</span><span class="n">minimum</span><span class="p">((</span><span class="n">start_m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">BLOCK_M</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">start_n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_n</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">):</span>
+        <span class="n">start_n</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">multiple_of</span><span class="p">(</span><span class="n">start_n</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">)</span>
+        <span class="c1"># -- compute qk ----</span>
+        <span class="k">if</span> <span class="n">EVEN_N</span> <span class="o">&amp;</span> <span class="n">EVEN_M</span><span class="p">:</span>  <span class="c1"># If we just do &quot;if EVEN_N&quot;, there seems to be some race condition</span>
+            <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k_ptrs</span> <span class="o">+</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">stride_kn</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k_ptrs</span> <span class="o">+</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">stride_kn</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k_ptrs</span> <span class="o">+</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">stride_kn</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">start_n</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">,</span>
+                            <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k_ptrs</span> <span class="o">+</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">stride_kn</span><span class="p">,</span>
+                            <span class="n">mask</span><span class="o">=</span><span class="p">((</span><span class="n">start_n</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span>
+                            <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">qk</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">BLOCK_M</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">qk</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">trans_b</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Trying to combine the two masks seem to make the result wrong</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">EVEN_N</span><span class="p">:</span>  <span class="c1"># Need to mask out otherwise the softmax is wrong</span>
+            <span class="n">qk</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">start_n</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">IS_CAUSAL</span><span class="p">:</span>
+            <span class="n">qk</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">start_n</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;vector&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">EVEN_N</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_ptrs</span> <span class="o">+</span> <span class="n">start_n</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_ptrs</span> <span class="o">+</span> <span class="n">start_n</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">start_n</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="n">bias</span> <span class="o">=</span> <span class="n">bias</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">elif</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;matrix&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_N</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_ptrs</span> <span class="o">+</span> <span class="n">start_n</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_ptrs</span> <span class="o">+</span> <span class="n">start_n</span><span class="p">,</span>
+                                   <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span>
+                                        <span class="o">&amp;</span> <span class="p">((</span><span class="n">start_n</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">),</span>
+                                   <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="c1"># Slightly faster to multiply the softmax_scale in the tl.exp below since the compiler</span>
+            <span class="c1"># can then fuse the mult and add into an fma instruction. But if we have bias we need to</span>
+            <span class="c1"># to multiply with softmax_scale here.</span>
+            <span class="n">qk</span> <span class="o">=</span> <span class="n">qk</span> <span class="o">*</span> <span class="n">softmax_scale</span> <span class="o">+</span> <span class="n">bias</span>
+            <span class="n">m_ij</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">qk</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">lse_i</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">qk</span> <span class="o">-</span> <span class="n">m_ij</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m_ij</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">qk</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">softmax_scale</span><span class="p">,</span> <span class="n">lse_i</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">qk</span> <span class="o">*</span> <span class="n">softmax_scale</span> <span class="o">-</span> <span class="n">m_ij</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span>
+        <span class="n">l_ij</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># scale acc_o</span>
+        <span class="n">acc_o_scale</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">m_i</span> <span class="o">-</span> <span class="n">m_ij</span><span class="p">)</span>
+
+        <span class="c1"># # -- update output accumulator --</span>
+        <span class="c1"># BUG: have to store and immediately load</span>
+        <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">t_ptrs</span><span class="p">,</span> <span class="n">acc_o_scale</span><span class="p">)</span>
+        <span class="n">acc_o_scale</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">t_ptrs</span><span class="p">)</span>
+        <span class="n">acc_o</span> <span class="o">=</span> <span class="n">acc_o</span> <span class="o">*</span> <span class="n">acc_o_scale</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="c1"># update acc_o</span>
+        <span class="k">if</span> <span class="n">EVEN_N</span> <span class="o">&amp;</span> <span class="n">EVEN_M</span><span class="p">:</span>  <span class="c1"># If we just do &quot;if EVEN_N&quot;, there seems to be some race condition</span>
+            <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">v_ptrs</span> <span class="o">+</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">stride_vn</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">v_ptrs</span> <span class="o">+</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">stride_vn</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">v_ptrs</span> <span class="o">+</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">stride_vn</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">start_n</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">,</span>
+                            <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">v_ptrs</span> <span class="o">+</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">stride_vn</span><span class="p">,</span>
+                            <span class="n">mask</span><span class="o">=</span><span class="p">((</span><span class="n">start_n</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span>
+                            <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">acc_o</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="c1"># -- update statistics</span>
+        <span class="n">m_i</span> <span class="o">=</span> <span class="n">m_ij</span>
+        <span class="n">l_i_new</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lse_i</span> <span class="o">-</span> <span class="n">m_ij</span><span class="p">)</span> <span class="o">+</span> <span class="n">l_ij</span>
+        <span class="n">lse_i</span> <span class="o">=</span> <span class="n">m_ij</span> <span class="o">+</span> <span class="n">tl</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">l_i_new</span><span class="p">)</span>
+
+    <span class="n">o_scale</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">m_i</span> <span class="o">-</span> <span class="n">lse_i</span><span class="p">)</span>
+    <span class="c1"># BUG: have to store and immediately load</span>
+    <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">t_ptrs</span><span class="p">,</span> <span class="n">o_scale</span><span class="p">)</span>
+    <span class="n">o_scale</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">t_ptrs</span><span class="p">)</span>
+    <span class="n">acc_o</span> <span class="o">=</span> <span class="n">acc_o</span> <span class="o">*</span> <span class="n">o_scale</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="c1"># rematerialize offsets to save registers</span>
+    <span class="n">start_m</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">program_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">offs_m</span> <span class="o">=</span> <span class="n">start_m</span> <span class="o">*</span> <span class="n">BLOCK_M</span> <span class="o">+</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_M</span><span class="p">)</span>
+    <span class="c1"># write back l and m</span>
+    <span class="n">lse_ptrs</span> <span class="o">=</span> <span class="n">Lse</span> <span class="o">+</span> <span class="n">off_hb</span> <span class="o">*</span> <span class="n">seqlen_q_rounded</span> <span class="o">+</span> <span class="n">offs_m</span>
+    <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">lse_ptrs</span><span class="p">,</span> <span class="n">lse_i</span><span class="p">)</span>
+    <span class="c1"># initialize pointers to output</span>
+    <span class="n">offs_d</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">)</span>
+    <span class="n">out_ptrs</span> <span class="o">=</span> <span class="n">Out</span> <span class="o">+</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_ob</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_oh</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_om</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="k">if</span> <span class="n">EVEN_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">out_ptrs</span><span class="p">,</span> <span class="n">acc_o</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">out_ptrs</span><span class="p">,</span> <span class="n">acc_o</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">out_ptrs</span><span class="p">,</span> <span class="n">acc_o</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">out_ptrs</span><span class="p">,</span> <span class="n">acc_o</span><span class="p">,</span>
+                     <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">))</span></div>
+
+
+
+<span class="nd">@triton</span><span class="o">.</span><span class="n">jit</span>
+<div class="viewcode-block" id="_bwd_preprocess_do_o_dot">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention._bwd_preprocess_do_o_dot">[docs]</a>
+<span class="k">def</span> <span class="nf">_bwd_preprocess_do_o_dot</span><span class="p">(</span>
+    <span class="n">Out</span><span class="p">,</span> <span class="n">DO</span><span class="p">,</span> <span class="n">Delta</span><span class="p">,</span>
+    <span class="n">stride_ob</span><span class="p">,</span> <span class="n">stride_oh</span><span class="p">,</span> <span class="n">stride_om</span><span class="p">,</span>
+    <span class="n">stride_dob</span><span class="p">,</span> <span class="n">stride_doh</span><span class="p">,</span> <span class="n">stride_dom</span><span class="p">,</span>
+    <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+    <span class="n">BLOCK_M</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">start_m</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">program_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">off_hb</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">program_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">off_b</span> <span class="o">=</span> <span class="n">off_hb</span> <span class="o">//</span> <span class="n">nheads</span>
+    <span class="n">off_h</span> <span class="o">=</span> <span class="n">off_hb</span> <span class="o">%</span> <span class="n">nheads</span>
+    <span class="c1"># initialize offsets</span>
+    <span class="n">offs_m</span> <span class="o">=</span> <span class="n">start_m</span> <span class="o">*</span> <span class="n">BLOCK_M</span> <span class="o">+</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_M</span><span class="p">)</span>
+    <span class="n">offs_d</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">)</span>
+    <span class="c1"># load</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Out</span> <span class="o">+</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_ob</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_oh</span> <span class="o">+</span> <span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_om</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span>
+                <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">do</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">DO</span> <span class="o">+</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_dob</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_doh</span> <span class="o">+</span> <span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_dom</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span>
+                 <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">o</span> <span class="o">*</span> <span class="n">do</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># write-back</span>
+    <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">Delta</span> <span class="o">+</span> <span class="n">off_hb</span> <span class="o">*</span> <span class="n">seqlen_q_rounded</span> <span class="o">+</span> <span class="n">offs_m</span><span class="p">,</span> <span class="n">delta</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@triton</span><span class="o">.</span><span class="n">jit</span>
+<div class="viewcode-block" id="_bwd_store_dk_dv">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention._bwd_store_dk_dv">[docs]</a>
+<span class="k">def</span> <span class="nf">_bwd_store_dk_dv</span><span class="p">(</span>
+    <span class="n">dk_ptrs</span><span class="p">,</span> <span class="n">dv_ptrs</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span> <span class="n">offs_n</span><span class="p">,</span> <span class="n">offs_d</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+    <span class="n">EVEN_M</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">EVEN_N</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># [2022-11-01] TD: Same bug. In the case of EVEN_N=True and EVEN_M=False,</span>
+    <span class="c1"># if we just call tl.store(dv_ptrs), there&#39;s a race condition</span>
+    <span class="k">if</span> <span class="n">EVEN_N</span> <span class="o">&amp;</span> <span class="n">EVEN_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dv_ptrs</span><span class="p">,</span> <span class="n">dv</span><span class="p">)</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dk_ptrs</span><span class="p">,</span> <span class="n">dk</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dv_ptrs</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">)</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dk_ptrs</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dv_ptrs</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">)</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dk_ptrs</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dv_ptrs</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">))</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dk_ptrs</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">))</span></div>
+
+
+
+<span class="nd">@triton</span><span class="o">.</span><span class="n">jit</span>
+<div class="viewcode-block" id="_bwd_kernel_one_col_block">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel_one_col_block">[docs]</a>
+<span class="k">def</span> <span class="nf">_bwd_kernel_one_col_block</span><span class="p">(</span>
+    <span class="n">start_n</span><span class="p">,</span>
+    <span class="n">Q</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Bias</span><span class="p">,</span>
+    <span class="n">DO</span><span class="p">,</span> <span class="n">DQ</span><span class="p">,</span> <span class="n">DK</span><span class="p">,</span> <span class="n">DV</span><span class="p">,</span>
+    <span class="n">LSE</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span>
+    <span class="n">softmax_scale</span><span class="p">,</span>
+    <span class="n">stride_qm</span><span class="p">,</span> <span class="n">stride_kn</span><span class="p">,</span> <span class="n">stride_vn</span><span class="p">,</span> <span class="n">stride_bm</span><span class="p">,</span>
+    <span class="n">stride_dom</span><span class="p">,</span> <span class="n">stride_dqm</span><span class="p">,</span> <span class="n">stride_dkn</span><span class="p">,</span> <span class="n">stride_dvn</span><span class="p">,</span>
+    <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+    <span class="n">ATOMIC_ADD</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">BIAS_TYPE</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">IS_CAUSAL</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">BLOCK_HEADDIM</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">EVEN_M</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">EVEN_N</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">BLOCK_M</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># We need to make sure begin_m is a multiple of BLOCK_M (not BLOCK_N)</span>
+    <span class="n">begin_m</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">IS_CAUSAL</span> <span class="k">else</span> <span class="p">((</span><span class="n">start_n</span> <span class="o">*</span> <span class="n">BLOCK_N</span><span class="p">)</span> <span class="o">//</span> <span class="n">BLOCK_M</span><span class="p">)</span> <span class="o">*</span> <span class="n">BLOCK_M</span>
+    <span class="c1"># initialize row/col offsets</span>
+    <span class="n">offs_qm</span> <span class="o">=</span> <span class="n">begin_m</span> <span class="o">+</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_M</span><span class="p">)</span>
+    <span class="n">offs_n</span> <span class="o">=</span> <span class="n">start_n</span> <span class="o">*</span> <span class="n">BLOCK_N</span> <span class="o">+</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">)</span>
+    <span class="n">offs_m</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_M</span><span class="p">)</span>
+    <span class="n">offs_d</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">)</span>
+    <span class="c1"># initialize pointers to value-like data</span>
+    <span class="n">q_ptrs</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_qm</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_qm</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">k_ptrs</span> <span class="o">=</span> <span class="n">K</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_kn</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">v_ptrs</span> <span class="o">=</span> <span class="n">V</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_vn</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">do_ptrs</span> <span class="o">=</span> <span class="n">DO</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_qm</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_dom</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">dq_ptrs</span> <span class="o">=</span> <span class="n">DQ</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_qm</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_dqm</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;vector&#39;</span><span class="p">:</span>
+        <span class="n">b_ptrs</span> <span class="o">=</span> <span class="n">Bias</span> <span class="o">+</span> <span class="n">offs_n</span>
+    <span class="k">elif</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;matrix&#39;</span><span class="p">:</span>
+        <span class="n">b_ptrs</span> <span class="o">=</span> <span class="n">Bias</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_qm</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_bm</span> <span class="o">+</span> <span class="n">offs_n</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="c1"># initialize dv and dk</span>
+    <span class="n">dv</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">BLOCK_N</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">dk</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">BLOCK_N</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="c1"># There seems to be some problem with Triton pipelining that makes results wrong for</span>
+    <span class="c1"># headdim=64, seqlen=(113, 255), bias_type=&#39;matrix&#39;. In this case the for loop</span>
+    <span class="c1"># may have zero step, and pipelining with the bias matrix could screw it up.</span>
+    <span class="c1"># So we just exit early.</span>
+    <span class="k">if</span> <span class="n">begin_m</span> <span class="o">&gt;=</span> <span class="n">seqlen_q</span><span class="p">:</span>
+        <span class="n">dv_ptrs</span> <span class="o">=</span> <span class="n">DV</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_dvn</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">dk_ptrs</span> <span class="o">=</span> <span class="n">DK</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_dkn</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">_bwd_store_dk_dv</span><span class="p">(</span><span class="n">dk_ptrs</span><span class="p">,</span> <span class="n">dv_ptrs</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span> <span class="n">offs_n</span><span class="p">,</span> <span class="n">offs_d</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+                         <span class="n">EVEN_M</span><span class="o">=</span><span class="n">EVEN_M</span><span class="p">,</span> <span class="n">EVEN_N</span><span class="o">=</span><span class="n">EVEN_N</span><span class="p">,</span> <span class="n">EVEN_HEADDIM</span><span class="o">=</span><span class="n">EVEN_HEADDIM</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="c1"># k and v stay in SRAM throughout</span>
+    <span class="c1"># [2022-10-30] TD: Same bug as the fwd. In the case of EVEN_N=True and EVEN_M=False,</span>
+    <span class="c1"># if we just call tl.load(k_ptrs), we get the wrong output!</span>
+    <span class="k">if</span> <span class="n">EVEN_N</span> <span class="o">&amp;</span> <span class="n">EVEN_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k_ptrs</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">v_ptrs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">v_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">v_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span>
+                        <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">v_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span>
+                        <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="c1"># loop over rows</span>
+    <span class="n">num_block_m</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">cdiv</span><span class="p">(</span><span class="n">seqlen_q</span><span class="p">,</span> <span class="n">BLOCK_M</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">start_m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">begin_m</span><span class="p">,</span> <span class="n">num_block_m</span> <span class="o">*</span> <span class="n">BLOCK_M</span><span class="p">,</span> <span class="n">BLOCK_M</span><span class="p">):</span>
+        <span class="n">start_m</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">multiple_of</span><span class="p">(</span><span class="n">start_m</span><span class="p">,</span> <span class="n">BLOCK_M</span><span class="p">)</span>
+        <span class="n">offs_m_curr</span> <span class="o">=</span> <span class="n">start_m</span> <span class="o">+</span> <span class="n">offs_m</span>
+        <span class="c1"># load q, k, v, do on-chip</span>
+        <span class="c1"># Same bug as below. Otherwise gives wrong result for headdim=40, seqlen=(128, 117)</span>
+        <span class="k">if</span> <span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">q_ptrs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">q_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">q_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span>
+                                         <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="c1"># recompute p = softmax(qk, dim=-1).T</span>
+        <span class="n">qk</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">trans_b</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Trying to combine the two masks seem to make the result wrong</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">EVEN_N</span><span class="p">:</span>  <span class="c1"># Need to mask out otherwise the softmax is wrong</span>
+            <span class="n">qk</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">offs_n</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">qk</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">IS_CAUSAL</span><span class="p">:</span>
+            <span class="n">qk</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]),</span> <span class="n">qk</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;-inf&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">debug_barrier</span><span class="p">()</span>  <span class="c1"># Race condition otherwise</span>
+            <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;vector&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">EVEN_N</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_ptrs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_n</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="n">bias</span> <span class="o">=</span> <span class="n">bias</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">elif</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;matrix&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_N</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_ptrs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bias</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b_ptrs</span><span class="p">,</span>
+                                   <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span>
+                                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">seqlen_k</span><span class="p">),</span>
+                                   <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">tl</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">qk</span> <span class="o">=</span> <span class="n">qk</span> <span class="o">*</span> <span class="n">softmax_scale</span> <span class="o">+</span> <span class="n">bias</span>
+        <span class="c1"># There seems to be a race condition when headdim=48/96, and dq, dk, dv are wrong.</span>
+        <span class="c1"># Also wrong for headdim=64.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_HEADDIM</span><span class="p">):</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">debug_barrier</span><span class="p">()</span>
+        <span class="n">lse_i</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">LSE</span> <span class="o">+</span> <span class="n">offs_m_curr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">qk</span> <span class="o">*</span> <span class="n">softmax_scale</span> <span class="o">-</span> <span class="n">lse_i</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">qk</span> <span class="o">-</span> <span class="n">lse_i</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span>
+        <span class="c1"># compute dv</span>
+        <span class="c1"># [2022-10-30] TD: A Triton bug: if EVEN_M=True and EVEN_HEADDIM=False, if we call</span>
+        <span class="c1"># do = tl.load(do_ptrs, mask=offs_d[None, :] &lt; headdim, other=0.0), we get wrong outputs</span>
+        <span class="c1"># in the case of headdim=48/96, seqlen_q &amp; seqlen_k &gt;= 512. If headdim=40 or seqlen &lt; 512,</span>
+        <span class="c1"># the output is correct.</span>
+        <span class="k">if</span> <span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">do</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">do_ptrs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># [2022-11-01] TD: Triton bug, there&#39;s a race condition if we just use m_mask and not d_mask.</span>
+            <span class="n">do</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">do_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span>
+                                        <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="c1"># if EVEN_M:</span>
+        <span class="c1">#     if EVEN_HEADDIM:</span>
+        <span class="c1">#         do = tl.load(do_ptrs)</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         do = tl.load(do_ptrs, mask=offs_d[None, :] &lt; headdim, other=0.0)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     if EVEN_HEADDIM:</span>
+        <span class="c1">#         do = tl.load(do_ptrs, mask=offs_m_curr[:, None] &lt; seqlen_q, other=0.0)</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         do = tl.load(do_ptrs, mask=(offs_m_curr[:, None] &lt; seqlen_q)</span>
+        <span class="c1">#                                    &amp; (offs_d[None, :] &lt; headdim), other=0.0)</span>
+        <span class="n">dv</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">do</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">do</span><span class="p">,</span> <span class="n">trans_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># compute dp = dot(v, do)</span>
+        <span class="c1"># There seems to be a race condition when headdim=48/96, and dq, dk are wrong.</span>
+        <span class="c1"># Also wrong for headdim=128, seqlen=(108, 256), and ATOMIC_ADD=True</span>
+        <span class="c1"># Also wrong for headdim=64, seqlen=(1023, 1024), and ATOMIC_ADD=False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_HEADDIM</span><span class="p">):</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">debug_barrier</span><span class="p">()</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">do</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">trans_b</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># There&#39;s a race condition for headdim=48</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">debug_barrier</span><span class="p">()</span>
+        <span class="c1"># compute ds = p * (dp - delta[:, None])</span>
+        <span class="c1"># Putting the subtraction after the dp matmul (instead of before) is slightly faster</span>
+        <span class="n">Di</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">D</span> <span class="o">+</span> <span class="n">offs_m_curr</span><span class="p">)</span>
+        <span class="c1"># Converting ds to q.dtype here reduces register pressure and makes it much faster</span>
+        <span class="c1"># for BLOCK_HEADDIM=128</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="n">dp</span> <span class="o">-</span> <span class="n">Di</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">*</span> <span class="n">softmax_scale</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="c1"># compute dk = dot(ds.T, q)</span>
+        <span class="n">dk</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">trans_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># compute dq</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_HEADDIM</span><span class="p">):</span>  <span class="c1"># Otherewise there&#39;s a race condition when BIAS_TYPE=&#39;matrix&#39;</span>
+            <span class="n">tl</span><span class="o">.</span><span class="n">debug_barrier</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ATOMIC_ADD</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>  <span class="c1"># Race condition if we just do EVEN_M</span>
+                <span class="n">dq</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span> <span class="n">eviction_policy</span><span class="o">=</span><span class="s2">&quot;evict_last&quot;</span><span class="p">)</span>
+                <span class="n">dq</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span> <span class="n">dq</span><span class="p">,</span> <span class="n">eviction_policy</span><span class="o">=</span><span class="s2">&quot;evict_last&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+                    <span class="n">dq</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                                <span class="n">eviction_policy</span><span class="o">=</span><span class="s2">&quot;evict_last&quot;</span><span class="p">)</span>
+                    <span class="n">dq</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                    <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span> <span class="n">dq</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">,</span>
+                            <span class="n">eviction_policy</span><span class="o">=</span><span class="s2">&quot;evict_last&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dq</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span>
+                                 <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span>
+                                 <span class="n">other</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">eviction_policy</span><span class="o">=</span><span class="s2">&quot;evict_last&quot;</span><span class="p">)</span>
+                    <span class="n">dq</span> <span class="o">+=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+                    <span class="n">tl</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span> <span class="n">dq</span><span class="p">,</span>
+                             <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">),</span>
+                             <span class="n">eviction_policy</span><span class="o">=</span><span class="s2">&quot;evict_last&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># If we&#39;re parallelizing across the seqlen_k dimension</span>
+            <span class="n">dq</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">EVEN_M</span> <span class="o">&amp;</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>  <span class="c1"># Race condition if we just do EVEN_M</span>
+                <span class="n">tl</span><span class="o">.</span><span class="n">atomic_add</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span> <span class="n">dq</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span>
+                    <span class="n">tl</span><span class="o">.</span><span class="n">atomic_add</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span> <span class="n">dq</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tl</span><span class="o">.</span><span class="n">atomic_add</span><span class="p">(</span><span class="n">dq_ptrs</span><span class="p">,</span> <span class="n">dq</span><span class="p">,</span>
+                                  <span class="n">mask</span><span class="o">=</span><span class="p">(</span><span class="n">offs_m_curr</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">seqlen_q</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;</span> <span class="n">headdim</span><span class="p">))</span>
+        <span class="c1"># increment pointers</span>
+        <span class="n">dq_ptrs</span> <span class="o">+=</span> <span class="n">BLOCK_M</span> <span class="o">*</span> <span class="n">stride_dqm</span>
+        <span class="n">q_ptrs</span> <span class="o">+=</span> <span class="n">BLOCK_M</span> <span class="o">*</span> <span class="n">stride_qm</span>
+        <span class="n">do_ptrs</span> <span class="o">+=</span> <span class="n">BLOCK_M</span> <span class="o">*</span> <span class="n">stride_dom</span>
+        <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">==</span> <span class="s1">&#39;matrix&#39;</span><span class="p">:</span>
+            <span class="n">b_ptrs</span> <span class="o">+=</span> <span class="n">BLOCK_M</span> <span class="o">*</span> <span class="n">stride_bm</span>
+    <span class="c1"># write-back</span>
+    <span class="n">dv_ptrs</span> <span class="o">=</span> <span class="n">DV</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_dvn</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">dk_ptrs</span> <span class="o">=</span> <span class="n">DK</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs_n</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">stride_dkn</span> <span class="o">+</span> <span class="n">offs_d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="n">_bwd_store_dk_dv</span><span class="p">(</span><span class="n">dk_ptrs</span><span class="p">,</span> <span class="n">dv_ptrs</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span> <span class="n">offs_n</span><span class="p">,</span> <span class="n">offs_d</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+                     <span class="n">EVEN_M</span><span class="o">=</span><span class="n">EVEN_M</span><span class="p">,</span> <span class="n">EVEN_N</span><span class="o">=</span><span class="n">EVEN_N</span><span class="p">,</span> <span class="n">EVEN_HEADDIM</span><span class="o">=</span><span class="n">EVEN_HEADDIM</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="init_to_zero">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.init_to_zero">[docs]</a>
+<span class="k">def</span> <span class="nf">init_to_zero</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">nargs</span><span class="p">:</span> <span class="n">nargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span></div>
+
+
+
+<span class="nd">@triton</span><span class="o">.</span><span class="n">autotune</span><span class="p">(</span>
+    <span class="n">configs</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">triton</span><span class="o">.</span><span class="n">Config</span><span class="p">({</span><span class="s2">&quot;BLOCK_M&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;BLOCK_N&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;SEQUENCE_PARALLEL&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span> <span class="n">num_warps</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">num_stages</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pre_hook</span><span class="o">=</span><span class="n">init_to_zero</span><span class="p">(</span><span class="s1">&#39;DQ&#39;</span><span class="p">)),</span>
+        <span class="n">triton</span><span class="o">.</span><span class="n">Config</span><span class="p">({</span><span class="s2">&quot;BLOCK_M&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;BLOCK_N&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;SEQUENCE_PARALLEL&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="n">num_warps</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">num_stages</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pre_hook</span><span class="o">=</span><span class="n">init_to_zero</span><span class="p">(</span><span class="s1">&#39;DQ&#39;</span><span class="p">)),</span>
+        <span class="c1"># Other configs seem to give wrong results when seqlen_q % 128 != 0, disabling them for now</span>
+        <span class="c1"># # Kernel is buggy (give wrong result) if we set BLOCK_m=128, BLOCK_n=64, num_warps=*4*</span>
+        <span class="c1"># triton.Config({&quot;BLOCK_M&quot;: 128, &quot;BLOCK_N&quot;: 64, &quot;SEQUENCE_PARALLEL&quot;: False}, num_warps=8, num_stages=1, pre_hook=init_to_zero(&#39;DQ&#39;)),</span>
+        <span class="c1"># triton.Config({&quot;BLOCK_M&quot;: 128, &quot;BLOCK_N&quot;: 64, &quot;SEQUENCE_PARALLEL&quot;: True}, num_warps=8, num_stages=1, pre_hook=init_to_zero(&#39;DQ&#39;)),</span>
+        <span class="c1"># triton.Config({&quot;BLOCK_M&quot;: 64, &quot;BLOCK_N&quot;: 64, &quot;SEQUENCE_PARALLEL&quot;: False}, num_warps=4, num_stages=1, pre_hook=init_to_zero(&#39;DQ&#39;)),</span>
+        <span class="c1"># triton.Config({&quot;BLOCK_M&quot;: 64, &quot;BLOCK_N&quot;: 64, &quot;SEQUENCE_PARALLEL&quot;: True}, num_warps=4, num_stages=1, pre_hook=init_to_zero(&#39;DQ&#39;)),</span>
+    <span class="p">],</span>
+    <span class="n">key</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CACHE_KEY_SEQLEN_Q&#39;</span><span class="p">,</span> <span class="s1">&#39;CACHE_KEY_SEQLEN_K&#39;</span><span class="p">,</span> <span class="s1">&#39;BIAS_TYPE&#39;</span><span class="p">,</span> <span class="s1">&#39;IS_CAUSAL&#39;</span><span class="p">,</span> <span class="s1">&#39;BLOCK_HEADDIM&#39;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="nd">@triton</span><span class="o">.</span><span class="n">heuristics</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;EVEN_M&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;seqlen_q&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;BLOCK_M&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;EVEN_N&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;seqlen_k&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;BLOCK_N&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;EVEN_HEADDIM&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;headdim&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;BLOCK_HEADDIM&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="nd">@triton</span><span class="o">.</span><span class="n">jit</span>
+<div class="viewcode-block" id="_bwd_kernel">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention._bwd_kernel">[docs]</a>
+<span class="k">def</span> <span class="nf">_bwd_kernel</span><span class="p">(</span>
+    <span class="n">Q</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Bias</span><span class="p">,</span>
+    <span class="n">DO</span><span class="p">,</span> <span class="n">DQ</span><span class="p">,</span> <span class="n">DK</span><span class="p">,</span> <span class="n">DV</span><span class="p">,</span>
+    <span class="n">LSE</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span>
+    <span class="n">softmax_scale</span><span class="p">,</span>
+    <span class="n">stride_qb</span><span class="p">,</span> <span class="n">stride_qh</span><span class="p">,</span> <span class="n">stride_qm</span><span class="p">,</span>
+    <span class="n">stride_kb</span><span class="p">,</span> <span class="n">stride_kh</span><span class="p">,</span> <span class="n">stride_kn</span><span class="p">,</span>
+    <span class="n">stride_vb</span><span class="p">,</span> <span class="n">stride_vh</span><span class="p">,</span> <span class="n">stride_vn</span><span class="p">,</span>
+    <span class="n">stride_bb</span><span class="p">,</span> <span class="n">stride_bh</span><span class="p">,</span> <span class="n">stride_bm</span><span class="p">,</span>
+    <span class="n">stride_dob</span><span class="p">,</span> <span class="n">stride_doh</span><span class="p">,</span> <span class="n">stride_dom</span><span class="p">,</span>
+    <span class="n">stride_dqb</span><span class="p">,</span> <span class="n">stride_dqh</span><span class="p">,</span> <span class="n">stride_dqm</span><span class="p">,</span>
+    <span class="n">stride_dkb</span><span class="p">,</span> <span class="n">stride_dkh</span><span class="p">,</span> <span class="n">stride_dkn</span><span class="p">,</span>
+    <span class="n">stride_dvb</span><span class="p">,</span> <span class="n">stride_dvh</span><span class="p">,</span> <span class="n">stride_dvn</span><span class="p">,</span>
+    <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+    <span class="n">CACHE_KEY_SEQLEN_Q</span><span class="p">,</span> <span class="n">CACHE_KEY_SEQLEN_K</span><span class="p">,</span>
+    <span class="n">BIAS_TYPE</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">IS_CAUSAL</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">BLOCK_HEADDIM</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">SEQUENCE_PARALLEL</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">EVEN_M</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">EVEN_N</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">EVEN_HEADDIM</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+    <span class="n">BLOCK_M</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">:</span> <span class="n">tl</span><span class="o">.</span><span class="n">constexpr</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">off_hb</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">program_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">off_b</span> <span class="o">=</span> <span class="n">off_hb</span> <span class="o">//</span> <span class="n">nheads</span>
+    <span class="n">off_h</span> <span class="o">=</span> <span class="n">off_hb</span> <span class="o">%</span> <span class="n">nheads</span>
+    <span class="c1"># offset pointers for batch/head</span>
+    <span class="n">Q</span> <span class="o">+=</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_qb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_qh</span>
+    <span class="n">K</span> <span class="o">+=</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_kb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_kh</span>
+    <span class="n">V</span> <span class="o">+=</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_vb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_vh</span>
+    <span class="n">DO</span> <span class="o">+=</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_dob</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_doh</span>
+    <span class="n">DQ</span> <span class="o">+=</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_dqb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_dqh</span>
+    <span class="n">DK</span> <span class="o">+=</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_dkb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_dkh</span>
+    <span class="n">DV</span> <span class="o">+=</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_dvb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_dvh</span>
+    <span class="k">if</span> <span class="n">BIAS_TYPE</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+        <span class="n">Bias</span> <span class="o">+=</span> <span class="n">off_b</span> <span class="o">*</span> <span class="n">stride_bb</span> <span class="o">+</span> <span class="n">off_h</span> <span class="o">*</span> <span class="n">stride_bh</span>
+    <span class="c1"># pointer to row-wise quantities in value-like data</span>
+    <span class="n">D</span> <span class="o">+=</span> <span class="n">off_hb</span> <span class="o">*</span> <span class="n">seqlen_q_rounded</span>
+    <span class="n">LSE</span> <span class="o">+=</span> <span class="n">off_hb</span> <span class="o">*</span> <span class="n">seqlen_q_rounded</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">SEQUENCE_PARALLEL</span><span class="p">:</span>
+        <span class="n">num_block_n</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">cdiv</span><span class="p">(</span><span class="n">seqlen_k</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">start_n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_block_n</span><span class="p">):</span>
+            <span class="n">_bwd_kernel_one_col_block</span><span class="p">(</span>
+                <span class="n">start_n</span><span class="p">,</span>
+                <span class="n">Q</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Bias</span><span class="p">,</span>
+                <span class="n">DO</span><span class="p">,</span> <span class="n">DQ</span><span class="p">,</span> <span class="n">DK</span><span class="p">,</span> <span class="n">DV</span><span class="p">,</span>
+                <span class="n">LSE</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span>
+                <span class="n">softmax_scale</span><span class="p">,</span>
+                <span class="n">stride_qm</span><span class="p">,</span> <span class="n">stride_kn</span><span class="p">,</span> <span class="n">stride_vn</span><span class="p">,</span> <span class="n">stride_bm</span><span class="p">,</span>
+                <span class="n">stride_dom</span><span class="p">,</span> <span class="n">stride_dqm</span><span class="p">,</span> <span class="n">stride_dkn</span><span class="p">,</span> <span class="n">stride_dvn</span><span class="p">,</span>
+                <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+                <span class="n">ATOMIC_ADD</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">BIAS_TYPE</span><span class="o">=</span><span class="n">BIAS_TYPE</span><span class="p">,</span>
+                <span class="n">IS_CAUSAL</span><span class="o">=</span><span class="n">IS_CAUSAL</span><span class="p">,</span>
+                <span class="n">BLOCK_HEADDIM</span><span class="o">=</span><span class="n">BLOCK_HEADDIM</span><span class="p">,</span>
+                <span class="n">EVEN_M</span><span class="o">=</span><span class="n">EVEN_M</span><span class="p">,</span> <span class="n">EVEN_N</span><span class="o">=</span><span class="n">EVEN_N</span><span class="p">,</span> <span class="n">EVEN_HEADDIM</span><span class="o">=</span><span class="n">EVEN_HEADDIM</span><span class="p">,</span>
+                <span class="n">BLOCK_M</span><span class="o">=</span><span class="n">BLOCK_M</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="o">=</span><span class="n">BLOCK_N</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">start_n</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">program_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">_bwd_kernel_one_col_block</span><span class="p">(</span>
+            <span class="n">start_n</span><span class="p">,</span>
+            <span class="n">Q</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Bias</span><span class="p">,</span>
+            <span class="n">DO</span><span class="p">,</span> <span class="n">DQ</span><span class="p">,</span> <span class="n">DK</span><span class="p">,</span> <span class="n">DV</span><span class="p">,</span>
+            <span class="n">LSE</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span>
+            <span class="n">softmax_scale</span><span class="p">,</span>
+            <span class="n">stride_qm</span><span class="p">,</span> <span class="n">stride_kn</span><span class="p">,</span> <span class="n">stride_vn</span><span class="p">,</span> <span class="n">stride_bm</span><span class="p">,</span>
+            <span class="n">stride_dom</span><span class="p">,</span> <span class="n">stride_dqm</span><span class="p">,</span> <span class="n">stride_dkn</span><span class="p">,</span> <span class="n">stride_dvn</span><span class="p">,</span>
+            <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">headdim</span><span class="p">,</span>
+            <span class="n">ATOMIC_ADD</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">BIAS_TYPE</span><span class="o">=</span><span class="n">BIAS_TYPE</span><span class="p">,</span>
+            <span class="n">IS_CAUSAL</span><span class="o">=</span><span class="n">IS_CAUSAL</span><span class="p">,</span>
+            <span class="n">BLOCK_HEADDIM</span><span class="o">=</span><span class="n">BLOCK_HEADDIM</span><span class="p">,</span>
+            <span class="n">EVEN_M</span><span class="o">=</span><span class="n">EVEN_M</span><span class="p">,</span> <span class="n">EVEN_N</span><span class="o">=</span><span class="n">EVEN_N</span><span class="p">,</span> <span class="n">EVEN_HEADDIM</span><span class="o">=</span><span class="n">EVEN_HEADDIM</span><span class="p">,</span>
+            <span class="n">BLOCK_M</span><span class="o">=</span><span class="n">BLOCK_M</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="o">=</span><span class="n">BLOCK_N</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_flash_attn_forward">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention._flash_attn_forward">[docs]</a>
+<span class="k">def</span> <span class="nf">_flash_attn_forward</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># shape constraints</span>
+    <span class="n">batch</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">assert</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="mi">128</span><span class="p">,</span> <span class="s1">&#39;FlashAttention only support head dimensions up to 128&#39;</span>
+    <span class="k">assert</span> <span class="n">q</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">k</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="s1">&#39;All tensors must have the same type&#39;</span>
+    <span class="k">assert</span> <span class="n">q</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">],</span> <span class="s1">&#39;Only support fp16 and bf16&#39;</span>
+    <span class="k">assert</span> <span class="n">q</span><span class="o">.</span><span class="n">is_cuda</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">is_cuda</span> <span class="ow">and</span> <span class="n">v</span><span class="o">.</span><span class="n">is_cuda</span>
+    <span class="n">softmax_scale</span> <span class="o">=</span> <span class="n">softmax_scale</span> <span class="ow">or</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="n">has_bias</span> <span class="o">=</span> <span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">bias_type</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+    <span class="k">if</span> <span class="n">has_bias</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">bias</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">bias</span><span class="o">.</span><span class="n">is_cuda</span>
+        <span class="k">assert</span> <span class="n">bias</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span>
+        <span class="k">if</span> <span class="n">bias</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">bias</span> <span class="o">=</span> <span class="n">bias</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">bias</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">):</span>
+            <span class="n">bias_type</span> <span class="o">=</span> <span class="s1">&#39;vector&#39;</span>
+        <span class="k">elif</span> <span class="n">bias</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">(</span><span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">):</span>
+            <span class="n">bias_type</span> <span class="o">=</span> <span class="s1">&#39;matrix&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Last 2 dimensions of bias must be (1, seqlen_k)&#39;</span>
+                               <span class="s1">&#39; or (seqlen_q, seqlen_k)&#39;</span><span class="p">)</span>
+        <span class="n">bias</span> <span class="o">=</span> <span class="n">bias</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">)</span>
+    <span class="n">bias_strides</span> <span class="o">=</span> <span class="p">(</span><span class="n">bias</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">bias</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">bias</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">has_bias</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">seqlen_q_rounded</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">seqlen_q</span> <span class="o">/</span> <span class="mi">128</span><span class="p">)</span> <span class="o">*</span> <span class="mi">128</span>
+    <span class="n">lse</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">batch</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">batch</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="n">BLOCK_HEADDIM</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">triton</span><span class="o">.</span><span class="n">next_power_of_2</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">BLOCK</span> <span class="o">=</span> <span class="mi">128</span>
+    <span class="n">num_warps</span> <span class="o">=</span> <span class="mi">4</span> <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="mi">64</span> <span class="k">else</span> <span class="mi">8</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">META</span><span class="p">:</span> <span class="p">(</span><span class="n">triton</span><span class="o">.</span><span class="n">cdiv</span><span class="p">(</span><span class="n">seqlen_q</span><span class="p">,</span> <span class="n">META</span><span class="p">[</span><span class="s2">&quot;BLOCK_M&quot;</span><span class="p">]),</span> <span class="n">batch</span> <span class="o">*</span> <span class="n">nheads</span><span class="p">)</span>
+    <span class="n">_fwd_kernel</span><span class="p">[</span><span class="n">grid</span><span class="p">](</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span>
+        <span class="n">lse</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span>
+        <span class="n">softmax_scale</span><span class="p">,</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">q</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">q</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">k</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">k</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">k</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">v</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">v</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="o">*</span><span class="n">bias_strides</span><span class="p">,</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">o</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">o</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span>
+        <span class="n">seqlen_q</span> <span class="o">//</span> <span class="mi">32</span><span class="p">,</span>  <span class="n">seqlen_k</span> <span class="o">//</span> <span class="mi">32</span><span class="p">,</span> <span class="c1"># key for triton cache (limit number of compilations)</span>
+        <span class="c1"># Can&#39;t use kwargs here because triton autotune expects key to be args, not kwargs</span>
+        <span class="c1"># IS_CAUSAL=causal, BLOCK_HEADDIM=d,</span>
+        <span class="n">bias_type</span><span class="p">,</span> <span class="n">causal</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">,</span>
+        <span class="n">BLOCK_M</span><span class="o">=</span><span class="n">BLOCK</span><span class="p">,</span> <span class="n">BLOCK_N</span><span class="o">=</span><span class="n">BLOCK</span><span class="p">,</span>
+        <span class="n">num_warps</span><span class="o">=</span><span class="n">num_warps</span><span class="p">,</span>
+        <span class="n">num_stages</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">softmax_scale</span>  <span class="c1"># softmax_scale could have been updated</span></div>
+
+
+
+<div class="viewcode-block" id="_flash_attn_backward">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention._flash_attn_backward">[docs]</a>
+<span class="k">def</span> <span class="nf">_flash_attn_backward</span><span class="p">(</span><span class="n">do</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">dq</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Make sure that the last dimension is contiguous</span>
+    <span class="k">if</span> <span class="n">do</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">do</span> <span class="o">=</span> <span class="n">do</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+    <span class="n">batch</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span>
+    <span class="c1"># assert d in {16, 32, 64, 128}</span>
+    <span class="k">assert</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="mi">128</span>
+    <span class="n">seqlen_q_rounded</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">seqlen_q</span> <span class="o">/</span> <span class="mi">128</span><span class="p">)</span> <span class="o">*</span> <span class="mi">128</span>
+    <span class="k">assert</span> <span class="n">lse</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">q</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">k</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">o</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">dq</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">dk</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">dv</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">softmax_scale</span> <span class="o">=</span> <span class="n">softmax_scale</span> <span class="ow">or</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="c1"># dq_accum = torch.zeros_like(q, dtype=torch.float32)</span>
+    <span class="n">dq_accum</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">lse</span><span class="p">)</span>
+    <span class="c1"># delta = torch.zeros_like(lse)</span>
+
+    <span class="n">BLOCK_HEADDIM</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">triton</span><span class="o">.</span><span class="n">next_power_of_2</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">META</span><span class="p">:</span> <span class="p">(</span><span class="n">triton</span><span class="o">.</span><span class="n">cdiv</span><span class="p">(</span><span class="n">seqlen_q</span><span class="p">,</span> <span class="n">META</span><span class="p">[</span><span class="s2">&quot;BLOCK_M&quot;</span><span class="p">]),</span> <span class="n">batch</span> <span class="o">*</span> <span class="n">nheads</span><span class="p">)</span>
+    <span class="n">_bwd_preprocess_do_o_dot</span><span class="p">[</span><span class="n">grid</span><span class="p">](</span>
+        <span class="n">o</span><span class="p">,</span> <span class="n">do</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">o</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">o</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">do</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">do</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">do</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span>
+        <span class="n">BLOCK_M</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="o">=</span><span class="n">BLOCK_HEADDIM</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">has_bias</span> <span class="o">=</span> <span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">bias_type</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+    <span class="k">if</span> <span class="n">has_bias</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">bias</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">bias</span><span class="o">.</span><span class="n">is_cuda</span>
+        <span class="k">assert</span> <span class="n">bias</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span>
+        <span class="k">assert</span> <span class="n">bias</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">bias</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">):</span>
+            <span class="n">bias_type</span> <span class="o">=</span> <span class="s1">&#39;vector&#39;</span>
+        <span class="k">elif</span> <span class="n">bias</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="p">(</span><span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">):</span>
+            <span class="n">bias_type</span> <span class="o">=</span> <span class="s1">&#39;matrix&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Last 2 dimensions of bias must be (1, seqlen_k)&#39;</span>
+                               <span class="s1">&#39; or (seqlen_q, seqlen_k)&#39;</span><span class="p">)</span>
+        <span class="n">bias</span> <span class="o">=</span> <span class="n">bias</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">)</span>
+    <span class="n">bias_strides</span> <span class="o">=</span> <span class="p">(</span><span class="n">bias</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">bias</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">bias</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">has_bias</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># BLOCK_M = 128</span>
+    <span class="c1"># BLOCK_N = 64</span>
+    <span class="c1"># num_warps = 4</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">META</span><span class="p">:</span> <span class="p">(</span><span class="n">triton</span><span class="o">.</span><span class="n">cdiv</span><span class="p">(</span><span class="n">seqlen_k</span><span class="p">,</span> <span class="n">META</span><span class="p">[</span><span class="s2">&quot;BLOCK_N&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">META</span><span class="p">[</span><span class="s2">&quot;SEQUENCE_PARALLEL&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">batch</span> <span class="o">*</span> <span class="n">nheads</span><span class="p">)</span>
+    <span class="n">_bwd_kernel</span><span class="p">[</span><span class="n">grid</span><span class="p">](</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span>
+        <span class="n">do</span><span class="p">,</span> <span class="n">dq_accum</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span>
+        <span class="n">lse</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span>
+        <span class="n">softmax_scale</span><span class="p">,</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">q</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">q</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">k</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">k</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">k</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">v</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">v</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="o">*</span><span class="n">bias_strides</span><span class="p">,</span>
+        <span class="n">do</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">do</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">do</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">dq_accum</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">dq_accum</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">dq_accum</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">dk</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">dk</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">dk</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">dv</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">dv</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">dv</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">nheads</span><span class="p">,</span> <span class="n">seqlen_q</span><span class="p">,</span> <span class="n">seqlen_k</span><span class="p">,</span> <span class="n">seqlen_q_rounded</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span>
+        <span class="n">seqlen_q</span> <span class="o">//</span> <span class="mi">32</span><span class="p">,</span>  <span class="n">seqlen_k</span> <span class="o">//</span> <span class="mi">32</span><span class="p">,</span> <span class="c1"># key for triton cache (limit number of compilations)</span>
+        <span class="c1"># Can&#39;t use kwargs here because triton autotune expects key to be args, not kwargs</span>
+        <span class="c1"># IS_CAUSAL=causal, BLOCK_HEADDIM=d,</span>
+        <span class="n">bias_type</span><span class="p">,</span> <span class="n">causal</span><span class="p">,</span> <span class="n">BLOCK_HEADDIM</span><span class="p">,</span>
+        <span class="c1"># SEQUENCE_PARALLEL=False,</span>
+        <span class="c1"># BLOCK_M=BLOCK_M, BLOCK_N=BLOCK_N,</span>
+        <span class="c1"># num_warps=num_warps,</span>
+        <span class="c1"># num_stages=1,</span>
+    <span class="p">)</span>
+    <span class="n">dq</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">dq_accum</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FlashAttnQKVPackedFunc">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc">[docs]</a>
+<span class="k">class</span> <span class="nc">FlashAttnQKVPackedFunc</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">Function</span><span class="p">):</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="FlashAttnQKVPackedFunc.forward">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc.forward">[docs]</a>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">qkv</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            qkv: (batch, seqlen, 3, nheads, headdim)</span>
+<span class="sd">            bias: optional, shape broadcastible to (batch, nheads, seqlen, seqlen).</span>
+<span class="sd">                For example, ALiBi mask for causal would have shape (1, nheads, 1, seqlen).</span>
+<span class="sd">                ALiBi mask for non-causal would have shape (1, nheads, seqlen, seqlen)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make sure that the last dimension is contiguous</span>
+        <span class="k">if</span> <span class="n">qkv</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">qkv</span> <span class="o">=</span> <span class="n">qkv</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">softmax_scale</span> <span class="o">=</span> <span class="n">_flash_attn_forward</span><span class="p">(</span>
+            <span class="n">qkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">qkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">qkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="n">causal</span><span class="p">,</span>
+            <span class="n">softmax_scale</span><span class="o">=</span><span class="n">softmax_scale</span>
+        <span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">save_for_backward</span><span class="p">(</span><span class="n">qkv</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">bias</span><span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">causal</span> <span class="o">=</span> <span class="n">causal</span>
+        <span class="k">return</span> <span class="n">o</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="FlashAttnQKVPackedFunc.backward">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnQKVPackedFunc.backward">[docs]</a>
+    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">do</span><span class="p">):</span>
+        <span class="n">qkv</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">saved_tensors</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">needs_input_grad</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;FlashAttention does not support bias gradient yet&#39;</span>
+        <span class="c1"># Triton&#39;s autotune causes the Tensor._version to change, and so Pytorch autograd</span>
+        <span class="c1"># does a memcpy. To avoid this we run in inference_mode, which doesn&#39;t track the version.</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
+            <span class="n">dqkv</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">qkv</span><span class="p">)</span>
+            <span class="n">_flash_attn_backward</span><span class="p">(</span><span class="n">do</span><span class="p">,</span> <span class="n">qkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">qkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">qkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span>
+                                 <span class="n">dqkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dqkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dqkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">],</span>
+                                 <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">causal</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">softmax_scale</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dqkv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="flash_attn_qkvpacked_func">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_qkvpacked_func">[docs]</a>
+<span class="n">flash_attn_qkvpacked_func</span> <span class="o">=</span> <span class="n">FlashAttnQKVPackedFunc</span><span class="o">.</span><span class="n">apply</span></div>
+
+
+
+<div class="viewcode-block" id="FlashAttnKVPackedFunc">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc">[docs]</a>
+<span class="k">class</span> <span class="nc">FlashAttnKVPackedFunc</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">Function</span><span class="p">):</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="FlashAttnKVPackedFunc.forward">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc.forward">[docs]</a>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">kv</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            q: (batch, seqlen_q, nheads, headdim)</span>
+<span class="sd">            kv: (batch, seqlen_k, 2, nheads, headdim)</span>
+<span class="sd">            bias: optional, shape broadcastible to (batch, nheads, seqlen_q, seqlen_k).</span>
+<span class="sd">                For example, ALiBi mask for causal would have shape (1, nheads, 1, seqlen_k).</span>
+<span class="sd">                ALiBi mask for non-causal would have shape (1, nheads, seqlen_q, seqlen_k)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make sure that the last dimension is contiguous</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">kv</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">q</span><span class="p">,</span> <span class="n">kv</span><span class="p">]]</span>
+        <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">softmax_scale</span> <span class="o">=</span> <span class="n">_flash_attn_forward</span><span class="p">(</span>
+            <span class="n">q</span><span class="p">,</span> <span class="n">kv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">kv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="n">causal</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="n">softmax_scale</span>
+        <span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">save_for_backward</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">kv</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">bias</span><span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">causal</span> <span class="o">=</span> <span class="n">causal</span>
+        <span class="k">return</span> <span class="n">o</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="FlashAttnKVPackedFunc.backward">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnKVPackedFunc.backward">[docs]</a>
+    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">do</span><span class="p">):</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">kv</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">saved_tensors</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">needs_input_grad</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">needs_input_grad</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;FlashAttention does not support bias gradient yet&#39;</span>
+        <span class="c1"># Triton&#39;s autotune causes the Tensor._version to change, and so Pytorch autograd</span>
+        <span class="c1"># does a memcpy. To avoid this we run in inference_mode, which doesn&#39;t track the version.</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
+            <span class="n">dq</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="n">dkv</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">kv</span><span class="p">)</span>
+            <span class="n">_flash_attn_backward</span><span class="p">(</span><span class="n">do</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">kv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">kv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span>
+                                 <span class="n">dq</span><span class="p">,</span> <span class="n">dkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dkv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">],</span>
+                                 <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">causal</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">softmax_scale</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dq</span><span class="p">,</span> <span class="n">dkv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="flash_attn_kvpacked_func">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_kvpacked_func">[docs]</a>
+<span class="n">flash_attn_kvpacked_func</span> <span class="o">=</span> <span class="n">FlashAttnKVPackedFunc</span><span class="o">.</span><span class="n">apply</span></div>
+
+
+
+<div class="viewcode-block" id="FlashAttnFunc">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc">[docs]</a>
+<span class="k">class</span> <span class="nc">FlashAttnFunc</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">Function</span><span class="p">):</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="FlashAttnFunc.forward">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc.forward">[docs]</a>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            q: (batch_size, seqlen_q, nheads, headdim)</span>
+<span class="sd">            k, v: (batch_size, seqlen_k, nheads, headdim)</span>
+<span class="sd">            bias: optional, shape broadcastible to (batch, nheads, seqlen_q, seqlen_k).</span>
+<span class="sd">                For example, ALiBi mask for causal would have shape (1, nheads, 1, seqlen_k).</span>
+<span class="sd">                ALiBi mask for non-causal would have shape (1, nheads, seqlen_q, seqlen_k)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make sure that the last dimension is contiguous</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">stride</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">]]</span>
+        <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">softmax_scale</span> <span class="o">=</span> <span class="n">_flash_attn_forward</span><span class="p">(</span>
+            <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="n">causal</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="n">softmax_scale</span>
+        <span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">save_for_backward</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">bias</span><span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">causal</span> <span class="o">=</span> <span class="n">causal</span>
+        <span class="k">return</span> <span class="n">o</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="FlashAttnFunc.backward">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.FlashAttnFunc.backward">[docs]</a>
+    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">do</span><span class="p">):</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">saved_tensors</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">needs_input_grad</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;FlashAttention does not support bias gradient yet&#39;</span>
+        <span class="c1"># Triton&#39;s autotune causes the Tensor._version to change, and so Pytorch autograd</span>
+        <span class="c1"># does a memcpy. To avoid this we run in inference_mode, which doesn&#39;t track the version.</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
+            <span class="n">dq</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="n">dk</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">dv</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">_flash_attn_backward</span><span class="p">(</span><span class="n">do</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">lse</span><span class="p">,</span> <span class="n">dq</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span>
+                                 <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">causal</span><span class="p">,</span> <span class="n">softmax_scale</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">softmax_scale</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dq</span><span class="p">,</span> <span class="n">dk</span><span class="p">,</span> <span class="n">dv</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="flash_attn_func">
+<a class="viewcode-back" href="../../../../autoapi/lmflow/utils/flash_attention/triton_flash_attention/index.html#lmflow.utils.flash_attention.triton_flash_attention.flash_attn_func">[docs]</a>
+<span class="n">flash_attn_func</span> <span class="o">=</span> <span class="n">FlashAttnFunc</span><span class="o">.</span><span class="n">apply</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,130 @@
+lmflow.pipeline.utils.dpov2_dataprocessor
+=========================================
+
+.. py:module:: lmflow.pipeline.utils.dpov2_dataprocessor
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.dpov2_dataprocessor.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.dpov2_dataprocessor.PreferenceDataCollatorWithPadding
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: PreferenceDataCollatorWithPadding
+
+   .. py:attribute:: tokenizer
+      :type:  transformers.PreTrainedTokenizerBase
+
+
+   .. py:attribute:: model
+      :type:  Optional[transformers.PreTrainedModel]
+      :value: None
+
+
+
+   .. py:attribute:: padding
+      :type:  Union[bool, str]
+      :value: True
+
+
+
+   .. py:attribute:: max_length
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: max_prompt_length
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: label_pad_token_id
+      :type:  int
+      :value: -100
+
+
+
+   .. py:attribute:: padding_value
+      :type:  int
+      :value: 0
+
+
+
+   .. py:attribute:: truncation_mode
+      :type:  str
+      :value: 'keep_end'
+
+
+
+   .. py:attribute:: is_encoder_decoder
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: max_target_length
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: mask_prompt
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:method:: tokenize_batch_element(prompt: str, chosen: str, rejected: str) -> Dict
+
+      
+      Tokenize a single batch element.
+
+      At this stage, we don't convert to PyTorch tensors yet; we just handle the truncation
+          in case the prompt + chosen or prompt + rejected responses is/are too long. First
+          we truncate the prompt; if we're still too long, we truncate the chosen/rejected.
+
+      We also create the labels for the chosen/rejected responses, which are of length equal to
+          the sum of the length of the prompt and the chosen/rejected response, with
+          label_pad_token_id  for the prompt tokens.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: collate(batch)
+
+
+   .. py:method:: __call__(features: List[Dict[str, Any]]) -> Dict[str, Any]
+
+

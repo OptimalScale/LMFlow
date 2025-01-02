@@ -1,0 +1,45 @@
+constants
+=========
+
+.. py:module:: constants
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   constants.__gpt2_num_params_lm_head
+   constants.__gpt2_num_params_gpt2block
+   constants.__gpt2_num_params_gpt2block_in_pg0
+   constants.__gpt2_num_params_gpt2block_in_pg1
+   constants.__gpt2_param_intervals_pg0
+   constants.__gpt2_param_intervals_pg1
+   constants.GPT2
+
+
+Module Contents
+---------------
+
+.. py:data:: __gpt2_num_params_lm_head
+   :value: 39383808
+
+
+.. py:data:: __gpt2_num_params_gpt2block
+   :value: 7087872
+
+
+.. py:data:: __gpt2_num_params_gpt2block_in_pg0
+   :value: 7077888
+
+
+.. py:data:: __gpt2_num_params_gpt2block_in_pg1
+   :value: 9984
+
+
+.. py:data:: __gpt2_param_intervals_pg0
+
+.. py:data:: __gpt2_param_intervals_pg1
+
+.. py:data:: GPT2
+

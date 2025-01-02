@@ -1,0 +1,80 @@
+lmflow.tokenization.hf_decoder_model
+====================================
+
+.. py:module:: lmflow.tokenization.hf_decoder_model
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.tokenization.hf_decoder_model.logger
+   lmflow.tokenization.hf_decoder_model.tok_logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.tokenization.hf_decoder_model.blocking
+   lmflow.tokenization.hf_decoder_model.tokenize_function
+   lmflow.tokenization.hf_decoder_model.conversation_tokenize_function
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: tok_logger
+
+.. py:function:: blocking(token_dict: Dict, block_size: int, model_max_length: int, pad_token_id: int, padding_side: str, truncation_side: str = 'right') -> Dict
+
+.. py:function:: tokenize_function(examples, data_args: lmflow.args.DatasetArguments, tokenizer: Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast], column_names, label_columns, tokenized_column_order, add_special_tokens, use_truncation) -> Dict
+
+   
+   Handels text_only and text2text datasets tokenization
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: conversation_tokenize_function(examples, data_args: lmflow.args.DatasetArguments, tokenizer: Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast], column_names, conversation_template: lmflow.utils.conversation_template.ConversationTemplate) -> Dict
+
+   
+   Handels conversation datasets tokenization
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

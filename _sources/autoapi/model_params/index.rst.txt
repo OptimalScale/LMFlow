@@ -1,0 +1,59 @@
+model_params
+============
+
+.. py:module:: model_params
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   model_params.get_decay_parameter_names
+   model_params.get_parameter_names_in_param_groups
+   model_params.get_parameter_names_require_grads
+   model_params.guess_grad_norms_from_pg
+   model_params.guess_grad_norms_from_hf_trainer
+   model_params.guess_grad_all_zero_from_pg
+
+
+Module Contents
+---------------
+
+.. py:function:: get_decay_parameter_names(model: Union[transformers.PreTrainedModel, torch.nn.Module]) -> List[str]
+
+   
+   From transformers.trainer
+
+   Get all parameter names that weight decay will be applied to
+
+   Note that some models implement their own layernorm instead of calling nn.LayerNorm, weight decay could still
+   apply to those modules since this function only filter out instance of nn.LayerNorm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_parameter_names_in_param_groups(model: Union[transformers.PreTrainedModel, torch.nn.Module], ignore_requires_grad: bool = True) -> List[Dict[str, str]]
+
+.. py:function:: get_parameter_names_require_grads(model: Union[transformers.PreTrainedModel, torch.nn.Module]) -> List[str]
+
+.. py:function:: guess_grad_norms_from_pg(parameter_names: List[Dict[str, str]], all_norms: List[torch.Tensor], show_zero_grads: bool = False, separate_by_layer: bool = False)
+
+.. py:function:: guess_grad_norms_from_hf_trainer(parameter_names: List[str], all_norms: List[torch.Tensor], separate_by_layer: bool = False, note: Optional[str] = None)
+
+.. py:function:: guess_grad_all_zero_from_pg(parameter_names: List[Dict[str, str]], all_grads: List[torch.Tensor], show_zero_grads: bool = False, separate_by_layer: bool = False)
+

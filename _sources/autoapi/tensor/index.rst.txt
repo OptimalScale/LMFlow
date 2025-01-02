@@ -1,0 +1,22 @@
+tensor
+======
+
+.. py:module:: tensor
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   tensor.tensor_all_zero
+   tensor.find_nonzero_intervals
+
+
+Module Contents
+---------------
+
+.. py:function:: tensor_all_zero(tensor: torch.Tensor) -> bool
+
+.. py:function:: find_nonzero_intervals(tensor: torch.Tensor, ignore_distance: int = 1) -> List[Tuple[int, int]]
+

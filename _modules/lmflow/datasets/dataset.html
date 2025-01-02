@@ -1,0 +1,1127 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lmflow.datasets.dataset &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lmflow/datasets/dataset';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../lmflow.html" class="nav-link">lmflow</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.datasets.dataset</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lmflow.datasets.dataset</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># coding=utf-8</span>
+<span class="sd">&quot;&quot;&quot;This Python code defines a class Dataset with methods for initializing, loading,</span>
+<span class="sd">and manipulating datasets from different backends such as Hugging Face and JSON.</span>
+<span class="sd"> </span>
+<span class="sd">The `Dataset` class includes methods for loading datasets from a dictionary and a Hugging</span>
+<span class="sd">Face dataset, mapping datasets, and retrieving the backend dataset and arguments.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+
+<span class="c1"># Importing necessary libraries and modules</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">cmath</span> <span class="kn">import</span> <span class="n">e</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">Dataset</span> <span class="k">as</span> <span class="n">HFDataset</span>
+
+<span class="kn">from</span> <span class="nn">lmflow.args</span> <span class="kn">import</span> <span class="n">DatasetArguments</span>
+<span class="kn">from</span> <span class="nn">lmflow.utils.constants</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DATASET_DESCRIPTION_MAP</span><span class="p">,</span>
+    <span class="n">TEXT_ONLY_DATASET_DESCRIPTION</span><span class="p">,</span>
+    <span class="n">TEXT2TEXT_DATASET_DESCRIPTION</span><span class="p">,</span>
+    <span class="n">FLOAT_ONLY_DATASET_DESCRIPTION</span><span class="p">,</span>
+    <span class="n">INSTANCE_FIELDS_MAP</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">lmflow.utils.versioning</span> <span class="kn">import</span> <span class="n">is_multimodal_available</span>
+
+<span class="k">if</span> <span class="n">is_multimodal_available</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">.multi_modal_dataset</span> <span class="kn">import</span> <span class="n">CustomMultiModalDataset</span>
+
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DATASET_TYPES">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.DATASET_TYPES">[docs]</a>
+<span class="n">DATASET_TYPES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;text_only&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;text2text&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;float_only&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;image_text&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;conversation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;paired_conversation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;paired_text_to_text&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;text_to_textlist&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;text_to_scored_textlist&quot;</span>
+<span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="KEY_TYPE">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.KEY_TYPE">[docs]</a>
+<span class="n">KEY_TYPE</span> <span class="o">=</span> <span class="s2">&quot;type&quot;</span></div>
+
+<div class="viewcode-block" id="KEY_INSTANCES">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.KEY_INSTANCES">[docs]</a>
+<span class="n">KEY_INSTANCES</span> <span class="o">=</span> <span class="s2">&quot;instances&quot;</span></div>
+
+<div class="viewcode-block" id="KEY_SCORE">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.KEY_SCORE">[docs]</a>
+<span class="n">KEY_SCORE</span> <span class="o">=</span> <span class="s2">&quot;score&quot;</span></div>
+
+
+<div class="viewcode-block" id="Dataset">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset">[docs]</a>
+<span class="k">class</span> <span class="nc">Dataset</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes the Dataset object with the given parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ------------</span>
+<span class="sd">    data_args : DatasetArguments object.</span>
+<span class="sd">        Contains the arguments required to load the dataset.</span>
+
+<span class="sd">    backend : str,  default=&quot;huggingface&quot;</span>
+<span class="sd">        A string representing the dataset backend. Defaults to &quot;huggingface&quot;.</span>
+<span class="sd">    </span>
+<span class="sd">    args : Optional.</span>
+<span class="sd">        Positional arguments.</span>
+<span class="sd">    </span>
+<span class="sd">    kwargs : Optional.</span>
+<span class="sd">        Keyword arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_args</span><span class="p">:</span> <span class="n">DatasetArguments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Dataset.data_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.Dataset.data_args">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span> <span class="o">=</span> <span class="n">data_args</span></div>
+
+<div class="viewcode-block" id="Dataset.backend">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.Dataset.backend">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span></div>
+
+<div class="viewcode-block" id="Dataset.backend_dataset">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.Dataset.backend_dataset">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Dataset.type">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.Dataset.type">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="kc">None</span>        <span class="c1"># Original type of the dataset</span></div>
+
+<div class="viewcode-block" id="Dataset.dataset_path">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/dataset/index.html#lmflow.datasets.dataset.Dataset.dataset_path">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_path</span> <span class="o">=</span> <span class="n">data_args</span><span class="o">.</span><span class="n">dataset_path</span></div>
+
+
+        <span class="k">if</span> <span class="n">data_args</span><span class="o">.</span><span class="n">dataset_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="n">data_files</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.json&quot;</span><span class="p">)</span>
+            <span class="p">]</span>
+
+            <span class="c1"># Iterate through all the files and ensure they have the same data type</span>
+            <span class="k">for</span> <span class="n">single_file</span> <span class="ow">in</span> <span class="n">data_files</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">single_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+                    <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fin</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">KEY_TYPE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">json_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">KEY_TYPE</span><span class="si">}</span><span class="s1">&quot; field must be specified for data, e.g.&#39;</span>
+                            <span class="s1">&#39;{</span><span class="se">\n</span><span class="s1">&#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;   &quot;</span><span class="si">{</span><span class="n">KEY_TYPE</span><span class="si">}</span><span class="s1">: &quot;text_only&quot;,</span><span class="se">\n</span><span class="s1">&#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;   &quot;</span><span class="si">{</span><span class="n">KEY_INSTANCES</span><span class="si">}</span><span class="s1">&quot;: [</span><span class="se">\n</span><span class="s1">&#39;</span>
+                            <span class="s1">&#39;       { &quot;text&quot;: &quot;Sentence 1: This is a sentence.&quot; }</span><span class="se">\n</span><span class="s1">&#39;</span>
+                            <span class="s1">&#39;       { &quot;text&quot;: &quot;Sentence 2: This is another sentence.&quot; }</span><span class="se">\n</span><span class="s1">&#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;   ]</span><span class="se">\n</span><span class="s1">&#39;</span>
+                            <span class="s1">&#39;}&#39;</span>
+                        <span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="n">KEY_TYPE</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">json_data</span><span class="p">[</span><span class="n">KEY_TYPE</span><span class="p">]:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s1">&#39;All task files must have same data types. Previous&#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39; files have type &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1">&quot;, but in file&#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">single_file</span><span class="si">}</span><span class="s1">, it has type &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1">&quot;.&#39;</span>
+                        <span class="p">)</span>
+
+            <span class="c1"># Load the dataset using the HuggingFace dataset library</span>
+            <span class="n">extensions</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span>
+            <span class="n">raw_dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span>
+                <span class="n">extensions</span><span class="p">,</span>
+                <span class="n">data_files</span><span class="o">=</span><span class="n">data_files</span><span class="p">,</span>
+                <span class="n">field</span><span class="o">=</span><span class="n">KEY_INSTANCES</span><span class="p">,</span>
+                <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="o">=</span> <span class="n">raw_dataset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_data_format</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+            <span class="c1"># TODO (@Jiachun)</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;custom_multi_modal&quot;</span><span class="p">:</span>
+            <span class="c1"># FIXME refactor the backend name</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_multimodal_available</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Multimodal not available. Please install via `pip install -e &quot;.[multimodal]&quot;`&#39;</span>
+                <span class="p">)</span>
+            <span class="n">raw_dataset</span> <span class="o">=</span> <span class="n">CustomMultiModalDataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">data_args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="o">=</span> <span class="n">raw_dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported dataset backend &quot;</span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Dataset.__len__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.__len__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Dataset._check_data_format">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset._check_data_format">[docs]</a>
+    <span class="k">def</span> <span class="nf">_check_data_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if data type and data structure matches</span>
+
+<span class="sd">        Raise messages with hints if not matched.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">KEY_TYPE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">KEY_TYPE</span><span class="si">}</span><span class="s1">&quot; must be provided to initialize a dataset,&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; e.g.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">TEXT_ONLY_DATASET_DESCRIPTION</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">KEY_INSTANCES</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">KEY_INSTANCES</span><span class="si">}</span><span class="s1">&quot; must be provided to initialize a&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; dataset, e.g.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">TEXT_ONLY_DATASET_DESCRIPTION</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="n">KEY_TYPE</span><span class="p">]</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_backend_dataset</span><span class="p">()</span><span class="o">.</span><span class="n">features</span>
+        <span class="n">correct_fields</span> <span class="o">=</span> <span class="n">INSTANCE_FIELDS_MAP</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">correct_fields</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fields</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;data instance fields incorrect&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">correct_fields</span><span class="p">)</span><span class="si">}</span><span class="s1"> are required.&#39;</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Dataset.from_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.from_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Dataset object from a dictionary.</span>
+
+<span class="sd">        Return a Dataset given a dict with format:</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;type&quot;: TYPE,</span>
+<span class="sd">                &quot;instances&quot;: [</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;key_1&quot;: VALUE_1.1,</span>
+<span class="sd">                        &quot;key_2&quot;: VALUE_1.2,</span>
+<span class="sd">                        ...</span>
+<span class="sd">                    },</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;key_1&quot;: VALUE_2.1,</span>
+<span class="sd">                        &quot;key_2&quot;: VALUE_2.2,</span>
+<span class="sd">                        ...</span>
+<span class="sd">                    },</span>
+<span class="sd">                    ...</span>
+<span class="sd">                ]</span>
+<span class="sd">            }</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+
+<span class="sd">        dict_obj : dict.</span>
+<span class="sd">            A dictionary containing the dataset information.</span>
+<span class="sd">        </span>
+<span class="sd">        args : Optional.</span>
+<span class="sd">            Positional arguments.</span>
+<span class="sd">        </span>
+<span class="sd">        kwargs : Optional.</span>
+<span class="sd">            Keyword arguments.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        self : Dataset object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">KEY_TYPE</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict_obj</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">KEY_TYPE</span><span class="si">}</span><span class="s1">&quot; must be provided to initialize a dataset,&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39; e.g.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">TEXT_ONLY_DATASET_DESCRIPTION</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">KEY_INSTANCES</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict_obj</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">KEY_INSTANCES</span><span class="si">}</span><span class="s1">&quot; must be provided to initialize a&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39; dataset, e.g.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">TEXT_ONLY_DATASET_DESCRIPTION</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_TYPE</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="n">INSTANCE_FIELDS_MAP</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;type &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s1">&quot; is not supported&#39;</span><span class="p">)</span>
+
+            <span class="n">correct_fields</span> <span class="o">=</span> <span class="n">INSTANCE_FIELDS_MAP</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">instance</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_INSTANCES</span><span class="p">]):</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">correct_fields</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fields</span><span class="p">)):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;data instance fields incorrect&#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">correct_fields</span><span class="p">)</span><span class="si">}</span><span class="s1"> are required.&#39;</span>
+                    <span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">hf_dict</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_INSTANCES</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_INSTANCES</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">hf_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="n">instance</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_INSTANCES</span><span class="p">]</span>
+                        <span class="p">]</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="o">=</span> <span class="n">HFDataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">hf_dict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Error occurs: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">. Failed to convert dict to&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; </span><span class="se">\&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> dataset,&quot;</span> <span class="sa">f</span><span class="s2">&quot; the standard format is as&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; follows:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;    </span><span class="si">{</span><span class="n">DATASET_DESCRIPTION_MAP</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_data_format</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;dict&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="o">=</span> <span class="n">dict_obj</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_TYPE</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Currently .from_dict is not supported for backend &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span></div>
+
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Dataset.create_from_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.create_from_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dict_obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Returns a Dataset object given a dict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">empty_data_args</span> <span class="o">=</span> <span class="n">DatasetArguments</span><span class="p">(</span><span class="n">dataset_path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">empty_data_args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">dict_obj</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Dataset.to_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        Return a dict represents the dataset:</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;type&quot;: TYPE,</span>
+<span class="sd">                &quot;instances&quot;: [</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;key_1&quot;: VALUE_1.1,</span>
+<span class="sd">                        &quot;key_2&quot;: VALUE_1.2,</span>
+<span class="sd">                        ...</span>
+<span class="sd">                    },</span>
+<span class="sd">                    {</span>
+<span class="sd">                        &quot;key_1&quot;: VALUE_2.1,</span>
+<span class="sd">                        &quot;key_2&quot;: VALUE_2.2,</span>
+<span class="sd">                        ...</span>
+<span class="sd">                    },</span>
+<span class="sd">                    ...</span>
+<span class="sd">                ]</span>
+<span class="sd">            }</span>
+
+<span class="sd">        A python dict object represents the content of this dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="n">dict_obj</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_TYPE</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">()</span>
+            <span class="n">hf_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_INSTANCES</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">first_key</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hf_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">first_key</span> <span class="o">=</span> <span class="n">key</span>
+                <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">first_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">num_instances</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hf_dict</span><span class="p">[</span><span class="n">first_key</span><span class="p">])</span>
+                <span class="n">dict_obj</span><span class="p">[</span><span class="n">KEY_INSTANCES</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="n">key</span><span class="p">:</span> <span class="n">hf_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">hf_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                    <span class="p">}</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_instances</span><span class="p">)</span>
+                <span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">dict_obj</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;dict&quot;</span><span class="p">:</span>
+            <span class="n">dict_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span>
+            <span class="k">return</span> <span class="n">dict_obj</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Current .to_dict is not supported for backend &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Dataset.to_list">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.to_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of instances.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="n">instance_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                             <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="p">))]</span>
+            <span class="k">return</span> <span class="n">instance_list</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;dict&quot;</span><span class="p">:</span>
+            <span class="n">instance_list</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="p">[</span><span class="n">KEY_INSTANCES</span><span class="p">])</span>
+            <span class="c1"># TODO: should be a list of instances, instance should be huggingface datasets row format</span>
+            <span class="k">return</span> <span class="n">instance_list</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Current .to_list is not supported for backend &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Dataset.map">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.map">[docs]</a>
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        args : Optional.</span>
+<span class="sd">            Positional arguments.</span>
+<span class="sd">        </span>
+<span class="sd">        kwargs : Optional.</span>
+<span class="sd">            Keyword arguments.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        self : Dataset object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the dataset uses Hugging Face as the backend, </span>
+        <span class="c1"># call the `map()` function of the Hugging Face backend dataset</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="c1"># Set the mapped dataset as the backend dataset of the current dataset</span>
+            <span class="n">mapped_backend_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="o">=</span> <span class="n">mapped_backend_dataset</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If the backend is not Hugging Face, raise a NotImplementedError</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Currently .map is not supported for backend &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Dataset.get_backend">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.get_backend">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        self.backend</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span></div>
+
+
+
+<div class="viewcode-block" id="Dataset.get_backend_dataset">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.get_backend_dataset">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_backend_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        self.backend_dataset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span></div>
+
+
+
+<div class="viewcode-block" id="Dataset.get_fingerprint">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.get_fingerprint">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_fingerprint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        Fingerprint of the backend_dataset which controls the cache</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">_fingerprint</span></div>
+
+
+    
+<div class="viewcode-block" id="Dataset.get_data_args">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.get_data_args">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        self.data_args</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span></div>
+
+
+
+<div class="viewcode-block" id="Dataset.get_type">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.get_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        self.type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span></div>
+
+    
+    
+<div class="viewcode-block" id="Dataset.save">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;json&quot;</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the dataset to a json file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        file_path : str.</span>
+<span class="sd">            The path to the file where the dataset will be saved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.json&quot;</span><span class="p">,</span> <span class="s2">&quot;The file path must have a .json extension.&quot;</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fout</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">fout</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported format when saving the dataset: </span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+
+        
+            
+<div class="viewcode-block" id="Dataset.sample">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.sample">[docs]</a>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample n instances from the dataset.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        n : int.</span>
+<span class="sd">            The number of instances to sample from the dataset.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        sample_dataset : Dataset object.</span>
+<span class="sd">            A new dataset object containing the sampled instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="n">sampled_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="n">output_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_from_dict</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(),</span>
+                    <span class="s2">&quot;instances&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="n">col_name</span><span class="p">:</span> <span class="n">sampled_dataset</span><span class="p">[</span><span class="n">col_name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">sampled_dataset</span><span class="o">.</span><span class="n">column_names</span>
+                        <span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">output_dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Currently .sample is not supported for backend &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span></div>
+
+            
+            
+<div class="viewcode-block" id="Dataset.train_test_split">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.train_test_split">[docs]</a>
+    <span class="k">def</span> <span class="nf">train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_size</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Split the dataset into training and testing sets.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        test_size : float, default=0.2.</span>
+<span class="sd">            The proportion of the dataset that will be used for testing.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        train_dataset : Dataset object.</span>
+<span class="sd">            A new dataset object containing the training instances.</span>
+<span class="sd">        </span>
+<span class="sd">        test_dataset : Dataset object.</span>
+<span class="sd">            A new dataset object containing the testing instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="n">splited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span>
+                <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span>
+            <span class="p">)</span>
+            <span class="n">train_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_from_dict</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(),</span>
+                    <span class="s2">&quot;instances&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="n">col_name</span><span class="p">:</span> <span class="n">splited</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">][</span><span class="n">col_name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">splited</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">column_names</span>
+                        <span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">splited</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">]))</span>
+                    <span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">test_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_from_dict</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(),</span>
+                    <span class="s2">&quot;instances&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">{</span>
+                            <span class="n">col_name</span><span class="p">:</span> <span class="n">splited</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">][</span><span class="n">col_name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">splited</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">column_names</span>
+                        <span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">splited</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">]))</span>
+                    <span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="n">test_dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Currently .train_test_split is not supported for backend &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span></div>
+
+            
+            
+<div class="viewcode-block" id="Dataset.drop_instances">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.drop_instances">[docs]</a>
+    <span class="k">def</span> <span class="nf">drop_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Drop instances from the dataset.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        indices : list.</span>
+<span class="sd">            A list of indices of the instances to drop from the dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">remove_indices</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Currently .drop_instances is not supported for backend &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span></div>
+
+            
+    
+<div class="viewcode-block" id="Dataset.sanity_check">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.sanity_check">[docs]</a>
+    <span class="k">def</span> <span class="nf">sanity_check</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> 
+        <span class="n">drop_invalid</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a sanity check on the dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;huggingface&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hf_dataset_sanity_check</span><span class="p">(</span><span class="n">drop_invalid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Currently .sanity_check is not supported for backend &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="p">)</span></div>
+
+            
+            
+<div class="viewcode-block" id="Dataset.hf_dataset_sanity_check">
+<a class="viewcode-back" href="../../../autoapi/lmflow/datasets/index.html#lmflow.datasets.dataset.Dataset.hf_dataset_sanity_check">[docs]</a>
+    <span class="k">def</span> <span class="nf">hf_dataset_sanity_check</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">drop_invalid</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a sanity check on the HuggingFace dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dataset is empty.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;text_to_textlist&#39;</span><span class="p">:</span>
+            <span class="n">num_output_per_instance</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">dataset_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">])</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">dataset_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">num_output_per_instance</span><span class="p">)</span>
+            <span class="n">dataset_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]]))</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_cache</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="p">):</span>
+                <span class="n">warning_info</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">dataset_cache</span><span class="p">)</span><span class="si">}</span><span class="s2"> invalid instances &quot;</span>
+                    <span class="s2">&quot;during hf_dataset_sanity_check, please check:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;   1. length of input strings should not be empty</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;   2. length of output strings should not be all empty</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;   3. number of output strings should be consistent</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="c1"># since we will use tensor reshape later</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">drop_invalid</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">backend_dataset</span> <span class="o">=</span> <span class="n">dataset_cache</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">warning_info</span><span class="o">+</span><span class="s2">&quot;Invalid instances are dropped.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">warning_info</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No sanity check for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> dataset.&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2024.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
