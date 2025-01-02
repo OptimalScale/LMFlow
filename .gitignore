@@ -20,7 +20,7 @@ regression_test/*/new_log
 output_dir/
 
 # data files
-data/
+# data/
 
 # output models
 output_models/
