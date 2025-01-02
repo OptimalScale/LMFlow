@@ -57,6 +57,7 @@ class LISATrainer(Trainer):
         self.active_layers_names = []
         
         layers = self._get_all_body_layers()
+        print('freeze all layers at lisatrainer init')
         for layer in layers:
             for param in layer.parameters():
                 param.requires_grad = False        
@@ -127,9 +128,12 @@ class LISATrainer(Trainer):
             return
         
         layers = self._get_all_body_layers()
+        print(self.optimizer.state)
+        for key in self.optimizer.state.keys():
+            print(key.shape)
         for active_layer_idx in self.active_layers_indices:
             for name, param in layers[active_layer_idx].named_parameters():
-                print(f"{name=}")
+                print(f"del {name=}")
                 del self.optimizer.state[param]
         
         self._switch_active_layers()
