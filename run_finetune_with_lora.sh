@@ -2,7 +2,7 @@
 # Please run this script under ${project_id} in project directory of
 
 # Parses arguments
-model_name_or_path=gpt2
+model_name_or_path=meta-llama/Llama-2-7b-hf
 dataset_path=data/wikitext-2-raw-v1/test
 # conversation_template=llama2
 output_dir=output_models/finetune
@@ -59,6 +59,7 @@ deepspeed ${deepspeed_args} \
     --per_device_train_batch_size 1 \
     --use_lora 1 \
     --lora_r 8 \
+    --lora_target_modules="embed_tokens,q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj,lm_head" \
     --save_aggregated_lora 0\
     --deepspeed configs/ds_config_zero2.json \
     --fp16 \
