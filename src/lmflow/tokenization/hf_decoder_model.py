@@ -27,13 +27,10 @@ def blocking(
     padding_side: str,
     truncation_side: str='right',
 ) -> Dict:
-    block_size_warning_num = 0
     num_example = len(token_dict[list(token_dict.keys())[0]])
     for i in range(num_example):
         max_length = min(block_size, model_max_length)
         pad_length = max_length - len(token_dict["input_ids"][i])
-        if block_size < model_max_length:
-            block_size_warning_num += 1
         if pad_length < 0:
             # Truncates too long samples
             for key in ["input_ids", "attention_mask", "labels"]:
@@ -72,13 +69,6 @@ def blocking(
                 raise ValueError(
                     f"padding_side should be either 'right' or 'left', got {padding_side}"
                 )
-    if block_size_warning_num > 0:
-        logger.warning(
-            f"There are {block_size_warning_num} of {num_example} samples where"
-            f"block_size {block_size} < model_max_length"
-            f" {model_max_length}, use block_size"
-            " for maximum tokenized sequence length"
-        )
         
     return token_dict
 

@@ -2,12 +2,14 @@
 loading data from a JSON file, batching data, and extracting answers from generated text.
 """
 
-import random
-import numpy as np
-import torch
 import json
+import os
+import random
 import re
 from typing import Union, List, TypedDict, Dict
+
+import numpy as np
+import torch
 
 
 def set_random_seed(seed: int):
@@ -91,6 +93,36 @@ def batchlize(examples: list, batch_size: int, random_shuffle: bool):
             size += (length - size)
     return dataloader
 
+
+def read_last_n_lines_large_file(file_path, n=10):
+    with open(file_path, 'rb') as f:
+        f.seek(0, os.SEEK_END)
+        buffer = bytearray()
+        pointer = f.tell()
+        while pointer >= 0 and len(buffer.splitlines()) <= n:
+            f.seek(pointer)
+            read_byte = f.read(1)
+            buffer.extend(read_byte)
+            pointer -= 1
+        return buffer[::-1].decode('utf-8').splitlines()[-n:]
+
+
+def get_dataset_type_fast(file_path, max_lines=100):
+    type_values = []
+    # first n lines
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for i, line in enumerate(f):
+            if i >= max_lines:
+                break
+            try:
+                data = json.loads(line.strip())
+                if isinstance(data, dict) and 'type' in data:
+                    type_values.append(data['type'])
+            except json.JSONDecodeError:
+                continue
+    # last n lines
+    # TODO
+    return type_values
 
 
 def answer_extraction(response, answer_type=None):   #use this funtion to extract answers from generated text
