@@ -94,7 +94,7 @@ def batchlize(examples: list, batch_size: int, random_shuffle: bool):
     return dataloader
 
 
-def read_last_n_lines_large_file(file_path, n=10):
+def read_last_n_lines_large_file(file_path: str, n: int = 10) -> List[str]:
     with open(file_path, 'rb') as f:
         f.seek(0, os.SEEK_END)
         buffer = bytearray()
@@ -107,22 +107,46 @@ def read_last_n_lines_large_file(file_path, n=10):
         return buffer[::-1].decode('utf-8').splitlines()[-n:]
 
 
-def get_dataset_type_fast(file_path, max_lines=100):
-    type_values = []
-    # first n lines
-    with open(file_path, 'r', encoding='utf-8') as f:
-        for i, line in enumerate(f):
-            if i >= max_lines:
+def read_first_n_lines_large_file(file_path: str, n: int = 10) -> List[str]:
+    with open(file_path, 'rb') as f:
+        f.seek(0)
+        lines = []
+        for i in range(n):
+            line = f.readline()
+            if not line:
                 break
-            try:
-                data = json.loads(line.strip())
-                if isinstance(data, dict) and 'type' in data:
-                    type_values.append(data['type'])
-            except json.JSONDecodeError:
-                continue
-    # last n lines
-    # TODO
-    return type_values
+            lines.append(line.decode('utf-8').strip())
+        return lines
+
+
+def get_dataset_type_fast(file_path: str, max_lines: int = 100) -> Union[str, None]:
+    '''Get the type values from the first and last n lines of a large json dataset.
+    '''
+    lines = []
+    dataset_type = None
+    dataset_type_pattern = re.compile(r'[\"\']type[\"\']:\s*[\'\"]([^"]+)[\'\"]')
+    lines.extend(read_first_n_lines_large_file(file_path, max_lines))
+    lines.extend(read_last_n_lines_large_file(file_path, max_lines))
+    for line in lines:
+        try:
+            dataset_type = dataset_type_pattern.search(line).group(1)
+            break
+        except AttributeError:
+            continue
+    return dataset_type
+
+
+def check_dataset_instances_key_fast(file_path: str, instances_key: str, max_lines: int = 100) -> bool:
+    '''Check if the dataset instances key matches the instance_key.
+    '''
+    lines = []
+    instance_key_pattern = re.compile(r'[\"\']' + instances_key + r'[\"\']')
+    lines.extend(read_first_n_lines_large_file(file_path, max_lines))
+    lines.extend(read_last_n_lines_large_file(file_path, max_lines))
+    for line in lines:
+        if instance_key_pattern.search(line):
+            return True
+    return False
 
 
 def answer_extraction(response, answer_type=None):   #use this funtion to extract answers from generated text

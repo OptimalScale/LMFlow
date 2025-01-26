@@ -17,7 +17,7 @@ from pathlib import Path
 
 from cmath import e
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from datasets import load_dataset
 from datasets import Dataset as HFDataset
@@ -32,7 +32,7 @@ from lmflow.utils.constants import (
     INSTANCE_FIELDS_MAP,
 )
 from lmflow.utils.versioning import is_multimodal_available
-from lmflow.utils.data_utils import get_dataset_type_fast
+from lmflow.utils.data_utils import get_dataset_type_fast, check_dataset_instances_key_fast
 
 if is_multimodal_available():
     from .multi_modal_dataset import CustomMultiModalDataset
@@ -92,32 +92,8 @@ class Dataset:
             ]
             logger.info(f"Data files: \n{data_files}")
             
-            # Iterate through all the files and ensure they have the same data type
-            for single_file in tqdm(data_files, desc='Checking dataset keys'):
-                # check keys: type, instances
-                json_data_type = get_dataset_type_fast(single_file)
-                if not json_data_type:
-                    raise ValueError(
-                        f'"{KEY_TYPE}" must be provided to initialize a dataset,'
-                        f' e.g.\n'
-                        f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
-                    )
-                if self.type is None: # TODO: out of skip_dataset_check
-                    self.type = json_data_type
-                elif self.type != json_data_type:
-                    raise ValueError(
-                        'All task files must have same data types. Previous'
-                        f' files have type "{self.type}", but in file'
-                        f' {single_file}, it has type "{self.type}".'
-                    )
-                # json_data_instances = get_dataset_type_fast(single_file)
-                # if not json_data_instances:
-                #     raise ValueError(
-                #         f'"{KEY_INSTANCES}" must be provided to initialize a'
-                #         f' dataset, e.g.\n'
-                #         f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
-                #     )
-
+            # check if the dataset is in the correct format and get the dataset type (text_only, text2text, etc.)
+            self._check_hf_json_format(data_files)
             # Load the dataset using the HuggingFace dataset library
             print('loading datasets')
             extensions = "json"
@@ -161,6 +137,34 @@ class Dataset:
                 f'data instance fields incorrect'
                 f' {list(correct_fields)} are required.'
             )
+            
+    
+    def _check_hf_json_format(self, data_files: List[str]):
+        for single_file in tqdm(data_files, desc='Checking dataset keys'):
+            # get type and check if it is consistent
+            json_data_type = get_dataset_type_fast(single_file)
+            if not json_data_type:
+                raise ValueError(
+                    f'"{KEY_TYPE}" must be provided to initialize a dataset,'
+                    f' e.g.\n'
+                    f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
+                )
+            if self.type is None:
+                self.type = json_data_type
+            elif self.type != json_data_type:
+                raise ValueError(
+                    'All task files must have same data types. Previous'
+                    f' files have type "{self.type}", but in file'
+                    f' {single_file}, it has type "{self.type}".'
+                )
+            # check if instances key is provided
+            key_instances_exists_flag = check_dataset_instances_key_fast(single_file, KEY_INSTANCES)
+            if not key_instances_exists_flag:
+                raise ValueError(
+                    f'"{KEY_INSTANCES}" must be provided to initialize a'
+                    f' dataset, e.g.\n'
+                    f'    {TEXT_ONLY_DATASET_DESCRIPTION}'
+                )
 
 
     def from_dict(self, dict_obj: dict, *args, **kwargs):
