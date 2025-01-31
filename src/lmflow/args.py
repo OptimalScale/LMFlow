@@ -631,9 +631,6 @@ class DatasetArguments:
             if self.validation_file is not None:
                 extension = self.validation_file.split(".")[-1]
                 assert extension in ["csv", "json", "txt"], "`validation_file` should be a csv, a json or a txt file."
-                
-        if self.skip_dataset_check:
-            logger.warning("Skip dataset check is enabled. Make sure the datasets are in the correct format.")
 
 
 @dataclass

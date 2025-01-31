@@ -33,7 +33,7 @@ from transformers.utils import (
 import numpy as np
 
 import lmflow.optim.optimizers as optim
-from lmflow.args import OptimizerNames
+from lmflow.args import OptimizerNames, DatasetArguments, ModelArguments, FinetunerArguments
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
@@ -64,7 +64,14 @@ class Finetuner(BaseTuner):
         Keyword arguments.
 
     """
-    def __init__(self, model_args, data_args, finetuner_args, *args, **kwargs):
+    def __init__(
+        self, 
+        model_args: ModelArguments, 
+        data_args: DatasetArguments, 
+        finetuner_args: FinetunerArguments, 
+        *args, 
+        **kwargs
+    ):
 
         self.model_args = model_args
         self.data_args = data_args
