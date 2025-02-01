@@ -117,7 +117,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
     def tokenize(
         self, 
-        dataset, 
+        dataset: Dataset, 
         add_special_tokens=True, 
         *args, 
         **kwargs
@@ -236,6 +236,11 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                 "new_fingerprint": fingerprint,
             }
 
+        if data_args.block_size < self.tokenizer.model_max_length:
+            logger.warning(
+                f"block_size {data_args.block_size} < model_max_length {self.tokenizer.model_max_length}, "
+                "use block_size for maximum tokenized sequence length."
+            )
         tokenized_datasets = raw_datasets.map(
             tokenize_fn,
             batched=True,
