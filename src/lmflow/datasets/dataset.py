@@ -95,7 +95,7 @@ class Dataset:
             # check if the dataset is in the correct format and get the dataset type (text_only, text2text, etc.)
             self._check_hf_json_format(data_files)
             # Load the dataset using the HuggingFace dataset library
-            print('loading datasets')
+            logger.info('Loading datasets')
             extensions = "json"
             raw_dataset = load_dataset(
                 extensions,
