@@ -4,15 +4,15 @@
 
 import logging
 from logging import Logger
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 
 import transformers
 from transformers.testing_utils import CaptureLogger
 from transformers import PreTrainedTokenizer, PreTrainedTokenizerFast
 
+from lmflow.args import DatasetArguments
 from lmflow.utils.conversation_template import ConversationTemplate
 from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
-from lmflow.args import DatasetArguments
 
 
 logger = logging.getLogger(__name__)
@@ -140,7 +140,7 @@ def conversation_tokenize_function(
     data_args: DatasetArguments,
     tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast], 
     column_names,
-    conversation_template: ConversationTemplate,
+    conversation_template: Union[ConversationTemplate, str]
 ) -> Dict:
     """Handels conversation datasets tokenization
     """
@@ -155,38 +155,63 @@ def conversation_tokenize_function(
             messages = examples["messages"][i]
             system = examples.get("system", [None] * num_example)[i]
             tools = examples.get("tools", [None] * num_example)[i]
-            if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
-                tok_logger.warning(
-                    "Invalid instance encountered. Either the conversation has less than "
-                    "one round or the first message is not from the user."
+            
+            if isinstance(conversation_template, str): # jinja template
+                conversation = [{"role": "system", "content": system}]
+                conversation.extend(messages)
+                encoded_conversation = tokenizer.apply_chat_template(
+                    conversation=conversation,
+                    tools=tools,
+                    chat_template=conversation_template,
+                    return_assistant_tokens_mask=True,
+                    return_dict=True,
                 )
-                continue
-        
-            if len(messages) % 2 != 0:
-                logger.warning(
-                    "The number of messages is not even, the last message will be ignored."
-                )
-                messages = messages[:-1]
-                
-            encoded_conversation = conversation_template.encode_conversation(
-                tokenizer=tokenizer,
-                messages=messages,
-                system=system,
-                tools=tools,
-            )
-
-            input_ids, labels = [], []
-            for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
-                input_ids += user_input + assistant_result
                 
                 if data_args.train_on_prompt:
-                    labels += user_input + assistant_result
+                    labels = encoded_conversation["input_ids"]
                 else:
-                    labels += [-100] * len(user_input) + assistant_result
-                
-            token_dict["input_ids"][i].extend(input_ids)
-            token_dict["attention_mask"][i].extend([1] * len(input_ids))
-            token_dict["labels"][i].extend(labels)
+                    labels = [
+                        encoded_conversation["input_ids"][index] if mask == 1 else -100 
+                        for index, mask in enumerate(encoded_conversation["assistant_masks"])
+                    ]
+                    
+                token_dict['input_ids'][i].extend(encoded_conversation['input_ids'])
+                token_dict['attention_mask'][i].extend(encoded_conversation['attention_mask'])
+                token_dict['labels'][i].extend(labels)
+            
+            else: # lmflow `conversation_template`
+                if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
+                    tok_logger.warning(
+                        "Invalid instance encountered. Either the conversation has less than "
+                        "one round or the first message is not from the user."
+                    )
+                    continue
+            
+                if len(messages) % 2 != 0:
+                    logger.warning(
+                        "The number of messages is not even, the last message will be ignored."
+                    )
+                    messages = messages[:-1]
+                    
+                encoded_conversation = conversation_template.encode_conversation(
+                    tokenizer=tokenizer,
+                    messages=messages,
+                    system=system,
+                    tools=tools,
+                )
+
+                input_ids, labels = [], []
+                for turn_idx, (user_input, assistant_result) in enumerate(encoded_conversation):
+                    input_ids += user_input + assistant_result
+                    
+                    if data_args.train_on_prompt:
+                        labels += user_input + assistant_result
+                    else:
+                        labels += [-100] * len(user_input) + assistant_result
+                    
+                token_dict["input_ids"][i].extend(input_ids)
+                token_dict["attention_mask"][i].extend([1] * len(input_ids))
+                token_dict["labels"][i].extend(labels)
 
     if data_args.disable_group_texts:
         token_dict = blocking(

@@ -148,12 +148,6 @@ class StringFormatter(Formatter):
 
 
 @dataclass
-class ListFormatter(Formatter):
-    def format(self, **kwargs) -> list:
-        pass # Work in progress
-
-
-@dataclass
 class ConversationTemplate:
     user_formatter: Formatter
     assistant_formatter: Formatter
@@ -167,6 +161,7 @@ class ConversationTemplate:
     special_starter: Optional[TemplateComponent] = None
     special_stopper: Optional[TemplateComponent] = None
     template_name: Optional[str] = None
+    system_default: Optional[str] = None
     
     def __post_init__(self):
         if self.separator:
@@ -217,7 +212,7 @@ class ConversationTemplate:
                     raise ValueError("Your dataset contains system message but no system formatter is provided. "
                                      "Consider either providing a system formatter or removing system prompt from your dataset.")
             else:
-                system = None
+                system = self.system_default if self.system_default else None
         
         encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
         encoded_pairs = self.post_process_pairs(encoded_pairs=encoded_pairs, tokenizer=tokenizer)
@@ -439,11 +434,7 @@ class ConversationTemplateForTool(ConversationTemplate):
         '''
         assert isinstance(messages, list), "Messages must be a list."
         
-        if tools is None:
-            tools = ''
-        else:
-            tools = ','.join(tools)
-            # logger.warning("Tools are not supported yet. Please include tools in the system message manually.")
+        tools = self._handle_tools(tools)
         
         if system is None:
             system = ""
@@ -453,7 +444,7 @@ class ConversationTemplateForTool(ConversationTemplate):
                     raise ValueError("Your dataset contains system message but no system formatter is provided. "
                                      "Consider either providing a system formatter or removing system prompt from your dataset.")
             else:
-                system = ""
+                system = self.system_default if self.system_default else ""
         encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
         encoded_pairs = self.post_process_pairs(encoded_pairs=encoded_pairs, tokenizer=tokenizer)
         
@@ -551,6 +542,10 @@ class ConversationTemplateForTool(ConversationTemplate):
             else:
                 raise NotImplementedError(f"Component type {component.type} is not supported yet.")
         return encoded_ids
+    
+    def _handle_tools(self, tools: Optional[List[str]]) -> str:
+        tools_out = ','.join(tools) if tools is not None else ''
+        return tools_out
 
 
 EMPTY_TEMPLATE = ConversationTemplate(
