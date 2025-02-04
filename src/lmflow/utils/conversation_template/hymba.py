@@ -37,56 +37,12 @@ from transformers import PreTrainedTokenizer
 
 
 class HymbaConversationTemplate(ConversationTemplateForTool):
-    def encode_conversation(
-        self,
-        tokenizer: PreTrainedTokenizer,
-        messages: List[Dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[List[str]] = None,
-        **kwargs
-    ) -> Sequence[Tuple[List[int], List[int]]]:
-        r'''
-        Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
-        Data example: 
-        ```json
-        {
-            "conversation_id": 2,
-            "system": "sysinfo1",
-            "tools": ["tool_1_desc"],
-            "messages": [
-                {
-                    "role": "user",
-                    "content": "hi"
-                },
-                {
-                    "role": "assistant",
-                    "content": "Hello!"
-                }
-            ]
-        }
-        ```
-        '''
-        assert isinstance(messages, list), "Messages must be a list."
-        
+    def _handle_tools(self, tools: Optional[List[str]]) -> str:
         tools_out = ''
         if tools is not None:
             for tool in tools:
                 tools_out += "\n<tool> " + tool + " </tool>"
-        
-        if system is None:
-            system = ""
-        else:
-            if system.replace(" ",""): # has actual content
-                if not self.system_formatter:
-                    raise ValueError("Your dataset contains system message but no system formatter is provided. "
-                                     "Consider either providing a system formatter or removing system prompt from your dataset.")
-                system = '\n' + system
-            else:
-                system = ""
-        encoded_pairs = self._encode(tokenizer, messages, system, tools_out, **kwargs)
-        encoded_pairs = self.post_process_pairs(encoded_pairs=encoded_pairs, tokenizer=tokenizer)
-        
-        return encoded_pairs    
+        return tools_out
 
 
 HYMBA_TEMPLATE = HymbaConversationTemplate(

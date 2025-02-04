@@ -3,7 +3,10 @@
 - [Supported Conversation Template](#supported-conversation-template)
   - [ChatGLM-3](#chatglm-3)
   - [ChatML](#chatml)
-  - [DeepSeek](#deepseek)
+  - [DeepSeek-V2](#deepseek-v2)
+  - [DeepSeek-V3](#deepseek-v3)
+  - [DeepSeek-R1](#deepseek-r1-zero)
+  - [DeepSeek-R1-Distill](#deepseek-r1-distill-llamaqwen)
   - [Gemma](#gemma)
   - [Hymba](#hymba)
   - [InternLM2](#internlm2)
@@ -13,6 +16,10 @@
   - [Mixtral 8x7B](#mixtral-8x7b)
   - [Phi-3](#phi-3)
   - [Qwen-2](#qwen-2)
+  - [Qwen-2.5](#qwen-25)
+  - [Qwen-2.5-1M](#qwen-25-1m)
+  - [Qwen-2.5-Math](#qwen-25-math)
+  - [Qwen-QwQ](#qwen-qwq)
   - [Yi](#yi)
   - [Yi-1.5](#yi-15)
   - [Zephyr](#zephyr)
@@ -84,7 +91,7 @@
 ```
 
 
-## DeepSeek
+## DeepSeek-V2
 **With a system message** 
 ```
 <｜begin▁of▁sentence｜>{{system_message}}\n\nUser: {{user_message_0}}\n\n
@@ -114,6 +121,243 @@
 **Filled Example**
 ```
 <｜begin▁of▁sentence｜>You are a chatbot developed by LMFlow team.\n\nUser: Who are you?\n\nAssistant: I am a chatbot developed by LMFlow team.<｜end▁of▁sentence｜>User: How old are you?\n\nAssistant: I don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<｜end▁of▁sentence｜>
+```
+
+
+## DeepSeek-V3
+**jinja template**  
+[[Reference](https://huggingface.co/deepseek-ai/DeepSeek-V3/blob/1d044fd82b15f1cedb197a288e50cc96a2c27205/tokenizer_config.json#L34)]
+```
+{% if not add_generation_prompt is defined %}
+    {% set add_generation_prompt = false %}
+{% endif %}
+{% set ns = namespace(is_first=false, is_tool=false, is_output_first=true, system_prompt='', is_first_sp=true) %}
+{%- for message in messages %}
+    {%- if message['role'] == 'system' %}
+        {%- if ns.is_first_sp %}
+            {% set ns.system_prompt = ns.system_prompt + message['content'] %}
+            {% set ns.is_first_sp = false %}
+        {%- else %}
+            {% set ns.system_prompt = ns.system_prompt + '\n\n' + message['content'] %}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{{bos_token}}
+{{ns.system_prompt}}
+{%- for message in messages %}
+    {%- if message['role'] == 'user' %}
+        {%- set ns.is_tool = false -%}
+        {{'<｜User｜>' + message['content']}}
+    {%- endif %}
+    {%- if message['role'] == 'assistant' and message['content'] is none %}
+        {%- set ns.is_tool = false -%}
+        {%- for tool in message['tool_calls']%}
+            {%- if not ns.is_first %}
+                {{'<｜Assistant｜>'}}
+                {% generation %}
+                {{'<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\n' + '```json' + '\n' + tool['function']['arguments'] + '\n' + '```' + '<｜tool▁call▁end｜>'}}
+                {% endgeneration %}
+                {%- set ns.is_first = true -%}
+            {%- else %}
+                {% generation %}
+                {{'\n' + '<｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\n' + '```json' + '\n' + tool['function']['arguments'] + '\n' + '```' + '<｜tool▁call▁end｜>'}}
+                {{'<｜tool▁calls▁end｜><｜end▁of▁sentence｜>'}}
+                {% endgeneration %}
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+    {%- if message['role'] == 'assistant' and message['content'] is not none %}
+        {%- if ns.is_tool %}
+            {{'<｜tool▁outputs▁end｜>'}}
+            {% generation %}
+            {{ message['content'] + '<｜end▁of▁sentence｜>'}}
+            {%- set ns.is_tool = false -%}
+            {% endgeneration %}
+        {%- else %}
+            {{'<｜Assistant｜>'}}
+            {% generation %}
+            {{ message['content'] + '<｜end▁of▁sentence｜>'}}
+            {% endgeneration %}
+        {%- endif %}
+    {%- endif %}
+    {%- if message['role'] == 'tool' %}
+        {%- set ns.is_tool = true -%}
+        {%- if ns.is_output_first %}
+            {{'<｜tool▁outputs▁begin｜><｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}
+            {%- set ns.is_output_first = false %}
+        {%- else %}
+            {{'\n<｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}
+        {%- endif %}
+    {%- endif %}
+{%- endfor -%}
+{% if ns.is_tool %}
+    {{'<｜tool▁outputs▁end｜>'}}
+{% endif %}
+{% if add_generation_prompt and not ns.is_tool %}
+    {{'<｜Assistant｜>'}}
+{% endif %}
+```
+
+
+## DeepSeek-R1(-Zero)
+**jinja template**  
+[[Reference](https://huggingface.co/deepseek-ai/DeepSeek-R1/blob/f7361cd9ff99396dbf6bd644ad846015e59ed4fc/tokenizer_config.json#L34)]
+```
+{% if not add_generation_prompt is defined %}
+    {% set add_generation_prompt = false %}
+{% endif %}
+{% set ns = namespace(is_first=false, is_tool=false, is_output_first=true, system_prompt='', is_first_sp=true) %}
+{%- for message in messages %}
+    {%- if message['role'] == 'system' %}
+        {%- if ns.is_first_sp %}
+            {% set ns.system_prompt = ns.system_prompt + message['content'] %}
+            {% set ns.is_first_sp = false %}
+        {%- else %}
+            {% set ns.system_prompt = ns.system_prompt + '\\n\\n' + message['content'] %}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{{ bos_token }}
+{{ ns.system_prompt }}
+{%- for message in messages %}
+    {%- if message['role'] == 'user' %}
+        {%- set ns.is_tool = false -%}
+        {{'<｜User｜>' + message['content']}}
+    {%- endif %}
+    {%- if message['role'] == 'assistant' and 'tool_calls' in message %}
+        {%- set ns.is_tool = false -%}
+        {%- for tool in message['tool_calls'] %}
+            {%- if not ns.is_first %}
+                {%- if message['content'] is none %}
+                    {{'<｜Assistant｜>'}}
+                    {% generation %}
+                    {{'<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}
+                    {% endgeneration %}
+                {%- else %}
+                    {{'<｜Assistant｜>'}}
+                    {% generation %}
+                    {{ message['content'] + '<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}
+                    {% endgeneration %}
+                {%- endif %}
+                {%- set ns.is_first = true -%}
+            {%- else %}
+                {% generation %}
+                {{'\\n' + '<｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}
+                {% endgeneration %}
+            {%- endif %}
+        {%- endfor %}
+        {% generation %}
+        {{'<｜tool▁calls▁end｜><｜end▁of▁sentence｜>'}}
+        {% endgeneration %}
+    {%- endif %}
+    {%- if message['role'] == 'assistant' and 'tool_calls' not in message %}
+        {%- if ns.is_tool %}
+            {{'<｜tool▁outputs▁end｜>'}}
+            {% generation %}
+            {{ message['content'] + '<｜end▁of▁sentence｜>'}}
+            {% endgeneration %}
+            {%- set ns.is_tool = false -%}
+        {%- else %}
+            {% set content = message['content'] %}
+            {% if '</think>' in content %}
+                {% set content = content.split('</think>')[-1] %}
+            {% endif %}
+            {{'<｜Assistant｜>'}}
+            {% generation %}
+            {{ content + '<｜end▁of▁sentence｜>'}}
+            {% endgeneration %}
+        {%- endif %}
+    {%- endif %}
+    {%- if message['role'] == 'tool' %}
+        {%- set ns.is_tool = true -%}
+        {%- if ns.is_output_first %}
+            {{'<｜tool▁outputs▁begin｜><｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}
+            {%- set ns.is_output_first = false %}
+        {%- else %}
+            {{'<｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}
+        {%- endif %}
+    {%- endif %}
+{%- endfor -%}
+{% if ns.is_tool %}
+    {{'<｜tool▁outputs▁end｜>'}}
+{% endif %}
+{% if add_generation_prompt and not ns.is_tool %}
+    {{'<｜Assistant｜>'}}
+{% endif %}
+```
+
+
+## DeepSeek-R1-Distill(-Llama/Qwen)
+**jinja template**  
+[[Reference](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B/blob/6393b7559e403fd1d80bfead361586fd6f630a4d/tokenizer_config.json#L34)]
+```
+{% if not add_generation_prompt is defined %}
+    {% set add_generation_prompt = false %}
+{% endif %}
+{% set ns = namespace(is_first=false, is_tool=false, is_output_first=true, system_prompt='') %}
+{%- for message in messages %}
+    {%- if message['role'] == 'system' %}
+        {% set ns.system_prompt = message['content'] %}
+    {%- endif %}
+{%- endfor %}
+{{bos_token}}
+{{ns.system_prompt}}
+{%- for message in messages %}
+    {%- if message['role'] == 'user' %}
+        {%- set ns.is_tool = false -%}
+        {{'<｜User｜>' + message['content']}}
+    {%- endif %}
+    {%- if message['role'] == 'assistant' and message['content'] is none %}
+        {%- set ns.is_tool = false -%}
+        {%- for tool in message['tool_calls']%}
+            {%- if not ns.is_first %}
+                {{'<｜Assistant｜>'}}
+                {% generation %}
+                {{'<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}
+                {% endgeneration %}
+                {%- set ns.is_first = true -%}
+            {%- else %}
+                {% generation %}
+                {{'\\n' + '<｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}
+                {{'<｜tool▁calls▁end｜><｜end▁of▁sentence｜>'}}
+                {% endgeneration %}
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+    {%- if message['role'] == 'assistant' and message['content'] is not none %}
+        {%- if ns.is_tool %}
+            {{'<｜tool▁outputs▁end｜>'}}
+            {% generation %}
+            {{ message['content'] + '<｜end▁of▁sentence｜>'}}
+            {% endgeneration %}
+            {%- set ns.is_tool = false -%}
+        {%- else %}
+            {% set content = message['content'] %}
+            {% if '</think>' in content %}
+                {% set content = content.split('</think>')[-1] %}
+            {% endif %}
+            {{'<｜Assistant｜>'}}
+            {% generation %}
+            {{ content + '<｜end▁of▁sentence｜>'}}
+            {% endgeneration %}
+        {%- endif %}
+    {%- endif %}
+    {%- if message['role'] == 'tool' %}
+        {%- set ns.is_tool = true -%}
+        {%- if ns.is_output_first %}
+            {{'<｜tool▁outputs▁begin｜><｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}
+            {%- set ns.is_output_first = false %}
+        {%- else %}
+            {{'\\n<｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}
+        {%- endif %}
+    {%- endif %}
+{%- endfor -%}
+{% if ns.is_tool %}
+    {{'<｜tool▁outputs▁end｜>'}}
+{% endif %}
+{% if add_generation_prompt and not ns.is_tool %}
+    {{'<｜Assistant｜>'}}
+{% endif %}
 ```
 
 
@@ -402,6 +646,307 @@ The conversation template for Mixtral 8x7B is slightly different from the templa
 **Filled Example**
 ```
 <|im_start|>system\nYou are a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nWho are you?<|im_end|>\n<|im_start|>assistant\nI am a chatbot developed by LMFlow team.<|im_end|>\n<|im_start|>user\nHow old are you?<|im_end|>\n<|im_start|>assistant\nI don't age like humans do. I exist as a piece of software, so I don't have a concept of age in the traditional sense.<|im_end|>\n
+```
+
+
+## Qwen-2.5
+**jinja template**  
+[[Reference](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct/blob/7ae557604adf67be50417f59c2c2f167def9a775/tokenizer_config.json#L198)]  
+```
+{%- if tools %}
+    {{- '<|im_start|>system\\n' }}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- messages[0]['content'] }}
+    {%- else %}
+        {{- 'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.' }}
+    {%- endif %}
+    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}
+    {%- for tool in tools %}
+        {{- \"\\n\" }}
+        {{- tool | tojson }}
+    {%- endfor %}
+    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}
+{%- else %}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}
+    {%- else %}
+        {{- '<|im_start|>system\\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\\n' }}
+    {%- endif %}
+{%- endif %}
+{%- for message in messages %}
+    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}
+        {%- if message.role == \"assistant\" %}
+            {{- '<|im_start|>' + message.role + '\\n' }}
+            {% generation %}
+            {{ message.content + '<|im_end|>' + '\\n' }}
+            {% endgeneration %}
+        {%- else %}
+            {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}
+        {%- endif %}
+    {%- elif message.role == \"assistant\" %}
+        {{- '<|im_start|>' + message.role }}
+        {%- if message.content %}
+            {% generation %}
+            {{- '\\n' + message.content }}
+            {% endgeneration %}
+        {%- endif %}
+        {%- for tool_call in message.tool_calls %}
+            {%- if tool_call.function is defined %}
+                {%- set tool_call = tool_call.function %}
+            {%- endif %}
+            {% generation %}
+            {{- '\\n<tool_call>\\n{\"name\": \"' }}
+            {{- tool_call.name }}
+            {{- '\", \"arguments\": ' }}
+            {{- tool_call.arguments | tojson }}
+            {{- '}\\n</tool_call>' }}
+            {% endgeneration %}
+        {%- endfor %}
+        {% generation %}
+        {{- '<|im_end|>\\n' }}
+        {% endgeneration %}
+    {%- elif message.role == \"tool\" %}
+        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}
+            {{- '<|im_start|>user' }}
+        {%- endif %}
+        {{- '\\n<tool_response>\\n' }}
+        {{- message.content }}
+        {{- '\\n</tool_response>' }}
+        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}
+            {{- '<|im_end|>\\n' }}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|im_start|>assistant\\n' }}
+{%- endif %}
+```
+
+
+## Qwen-2.5-1M
+```{admonition} NOTICE
+:class: warning
+
+Pay attention to the differences of the system prompt between Qwen-2.5 and Qwen-2.5-1M.
+```
+**jinja template**  
+[Reference](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-1M/blob/e28526f7bb80e2a9c8af03b831a9af3812f18fba/tokenizer_config.json#L197)
+```
+{%- if tools %}
+    {{- '<|im_start|>system\\n' }}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- messages[0]['content'] }}
+    {%- else %}
+        {{- 'You are a helpful assistant.' }}
+    {%- endif %}
+    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}
+    {%- for tool in tools %}
+        {{- \"\\n\" }}
+        {{- tool | tojson }}
+    {%- endfor %}
+    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}
+{%- else %}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}
+    {%- else %}
+        {{- '<|im_start|>system\\nYou are a helpful assistant.<|im_end|>\\n' }}
+    {%- endif %}
+{%- endif %}
+{%- for message in messages %}
+    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}
+        {%- if message.role == \"assistant\" %}
+            {{- '<|im_start|>' + message.role + '\\n' }}
+            {% generation %}
+            {{ message.content + '<|im_end|>' + '\\n' }}
+            {% endgeneration %}
+        {%- else %}
+            {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}
+        {%- endif %}
+    {%- elif message.role == \"assistant\" %}
+        {{- '<|im_start|>' + message.role }}
+        {%- if message.content %}
+            {% generation %}
+            {{- '\\n' + message.content }}
+            {% endgeneration %}
+        {%- endif %}
+        {%- for tool_call in message.tool_calls %}
+            {%- if tool_call.function is defined %}
+                {%- set tool_call = tool_call.function %}
+            {%- endif %}
+            {% generation %}
+            {{- '\\n<tool_call>\\n{\"name\": \"' }}
+            {{- tool_call.name }}
+            {{- '\", \"arguments\": ' }}
+            {{- tool_call.arguments | tojson }}
+            {{- '}\\n</tool_call>' }}
+            {% endgeneration %}
+        {%- endfor %}
+        {% generation %}
+        {{- '<|im_end|>\\n' }}
+        {% endgeneration %}
+    {%- elif message.role == \"tool\" %}
+        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}
+            {{- '<|im_start|>user' }}
+        {%- endif %}
+        {{- '\\n<tool_response>\\n' }}
+        {{- message.content }}
+        {{- '\\n</tool_response>' }}
+        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}
+            {{- '<|im_end|>\\n' }}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|im_start|>assistant\\n' }}
+{%- endif %}
+```
+
+
+## Qwen-2.5-Math
+**jinja template**  
+[Reference](https://huggingface.co/Qwen/Qwen2.5-Math-1.5B-Instruct/blob/aafeb0fc6f22cbf0eaeed126eff8be45b0360a35/tokenizer_config.json#L198)
+```
+{%- if tools %}
+    {{- '<|im_start|>system\\n' }}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- messages[0]['content'] }}
+    {%- else %}
+        {{- 'Please reason step by step, and put your final answer within \\\\boxed{}.' }}
+    {%- endif %}
+    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}
+    {%- for tool in tools %}
+        {{- \"\\n\" }}
+        {{- tool | tojson }}
+    {%- endfor %}
+    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}
+{%- else %}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}
+    {%- else %}
+        {{- '<|im_start|>system\\nPlease reason step by step, and put your final answer within \\\\boxed{}.<|im_end|>\\n' }}
+    {%- endif %}
+{%- endif %}
+{%- for message in messages %}
+    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}
+        {%- if message.role == \"assistant\" %}
+            {{- '<|im_start|>' + message.role + '\\n' }}
+            {% generation %}
+            {{ message.content + '<|im_end|>' + '\\n' }}
+            {% endgeneration %}
+        {%- else %}
+            {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}
+        {%- endif %}
+    {%- elif message.role == \"assistant\" %}
+        {{- '<|im_start|>' + message.role }}
+        {%- if message.content %}
+            {% generation %}
+            {{- '\\n' + message.content }}
+            {% endgeneration %}
+        {%- endif %}
+        {%- for tool_call in message.tool_calls %}
+            {%- if tool_call.function is defined %}
+                {%- set tool_call = tool_call.function %}
+            {%- endif %}
+            {% generation %}
+            {{- '\\n<tool_call>\\n{\"name\": \"' }}
+            {{- tool_call.name }}
+            {{- '\", \"arguments\": ' }}
+            {{- tool_call.arguments | tojson }}
+            {{- '}\\n</tool_call>' }}
+            {% endgeneration %}
+        {%- endfor %}
+        {% generation %}
+        {{- '<|im_end|>\\n' }}
+        {% endgeneration %}
+    {%- elif message.role == \"tool\" %}
+        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}
+            {{- '<|im_start|>user' }}
+        {%- endif %}
+        {{- '\\n<tool_response>\\n' }}
+        {{- message.content }}
+        {{- '\\n</tool_response>' }}
+        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}
+            {{- '<|im_end|>\\n' }}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|im_start|>assistant\\n' }}
+{%- endif %}
+```
+
+
+## Qwen-QwQ
+**jinja template**  
+[Reference](https://huggingface.co/Qwen/QwQ-32B-Preview/blob/91906fe41a48b6a89ce2970abfd1269eefee170e/tokenizer_config.json#L197)
+```
+{%- if tools %}
+    {{- '<|im_start|>system\\n' }}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- messages[0]['content'] }}
+    {%- else %}
+        {{- 'You are a helpful and harmless assistant. You are Qwen developed by Alibaba. You should think step-by-step.' }}
+    {%- endif %}
+    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}
+    {%- for tool in tools %}
+        {{- \"\\n\" }}
+        {{- tool | tojson }}
+    {%- endfor %}
+    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}
+{%- else %}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}
+    {%- else %}
+        {{- '<|im_start|>system\\nYou are a helpful and harmless assistant. You are Qwen developed by Alibaba. You should think step-by-step.<|im_end|>\\n' }}
+    {%- endif %}
+{%- endif %}
+{%- for message in messages %}
+    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}
+        {%- if message.role == \"assistant\" %}
+            {{- '<|im_start|>' + message.role + '\\n' }}
+            {% generation %}
+            {{ message.content + '<|im_end|>' + '\\n' }}
+            {% endgeneration %}
+        {%- else %}
+            {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}
+        {%- endif %}
+    {%- elif message.role == \"assistant\" %}
+        {{- '<|im_start|>' + message.role }}
+        {%- if message.content %}
+            {% generation %}
+            {{- '\\n' + message.content }}
+            {% endgeneration %}
+        {%- endif %}
+        {%- for tool_call in message.tool_calls %}
+            {%- if tool_call.function is defined %}
+                {%- set tool_call = tool_call.function %}
+            {%- endif %}
+            {% generation %}
+            {{- '\\n<tool_call>\\n{\"name\": \"' }}
+            {{- tool_call.name }}
+            {{- '\", \"arguments\": ' }}
+            {{- tool_call.arguments | tojson }}
+            {{- '}\\n</tool_call>' }}
+            {% endgeneration %}
+        {%- endfor %}
+        {% generation %}
+        {{- '<|im_end|>\\n' }}
+        {% endgeneration %}
+    {%- elif message.role == \"tool\" %}
+        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}
+            {{- '<|im_start|>user' }}
+        {%- endif %}
+        {{- '\\n<tool_response>\\n' }}
+        {{- message.content }}
+        {{- '\\n</tool_response>' }}
+        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}
+            {{- '<|im_end|>\\n' }}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|im_start|>assistant\\n' }}
+{%- endif %}
 ```
 
 

@@ -7,7 +7,7 @@ import copy
 import logging
 import os
 import sys
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable, Optional, Tuple, Union
 
 import datasets
 import transformers
@@ -35,6 +35,9 @@ import numpy as np
 import lmflow.optim.optimizers as optim
 from lmflow.args import OptimizerNames, DatasetArguments, ModelArguments, FinetunerArguments
 from lmflow.datasets.dataset import Dataset
+from lmflow.models.hf_decoder_model import HFDecoderModel
+from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
+from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 
@@ -418,8 +421,8 @@ class Finetuner(BaseTuner):
         return CustomizedOptimTrainer
 
     def tune(self,
-             model,
-             dataset,
+             model: Union[HFDecoderModel, HFTextRegressionModel, HFEncoderDecoderModel],
+             dataset: Dataset,
              transform_dataset_in_place=True,
              data_collator=None):
         """
