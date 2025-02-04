@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 PRESET_TEMPLATES = {
     'chatglm3': CHATGLM3_TEMPLATE,
     'chatml': CHATML_TEMPLATE,
+    'deepseek': DEEPSEEK_V2_TEMPLATE,
     'deepseek_v2': DEEPSEEK_V2_TEMPLATE,
     'disable': EMPTY_TEMPLATE,
     'empty': EMPTY_TEMPLATE,
@@ -56,13 +57,13 @@ PRESET_TEMPLATES = {
 }
 
 JINJA_TEMPLATES = {
+    'deepseek_r1': DEEPSEEK_R1_TEMPLATE,
+    'deepseek_r1_distill': DEEPSEEK_R1_DISTILL_TEMPLATE,
+    'deepseek_v3': DEEPSEEK_V3_TEMPLATE,
     'qwen2_5': QWEN2_5_TEMPLATE,
     'qwen2_5_1m': QWEN2_5_1M_TEMPLATE,
     'qwen2_5_math': QWEN2_5_MATH_TEMPLATE,
     'qwen_qwq': QWEN_QWQ_TEMPLATE,
-    'deepseek_v3': DEEPSEEK_V3_TEMPLATE,
-    'deepseek_r1': DEEPSEEK_R1_TEMPLATE,
-    'deepseek_r1_distill': DEEPSEEK_R1_DISTILL_TEMPLATE
 }
 
 if is_package_version_at_least("transformers", "4.43.0"):
