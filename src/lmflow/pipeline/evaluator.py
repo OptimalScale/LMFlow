@@ -2,23 +2,29 @@
 
 The class has two methods: create_dataloader() that loads the data from the test file, creates a data loader, and returns it with the size of the data, and evaluate(model) that generates output text given input text. It uses the create_dataloader() method to load the data, iterates over the data in mini-batches, and encodes the input text with the encode() method of the HFDecoderModel class. Then, it generates output text using the evaluate() method of the HFDecoderModel class, decodes the generated output text using the decode() method of the HFDecoderModel class, and writes the output to a file in the output directory. The method also logs some information to the console and Weights and Biases if the use_wandb argument is True.
 """
-import os
-import torch
-import wandb
-import deepspeed
-import sys
-import numpy as np
 import datetime
 import json
+import os
+
+import numpy as np
+import torch
+import torch.distributed as dist
+import wandb
 # TODO: remove later
 from accelerate import Accelerator
 from transformers import AutoConfig
-import torch.distributed as dist
 
+from lmflow.args import (
+    ModelArguments,
+    DatasetArguments,
+    EvaluatorArguments
+)
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.utils.data_utils import set_random_seed, batchlize, answer_extraction
+from lmflow.utils.versioning import is_deepspeed_available
+from lmflow.utils.envs import is_accelerate_env
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
 
 class Evaluator(BasePipeline):
@@ -38,7 +44,12 @@ class Evaluator(BasePipeline):
 
 
     """
-    def __init__(self, model_args, data_args, evaluator_args):
+    def __init__(
+        self, 
+        model_args: ModelArguments, 
+        data_args: DatasetArguments, 
+        evaluator_args: EvaluatorArguments,
+    ):
     # our method
         self.data_args = data_args
         self.evaluator_args = evaluator_args
@@ -53,10 +64,14 @@ class Evaluator(BasePipeline):
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
         torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
 
-        if evaluator_args.use_accelerator_for_evaluator:
+        if is_accelerate_env():
             self.accelerator = Accelerator()
             self.accelerator.wait_for_everyone()
         else:
+            if is_deepspeed_available():
+                import deepspeed
+            else:
+                raise ImportError("Deepspeed is not available, please install using `pip install -e \".[deepspeed]\"`")
             deepspeed.init_distributed()
 
         self.config = AutoConfig.from_pretrained(model_args.model_name_or_path)
@@ -135,8 +150,8 @@ class Evaluator(BasePipeline):
 
         """
         if metric in ["acc", "accuracy"]:
-            if self.evaluator_args.use_accelerator_for_evaluator:
-                acc = self._evaluate_acc_with_accelerator(model, dataset, verbose=verbose)
+            if is_accelerate_env():
+                acc = self._evaluate_acc_with_accelerate(model, dataset, verbose=verbose)
             else:
                 acc = self._evaluate_acc_with_deepspeed(model, dataset, verbose=verbose)
             print(f"Evaluating final accuracy: {acc}")
@@ -153,7 +168,7 @@ class Evaluator(BasePipeline):
             raise NotImplementedError(f"metric {metric} is not supported")
 
 
-    def _evaluate_acc_with_accelerator(self, model, dataset, verbose=True):
+    def _evaluate_acc_with_accelerate(self, model, dataset, verbose=True):
         dataloader, data_size = self.create_dataloader(dataset)
         if self.accelerator.is_local_main_process:
             if not os.path.exists(self.evaluator_args.output_dir):
@@ -176,7 +191,13 @@ class Evaluator(BasePipeline):
             inputs = batch_input['input_ids']
             mask = batch_input['attention_mask']
             with self.accelerator.autocast():
-                outputs = model.inference(inputs, max_new_tokens=self.evaluator_args.max_new_tokens,attention_mask=mask,temperature=self.evaluator_args.temperature, repetition_penalty=self.evaluator_args.repetition_penalty,use_accelerator=self.evaluator_args.use_accelerator_for_evaluator)
+                outputs = model.inference(
+                    inputs, 
+                    max_new_tokens=self.evaluator_args.max_new_tokens,
+                    attention_mask=mask,
+                    temperature=self.evaluator_args.temperature,
+                    repetition_penalty=self.evaluator_args.repetition_penalty,
+                )
             text_out = model.decode(outputs, skip_special_tokens=True)
             decoded_input = model.decode(inputs, skip_special_tokens=True,)
             prompt_length = [len(i) for i in decoded_input]

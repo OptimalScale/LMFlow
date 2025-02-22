@@ -924,8 +924,8 @@ class EvaluatorArguments:
             ),
         },
     )
-    use_accelerator_for_evaluator: bool = field(
-        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
+    use_accelerator_for_evaluator: Optional[bool] = field(
+        default=None, metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
 
     temperature: float = field(
@@ -942,6 +942,14 @@ class EvaluatorArguments:
         default=100,
         metadata={"help": "Maximum length during inference."},
     )
+    
+    def __post_init__(self):
+        if self.use_accelerator_for_evaluator is not None:
+            logger.warning(
+                "You've specified `use_accelerator_for_evaluator`. This argument is deprecated. "
+                "It will not take effect and will be removed in a future version, "
+                "since LMFlow now can automatically detect whether is in Accelerate or Deepspeed environment."
+            )
 
 
 @dataclass
@@ -1061,8 +1069,8 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
-    use_accelerator: bool = field(
-        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
+    use_accelerator: Optional[bool] = field(
+        default=None, metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
     use_beam_search: Optional[bool] = field(
         default=False,
@@ -1131,6 +1139,13 @@ class InferencerArguments:
     )
     
     def __post_init__(self):
+        if self.use_accelerator is not None:
+            logger.warning(
+                "You've specified `use_accelerator`. This argument is deprecated. "
+                "It will not take effect and will be removed in a future version, "
+                "since LMFlow now can automatically detect whether is in Accelerate or Deepspeed environment."
+            )
+            
         if self.save_results:
             if self.results_path is None:
                 raise ValueError("Need to specify results_path when save_results is True.")

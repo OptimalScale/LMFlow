@@ -1,22 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
-import os
 import copy
 import hashlib
 import logging
-from pathlib import Path
 from typing import List, Union, Dict, Optional
 
 import torch
-from peft import (
-    LoraConfig,
-    PeftModel,
-    TaskType,
-    get_peft_config,
-    get_peft_model,
-    prepare_model_for_kbit_training
-)
 from transformers.modeling_outputs import SequenceClassifierOutputWithPast
 
 from lmflow.args import ModelArguments
@@ -40,6 +30,7 @@ from lmflow.utils.constants import (
 )
 from lmflow.utils.data_utils import RewardModelInferenceResultWithInput
 from lmflow.utils.versioning import is_ray_available, is_vllm_available
+from lmflow.utils.envs import is_accelerate_env
 
 if is_ray_available():
     import ray
@@ -62,11 +53,9 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
     model_args : 
         Model arguments such as model name, path, revision, etc.
 
-    tune_strategy : str or none,  default="normal".
-        A string representing the dataset backend. Defaults to "huggingface".
-    
-    ds_config :   
-        Deepspeed configuations.
+    do_train : bool, default True
+        Determines whether to prepare the model for training, including distribtued env, model placement, quantization,
+        lora, etc.
     
     args : Optional.
         Positional arguments.
@@ -78,19 +67,11 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
     def __init__(
         self,
         model_args: ModelArguments,
-        tune_strategy: str='normal',
-        ds_config=None,
-        device="gpu",
-        use_accelerator=False,
+        do_train: bool = False,
+        device = "gpu",
         *args,
         **kwargs
     ):
-        """
-        Initializes a HFTextRegressionModel instance.
-        :param model_args: dictionary with model arguments such as model name, path, revision, etc.
-        :param tune_strategy: tuning strategy: normal, none, lora or adapter
-        :param ds_config: deepspeed configuration for distributed training
-        """
         assert model_args.arch_type == "text_regression", (
             f"Invalid model architecture type: {model_args.arch_type}. "
             f"Expected: text_regression"
@@ -99,10 +80,8 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         HFModelMixin.__init__(
             self,
             model_args=model_args,
-            do_train=True if tune_strategy == "normal" else False,
-            ds_config=ds_config,
+            do_train=do_train,
             device=device,
-            use_accelerator=use_accelerator,
             hf_auto_model_additional_args=config_additional_args,
             *args,
             **kwargs
@@ -331,13 +310,14 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
             The generated sequence output 
         """       
         with torch.no_grad():
-            if self.use_accelerator:
+            if is_accelerate_env():
                 outputs = self.backend_model(
                     input_ids=inputs,
                     **kwargs,
                 )
             else:
-                if self.device == "gpu":
+                if self.device == "gpu": 
+                    # for scripts that run using 'deepspeed script.py'
                     outputs = self.ds_engine.module(
                         input_ids=inputs,
                         synced_gpus=True,

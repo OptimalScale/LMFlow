@@ -5,7 +5,6 @@ import copy
 import os
 import torch
 import wandb
-import deepspeed
 import sys
 import numpy as np
 import datetime
@@ -36,7 +35,8 @@ from lmflow.utils.data_utils import (
     RewardModelInferenceResultWithInput,
 )
 from lmflow.datasets.dataset import KEY_SCORE
-from lmflow.utils.versioning import is_ray_available
+from lmflow.utils.versioning import is_ray_available, is_deepspeed_available
+from lmflow.utils.envs import is_accelerate_env
 
 if is_ray_available():
     import ray
@@ -78,15 +78,17 @@ class RewardModelInferencer(BasePipeline):
 
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
-        if inferencer_args.device == "gpu":
+        if inferencer_args.device == "gpu": # FIXME: a bit weird here
             torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
-            deepspeed.init_distributed()
+            if not is_accelerate_env() and is_deepspeed_available():
+                import deepspeed
+                deepspeed.init_distributed()
         else:
             dist.init_process_group(
                 "gloo", rank=self.local_rank, world_size=self.world_size
             )
 
-        if inferencer_args.use_accelerator:
+        if is_accelerate_env():
             self.accelerator: Accelerator = kwargs.get('accelerator', Accelerator())
             
 
@@ -194,7 +196,7 @@ class RewardModelInferencer(BasePipeline):
         ):
             # len(batch) = batch_size, and batch element is dataset sample
             model_input_tensor = torch.LongTensor(batched_input_ids).to("cpu" if model.device == "cpu" else "cuda")
-            if self.inferencer_args.use_accelerator:
+            if is_accelerate_env():
                 with self.accelerator.autocast():
                     batch_output = model.inference(
                         inputs=model_input_tensor, 
@@ -256,8 +258,7 @@ class RewardModelInferencer(BasePipeline):
             ):
                 self.model = HFTextRegressionModel(
                     model_args=model_args, 
-                    tune_strategy='none', 
-                    use_accelerator=True
+                    do_train=False, 
                 )
                 self.model.activate_model_for_inference(use_vllm=False)
                 

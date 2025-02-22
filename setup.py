@@ -22,7 +22,8 @@ extra_require = {
     "gradio": ["gradio"],
     "flask": ["flask", "flask_cors"],
     "flash_attn": ["flash-attn>=2.0.2"],
-    "trl": ["trl==0.8.0"]
+    "trl": ["trl==0.8.0"],
+    "deepspeed": ["deepspeed>=0.14.4"],
 }
 
 readme_path = os.path.join(folder, "README.md")

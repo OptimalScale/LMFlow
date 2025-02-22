@@ -3,15 +3,11 @@
 """This is a class called HFDecoderModel which is a wrapper around transformers model and
 tokenizer classes. It has several methods such as __init__, tokenize, and train that are 
 used for training and fine-tuning the model. The __init__ method takes in several arguments
-such as model_args, tune_strategy, and ds_config, which are used to load the pretrained 
+such as model_args which are used to load the pretrained 
 model and tokenizer, and initialize the training settings.
 
 The tokenize method is used to tokenize the input text and return the input IDs and attention
 masks that can be fed to the model for training or inference.
-
-This class supports different tune_strategy options such as 'normal', 'none', 'lora', and
-'adapter', which allow for different fine-tuning settings of the model. However, the 'lora'
-and 'adapter' strategies are not yet implemented.
 
 Overall, this class provides a convenient interface for loading and fine-tuning transformer
 models and can be used for various NLP tasks such as language modeling, text classification,
@@ -46,6 +42,7 @@ from lmflow.tokenization.hf_decoder_model import (
     conversation_tokenize_function
 )
 from lmflow.utils.versioning import is_ray_available, is_vllm_available, is_flash_attn_available
+from lmflow.utils.envs import is_accelerate_env
 
 
 logger = logging.getLogger(__name__)
@@ -74,11 +71,9 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     model_args : 
         Model arguments such as model name, path, revision, etc.
 
-    tune_strategy : str or none,  default="normal".
-        A string representing the dataset backend. Defaults to "huggingface".
-    
-    ds_config :   
-        Deepspeed configuations.
+    do_train : bool, default True
+        Determines whether to prepare the model for training, including distribtued env, model placement, quantization,
+        lora, etc.
     
     args : Optional.
         Positional arguments.
@@ -90,26 +85,16 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     def __init__(
         self,
         model_args,
-        tune_strategy='normal',
-        ds_config=None,
+        do_train=True,
         device="gpu",
-        use_accelerator=False,
         *args,
         **kwargs
     ):
-        """
-        Initializes a HFDecoderModel instance.
-        :param model_args: dictionary with model arguments such as model name, path, revision, etc.
-        :param tune_strategy: tuning strategy: normal, none, lora or adapter
-        :param ds_config: deepspeed configuration for distributed training
-        """
         HFModelMixin.__init__(
             self,
             model_args=model_args,
-            do_train=True if tune_strategy == "normal" else False,
-            ds_config=ds_config,
+            do_train=do_train,
             device=device,
-            use_accelerator=use_accelerator,
             *args,
             **kwargs
         )
@@ -384,7 +369,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             The generated sequence output 
         """
         with torch.no_grad():
-            if self.use_accelerator:
+            if is_accelerate_env():
                 outputs = self.backend_model.generate(
                     input_ids=inputs,
                     pad_token_id=self.tokenizer.pad_token_id,

@@ -64,10 +64,9 @@ def main():
 
     model = AutoModel.get_model(
         model_args,
-        tune_strategy='none',
+        do_train=False,
         ds_config=ds_config,
         device=pipeline_args.device,
-        use_accelerator=True,
     )
 
     # We don't need input data, we will read interactively from stdin

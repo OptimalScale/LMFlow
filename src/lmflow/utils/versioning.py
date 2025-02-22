@@ -76,3 +76,7 @@ def is_trl_available():
 
 def is_multimodal_available():
     return _is_packages_available(["PIL"])
+
+
+def is_deepspeed_available():
+    return _is_package_available("deepspeed")
