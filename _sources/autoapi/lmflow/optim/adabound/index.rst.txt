@@ -1,0 +1,80 @@
+lmflow.optim.adabound
+=====================
+
+.. py:module:: lmflow.optim.adabound
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.adabound.AdaBound
+
+
+Module Contents
+---------------
+
+.. py:class:: AdaBound(params, lr: float = 0.001, betas=(0.9, 0.999), final_lr: float = 0.1, gamma: float = 0.001, eps: float = 1e-08, weight_decay: float = 0, amsbound: bool = False)
+
+   Bases: :py:obj:`torch.optim.optimizer.Optimizer`
+
+
+   
+   Implements AdaBound algorithm.
+
+   It has been proposed in `Adaptive Gradient Methods with Dynamic Bound of
+   Learning Rate
+   https://arxiv.org/abs/1902.09843
+   Note:
+       Reference code: https://github.com/Luolc/AdaBound
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: base_lrs
+
+
+   .. py:method:: __setstate__(state) -> None
+
+
+   .. py:method:: step(closure=None)
+
+      
+      Performs a single optimization step.
+
+      Arguments:
+          closure: A closure that reevaluates the model and returns the loss.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

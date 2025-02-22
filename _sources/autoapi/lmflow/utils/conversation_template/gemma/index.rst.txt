@@ -1,0 +1,77 @@
+lmflow.utils.conversation_template.gemma
+========================================
+
+.. py:module:: lmflow.utils.conversation_template.gemma
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.gemma.logger
+   lmflow.utils.conversation_template.gemma.GEMMA_TEMPLATE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.gemma.GemmaConversationTemplate
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: GemmaConversationTemplate
+
+   Bases: :py:obj:`lmflow.utils.conversation_template.base.ConversationTemplate`
+
+
+   .. py:method:: encode_conversation(*args, **kwargs)
+
+      
+      Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+      Data example: 
+      ```json
+      {
+          "conversation_id": 2,
+          "system": "sysinfo1",
+          "tools": ["tool_1_desc"],
+          "messages": [
+              {
+                  "role": "user",
+                  "content": "hi"
+              },
+              {
+                  "role": "assistant",
+                  "content": "Hello!"
+              }
+          ]
+      }
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:data:: GEMMA_TEMPLATE
+

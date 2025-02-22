@@ -1,0 +1,105 @@
+lmflow.pipeline.utils.dpov2_trainer
+===================================
+
+.. py:module:: lmflow.pipeline.utils.dpov2_trainer
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.dpov2_trainer.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.dpov2_trainer.DPOv2Trainer
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: DPOv2Trainer(model: Union[transformers.PreTrainedModel, torch.nn.Module] = None, ref_model: Optional[Union[transformers.PreTrainedModel, torch.nn.Module]] = None, beta: float = 0.1, loss_type: Literal['sigmoid', 'hinge', 'cross_entropy', 'kl', 'rev_kl', 'raft'] = 'rev_kl', args: transformers.TrainingArguments = None, data_collator: Optional[transformers.DataCollator] = None, label_pad_token_id: int = -100, padding_value: int = 0, truncation_mode: str = 'keep_end', train_dataset: Optional[datasets.Dataset] = None, eval_dataset: Optional[Union[datasets.Dataset, Dict[str, datasets.Dataset]]] = None, tokenizer: Optional[transformers.PreTrainedTokenizerBase] = None, model_init: Optional[Callable[[], transformers.PreTrainedModel]] = None, callbacks: Optional[List[transformers.trainer_callback.TrainerCallback]] = None, optimizers: Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (None, None), preprocess_logits_for_metrics: Optional[Callable[[torch.Tensor, torch.Tensor], torch.Tensor]] = None, max_length: Optional[int] = None, max_prompt_length: Optional[int] = None, max_target_length: Optional[int] = None, peft_config: Optional[Dict] = None, is_encoder_decoder: Optional[bool] = None, disable_dropout: bool = True, generate_during_eval: bool = False, compute_metrics: Optional[Callable[[transformers.trainer_utils.EvalLoopOutput], Dict]] = None, mask_prompt: Optional[bool] = False, len_penalty: float = 0, preprocessing_num_workers: int = 1)
+
+   Bases: :py:obj:`trl.DPOTrainer`
+
+
+   .. py:attribute:: use_dpo_data_collator
+      :value: True
+
+
+
+   .. py:attribute:: len_penalty
+      :value: 0
+
+
+
+   .. py:method:: dpo_loss(policy_chosen_logps: torch.FloatTensor, policy_rejected_logps: torch.FloatTensor, reference_chosen_logps: torch.FloatTensor, reference_rejected_logps: torch.FloatTensor, reference_free: bool = False, margin: Optional[torch.FloatTensor] = None, len_penalty: float = 0) -> Tuple[torch.FloatTensor, torch.FloatTensor, torch.FloatTensor]
+
+      
+      Compute the DPO loss for a batch of policy and reference model log probabilities.
+
+      Args:
+          policy_chosen_logps: Log probabilities of the policy model for the chosen responses. Shape: (batch_size,)
+          policy_rejected_logps: Log probabilities of the policy model for the rejected responses. Shape: (batch_size,)
+          reference_chosen_logps: Log probabilities of the reference model for the chosen responses. Shape: (batch_size,)
+          reference_rejected_logps: Log probabilities of the reference model for the rejected responses. Shape: (batch_size,)
+          beta: Temperature parameter for the DPO loss, typically something in the range of 0.1 to 0.5. We ignore the reference model as beta -> 0.
+          reference_free: If True, we ignore the _provided_ reference model and implicitly use a reference model that assigns equal probability to all responses.
+
+      Returns:
+          A tuple of three tensors: (losses, chosen_rewards, rejected_rewards).
+          The losses tensor contains the DPO loss for each example in the batch.
+          The chosen_rewards and rejected_rewards tensors contain the rewards for the chosen and rejected responses, respectively.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: get_batch_loss_metrics(model, batch: Dict[str, Union[List, torch.LongTensor]], train_eval: Literal['train', 'eval'] = 'train')
+
+
+   .. py:method:: get_batch_metrics(model, batch: Dict[str, Union[List, torch.LongTensor]], train_eval: Literal['train', 'eval'] = 'train')
+
+      
+      Compute the DPO loss and other metrics for the given batch of inputs for train or test.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
