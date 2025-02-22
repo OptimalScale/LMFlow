@@ -15,7 +15,6 @@ accelerate launch --config_file configs/accelerator_multigpu_config.yaml \
   examples/inference.py \
     --deepspeed configs/ds_config_chatbot.json \
     --model_name_or_path ${model} \
-    --use_accelerator True \
     --max_new_tokens 256 \
     --temperature 1.0 \
     ${lora_args}

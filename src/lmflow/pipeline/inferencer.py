@@ -6,7 +6,6 @@ import copy
 import os
 import torch
 import wandb
-import deepspeed
 import sys
 import numpy as np
 import datetime
@@ -22,13 +21,19 @@ from transformers import AutoConfig
 import torch.distributed as dist
 import torch.nn.functional as F
 
-from lmflow.args import DatasetArguments
+from lmflow.args import (
+    DatasetArguments,
+    ModelArguments,
+    InferencerArguments,
+)
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.utils.data_utils import (set_random_seed, batchlize,
                                      answer_extraction, process_image_flag)
 from lmflow.utils.constants import IMAGE_TOKEN_INDEX
+from lmflow.utils.versioning import is_deepspeed_available
+from lmflow.utils.envs import is_accelerate_env
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
 def rstrip_partial_utf8(string):
     return string.replace("\ufffd", "")
@@ -57,7 +62,12 @@ class Inferencer(BasePipeline):
 
 
     """
-    def __init__(self, model_args, data_args, inferencer_args):
+    def __init__(
+        self, 
+        model_args: ModelArguments, 
+        data_args: DatasetArguments, 
+        inferencer_args: InferencerArguments,
+    ):
         self.data_args = data_args
         self.inferencer_args = inferencer_args
         self.model_args = model_args
@@ -66,9 +76,11 @@ class Inferencer(BasePipeline):
 
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
-        if inferencer_args.device == "gpu":
+        if inferencer_args.device == "gpu": # FIXME: a bit weird here
             torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
-            deepspeed.init_distributed()
+            if not is_accelerate_env() and is_deepspeed_available():
+                import deepspeed
+                deepspeed.init_distributed()
         else:
             os.environ["MASTER_ADDR"] = "localhost"
             os.environ["MASTER_PORT"] = "15000"
@@ -83,7 +95,7 @@ class Inferencer(BasePipeline):
             print("Error in setting hidden size, use the default size 1024")
             self.model_hidden_size = 1024 # gpt2 seems do not have hidden_size in config
 
-        if inferencer_args.use_accelerator:
+        if is_accelerate_env():
             self.accelerator = Accelerator()
             self.accelerator.wait_for_everyone()
 
@@ -226,7 +238,7 @@ class Inferencer(BasePipeline):
                         f"device \"{self.inferencer_args.device}\" is not supported"
                     )
 
-                if self.inferencer_args.use_accelerator:
+                if is_accelerate_env():
                     inputs = inputs.to(self.accelerator.device)
 
 
@@ -234,7 +246,7 @@ class Inferencer(BasePipeline):
                 inputs["image_token_indexes"] = image_token_indexes
                 inputs["one_sample_multiple_images"] = True
 
-            if self.inferencer_args.use_accelerator:
+            if is_accelerate_env():
                 with self.accelerator.autocast():
                     outputs = model.inference(
                         inputs,
@@ -242,7 +254,6 @@ class Inferencer(BasePipeline):
                         temperature=self.inferencer_args.temperature,
                         repetition_penalty=self.inferencer_args.repetition_penalty,
                         do_sample=self.inferencer_args.do_sample,
-                        use_accelerator=True,
                     )
             else:
                 outputs = model.inference(
@@ -413,7 +424,6 @@ class SpeculativeInferencer(Inferencer):
         """Predict the next token given the input_ids.
         """
         output = model.inference(input_ids, 
-                                 use_accelerator=True, 
                                  max_new_tokens=num_new_tokens,
                                  return_dict_in_generate=True,
                                  output_scores=True,
@@ -631,7 +641,6 @@ class ToolInferencer(Inferencer):
         input_length = input_id.shape[1]
         output_id = model.inference(
             input_id,
-            use_accelerator=True,
             max_new_tokens=max_new_tokens,
             # pad_token_id=model.tokenizer.eos_token_id,
         )

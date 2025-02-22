@@ -40,7 +40,7 @@ def main():
         model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
 
     dataset = Dataset(data_args)
-    model = AutoModel.get_model(model_args, tune_strategy='none')
+    model = AutoModel.get_model(model_args, do_train=False)
     inferencer = AutoPipeline.get_pipeline(
         pipeline_name=pipeline_name,
         model_args=model_args,

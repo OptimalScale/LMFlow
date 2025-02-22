@@ -61,7 +61,6 @@ accelerate launch --config_file configs/accelerator_multigpu_config.yaml \
         --trust_remote_code ${trust_remote_code} \
         --model_name_or_path ${model_name_or_path} \
         --arch_type text_regression \
-        --use_accelerator True \
         --block_size 4096 \
         --inference_batch_size 16 \
         --dataset_path ${dataset_path} \

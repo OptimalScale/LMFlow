@@ -62,7 +62,6 @@ from torch.utils.data.distributed import DistributedSampler
 from transformers.configuration_utils import PretrainedConfig
 from transformers.data.data_collator import DataCollator, DataCollatorWithPadding, default_data_collator
 from transformers.debug_utils import DebugOption, DebugUnderflowOverflow
-from transformers.deepspeed import deepspeed_init, is_deepspeed_zero3_enabled
 from transformers.dependency_versions_check import dep_version_check
 from transformers.modelcard import TrainingSummary
 from transformers.modeling_utils import PreTrainedModel, load_sharded_checkpoint, unwrap_model
@@ -149,6 +148,12 @@ from transformers.utils import (
     logging,
 )
 from transformers.utils.generic import ContextManagers
+
+from lmflow.utils.versioning import is_package_version_at_least
+if is_package_version_at_least("transformers", "4.46.0"):
+    from transformers.integrations.deepspeed import deepspeed_init, is_deepspeed_zero3_enabled
+else:
+    from transformers.deepspeed import deepspeed_init, is_deepspeed_zero3_enabled
 
 
 _is_native_cpu_amp_available = is_torch_greater_or_equal_than_1_10

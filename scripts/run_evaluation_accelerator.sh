@@ -13,5 +13,4 @@ CUDA_VISIBLE_DEVICES=0 accelerate launch --config_file configs/accelerator_singl
     --metric accuracy \
     --output_dir output_dir/accelerator_1_card \
     --inference_batch_size_per_device 1 \
-    --use_accelerator_for_evaluator True \
     --torch_dtype bfloat16
