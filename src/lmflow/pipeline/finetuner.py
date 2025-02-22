@@ -10,15 +10,16 @@ import sys
 from typing import Any, Iterable, Optional, Tuple, Union
 
 import datasets
-import transformers
 import evaluate
+import numpy as np
+import transformers
+from copy import deepcopy
 from itertools import chain
 from transformers import (
     Trainer,
     default_data_collator,
     set_seed,
 )
-from copy import deepcopy
 from transformers import PreTrainedModel, TrainingArguments
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.trainer_callback import (
@@ -30,7 +31,6 @@ from transformers.utils import (
     is_sagemaker_mp_enabled,
     send_example_telemetry,
 )
-import numpy as np
 
 import lmflow.optim.optimizers as optim
 from lmflow.args import OptimizerNames, DatasetArguments, ModelArguments, FinetunerArguments

@@ -245,7 +245,7 @@ def start_inferencer(
 
     model = AutoModel.get_model(
         model_args,
-        tune_strategy='none',
+        do_train=False,
         ds_config=ds_config,
         device=pipeline_args.device,
         custom_model=model_args.custom_model,

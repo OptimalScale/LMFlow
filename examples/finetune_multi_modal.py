@@ -59,7 +59,7 @@ def main():
     # do not resiger deepspeed in the model.
     # with_deepspeed flag may be removed
     # by modifying the tune strategy in the future.
-    model = AutoModel.get_model(model_args, tune_strategy='none',
+    model = AutoModel.get_model(model_args, do_train=True,
                                 ds_config=pipeline_args.deepspeed,
                                 custom_model=True,
                                 with_deepspeed=False,

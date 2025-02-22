@@ -62,7 +62,7 @@ def main():
     model_args.use_lora = True
     model = AutoModel.get_model(
         model_args, 
-        tune_strategy='none', 
+        do_train=False, 
         device=merge_lora_args.device,
         ds_config=merge_lora_args.ds_config
     )

@@ -214,7 +214,7 @@ def main():
     dataset_name = benchmarking_args.dataset_name
     # metric = pipeline_args.metric
     if is_lmflow_local_benchmarking(dataset_name):   # TODO (@Jipeng)
-        model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config)
+        model = AutoModel.get_model(model_args, do_train=False, ds_config=ds_config)
         run_lmflow_local_benchmarking(dataset_name,pipeline_name,model_args,pipeline_args,model)  # Pass args TODO (@Jipeng)
     elif is_lm_evaluation_benchmarking(dataset_name):
         model = model_args.model_name_or_path

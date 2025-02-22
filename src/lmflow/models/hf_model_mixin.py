@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
-import gc
-import os
-import logging
-from typing import Union, Optional, Dict, List
 import copy
+import gc
+import logging
+from contextlib import nullcontext
+from typing import Union, Optional, Dict, List
 
 import torch
-import deepspeed
 from transformers import (
     CONFIG_MAPPING,
     AutoConfig,
@@ -33,7 +32,8 @@ from lmflow.utils.constants import (
     LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
 from lmflow.args import ModelArguments
-from lmflow.utils.versioning import is_vllm_available
+from lmflow.utils.versioning import is_vllm_available, is_deepspeed_available
+from lmflow.utils.envs import is_accelerate_env
 
 if is_vllm_available():
     from vllm import LLM, SamplingParams
@@ -61,9 +61,7 @@ class HFModelMixin(BaseModel):
         self,
         model_args: ModelArguments,
         do_train: bool,
-        ds_config=None,
         device: Optional[str]="gpu",
-        use_accelerator: bool=False,
         hf_auto_model_additional_args: Optional[Dict]=None,
         *args,
         **kwargs
@@ -76,12 +74,8 @@ class HFModelMixin(BaseModel):
             Dictionary with model arguments such as model name, path, revision, etc.
         do_train : bool
             To prepare the model for training or inference.
-        ds_config : optional
-            Deepspeed configuration for distributed training, by default None
         device : str, optional
             By default "gpu"
-        use_accelerator : bool, optional
-            By default False
         """
 
         # See more about loading any type of standard or custom dataset (from
@@ -96,8 +90,6 @@ class HFModelMixin(BaseModel):
         self.device = device
         self.model_args = model_args
         self.hf_auto_model = HF_AUTOMODEL_MAPPING[model_args.arch_type]
-        self.use_accelerator = use_accelerator
-        self.ds_config = ds_config
         self.do_train = do_train
         
         self.tokenizer = self.__prepare_tokenizer(model_args)
@@ -380,9 +372,15 @@ class HFModelMixin(BaseModel):
         # We resize the embeddings only when necessary to avoid index errors.
         # If you are creating a model from scratch on a small vocab and want a
         # smaller embedding size, remove this test.
-        with deepspeed.zero.GatheredParameters(model.get_input_embeddings().weight, modifier_rank=None):
+        resize_embedding_context = nullcontext()
+        if is_deepspeed_available() and not is_accelerate_env():
+            import deepspeed
+            resize_embedding_context = deepspeed.zero.GatheredParameters(model.get_input_embeddings().weight, modifier_rank=None)
+            
+        with resize_embedding_context:
             weights = model.get_input_embeddings().weight
             embedding_size = weights.shape[0]
+            
         if len(self.tokenizer) > embedding_size:
             model.resize_token_embeddings(len(self.tokenizer))
 
@@ -394,8 +392,6 @@ class HFModelMixin(BaseModel):
         self,
         model_args: ModelArguments,
         hf_auto_model: HF_AUTOMODEL_TYPE,
-        use_accelerator: bool,
-        ds_config
     ):
         logger.info(f"Backend model already initialized, moving to device: {self.device}")
         if hasattr(self, "backend_model"):
@@ -413,12 +409,8 @@ class HFModelMixin(BaseModel):
             "offload_state_dict": True,
         }
 
-        if use_accelerator or model_args.use_ram_optimized_load:
+        if model_args.use_ram_optimized_load:
             inference_load_kwargs.update(ram_optimized_load_kwargs)
-                   
-        if not use_accelerator:
-            from transformers.integrations import HfDeepSpeedConfig
-            dschf = HfDeepSpeedConfig(ds_config)
             
         try:
             self.backend_model = hf_auto_model.from_pretrained(
@@ -448,10 +440,14 @@ class HFModelMixin(BaseModel):
                 model_args.lora_model_path,
             )
 
-        if (not use_accelerator) and self.device == "gpu":
-            deepspeed.init_distributed()
-            self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
-            self.ds_engine.module.eval()
+        if self.device == "gpu" and not is_accelerate_env():
+            if is_deepspeed_available():
+                import deepspeed
+                deepspeed.init_distributed()
+                self.ds_engine = deepspeed.initialize(model=self.backend_model)[0]
+                self.ds_engine.module.eval()
+            else:
+                raise ImportError("Deepspeed is not available. Please install via `pip install -e '.[deepspeed]'`.")
             
         self.__prepare_model_post_process()
                     
@@ -517,8 +513,6 @@ class HFModelMixin(BaseModel):
             self.__prepare_model_for_inference(
                 model_args=self.model_args,
                 hf_auto_model=self.hf_auto_model,
-                use_accelerator=self.use_accelerator,
-                ds_config=self.ds_config,
             )
             
         self._activated = True
