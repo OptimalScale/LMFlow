@@ -5,7 +5,6 @@ tokenizers>=0.13.3
 peft>=0.10.0
 torch>=2.0.1
 wandb
-deepspeed>=0.14.4
 sentencepiece
 transformers>=4.31.0
 cpm_kernels==1.0.11

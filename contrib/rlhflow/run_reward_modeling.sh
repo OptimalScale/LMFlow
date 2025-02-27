@@ -30,7 +30,7 @@ deepspeed ${deepspeed_args} \
     --block_size 512 \
     --per_device_train_batch_size 1 \
     --per_device_eval_batch_size 1\
-    --deepspeed configs/ds_config_zero2.json \
+    --deepspeed configs/archive/ds_config_zero2.json \
     --bf16 \
     --run_name rm_test \
     --validation_split_percentage 10 \

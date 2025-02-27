@@ -29,12 +29,6 @@ class MergeLoraArguments:
             "help": "device to merge model on",
         },
     )
-    ds_config: str = field(
-        default='configs/ds_config_eval.json',
-        metadata={
-            "help": "deepspeed config file path",
-        },
-    )
     output_model_path: Optional[str] = field(
         default=None,
         metadata={
@@ -62,9 +56,8 @@ def main():
     model_args.use_lora = True
     model = AutoModel.get_model(
         model_args, 
-        tune_strategy='none', 
+        do_train=False, 
         device=merge_lora_args.device,
-        ds_config=merge_lora_args.ds_config
     )
     model.activate_model_for_inference()
     model.merge_lora_weights()

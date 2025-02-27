@@ -7,7 +7,7 @@
 model_name_or_path=gpt2
 dataset_path=data/alpaca/train_conversation
 output_dir=output_models/finetune
-deepspeed_args="--master_port=12000"
+deepspeed_args="--master_port=11000"
 conversation_template=llama2
 
 # Safety related arguments
@@ -54,7 +54,7 @@ log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
-  contrib/tool-finetune/function_call_finetune.py \
+  examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
     --trust_remote_code ${trust_remote_code} \
     --dataset_path ${dataset_path} \
@@ -63,7 +63,7 @@ deepspeed ${deepspeed_args} \
     --num_train_epochs 0.01 \
     --learning_rate 2e-5 \
     --disable_group_texts 1 \
-    --block_size 1024 \
+    --block_size 256 \
     --per_device_train_batch_size 1 \
     --deepspeed configs/archive/ds_config_zero3.json \
     --fp16 \

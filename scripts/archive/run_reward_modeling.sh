@@ -5,6 +5,7 @@ model_name_or_path=google/gemma-2b-it
 train_dataset_path=data/ultrafeedback-binarized-preferences-cleaned/train
 eval_dataset_path=data/ultrafeedback-binarized-preferences-cleaned/train
 output_dir=output_models/reward_modeling
+deepspeed_args="--master_port=11345 --include localhost:6"
 conversation_template=gemma
 
 # Safety related arguments
@@ -33,6 +34,10 @@ while [[ $# -ge 1 ]]; do
       conversation_template="$2"
       shift
       ;;
+    --deepspeed_args)
+      deepspeed_args="$2"
+      shift
+      ;;
     --trust_remote_code)
       trust_remote_code="$2"
       shift
@@ -50,8 +55,9 @@ project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
 
-accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
+deepspeed ${deepspeed_args} \
     examples/reward_modeling.py \
+        --deepspeed configs/archive/ds_config_zero3.json \
         --model_name_or_path ${model_name_or_path} \
         --arch_type "text_regression" \
         --do_train True \
@@ -72,7 +78,6 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
         --gradient_checkpointing True \
         --remove_unused_columns False \
         --bf16 True \
-        --torch_dtype bfloat16 \
         --logging_strategy "steps" \
         --logging_steps 10 \
         --optim "paged_adamw_32bit" \

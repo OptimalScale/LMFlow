@@ -54,7 +54,7 @@ with open (ds_config_path, "r") as f:
 local_rank = int(os.getenv("LOCAL_RANK", "0"))
 world_size = int(os.getenv("WORLD_SIZE", "1"))
 torch.cuda.set_device(local_rank)
-model = AutoModel.get_model(model_args, tune_strategy='none', ds_config=ds_config, use_accelerator=True)
+model = AutoModel.get_model(model_args, do_train=False, ds_config=ds_config)
 accelerator = Accelerator()
 
 def stream_generate(inputs,context_len = 1024, max_new_tokens=128, end_string="##"):

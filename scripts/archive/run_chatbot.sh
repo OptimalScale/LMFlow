@@ -12,11 +12,10 @@ if [ $# -ge 2 ]; then
 fi
 
     # --temperature 0.7 \
-accelerate launch --config_file configs/accelerator_multigpu_config.yaml \
+accelerate launch --config_file configs/archive/accelerate_multigpu_config.yaml \
   examples/chatbot.py \
-    --deepspeed configs/ds_config_chatbot.json \
+    --deepspeed configs/archive/ds_config_chatbot.json \
     --model_name_or_path ${model} \
-    --use_accelerator True \
     --max_new_tokens 256 \
     --temperature 1.0 \
     --end_string "#" \
