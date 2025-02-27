@@ -12,7 +12,7 @@ if [ ! -f output_models/pretrained_minigpt4_7b_converted.pth ]; then
       --save_path output_models/pretrained_minigpt4_7b_converted.pth
 fi
 
-deepspeed ${deepspeed_args} examples/vis_chatbot.py --model_name_or_path ${model} --deepspeed configs/ds_config_vis_chatbot.json --arch_type vision_encoder_decoder --task vqa --custom_model \
+deepspeed ${deepspeed_args} examples/vis_chatbot.py --model_name_or_path ${model} --deepspeed configs/archive/ds_config_vis_chatbot.json --arch_type vision_encoder_decoder --task vqa --custom_model \
                             --chatbot_type mini_gpt \
                             --prompt_structure "{input_text}###Assistant:" \
                             --pretrained_language_projection_path output_models/pretrained_minigpt4_7b_converted.pth \
