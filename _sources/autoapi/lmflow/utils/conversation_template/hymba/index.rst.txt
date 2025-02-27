@@ -1,0 +1,35 @@
+lmflow.utils.conversation_template.hymba
+========================================
+
+.. py:module:: lmflow.utils.conversation_template.hymba
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.hymba.HYMBA_TEMPLATE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.hymba.HymbaConversationTemplate
+
+
+Module Contents
+---------------
+
+.. py:class:: HymbaConversationTemplate
+
+   Bases: :py:obj:`lmflow.utils.conversation_template.base.ConversationTemplateForTool`
+
+
+   .. py:method:: _handle_tools(tools: Optional[List[str]]) -> str
+
+
+.. py:data:: HYMBA_TEMPLATE
+

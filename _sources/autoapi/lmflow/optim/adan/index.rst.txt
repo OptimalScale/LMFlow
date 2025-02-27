@@ -1,0 +1,89 @@
+lmflow.optim.adan
+=================
+
+.. py:module:: lmflow.optim.adan
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.adan.Adan
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.optim.adan._single_tensor_adan
+   lmflow.optim.adan._multi_tensor_adan
+
+
+Module Contents
+---------------
+
+.. py:class:: Adan(params, lr=0.001, betas=(0.98, 0.92, 0.99), eps=1e-08, weight_decay=0.0, max_grad_norm=0.0, no_prox=False, foreach: bool = True)
+
+   Bases: :py:obj:`torch.optim.optimizer.Optimizer`
+
+
+   
+   Implements a pytorch variant of Adan.
+
+   Adan was proposed in
+   Adan : Adaptive Nesterov Momentum Algorithm for Faster Optimizing Deep Models.
+   https://arxiv.org/abs/2208.06677
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: __setstate__(state)
+
+
+   .. py:method:: restart_opt()
+
+
+   .. py:method:: step()
+
+      
+      Performs a single optimization step.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:function:: _single_tensor_adan(params: List[torch.Tensor], grads: List[torch.Tensor], exp_avgs: List[torch.Tensor], exp_avg_sqs: List[torch.Tensor], exp_avg_diffs: List[torch.Tensor], pre_grads: List[torch.Tensor], *, beta1: float, beta2: float, beta3: float, bias_correction1: float, bias_correction2: float, bias_correction3_sqrt: float, lr: float, weight_decay: float, eps: float, no_prox: bool, clip_global_grad_norm: torch.Tensor)
+
+.. py:function:: _multi_tensor_adan(params: List[torch.Tensor], grads: List[torch.Tensor], exp_avgs: List[torch.Tensor], exp_avg_sqs: List[torch.Tensor], exp_avg_diffs: List[torch.Tensor], pre_grads: List[torch.Tensor], *, beta1: float, beta2: float, beta3: float, bias_correction1: float, bias_correction2: float, bias_correction3_sqrt: float, lr: float, weight_decay: float, eps: float, no_prox: bool, clip_global_grad_norm: torch.Tensor)
+

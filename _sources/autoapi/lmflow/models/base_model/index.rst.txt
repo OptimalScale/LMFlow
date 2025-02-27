@@ -1,0 +1,51 @@
+lmflow.models.base_model
+========================
+
+.. py:module:: lmflow.models.base_model
+
+.. autoapi-nested-parse::
+
+   Base model class.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.models.base_model.BaseModel
+
+
+Module Contents
+---------------
+
+.. py:class:: BaseModel(*args, **kwargs)
+
+   Bases: :py:obj:`abc.ABC`
+
+
+   
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

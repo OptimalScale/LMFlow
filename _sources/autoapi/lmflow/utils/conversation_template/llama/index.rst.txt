@@ -1,0 +1,56 @@
+lmflow.utils.conversation_template.llama
+========================================
+
+.. py:module:: lmflow.utils.conversation_template.llama
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.llama.logger
+   lmflow.utils.conversation_template.llama.LLAMA3_TEMPLATE
+   lmflow.utils.conversation_template.llama.LLAMA3_TEMPLATE_FOR_TOOL
+   lmflow.utils.conversation_template.llama.LLAMA2_TEMPLATE
+   lmflow.utils.conversation_template.llama.LLAMA2_TEMPLATE_FOR_TOOL
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.llama.Llama2ConversationTemplate
+   lmflow.utils.conversation_template.llama.Llama2ConversationTemplateForTool
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: Llama2ConversationTemplate
+
+   Bases: :py:obj:`lmflow.utils.conversation_template.base.ConversationTemplate`
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+
+.. py:class:: Llama2ConversationTemplateForTool
+
+   Bases: :py:obj:`Llama2ConversationTemplate`
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+
+.. py:data:: LLAMA3_TEMPLATE
+
+.. py:data:: LLAMA3_TEMPLATE_FOR_TOOL
+
+.. py:data:: LLAMA2_TEMPLATE
+
+.. py:data:: LLAMA2_TEMPLATE_FOR_TOOL
+

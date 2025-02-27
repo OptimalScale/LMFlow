@@ -1,0 +1,38 @@
+lmflow.utils.conversation_template.zephyr
+=========================================
+
+.. py:module:: lmflow.utils.conversation_template.zephyr
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.zephyr.logger
+   lmflow.utils.conversation_template.zephyr.ZEPHYR_TEMPLATE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.zephyr.ZephyrConversationTemplate
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: ZephyrConversationTemplate
+
+   Bases: :py:obj:`lmflow.utils.conversation_template.base.ConversationTemplate`
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: List[Dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> Sequence[Tuple[List[int], List[int]]]
+
+
+.. py:data:: ZEPHYR_TEMPLATE
+
