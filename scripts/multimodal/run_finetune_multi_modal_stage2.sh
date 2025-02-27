@@ -66,7 +66,7 @@ mkdir -p ${output_dir} ${log_dir}
 # default in llava is 16
 deepspeed ${deepspeed_args} \
   examples/finetune_multi_modal.py \
-    --deepspeed configs/ds_config_zero2.json \
+    --deepspeed configs/archive/ds_config_zero2.json \
     --arch_type vision_encoder_decoder \
     --llava_loading True \
     --model_name_or_path ${model_name_or_path} \

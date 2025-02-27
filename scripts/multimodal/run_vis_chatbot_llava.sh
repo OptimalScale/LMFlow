@@ -18,7 +18,7 @@ fi
 
 deepspeed ${deepspeed_args} \
     examples/vis_chatbot.py \
-    --deepspeed configs/ds_config_vis_chatbot.json \
+    --deepspeed configs/archive/ds_config_vis_chatbot.json \
     --arch_type vision_encoder_decoder \
     --task vqa \
     --custom_model True \

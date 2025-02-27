@@ -1,14 +1,9 @@
 #!/bin/bash
-# Please run this script under ${project_id} in project directory of
-#   https://github.com/shizhediao/llm-ft
-#     COMMIT: d5fecf30ba8011067b10cf51fede53a5ab6574e4
-
 # Parses arguments
-model_name_or_path=gpt2
+model_name_or_path=meta-llama/Llama-3.2-3B-Instruct
 dataset_path=data/alpaca/train_conversation
+conversation_template=llama3
 output_dir=output_models/finetune
-deepspeed_args="--master_port=11000"
-conversation_template=llama2
 
 # Safety related arguments
 trust_remote_code=0
@@ -32,10 +27,6 @@ while [[ $# -ge 1 ]]; do
       conversation_template="$2"
       shift
       ;;
-    --deepspeed_args)
-      deepspeed_args="$2"
-      shift
-      ;;
     --trust_remote_code)
       trust_remote_code="$2"
       shift
@@ -53,7 +44,7 @@ project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
 
-deepspeed ${deepspeed_args} \
+accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
     --trust_remote_code ${trust_remote_code} \
@@ -65,14 +56,15 @@ deepspeed ${deepspeed_args} \
     --disable_group_texts 1 \
     --block_size 256 \
     --per_device_train_batch_size 1 \
-    --deepspeed configs/ds_config_zero3.json \
-    --fp16 \
-    --run_name finetune \
+    --bf16 \
+    --torch_dtype bfloat16 \
     --validation_split_percentage 0 \
     --logging_steps 20 \
     --do_train \
     --ddp_timeout 72000 \
     --save_steps 5000 \
-    --dataloader_num_workers 1 \
+    --dataloader_num_workers 8 \
+    --report_to wandb \
+    --run_name ${exp_id} \
     > >(tee ${log_dir}/train.log) \
     2> >(tee ${log_dir}/train.err >&2)
