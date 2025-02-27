@@ -157,7 +157,7 @@ def conversation_tokenize_function(
             tools = examples.get("tools", [None] * num_example)[i]
             
             if isinstance(conversation_template, str): # jinja template
-                conversation = [{"role": "system", "content": system}]
+                conversation = [{"role": "system", "content": system}] if system is not None else []
                 conversation.extend(messages)
                 encoded_conversation = tokenizer.apply_chat_template(
                     conversation=conversation,
