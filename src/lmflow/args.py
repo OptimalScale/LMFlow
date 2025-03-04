@@ -367,6 +367,11 @@ class ModelArguments:
                 
         if self.lora_target_modules is not None:
             self.lora_target_modules: List[str] = split_args(self.lora_target_modules)
+            
+        if "encoder_decoder" in self.arch_type:
+            raise NotImplementedError(
+                "The encoder-decoder model is not fully implemented yet."
+            )
 
 
 @dataclass

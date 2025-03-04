@@ -27,7 +27,7 @@ from transformers.utils import (
 from lmflow.args import DatasetArguments, ModelArguments, FinetunerArguments
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.hf_decoder_model import HFDecoderModel
-from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
+# from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.optim import create_customized_optimizer
 from lmflow.pipeline.base_tuner import BaseTuner
@@ -216,7 +216,7 @@ class Finetuner(BaseTuner):
 
 
     def tune(self,
-             model: Union[HFDecoderModel, HFTextRegressionModel, HFEncoderDecoderModel],
+             model: Union[HFDecoderModel, HFTextRegressionModel],
              dataset: Dataset,
              transform_dataset_in_place=True,
              data_collator=None):
