@@ -33,6 +33,7 @@ from lmflow.optim import create_customized_optimizer
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 from lmflow.pipeline.utils.lisa_trainer import DynamicLayerActivationCallback
+from lmflow.utils.versioning import is_package_version_at_least
 
 
 logger = logging.getLogger(__name__)
@@ -322,19 +323,24 @@ class Finetuner(BaseTuner):
                 lisa_layers_attribute=training_args.lisa_layers_attribute,  # Attribute to access layers of the model
             )
             trainer_callbacks.append(dynamic_layer_activation_callback)
+            
+        trainer_kwargs = {
+            "model": model.get_backend_model(),
+            "args": training_args,
+            "train_dataset": train_dataset if training_args.do_train else None,
+            "eval_dataset": eval_dataset if training_args.do_eval else None,
+            "data_collator": data_collator,
+            "compute_metrics": compute_metrics if training_args.do_eval else None,
+            "preprocess_logits_for_metrics": preprocess_logits_for_metrics if training_args.do_eval else None,
+            "callbacks": trainer_callbacks
+        }
+        if is_package_version_at_least('transformers', '4.46.0'):
+            # https://github.com/huggingface/transformers/pull/32385
+            trainer_kwargs["processing_class"] = model.get_tokenizer()
+        else:
+            trainer_kwargs["tokenizer"] = model.get_tokenizer()
+        trainer = FinetuningTrainer(**trainer_kwargs)
 
-        trainer = FinetuningTrainer(
-            model=model.get_backend_model(),
-            args=training_args,
-            train_dataset=train_dataset if training_args.do_train else None,
-            eval_dataset=eval_dataset if training_args.do_eval else None,
-            tokenizer=model.get_tokenizer(),
-            # Data collator will default to DataCollatorWithPadding, so we change it.
-            data_collator=data_collator,
-            compute_metrics=compute_metrics if training_args.do_eval else None,
-            preprocess_logits_for_metrics=preprocess_logits_for_metrics if training_args.do_eval else None,
-            callbacks=trainer_callbacks
-        )
         # Training
         if training_args.do_train:
             checkpoint = None
