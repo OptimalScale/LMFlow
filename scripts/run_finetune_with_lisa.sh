@@ -1,79 +1,12 @@
 #!/bin/bash
-# Parses arguments
 model_name_or_path=meta-llama/Llama-3.2-3B-Instruct
 dataset_path=data/alpaca/train_conversation
 conversation_template=llama3
 output_dir=output_models/finetune_lisa
+
+# LISA related arguments
 lisa_activated_layers=1
 lisa_interval_steps=20
-
-# Other optional arguments that can improve memory saving
-gradient_checkpointing=True
-use_flash_attention=0
-gradient_accumulation_steps=1
-block_size=256
-per_device_train_batch_size=1
-
-# Safety related arguments
-trust_remote_code=0
-
-while [[ $# -ge 1 ]]; do
-  key="$1"
-  case ${key} in
-    -m|--model_name_or_path)
-      model_name_or_path="$2"
-      shift
-      ;;
-    -d|--dataset_path)
-      dataset_path="$2"
-      shift
-      ;;
-    -o|--output_model_path)
-      output_dir="$2"
-      shift
-      ;;
-    --lisa_activated_layers)
-      lisa_activated_layers="$2"
-      shift
-      ;;
-    --lisa_interval_steps)
-      lisa_interval_steps="$2"
-      shift
-      ;;
-    --gradient_checkpointing)
-      gradient_checkpointing="$2"
-      shift
-      ;;
-    --use_flash_attention)
-      use_flash_attention="$2"
-      shift
-      ;;
-    --gradient_accumulation_steps)
-      gradient_accumulation_steps="$2"
-      shift
-      ;;
-    --block_size)
-      block_size="$2"
-      shift
-      ;;
-    --conversation_template)
-      conversation_template="$2"
-      shift
-      ;;
-    --per_device_train_batch_size|--batch_size)
-      per_device_train_batch_size="$2"
-      shift
-      ;;
-    --trust_remote_code)
-      trust_remote_code="$2"
-      shift
-      ;;
-    *)
-      echo "error: unknown option \"${key}\"" 1>&2
-      exit 1
-  esac
-  shift
-done
 
 # Finetune
 exp_id=finetune_lisa
@@ -84,31 +17,32 @@ mkdir -p ${output_dir} ${log_dir}
 accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
-    --trust_remote_code ${trust_remote_code} \
+    --trust_remote_code 0 \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
     --conversation_template ${conversation_template} \
-    --num_train_epochs 1 \
-    --learning_rate 1e-5 \
+    --use_lisa 1 \
+    --lisa_activated_layers ${lisa_activated_layers} \
+    --lisa_interval_steps ${lisa_interval_steps} \
     --disable_group_texts 1 \
-    --block_size ${block_size} \
-    --per_device_train_batch_size ${per_device_train_batch_size} \
+    --num_train_epochs 1 \
+    --block_size 512 \
+    --per_device_train_batch_size 1 \
+    --gradient_accumulation_steps 1 \
+    --learning_rate 2e-5 \
+    --lr_scheduler_type cosine \
     --bf16 \
     --torch_dtype bfloat16 \
-    --optim paged_adamw_32bit \
     --validation_split_percentage 0 \
     --logging_steps 20 \
     --do_train \
     --ddp_timeout 72000 \
     --save_steps 5000 \
+    --use_flash_attention 0 \
+    --gradient_checkpointing 0 \
     --dataloader_num_workers 8 \
-    --gradient_checkpointing ${gradient_checkpointing} \
-    --use_flash_attention ${use_flash_attention} \
-    --gradient_accumulation_steps ${gradient_accumulation_steps} \
-    --use_lisa 1 \
-    --lisa_activated_layers ${lisa_activated_layers} \
-    --lisa_interval_steps ${lisa_interval_steps} \
     --report_to wandb \
     --run_name ${exp_id} \
-    | tee ${log_dir}/train.log \
-    2> ${log_dir}/train.err
+    --seed 42 \
+    > >(tee ${log_dir}/train.log) \
+    2> >(tee ${log_dir}/train.err >&2)
