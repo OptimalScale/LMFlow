@@ -363,7 +363,9 @@ class ModelArguments:
         if self.use_flash_attention:
             if not is_flash_attn_available():
                 self.use_flash_attention = False
-                logger.warning("Flash attention is not available in the current environment. Disabling flash attention.")
+                logger.warning("Flash attention is not available in the current environment. Disabling flash attention. If you want to use flash attention, please install by `pip install -e '.[flash_attn]'`.")
+        else:
+            logger.warning("Flash attention is not enabled. We recommend enabling flash attention by `--use_flash_attention 1` for better performance.")
                 
         if self.lora_target_modules is not None:
             self.lora_target_modules: List[str] = split_args(self.lora_target_modules)
