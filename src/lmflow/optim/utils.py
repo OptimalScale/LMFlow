@@ -6,7 +6,7 @@ from transformers.utils import is_sagemaker_mp_enabled
 import lmflow.optim.optimizers as optim
 from lmflow.args import OptimizerNames, TrainingArguments
 
-def create_customized_optimizer(self, base_trainer_class, model_args):
+def create_customized_optimizer(base_trainer_class, model_args):
     class CustomizedOptimTrainer(base_trainer_class):
 
         @staticmethod
