@@ -56,8 +56,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --block_size 512 \
     --per_device_train_batch_size 1 \
     --use_qlora 1 \
-    --bf16 \
-    --torch_dtype bfloat16 \
+    --bits 4 \
     --validation_split_percentage 0 \
     --logging_steps 20 \
     --do_train \
