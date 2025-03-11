@@ -3,7 +3,7 @@ debug: false
 distributed_type: FSDP
 
 fsdp_config:
-  fsdp_auto_wrap_policy: SIZE_BASED_WRAP
+  fsdp_auto_wrap_policy: TRANSFORMER_BASED_WRAP
   fsdp_min_num_params: 1000000
   fsdp_backward_prefetch: BACKWARD_PRE
   fsdp_forward_prefetch: false
