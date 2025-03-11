@@ -21,8 +21,7 @@ momentum=0
 
 # Finetune
 exp_id=finetune_custom_optim
-project_dir=$(cd "$(dirname $0)"/..; pwd)
-log_dir=${project_dir}/log/${exp_id}
+log_dir=${output_dir}/log/
 mkdir -p ${output_dir} ${log_dir}
 
 optim_suffix_args=""

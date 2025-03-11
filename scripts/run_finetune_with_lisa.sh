@@ -10,8 +10,7 @@ lisa_interval_steps=20
 
 # Finetune
 exp_id=finetune_lisa
-project_dir=$(cd "$(dirname $0)"/..; pwd)
-log_dir=${project_dir}/log/${exp_id}
+log_dir=${output_dir}/log/
 mkdir -p ${output_dir} ${log_dir}
 
 accelerate launch --config_file configs/accelerate_fsdp_config.yaml \

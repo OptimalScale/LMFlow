@@ -6,8 +6,7 @@ output_dir=output_models/finetune
 
 # Finetune
 exp_id=finetune
-project_dir=$(cd "$(dirname $0)"/..; pwd)
-log_dir=${project_dir}/log/${exp_id}
+log_dir=${output_dir}/log/
 mkdir -p ${output_dir} ${log_dir}
 
 accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
