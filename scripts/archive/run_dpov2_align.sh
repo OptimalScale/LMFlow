@@ -1,59 +1,40 @@
 #!/bin/bash
-
-# Parses arguments
-run_name=dpov2_align
 model_name_or_path=meta-llama/Meta-Llama-3-8B-Instruct
-reference_model_name_or_path=meta-llama/Meta-Llama-3-8B-Instruct
 dataset_path=data/iterative-prompt/train
+output_dir=output_models/dpov2_align
+
+# DPO related arguments
+reference_model_name_or_path=meta-llama/Meta-Llama-3-8B-Instruct
 eval_dataset_path=data/iterative-prompt/eval
-output_dir=output_models/${run_name}
+margin_scale=1.0
+max_prompt_length=1000
+loss_type=sigmoid
+sampling_paired_method=max_min
+mask_prompt=True
+length_penalty=0
 
-while [[ $# -ge 1 ]]; do
-  key="$1"
-  case ${key} in
-    -r|--run_name)
-      run_name="$2"
-      shift
-      ;;
-    --model_name_or_path)
-      model_name_or_path="$2"
-      shift
-      ;;
-    --reference_model_name_or_path)
-      reference_model_name_or_path="$2"
-      shift
-      ;;
-    --dataset_path)
-      dataset_path="$2"
-      shift
-      ;;
-    --eval_dataset_path)
-      eval_dataset_path="$2"
-      shift
-      ;;
-    -o|--output_dir)
-      output_dir="$2"
-      shift
-      ;;
-    *)
-      echo "error: unknown option \"${key}\"" 1>&2
-      exit 1
-  esac
-  shift
-done
-
+# Align
+exp_id=dpov2_align
 project_dir=$(cd "$(dirname $0)"/..; pwd)
-log_dir=${project_dir}/log/${run_name}
+log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
 
-accelerate launch --config_file configs/accelerate_dsz3_config.yaml \
+accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
   examples/dpov2_train.py \
     --model_name_or_path ${model_name_or_path} \
+    --trust_remote_code 0 \
     --reference_model_name_or_path ${reference_model_name_or_path} \
     --do_train True \
     --dataset_path ${dataset_path} \
     --eval_dataset_path ${eval_dataset_path} \
+    --margin_scale ${margin_scale} \
+    --max_prompt_length ${max_prompt_length} \
+    --loss_type ${loss_type} \
+    --sampling_paired_method ${sampling_paired_method} \
+    --mask_prompt ${mask_prompt} \
+    --length_penalty ${length_penalty} \
     --bf16 True \
+    --torch_dtype bfloat16 \
     --learning_rate 5e-7 \
     --lr_scheduler_type cosine \
     --warmup_steps 100 \
@@ -62,20 +43,15 @@ accelerate launch --config_file configs/accelerate_dsz3_config.yaml \
     --per_device_eval_batch_size 1 \
     --gradient_accumulation_steps 16 \
     --gradient_checkpointing True \
-    --margin_scale 1.0 \
-    --max_prompt_length 1000 \
     --num_train_epochs 2 \
     --logging_steps 2 \
     --save_strategy epoch \
     --save_steps 5000 \
     --evaluation_strategy steps \
     --eval_steps 100 \
-    --loss_type sigmoid \
     --output_dir ${output_dir} \
-    --run_name ${run_name} \
-    --sampling_paired_method max_min \
+    --run_name ${exp_id} \
     --report_to wandb \
-    --mask_prompt True \
-    --length_penalty 0 \
+    --seed 42 \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
