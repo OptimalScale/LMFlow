@@ -18,6 +18,7 @@ from transformers import (
     AutoModelForCausalLM,
     AutoModelForSequenceClassification,
 )
+from transformers.modeling_utils import is_fsdp_enabled
 from peft import (
     LoraConfig,
     PeftModel,
@@ -104,7 +105,9 @@ class HFModelMixin(BaseModel):
 
         if self.do_train:
             self.__prepare_model_for_training(model_args, self.hf_auto_model)
-                        
+        
+        self.__fix_special_tokens()
+
 
     def __prepare_tokenizer(
         self,
@@ -224,15 +227,31 @@ class HFModelMixin(BaseModel):
         quant_config = None
         if self.do_train:
             if model_args.use_qlora:
-                quant_config = BitsAndBytesConfig(
-                    load_in_4bit=model_args.bits == 4,
-                    load_in_8bit=model_args.bits == 8,
-                    llm_int8_threshold=6.0,
-                    llm_int8_has_fp16_weight=False,
-                    bnb_4bit_compute_dtype=self.torch_dtype,
-                    bnb_4bit_use_double_quant=model_args.double_quant,
-                    bnb_4bit_quant_type=model_args.quant_type,
-                )
+                if model_args.quant_bit == 8:
+                    if is_fsdp_enabled():
+                        raise ValueError("FSDP + Qlora 8-bit quantization is not supported.")
+                    quant_config_kwargs = {
+                        "load_in_8bit": True,
+                    }
+                elif model_args.quant_bit == 4:
+                    if is_fsdp_enabled():
+                        logger.warning(
+                            "Currently, we only implement FSDP + Qlora 4-bit quantization with torch.bfloat16 dtype. "
+                            "Consider using other peft methods if your device doesn't support torch.bfloat16. "
+                            "(This is just a notification and please self-check the compatibility of your device.)"
+                        )
+                    quant_config_kwargs = {
+                        "load_in_4bit": True,
+                        "bnb_4bit_compute_dtype": torch.bfloat16,
+                        "bnb_4bit_use_double_quant": model_args.double_quant,
+                        "bnb_4bit_quant_type": model_args.quant_type,
+                        "bnb_4bit_quant_storage": torch.bfloat16, # fsdp+qlora, see https://huggingface.co/docs/bitsandbytes/v0.43.3/en/fsdp_qlora
+                    }
+                else:
+                    raise ValueError("Qlora only supports 4-bit and 8-bit.")
+                
+                quant_config = BitsAndBytesConfig(**quant_config_kwargs)
+                
         else: # inference
             if model_args.use_int8:
                 quant_config = BitsAndBytesConfig(
@@ -337,10 +356,7 @@ class HFModelMixin(BaseModel):
                 quantization_config=self.quant_config,
                 trust_remote_code=model_args.trust_remote_code,
             )
-
-            if model_args.use_qlora:
-                model.gradient_checkpointing_enable()
-                model = prepare_model_for_kbit_training(model)
+            
         else:
             model = hf_auto_model.from_config(self.hf_model_config)
             n_params = sum(dict((p.data_ptr(), p.numel()) for p in model.parameters()).values())
@@ -385,9 +401,8 @@ class HFModelMixin(BaseModel):
             model.resize_token_embeddings(len(self.tokenizer))
 
         self.backend_model = model
-        self.__prepare_model_post_process()
 
-    
+
     def __prepare_model_for_inference(
         self,
         model_args: ModelArguments,
@@ -448,10 +463,8 @@ class HFModelMixin(BaseModel):
                 self.ds_engine.module.eval()
             else:
                 raise ImportError("Deepspeed is not available. Please install via `pip install -e '.[deepspeed]'`.")
-            
-        self.__prepare_model_post_process()
-                    
-        
+
+
     def __prepare_model_for_vllm_inference(
         self,
         model_args: ModelArguments,
@@ -471,12 +484,12 @@ class HFModelMixin(BaseModel):
         )
         
     
-    def __prepare_model_post_process(self):
+    def __fix_special_tokens(self):
         # old models/tokenizers may not have these attributes, fixing            
         if self.tokenizer.eos_token is None:
-            self.tokenizer.eos_token = self.backend_model.config.eos_token
+            self.tokenizer.eos_token = self.hf_model_config.eos_token
         if self.tokenizer.eos_token_id is None:
-            self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
+            self.tokenizer.eos_token_id = self.hf_model_config.eos_token_id
             
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
@@ -486,12 +499,12 @@ class HFModelMixin(BaseModel):
         if self.model_args.eos_padding:
             self.tokenizer.pad_token = self.tokenizer.eos_token
             
-        if not hasattr(self.backend_model.config, "pad_token_id"):
+        if not hasattr(self.hf_model_config, "pad_token_id"):
             logger.warning("pad_token_id not found in model config. Setting pad_token_id to eos_token_id.")
-            self.backend_model.config.pad_token_id = self.backend_model.config.eos_token_id
-        elif self.backend_model.config.pad_token_id is None:
+            self.hf_model_config.pad_token_id = self.hf_model_config.eos_token_id
+        elif self.hf_model_config.pad_token_id is None:
             logger.warning("pad_token_id is None in model config. Setting pad_token_id to eos_token_id.")
-            self.backend_model.config.pad_token_id = self.backend_model.config.eos_token_id
+            self.hf_model_config.pad_token_id = self.hf_model_config.eos_token_id
             
 
     def activate_model_for_inference(

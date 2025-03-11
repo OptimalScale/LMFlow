@@ -215,7 +215,12 @@ class ModelArguments:
         default=False,
         metadata={"help": "Whether to use qlora."},
     )
-    bits: int = field(
+    bits: Optional[int] = field(
+        default=None,
+        metadata={"help": "[deprecated] The number of bits for quantization.",
+                  "choices": [4, 8], },
+    )
+    quant_bit: int = field(
         default=4,
         metadata={"help": "The number of bits for quantization.",
                   "choices": [4, 8], },
@@ -374,6 +379,10 @@ class ModelArguments:
             raise NotImplementedError(
                 "The encoder-decoder model is not fully implemented yet."
             )
+            
+        if self.bits is not None:
+            logger.warning("The argument `bits` is deprecated. Please use `quant_bit` instead.")
+            self.quant_bit = self.bits
 
 
 @dataclass
