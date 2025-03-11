@@ -5,15 +5,14 @@ conversation_template=llama3
 output_dir=output_models/finetune_qlora
 
 # QLoRA related arguments
-bits=4
+quant_bit=4
 lora_rank=8
 lora_alpha=32
 lora_dropout=0.1
 
 # Finetune
 exp_id=finetune_with_qlora
-project_dir=$(cd "$(dirname $0)"/..; pwd)
-log_dir=${project_dir}/log/${exp_id}
+log_dir=${output_dir}/log/
 mkdir -p ${output_dir} ${log_dir}
 
 accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
@@ -24,7 +23,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --output_dir ${output_dir} --overwrite_output_dir \
     --conversation_template ${conversation_template} \
     --use_qlora 1 \
-    --bits ${bits} \
+    --quant_bit ${quant_bit} \
     --lora_r ${lora_rank} \
     --lora_alpha ${lora_alpha} \
     --lora_dropout ${lora_dropout} \
