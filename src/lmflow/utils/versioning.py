@@ -1,6 +1,7 @@
 import importlib
 import sys
 import logging
+from pathlib import Path
 from typing import Tuple, List, Union
 from importlib.metadata import version, PackageNotFoundError
 
@@ -80,3 +81,26 @@ def is_multimodal_available():
 
 def is_deepspeed_available():
     return _is_package_available("deepspeed")
+
+
+def get_lmflow_dir(return_src_dir: bool = False) -> Path:
+    try:
+        from importlib.util import find_spec
+        spec = find_spec('lmflow')
+        if spec is None:
+            return None
+            
+        origin = Path(spec.origin)
+        if origin is None:
+            return None
+            
+        if origin.name == '__init__.py':
+            if return_src_dir:
+                return origin.parent
+            else:
+                return origin.parent.parent.parent
+        else:
+            return None
+            
+    except (ImportError, AttributeError):
+        return None
