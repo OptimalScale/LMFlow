@@ -5,7 +5,7 @@ conversation_template=llama3
 output_dir=output_models/finetune_lora
 
 # LoRA related arguments
-lora_rank=8
+lora_r=8
 lora_alpha=32
 lora_dropout=0.1
 
@@ -22,7 +22,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --output_dir ${output_dir} --overwrite_output_dir \
     --conversation_template ${conversation_template} \
     --use_lora 1 \
-    --lora_r ${lora_rank} \
+    --lora_r ${lora_r} \
     --lora_alpha ${lora_alpha} \
     --lora_dropout ${lora_dropout} \
     --disable_group_texts 1 \

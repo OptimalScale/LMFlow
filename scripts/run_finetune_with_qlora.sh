@@ -6,7 +6,7 @@ output_dir=output_models/finetune_qlora
 
 # QLoRA related arguments
 quant_bit=4
-lora_rank=8
+lora_r=8
 lora_alpha=32
 lora_dropout=0.1
 
@@ -24,7 +24,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --conversation_template ${conversation_template} \
     --use_qlora 1 \
     --quant_bit ${quant_bit} \
-    --lora_r ${lora_rank} \
+    --lora_r ${lora_r} \
     --lora_alpha ${lora_alpha} \
     --lora_dropout ${lora_dropout} \
     --disable_group_texts 1 \
