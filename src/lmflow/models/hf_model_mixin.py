@@ -234,12 +234,16 @@ class HFModelMixin(BaseModel):
                         "load_in_8bit": True,
                     }
                 elif model_args.quant_bit == 4:
-                    if is_fsdp_enabled():
-                        logger.warning(
-                            "Currently, we only implement FSDP + Qlora 4-bit quantization with torch.bfloat16 dtype. "
-                            "Consider using other peft methods if your device doesn't support torch.bfloat16. "
-                            "(This is just a notification and please self-check the compatibility of your device.)"
-                        )
+                    logger.warning(
+                        "For users who are using Accelerate (FSDP backend) or DeepSpeed, "
+                        "we only implement Qlora 4-bit quantization with torch.bfloat16 dtype currently. "
+                        "Carefully check the Accelerate or DeepSpeed configurations, since they may cast dtype "
+                        "and cause errors like "
+                        "(DeepSpeed) `TypeError: output tensor must have the same type as input tensor`, or "
+                        "(Accelerate FSDP) `ValueError: Must flatten tensors with uniform dtype but got torch.bfloat16 and torch.float32`. "
+                        "Consider using other peft methods if your device doesn't support torch.bfloat16. "
+                        "(This is just a notification and please self-check the compatibility of your device.)"
+                    )
                     quant_config_kwargs = {
                         "load_in_4bit": True,
                         "bnb_4bit_compute_dtype": torch.bfloat16,
