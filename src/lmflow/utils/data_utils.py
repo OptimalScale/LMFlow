@@ -2,13 +2,13 @@
 loading data from a JSON file, batching data, and extracting answers from generated text.
 """
 
+import os
 import random
-import numpy as np
-import torch
 import json
 import re
 from typing import Union, List, TypedDict, Dict
-
+import numpy as np
+import torch
 
 def set_random_seed(seed: int):
     """
@@ -92,6 +92,59 @@ def batchlize(examples: list, batch_size: int, random_shuffle: bool):
     return dataloader
 
 
+def read_last_n_lines_large_file(file_path: str, n: int = 10) -> List[str]:
+    with open(file_path, 'rb') as f:
+        f.seek(0, os.SEEK_END)
+        buffer = bytearray()
+        pointer = f.tell()
+        while pointer >= 0 and len(buffer.splitlines()) <= n:
+            f.seek(pointer)
+            read_byte = f.read(1)
+            buffer.extend(read_byte)
+            pointer -= 1
+        return buffer[::-1].decode('utf-8').splitlines()[-n:]
+
+
+def read_first_n_lines_large_file(file_path: str, n: int = 10) -> List[str]:
+    with open(file_path, 'rb') as f:
+        f.seek(0)
+        lines = []
+        for i in range(n):
+            line = f.readline()
+            if not line:
+                break
+            lines.append(line.decode('utf-8').strip())
+        return lines
+
+
+def get_dataset_type_fast(file_path: str, max_lines: int = 100) -> Union[str, None]:
+    '''Get the type values from the first and last n lines of a large json dataset.
+    '''
+    lines = []
+    dataset_type = None
+    dataset_type_pattern = re.compile(r'[\"\']type[\"\']:\s*[\'\"]([^"]+)[\'\"]')
+    lines.extend(read_first_n_lines_large_file(file_path, max_lines))
+    lines.extend(read_last_n_lines_large_file(file_path, max_lines))
+    for line in lines:
+        try:
+            dataset_type = dataset_type_pattern.search(line).group(1)
+            break
+        except AttributeError:
+            continue
+    return dataset_type
+
+
+def check_dataset_instances_key_fast(file_path: str, instances_key: str, max_lines: int = 100) -> bool:
+    '''Check if the dataset instances key matches the instance_key.
+    '''
+    lines = []
+    instance_key_pattern = re.compile(r'[\"\']' + instances_key + r'[\"\']')
+    lines.extend(read_first_n_lines_large_file(file_path, max_lines))
+    lines.extend(read_last_n_lines_large_file(file_path, max_lines))
+    for line in lines:
+        if instance_key_pattern.search(line):
+            return True
+    return False
 
 def answer_extraction(response, answer_type=None):   #use this funtion to extract answers from generated text
 

@@ -492,6 +492,10 @@ class DatasetArguments:
     conversation_template: str
         a string representing the template for conversation datasets.
 
+    dataset_cache_dir: str
+        a string representing the path to the dataset cache directory. Useful when the default cache dir
+        (`~/.cache/huggingface/datasets`) has limited space.
+
     The class also includes some additional parameters that can be used to configure the dataset further, such as `overwrite_cache`,
     `validation_split_percentage`, `preprocessing_num_workers`, `disable_group_texts`, `demo_example_in_prompt`, `explanation_in_prompt`,
     `keep_linebreaks`, and `prompt_structure`.
@@ -607,6 +611,12 @@ class DatasetArguments:
     conversation_template: Optional[str] = field(
         default=None,
         metadata={"help": "The template for conversation datasets."}
+    )
+
+    dataset_cache_dir: Optional[str] = field(
+        default=None,
+        metadata={"help": ("The path to the dataset cache directory. Useful when the "
+                           "default cache dir (`~/.cache/huggingface/datasets`) has limited space.")}
     )
 
     def __post_init__(self):
