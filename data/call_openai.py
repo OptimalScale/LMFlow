@@ -5,15 +5,8 @@ import json
 import time
 from pathlib import Path
 import os
+
 def get_oauth_token(p_token_url, p_client_id, p_client_secret, p_scope):
-    file_name = "py_llm_oauth_token.json"
-    try:
-        base_path = Path(__file__).parent
-        file_path = Path.joinpath(base_path, file_name)
-    except Exception as e:
-        print(f"Error occurred while setting file path: {e}")
-        return None
- 
     try:
         response = requests.post(
             p_token_url,
@@ -22,8 +15,6 @@ def get_oauth_token(p_token_url, p_client_id, p_client_secret, p_scope):
         )
         response.raise_for_status()
         token = response.json()
-        with open(file_path, "w") as f:
-            json.dump(token, f)
     except Exception as e:
         print(f"Error occurred while getting OAuth token: {e}")
         return None
@@ -42,28 +33,29 @@ def get_oauth_token(p_token_url, p_client_id, p_client_secret, p_scope):
     authToken = token["access_token"]
     return authToken
 
-client_id = os.getenv("CLIENT_ID")
-client_secret = os.getenv("CLIENT_SECRET")
-token_url = "https://prod.api.nvidia.com/oauth/api/v1/ssa/default/token"
-scope = "azureopenai-readwrite"
+def get_openai_client():
+    client_id = os.getenv("CLIENT_ID")
+    client_secret = os.getenv("CLIENT_SECRET")
+    token_url = "https://prod.api.nvidia.com/oauth/api/v1/ssa/default/token"
+    scope = "azureopenai-readwrite"
 
-print("Getting OAuth token...")
-token = get_oauth_token(token_url, client_id, client_secret, scope)
-print("OAuth token obtained successfully.")
-print(token)
+    print("Getting OAuth token...")
+    token = get_oauth_token(token_url, client_id, client_secret, scope)
+    print("OAuth token obtained successfully.")
+    print(token)
 
-openai.api_type = "azure"
-openai.api_base = "https://prod.api.nvidia.com/llm/v1/azure/"
-openai.api_version = "2024-09-01-preview"
-openai.api_key = token
-print("OpenAI variables and URL defined successfully.")
-client = AzureOpenAI(   
-    api_key = token,
-    api_version = "2024-09-01-preview",
-    azure_endpoint="https://prod.api.nvidia.com/llm/v1/azure/",
-)
-print("AzureOpenAI instance created successfully.")
-
+    openai.api_type = "azure"
+    openai.api_base = "https://prod.api.nvidia.com/llm/v1/azure/"
+    openai.api_version = "2024-09-01-preview"
+    openai.api_key = token
+    print("OpenAI variables and URL defined successfully.")
+    client = AzureOpenAI(   
+        api_key = token,
+        api_version = "2024-09-01-preview",
+        azure_endpoint="https://prod.api.nvidia.com/llm/v1/azure/",
+    )
+    print("AzureOpenAI instance created successfully.")
+    return client
 
 
 # import os

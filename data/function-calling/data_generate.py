@@ -2,8 +2,12 @@ import json
 import random
 import openai
 from typing import List
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from call_openai import get_openai_client
 
-def generate_function_distractors(correct_answer: str, function_desc: str, question: str) -> List[str]:
+def generate_function_distractors(correct_answer: str, function_desc: str, question: str, client) -> List[str]:
     """Generate plausible but incorrect function calls as distractors"""
     try:
         messages = [
@@ -50,12 +54,12 @@ Separate each response with |||."""
             print(msg['content'])
         print("=" * 50)
 
-        response = openai.chat.completions.create(
-            model="gpt-3.5-turbo",
+        response = client.chat.completions.create(
+            model="gpt-4o",
             messages=messages,
             temperature=0.8
         )
-        
+
         distractors = response.choices[0].message.content.split('|||')
         distractors = [d.strip() for d in distractors[:3]]
         
@@ -76,7 +80,7 @@ Separate each response with |||."""
             f"{correct_answer.split('(')[0]}()"
         ]
 
-def process_json_file(file_path, answer_file_path):
+def process_json_file(file_path, answer_file_path, client, NUM_EXAMPLES):
     # 存储处理后的结果
     processed_data = []
     
@@ -97,8 +101,12 @@ def process_json_file(file_path, answer_file_path):
             answer += ", ".join(param_strs) + ")"
             answers[data['id']] = answer
     
+    count = 0
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
+            count += 1
+            if count >= NUM_EXAMPLES:
+                break
             try:
                 data = json.loads(line)
                 question = data['question'][0]['content']
@@ -113,37 +121,49 @@ def process_json_file(file_path, answer_file_path):
                 distractors = generate_function_distractors(
                     correct_answer=correct_answer,
                     function_desc=function_str,
-                    question=question
+                    question=question,
+                    client=client
                 )
                 
                 # 随机选择正确答案的位置
+                options2index = {'A': 0, 'B': 1, 'C': 2, 'D': 3}
                 options = ['A', 'B', 'C', 'D']
                 correct_position = random.choice(options)
-                
-                output = f"Given the following function: {function_str}, if you are asked to {question}, you will call...\n"
-                
-                # 添加选项
+
+                 # 创建选项字典
+                choices = {}
                 current_distractor = 0
                 for option in options:
                     if option == correct_position:
-                        output += f"{option}. {correct_answer}\n"
+                        choices[option] = correct_answer
                     else:
-                        output += f"{option}. {distractors[current_distractor]}\n"
+                        choices[option] = distractors[current_distractor]
                         current_distractor += 1
                 
-                output += f"\nCorrect Answer: {correct_position}"
+                # 创建JSON格式的输出
+                json_output = {
+                    "question": f"Given the following function: {function_str}, if you are asked to {question}, you will call...",
+                    "ability": "function-calling",
+                    "choices": list(choices.values()),
+                    "answer": options2index[correct_position],
+                    "correct_answer_content": correct_answer,
+                    "id": data['id']
+                }
                 
-                processed_data.append(output)
+                processed_data.append(json_output)
                 
             except Exception as e:
                 print(f"Error processing line: {e}")
     
     return processed_data
 
-# 使用示例
+NUM_EXAMPLES = 10
 file_path = "/lustre/fsw/portfolios/llmservice/users/sdiao/data-challenge/LMFlow/data/function-calling-raw/BFCL_v2_simple.json"
 answer_file_path = "/lustre/fsw/portfolios/llmservice/users/sdiao/data-challenge/LMFlow/data/function-calling-raw/possible_answer/BFCL_v2_simple.json"
-results = process_json_file(file_path, answer_file_path)
+
+client = get_openai_client()
+
+results = process_json_file(file_path, answer_file_path, client, NUM_EXAMPLES)
 
 # 打印前几个结果作为示例
 for i, result in enumerate(results[:3]):
@@ -152,6 +172,9 @@ for i, result in enumerate(results[:3]):
     print("-" * 80)
 
 # 保存到文件
-with open('processed_output.txt', 'w', encoding='utf-8') as f:
-    for result in results:
-        f.write(result + "\n\n" + "-"*80 + "\n\n")
+output_file = 'processed_output.jsonl'
+with open(output_file, 'w', encoding='utf-8') as f:
+    for item in results:
+        f.write(json.dumps(item, ensure_ascii=False) + "\n")
+
+print(f"\nData saved to {output_file}")
