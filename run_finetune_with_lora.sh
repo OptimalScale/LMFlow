@@ -2,9 +2,9 @@
 # Please run this script under ${project_id} in project directory of
 
 # Parses arguments
-model_name_or_path=meta-llama/Llama-2-7b-hf
-dataset_path=data/wikitext-2-raw-v1/test
-# conversation_template=llama2
+model_name_or_path=YongganFu/Llama-400M-12L
+dataset_path=data/dart_math
+conversation_template=empty
 output_dir=output_models/finetune
 deepspeed_args="--master_port=11000"
 
@@ -53,10 +53,11 @@ deepspeed ${deepspeed_args} \
     --trust_remote_code ${trust_remote_code} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 0.01 \
-    --learning_rate 1e-4 \
-    --block_size 512 \
-    --per_device_train_batch_size 1 \
+    --num_train_epochs 1 \
+    --learning_rate 8e-5 \
+    --block_size 1024 \
+    --per_device_train_batch_size 8 \
+    --gradient_accumulation_steps 4 \
     --use_lora 1 \
     --lora_r 8 \
     --lora_target_modules="embed_tokens,q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj,lm_head" \
@@ -69,6 +70,6 @@ deepspeed ${deepspeed_args} \
     --do_train \
     --ddp_timeout 72000 \
     --save_steps 5000 \
-    --dataloader_num_workers 1 \
+    --preprocessing_num_workers 16 \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
