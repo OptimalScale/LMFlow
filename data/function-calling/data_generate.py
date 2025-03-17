@@ -47,13 +47,6 @@ Separate each response with |||."""
             }
         ]
 
-        # 打印传给OpenAI的消息
-        print("\n=== Messages sent to OpenAI ===")
-        for msg in messages:
-            print(f"\n{msg['role'].upper()}:")
-            print(msg['content'])
-        print("=" * 50)
-
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
@@ -157,7 +150,7 @@ def process_json_file(file_path, answer_file_path, client, NUM_EXAMPLES):
     
     return processed_data
 
-NUM_EXAMPLES = 10
+NUM_EXAMPLES = 10000
 file_path = "/lustre/fsw/portfolios/llmservice/users/sdiao/data-challenge/LMFlow/data/function-calling-raw/BFCL_v2_simple.json"
 answer_file_path = "/lustre/fsw/portfolios/llmservice/users/sdiao/data-challenge/LMFlow/data/function-calling-raw/possible_answer/BFCL_v2_simple.json"
 
