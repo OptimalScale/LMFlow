@@ -1,0 +1,530 @@
+[
+    {
+        "lEquations": [
+            "10-x=6"
+        ],
+        "lSolutions": [
+            4.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Jake found 10 shells on the beach. He gave some shells to his friend. Now he has 6 shells left. How many shells did he give to his friend?",
+        "iIndex": 20
+    },
+    {
+        "lEquations": [
+            "25+x=45"
+        ],
+        "lSolutions": [
+            20.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There were 25 books on the shelf. Lisa added more books, and now there are 45 books. How many books did Lisa add?",
+        "iIndex": 21
+    },
+    {
+        "lEquations": [
+            "5*7=x"
+        ],
+        "lSolutions": [
+            35.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There are 5 baskets, and each basket contains 7 apples. How many apples are there in total?",
+        "iIndex": 22
+    },
+    {
+        "lEquations": [
+            "12=3+x"
+        ],
+        "lSolutions": [
+            9.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Linda has baked a total of 12 cookies. She started with 3 cookies. How many more cookies did she bake?",
+        "iIndex": 23
+    },
+    {
+        "lEquations": [
+            "15=x+5"
+        ],
+        "lSolutions": [
+            10.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "This month, John’s team played a total of 15 tennis matches. They won some matches and lost 5. How many matches did they win?",
+        "iIndex": 24
+    },
+    {
+        "lEquations": [
+            "30+x=70"
+        ],
+        "lSolutions": [
+            40.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "In the garden, there are currently 30 roses. The gardener plans to plant more roses, bringing the total to 70. How many more roses will be planted?",
+        "iIndex": 25
+    },
+    {
+        "lEquations": [
+            "45+x=90"
+        ],
+        "lSolutions": [
+            45.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Jerry ate 45 chocolates, and then his sister added more chocolates to the jar, making the total 90. How many chocolates did she add?",
+        "iIndex": 26
+    },
+    {
+        "lEquations": [
+            "3+x=12"
+        ],
+        "lSolutions": [
+            9.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There were 3 pencils in the drawer. Tim added more pencils, bringing the total to 12. How many pencils did Tim add?",
+        "iIndex": 27
+    },
+    {
+        "lEquations": [
+            "5+(8*x)=37"
+        ],
+        "lSolutions": [
+            4.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Sarah bought a toy for 5 dollars and 8 identical notebooks. She spent a total of 37 dollars. How much did each notebook cost?",
+        "iIndex": 28
+    },
+    {
+        "lEquations": [
+            "(x+3)/2=28"
+        ],
+        "lSolutions": [
+            53.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Dan collected new stamps for his collection. After adding 3 more stamps, half of his collection equals 28 stamps. How many stamps did Dan originally have?",
+        "iIndex": 29
+    },
+    {
+        "lEquations": [
+            "(x/2)+10=20"
+        ],
+        "lSolutions": [
+            20.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Mia spent half of her allowance on a movie ticket and earned 10 dollars from doing chores. If she ended with 20 dollars, what is her weekly allowance?",
+        "iIndex": 30
+    },
+    {
+        "lEquations": [
+            "(6*x)+8=128"
+        ],
+        "lSolutions": [
+            20.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "The sum of six consecutive odd numbers equals 128. What is the first of these numbers?",
+        "iIndex": 31
+    },
+    {
+        "lEquations": [
+            "65-(5*x)=15"
+        ],
+        "lSolutions": [
+            10.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Sam had 65 dollars. He bought 5 books and had 15 dollars left. How much did each book cost?",
+        "iIndex": 32
+    },
+    {
+        "lEquations": [
+            "8+(6*x)=62"
+        ],
+        "lSolutions": [
+            9.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "A bike rental shop charges 8 dollars plus 6 dollars per hour for a bike rental. If Mary paid 62 dollars, how many hours did she rent the bike for?",
+        "iIndex": 33
+    },
+    {
+        "lEquations": [
+            "305=(5*x)+10"
+        ],
+        "lSolutions": [
+            59.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "A school required 305 textbooks. They ordered all 5 crates, but 10 additional books were needed. How many books were in each crate?",
+        "iIndex": 34
+    },
+    {
+        "lEquations": [
+            "(x/2)+9=13"
+        ],
+        "lSolutions": [
+            8.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Jane sold half of her toys and then bought 9 more, resulting in a collection of 13 toys. How many toys did she start with?",
+        "iIndex": 35
+    },
+    {
+        "lEquations": [
+            "(4*x)+12=92"
+        ],
+        "lSolutions": [
+            20.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "The sum of four consecutive even numbers totals 92. What is the smallest of these numbers?",
+        "iIndex": 36
+    },
+    {
+        "lEquations": [
+            "8+6=x"
+        ],
+        "lSolutions": [
+            14.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Linda visited 8 art galleries this month and 6 more last month. How many art galleries has she visited in total?",
+        "iIndex": 37
+    },
+    {
+        "lEquations": [
+            "7+5=x"
+        ],
+        "lSolutions": [
+            12.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Lisa has 7 blue balloons and Tom has 5 blue balloons. How many blue balloons do they have altogether?",
+        "iIndex": 38
+    },
+    {
+        "lEquations": [
+            "5+4=x"
+        ],
+        "lSolutions": [
+            9.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There are 5 cherry trees in the orchard. The farmer planted 4 more. How many cherry trees are in the orchard now?",
+        "iIndex": 39
+    },
+    {
+        "lEquations": [
+            "11-x=5"
+        ],
+        "lSolutions": [
+            6.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Karen had 11 candies. She gave some to her friend and now has 5 candies left. How many candies did she give away?",
+        "iIndex": 40
+    },
+    {
+        "lEquations": [
+            "36-x=14"
+        ],
+        "lSolutions": [
+            22.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Paul had 36 toy cars. He gave some to his cousin and now has 14 left. How many toy cars did he give away?",
+        "iIndex": 41
+    },
+    {
+        "lEquations": [
+            "22+x=53"
+        ],
+        "lSolutions": [
+            31.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There were 22 tickets sold initially. After more tickets were sold, the total number of tickets sold was 53. How many more tickets were sold?",
+        "iIndex": 42
+    },
+    {
+        "lEquations": [
+            "49+x=62"
+        ],
+        "lSolutions": [
+            13.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "A library had 49 books initially. After adding more books, the total number of books was 62. How many more books were added?",
+        "iIndex": 43
+    },
+    {
+        "lEquations": [
+            "60*6=x"
+        ],
+        "lSolutions": [
+            360.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There are 60 chairs in a room. If each chair is occupied by one person, how many people can sit in the room?",
+        "iIndex": 44
+    },
+    {
+        "lEquations": [
+            "13=7+x"
+        ],
+        "lSolutions": [
+            6.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Mary needs 13 papers for her project. She already has 7 papers. How many more papers does she need?",
+        "iIndex": 45
+    },
+    {
+        "lEquations": [
+            "16=x+8"
+        ],
+        "lSolutions": [
+            8.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Tom had 16 marbles. He lost 8 marbles during his game. How many marbles does he have now?",
+        "iIndex": 46
+    },
+    {
+        "lEquations": [
+            "31+x=75"
+        ],
+        "lSolutions": [
+            44.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "The store initially had 31 watermelons. After receiving a new delivery, the total number of watermelons was 75. How many watermelons were delivered?",
+        "iIndex": 47
+    },
+    {
+        "lEquations": [
+            "50+x=100"
+        ],
+        "lSolutions": [
+            50.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "A container initially had 50 liters of water. After adding more water, the total volume was 100 liters. How many liters of water were added?",
+        "iIndex": 48
+    },
+    {
+        "lEquations": [
+            "2+2=x"
+        ],
+        "lSolutions": [
+            4.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Jane has 2 oranges and gets 2 more from her friend. How many oranges does she have in total?",
+        "iIndex": 49
+    },
+    {
+        "lEquations": [
+            "3+7=x"
+        ],
+        "lSolutions": [
+            10.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Alex had 3 candies and he received 7 more from his friend. How many candies does he have now?",
+        "iIndex": 50
+    },
+    {
+        "lEquations": [
+            "27+15=x"
+        ],
+        "lSolutions": [
+            42.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "A soccer team scored 27 goals in the first half of the year and 15 goals in the second half. How many goals did they score in total?",
+        "iIndex": 51
+    },
+    {
+        "lEquations": [
+            "11+x=20"
+        ],
+        "lSolutions": [
+            9.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There were 11 dogs in the park. More dogs arrived, bringing the total to 20. How many dogs arrived?",
+        "iIndex": 52
+    },
+    {
+        "lEquations": [
+            "60-x=24"
+        ],
+        "lSolutions": [
+            36.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Laura had 60 apples. She gifted some apples to her friends and now has 24 left. How many apples did she gift?",
+        "iIndex": 53
+    },
+    {
+        "lEquations": [
+            "50-x=12"
+        ],
+        "lSolutions": [
+            38.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Leo had 50 dollars. He spent some and now has 12 dollars. How much did he spend?",
+        "iIndex": 54
+    },
+    {
+        "lEquations": [
+            "15+x=25"
+        ],
+        "lSolutions": [
+            10.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There were 15 flowers in the garden, and then more flowers were added, making the total 25. How many flowers were added?",
+        "iIndex": 55
+    },
+    {
+        "lEquations": [
+            "30+x=55"
+        ],
+        "lSolutions": [
+            25.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "In the orchard, there were initially 30 apple trees. After planting more trees, the total became 55. How many trees were planted?",
+        "iIndex": 56
+    },
+    {
+        "lEquations": [
+            "20+x=37"
+        ],
+        "lSolutions": [
+            17.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There were 20 chairs in the hall. After adding more chairs, the total became 37. How many chairs were added?",
+        "iIndex": 57
+    },
+    {
+        "lEquations": [
+            "18+x=25"
+        ],
+        "lSolutions": [
+            7.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Sam had 18 coins. After adding more coins, he had 25 coins in total. How many coins did he add?",
+        "iIndex": 58
+    },
+    {
+        "lEquations": [
+            "5+(3*x)=20"
+        ],
+        "lSolutions": [
+            5.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Tim bought a puzzle for 5 dollars and 3 identical books. He spent a total of 20 dollars. How much did each book cost?",
+        "iIndex": 59
+    },
+    {
+        "lEquations": [
+            "(x+2)/3=18"
+        ],
+        "lSolutions": [
+            52.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Jake added 2 marbles to his collection. After that, one-third of his marbles amounted to 18. How many marbles did he initially have?",
+        "iIndex": 60
+    },
+    {
+        "lEquations": [
+            "(x/3)+5=15"
+        ],
+        "lSolutions": [
+            30.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "Emma spent one-third of her savings and then earned an additional 5 dollars. If she ended with 15 dollars, what were her initial savings?",
+        "iIndex": 61
+    },
+    {
+        "lEquations": [
+            "(4*x)+7=63"
+        ],
+        "lSolutions": [
+            14.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "The sum of four consecutive even numbers is 63. What is the second smallest number in this series?",
+        "iIndex": 62
+    },
+    {
+        "lEquations": [
+            "90-(x*2)=0"
+        ],
+        "lSolutions": [
+            45.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "sQuestion": "There are 90 candies in a jar. Sarah and Mike decided to divide them equally between them. How many candies does each person get?",
+        "iIndex": 63
+    }
+]
