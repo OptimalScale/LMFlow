@@ -83,7 +83,7 @@ class IterativeDPOAligner:
             print_banner(f'Iterative DPO {iteration_name}: Generate responses')
             model = HFDecoderModel(
                 model_args=target_model_args,
-                tune_strategy='none'
+                do_train=False
             )
             self._do_target_model_inference(
                 model=model,
@@ -97,8 +97,7 @@ class IterativeDPOAligner:
             print_banner(f'Iterative DPO {iteration_name}: Reward model scoring')
             reward_model = HFTextRegressionModel(
                 model_args=reward_model_args,
-                tune_strategy='none',
-                use_accelerator=self.aligner_args.use_accelerator,
+                do_train=False,
             )
             target_model_inference_result_data_args = copy.deepcopy(dataset.data_args)
             target_model_inference_result_data_args.dataset_path = str(self.workspace_path/iteration_name/"target_model_inference_result")

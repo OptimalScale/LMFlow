@@ -36,9 +36,8 @@ with open (pipeline_args.deepspeed, "r") as f:
 
 model = AutoModel.get_model(
     model_args, 
-    tune_strategy='none', 
+    do_train=False, 
     ds_config=ds_config, 
-    use_accelerator=pipeline_args.use_accelerator_for_evaluator
 )
 dataset = Dataset(data_args)
 

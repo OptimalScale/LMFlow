@@ -51,7 +51,7 @@ mkdir -p ${output_dir} ${log_dir}
 
 deepspeed ${deepspeed_args} \
   examples/finetune_multi_modal.py \
-    --deepspeed configs/ds_config_multimodal.json \
+    --deepspeed configs/archive/ds_config_multimodal.json \
     --arch_type vision_encoder_decoder \
     --llava_loading True \
     --model_name_or_path ${model_name_or_path} \

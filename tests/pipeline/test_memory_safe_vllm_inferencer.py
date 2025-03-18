@@ -3,6 +3,9 @@
 import logging
 import json
 
+import pytest
+vllm = pytest.importorskip("vllm")
+
 from lmflow.args import DatasetArguments, ModelArguments, InferencerArguments
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.vllm_inferencer import MemorySafeVLLMInferencer

@@ -66,7 +66,7 @@ deepspeed ${deepspeed_args} \
     --block_size 256 \
     --trust_remote_code True \
     --per_device_train_batch_size 1 \
-    --deepspeed configs/ds_config_zero2_no_offload.json \
+    --deepspeed configs/archive/ds_config_zero2_no_offload.json \
     --bf16 \
     --run_name hymba_finetune \
     --validation_split_percentage 0 \

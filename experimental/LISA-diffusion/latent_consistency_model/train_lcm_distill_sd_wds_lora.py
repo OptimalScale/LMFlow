@@ -719,7 +719,7 @@ def parse_args():
         help="The huber loss parameter. Only used if `--loss_type=huber`.",
     )
     parser.add_argument(
-        "--lora_rank",
+        "--lora_r",
         type=int,
         default=64,
         help="The rank of the LoRA projection matrix.",
@@ -730,7 +730,7 @@ def parse_args():
         default=64,
         help=(
             "The value of the LoRA alpha parameter, which controls the scaling factor in front of the LoRA weight"
-            " update delta_W. No scaling will be performed if this value is equal to `lora_rank`."
+            " update delta_W. No scaling will be performed if this value is equal to `lora_r`."
         ),
     )
     parser.add_argument(
@@ -999,7 +999,7 @@ def main(args):
             "time_emb_proj",
         ]
     lora_config = LoraConfig(
-        r=args.lora_rank,
+        r=args.lora_r,
         target_modules=lora_target_modules,
         lora_alpha=args.lora_alpha,
         lora_dropout=args.lora_dropout,

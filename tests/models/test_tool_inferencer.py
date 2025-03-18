@@ -29,8 +29,3 @@ class ToolInferencerTest(unittest.TestCase):
     def test_code_exec_2(self,code=CODE_2):
         toolinf_res = self.toolinf.code_exec(code)
         self.assertNotEqual(toolinf_res.returncode, 0)
-        
-unittest.main()
-        
-        
-        

@@ -2,6 +2,7 @@
 # coding=utf-8
 """ BaseTuner: a subclass of BasePipeline.
 """
+from abc import abstractmethod
 
 from lmflow.pipeline.base_pipeline import BasePipeline
 
@@ -17,5 +18,6 @@ class BaseAligner(BasePipeline):
         # TODO: add reward_model
         pass
 
+    @abstractmethod
     def align(self, model, dataset, reward_model):
         raise NotImplementedError(".align is not implemented")

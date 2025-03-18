@@ -4,7 +4,7 @@ from lmflow.args import ModelArguments
 from lmflow.models.auto_model import AutoModel
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.models.text_regression_model import TextRegressionModel
-from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
+# from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
 
 MODEL_NAME = "gpt2"
 

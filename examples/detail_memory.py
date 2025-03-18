@@ -13,7 +13,7 @@ import sys
 
 LISA = True if sys.argv[3] == "1" else False
 LORA = True if sys.argv[4] == "1" else False
-lora_rank = int(sys.argv[5])
+lora_r = int(sys.argv[5])
 # Check if the model name is provided as a command-line argument
 if len(sys.argv) < 6:
     print("Usage: python script_name.py <model_name>")
@@ -26,7 +26,7 @@ print("model            : ", sys.argv[1])
 print("token_length     : ", sys.argv[2])
 print("LISA             : ", LISA)
 print("LORA             : ", LORA)
-print("lora_rank        : ", lora_rank)
+print("lora_r        : ", lora_r)
 # Model initialization
 model_name = sys.argv[1]
 token_length = sys.argv[2]
@@ -48,7 +48,7 @@ if LORA:
     peft_config = LoraConfig(
         task_type=TaskType.CAUSAL_LM,
         inference_mode=False,
-        r=lora_rank,
+        r=lora_r,
         lora_alpha=32,
         lora_dropout=0.1,
         target_modules=[ "q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj", "embed_tokens", "lm_head"],

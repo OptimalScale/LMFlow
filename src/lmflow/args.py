@@ -215,7 +215,12 @@ class ModelArguments:
         default=False,
         metadata={"help": "Whether to use qlora."},
     )
-    bits: int = field(
+    bits: Optional[int] = field(
+        default=None,
+        metadata={"help": "[deprecated] The number of bits for quantization.",
+                  "choices": [4, 8], },
+    )
+    quant_bit: int = field(
         default=4,
         metadata={"help": "The number of bits for quantization.",
                   "choices": [4, 8], },
@@ -363,10 +368,21 @@ class ModelArguments:
         if self.use_flash_attention:
             if not is_flash_attn_available():
                 self.use_flash_attention = False
-                logger.warning("Flash attention is not available in the current environment. Disabling flash attention.")
+                logger.warning("Flash attention is not available in the current environment. Disabling flash attention. If you want to use flash attention, please install by `pip install -e '.[flash_attn]'`.")
+        else:
+            logger.warning("Flash attention is not enabled. We recommend enabling flash attention by `--use_flash_attention 1` for better performance.")
                 
         if self.lora_target_modules is not None:
             self.lora_target_modules: List[str] = split_args(self.lora_target_modules)
+            
+        if "encoder_decoder" in self.arch_type:
+            raise NotImplementedError(
+                "The encoder-decoder model is not fully implemented yet."
+            )
+            
+        if self.bits is not None:
+            logger.warning("The argument `bits` is deprecated. Please use `quant_bit` instead.")
+            self.quant_bit = self.bits
 
 
 @dataclass
@@ -924,8 +940,8 @@ class EvaluatorArguments:
             ),
         },
     )
-    use_accelerator_for_evaluator: bool = field(
-        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
+    use_accelerator_for_evaluator: Optional[bool] = field(
+        default=None, metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
 
     temperature: float = field(
@@ -942,6 +958,14 @@ class EvaluatorArguments:
         default=100,
         metadata={"help": "Maximum length during inference."},
     )
+    
+    def __post_init__(self):
+        if self.use_accelerator_for_evaluator is not None:
+            logger.warning(
+                "You've specified `use_accelerator_for_evaluator`. This argument is deprecated. "
+                "It will not take effect and will be removed in a future version, "
+                "since LMFlow now can automatically detect whether is in Accelerate or Deepspeed environment."
+            )
 
 
 @dataclass
@@ -1061,8 +1085,8 @@ class InferencerArguments:
             "help": "whether turn on true random sampling during inference."
         },
     )
-    use_accelerator: bool = field(
-        default=False, metadata={"help": "Whether to use Huggingface Accelerator instead of Deepspeed"},
+    use_accelerator: Optional[bool] = field(
+        default=None, metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
     use_beam_search: Optional[bool] = field(
         default=False,
@@ -1131,6 +1155,13 @@ class InferencerArguments:
     )
     
     def __post_init__(self):
+        if self.use_accelerator is not None:
+            logger.warning(
+                "You've specified `use_accelerator`. This argument is deprecated. "
+                "It will not take effect and will be removed in a future version, "
+                "since LMFlow now can automatically detect whether is in Accelerate or Deepspeed environment."
+            )
+            
         if self.save_results:
             if self.results_path is None:
                 raise ValueError("Need to specify results_path when save_results is True.")

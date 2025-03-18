@@ -14,7 +14,7 @@ model=Salesforce/blip2-flan-t5-xxl
 # 
 # deepspeed --master_port=11005 examples/vis_chatbot_gradio.py \
 #     --model_name_or_path ${model} \
-#     --deepspeed configs/ds_config_multimodal.json \
+#     --deepspeed configs/archive/ds_config_multimodal.json \
 #     --arch_type vision_encoder_decoder \
 #     --task vqa \
 #     --custom_model \
@@ -37,7 +37,7 @@ fi
 
 deepspeed --master_port=11005 examples/vis_chatbot_gradio.py \
     --model_name_or_path ${model} \
-    --deepspeed configs/ds_config_vis_chatbot.json \
+    --deepspeed configs/archive/ds_config_vis_chatbot.json \
     --arch_type vision_encoder_decoder \
     --task vqa \
     --custom_model \

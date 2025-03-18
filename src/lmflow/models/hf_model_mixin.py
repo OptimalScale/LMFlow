@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
-import gc
-import os
-import logging
-from typing import Union, Optional, Dict, List
 import copy
+import gc
+import logging
+from contextlib import nullcontext
+from typing import Union, Optional, Dict, List
 
 import torch
-import deepspeed
 from transformers import (
     CONFIG_MAPPING,
     AutoConfig,
@@ -19,6 +18,7 @@ from transformers import (
     AutoModelForCausalLM,
     AutoModelForSequenceClassification,
 )
+from transformers.modeling_utils import is_fsdp_enabled
 from peft import (
     LoraConfig,
     PeftModel,
@@ -33,7 +33,8 @@ from lmflow.utils.constants import (
     LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
 from lmflow.args import ModelArguments
-from lmflow.utils.versioning import is_vllm_available
+from lmflow.utils.versioning import is_vllm_available, is_deepspeed_available
+from lmflow.utils.envs import is_accelerate_env
 
 if is_vllm_available():
     from vllm import LLM, SamplingParams
@@ -61,9 +62,7 @@ class HFModelMixin(BaseModel):
         self,
         model_args: ModelArguments,
         do_train: bool,
-        ds_config=None,
         device: Optional[str]="gpu",
-        use_accelerator: bool=False,
         hf_auto_model_additional_args: Optional[Dict]=None,
         *args,
         **kwargs
@@ -76,12 +75,8 @@ class HFModelMixin(BaseModel):
             Dictionary with model arguments such as model name, path, revision, etc.
         do_train : bool
             To prepare the model for training or inference.
-        ds_config : optional
-            Deepspeed configuration for distributed training, by default None
         device : str, optional
             By default "gpu"
-        use_accelerator : bool, optional
-            By default False
         """
 
         # See more about loading any type of standard or custom dataset (from
@@ -96,8 +91,6 @@ class HFModelMixin(BaseModel):
         self.device = device
         self.model_args = model_args
         self.hf_auto_model = HF_AUTOMODEL_MAPPING[model_args.arch_type]
-        self.use_accelerator = use_accelerator
-        self.ds_config = ds_config
         self.do_train = do_train
         
         self.tokenizer = self.__prepare_tokenizer(model_args)
@@ -112,7 +105,9 @@ class HFModelMixin(BaseModel):
 
         if self.do_train:
             self.__prepare_model_for_training(model_args, self.hf_auto_model)
-                        
+        
+        self.__fix_special_tokens()
+
 
     def __prepare_tokenizer(
         self,
@@ -232,15 +227,35 @@ class HFModelMixin(BaseModel):
         quant_config = None
         if self.do_train:
             if model_args.use_qlora:
-                quant_config = BitsAndBytesConfig(
-                    load_in_4bit=model_args.bits == 4,
-                    load_in_8bit=model_args.bits == 8,
-                    llm_int8_threshold=6.0,
-                    llm_int8_has_fp16_weight=False,
-                    bnb_4bit_compute_dtype=self.torch_dtype,
-                    bnb_4bit_use_double_quant=model_args.double_quant,
-                    bnb_4bit_quant_type=model_args.quant_type,
-                )
+                if model_args.quant_bit == 8:
+                    if is_fsdp_enabled():
+                        raise ValueError("FSDP + Qlora 8-bit quantization is not supported.")
+                    quant_config_kwargs = {
+                        "load_in_8bit": True,
+                    }
+                elif model_args.quant_bit == 4:
+                    logger.warning(
+                        "For users who are using Accelerate (FSDP backend) or DeepSpeed, "
+                        "we only implement Qlora 4-bit quantization with torch.bfloat16 dtype currently. "
+                        "Carefully check the Accelerate or DeepSpeed configurations, since they may cast dtype "
+                        "and cause errors like "
+                        "(DeepSpeed) `TypeError: output tensor must have the same type as input tensor`, or "
+                        "(Accelerate FSDP) `ValueError: Must flatten tensors with uniform dtype but got torch.bfloat16 and torch.float32`. "
+                        "Consider using other peft methods if your device doesn't support torch.bfloat16. "
+                        "(This is just a notification and please self-check the compatibility of your device.)"
+                    )
+                    quant_config_kwargs = {
+                        "load_in_4bit": True,
+                        "bnb_4bit_compute_dtype": torch.bfloat16,
+                        "bnb_4bit_use_double_quant": model_args.double_quant,
+                        "bnb_4bit_quant_type": model_args.quant_type,
+                        "bnb_4bit_quant_storage": torch.bfloat16, # fsdp+qlora, see https://huggingface.co/docs/bitsandbytes/v0.43.3/en/fsdp_qlora
+                    }
+                else:
+                    raise ValueError("Qlora only supports 4-bit and 8-bit.")
+                
+                quant_config = BitsAndBytesConfig(**quant_config_kwargs)
+                
         else: # inference
             if model_args.use_int8:
                 quant_config = BitsAndBytesConfig(
@@ -345,10 +360,7 @@ class HFModelMixin(BaseModel):
                 quantization_config=self.quant_config,
                 trust_remote_code=model_args.trust_remote_code,
             )
-
-            if model_args.use_qlora:
-                model.gradient_checkpointing_enable()
-                model = prepare_model_for_kbit_training(model)
+            
         else:
             model = hf_auto_model.from_config(self.hf_model_config)
             n_params = sum(dict((p.data_ptr(), p.numel()) for p in model.parameters()).values())
@@ -380,22 +392,25 @@ class HFModelMixin(BaseModel):
         # We resize the embeddings only when necessary to avoid index errors.
         # If you are creating a model from scratch on a small vocab and want a
         # smaller embedding size, remove this test.
-        with deepspeed.zero.GatheredParameters(model.get_input_embeddings().weight, modifier_rank=None):
+        resize_embedding_context = nullcontext()
+        if is_deepspeed_available() and not is_accelerate_env():
+            import deepspeed
+            resize_embedding_context = deepspeed.zero.GatheredParameters(model.get_input_embeddings().weight, modifier_rank=None)
+            
+        with resize_embedding_context:
             weights = model.get_input_embeddings().weight
             embedding_size = weights.shape[0]
+            
         if len(self.tokenizer) > embedding_size:
             model.resize_token_embeddings(len(self.tokenizer))
 
         self.backend_model = model
-        self.__prepare_model_post_process()
 
-    
+
     def __prepare_model_for_inference(
         self,
         model_args: ModelArguments,
         hf_auto_model: HF_AUTOMODEL_TYPE,
-        use_accelerator: bool,
-        ds_config
     ):
         logger.info(f"Backend model already initialized, moving to device: {self.device}")
         if hasattr(self, "backend_model"):
@@ -413,12 +428,8 @@ class HFModelMixin(BaseModel):
             "offload_state_dict": True,
         }
 
-        if use_accelerator or model_args.use_ram_optimized_load:
+        if model_args.use_ram_optimized_load:
             inference_load_kwargs.update(ram_optimized_load_kwargs)
-                   
-        if not use_accelerator:
-            from transformers.integrations import HfDeepSpeedConfig
-            dschf = HfDeepSpeedConfig(ds_config)
             
         try:
             self.backend_model = hf_auto_model.from_pretrained(
@@ -448,14 +459,16 @@ class HFModelMixin(BaseModel):
                 model_args.lora_model_path,
             )
 
-        if (not use_accelerator) and self.device == "gpu":
-            deepspeed.init_distributed()
-            self.ds_engine = deepspeed.initialize(model=self.backend_model, config_params=ds_config)[0]
-            self.ds_engine.module.eval()
-            
-        self.__prepare_model_post_process()
-                    
-        
+        if self.device == "gpu" and not is_accelerate_env():
+            if is_deepspeed_available():
+                import deepspeed
+                deepspeed.init_distributed()
+                self.ds_engine = deepspeed.initialize(model=self.backend_model)[0]
+                self.ds_engine.module.eval()
+            else:
+                raise ImportError("Deepspeed is not available. Please install via `pip install -e '.[deepspeed]'`.")
+
+
     def __prepare_model_for_vllm_inference(
         self,
         model_args: ModelArguments,
@@ -475,12 +488,12 @@ class HFModelMixin(BaseModel):
         )
         
     
-    def __prepare_model_post_process(self):
+    def __fix_special_tokens(self):
         # old models/tokenizers may not have these attributes, fixing            
         if self.tokenizer.eos_token is None:
-            self.tokenizer.eos_token = self.backend_model.config.eos_token
+            self.tokenizer.eos_token = self.hf_model_config.eos_token
         if self.tokenizer.eos_token_id is None:
-            self.tokenizer.eos_token_id = self.backend_model.config.eos_token_id
+            self.tokenizer.eos_token_id = self.hf_model_config.eos_token_id
             
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
@@ -490,12 +503,12 @@ class HFModelMixin(BaseModel):
         if self.model_args.eos_padding:
             self.tokenizer.pad_token = self.tokenizer.eos_token
             
-        if not hasattr(self.backend_model.config, "pad_token_id"):
+        if not hasattr(self.hf_model_config, "pad_token_id"):
             logger.warning("pad_token_id not found in model config. Setting pad_token_id to eos_token_id.")
-            self.backend_model.config.pad_token_id = self.backend_model.config.eos_token_id
-        elif self.backend_model.config.pad_token_id is None:
+            self.hf_model_config.pad_token_id = self.hf_model_config.eos_token_id
+        elif self.hf_model_config.pad_token_id is None:
             logger.warning("pad_token_id is None in model config. Setting pad_token_id to eos_token_id.")
-            self.backend_model.config.pad_token_id = self.backend_model.config.eos_token_id
+            self.hf_model_config.pad_token_id = self.hf_model_config.eos_token_id
             
 
     def activate_model_for_inference(
@@ -517,8 +530,6 @@ class HFModelMixin(BaseModel):
             self.__prepare_model_for_inference(
                 model_args=self.model_args,
                 hf_auto_model=self.hf_auto_model,
-                use_accelerator=self.use_accelerator,
-                ds_config=self.ds_config,
             )
             
         self._activated = True

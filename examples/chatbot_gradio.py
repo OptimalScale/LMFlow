@@ -110,7 +110,7 @@ with open (pipeline_args.deepspeed, "r") as f:
 
 model = AutoModel.get_model(
     model_args,
-    tune_strategy='none',
+    do_train=False,
     ds_config=ds_config,
     device=pipeline_args.device,
     torch_dtype=torch.float16
