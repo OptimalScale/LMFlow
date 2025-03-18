@@ -92,8 +92,8 @@ See all conversation template details [here](https://optimalscale.github.io/LMFl
 |  Model  | Conversation Template |
 |  :---:  | :-------------------: |
 | DeepSeek | `deepseek` <br> `deepseek_v2` <br> `deepseek_r1` <br> `deepseek_r1_distill` <br> `deepseek_v3` |
-| Hymba | `hymba` |
 | Gemma | `gemma` |
+| Hymba | `hymba` |
 | InternLM2 | `internlm2` |
 | LLaMA | `llama2` <br> `llama3` <br> `llama3_for_tool`|
 | Phi | `phi3` |
