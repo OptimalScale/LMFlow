@@ -3,9 +3,9 @@
 
 # Parses arguments
 model_name_or_path=YongganFu/Llama-400M-12L
-dataset_path=data/dart_math
+dataset_path=data/siqa
 conversation_template=empty
-output_dir=output_models/finetune
+output_dir=output_models/finetune_siqa
 deepspeed_args="--master_port=11000"
 
 # Safety related arguments

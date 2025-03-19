@@ -20,7 +20,14 @@ regression_test/*/new_log
 output_dir/
 
 # data files
-# data/
+data/
+!data/function-calling
+!data/function-calling-raw
+!data/roleplay
+!data/roleplay-raw
+!data/call_openai.py
+!data/wikitext-2-raw-v1
+
 
 # output models
 output_models/
