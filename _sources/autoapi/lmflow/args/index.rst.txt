@@ -1,0 +1,2001 @@
+lmflow.args
+===========
+
+.. py:module:: lmflow.args
+
+.. autoapi-nested-parse::
+
+   This script defines dataclasses: ModelArguments and DatasetArguments,
+   that contain the arguments for the model and dataset used in training.
+
+   It imports several modules, including dataclasses, field from typing, Optional from typing,
+   require_version from transformers.utils.versions, MODEL_FOR_CAUSAL_LM_MAPPING,
+   and TrainingArguments from transformers.
+
+   MODEL_CONFIG_CLASSES is assigned a list of the model config classes from
+   MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types
+   extracted from the MODEL_CONFIG_CLASSES.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.args.MODEL_CONFIG_CLASSES
+   lmflow.args.MODEL_TYPES
+   lmflow.args.logger
+   lmflow.args.PIPELINE_ARGUMENT_MAPPING
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.args.OptimizerNames
+   lmflow.args.ModelArguments
+   lmflow.args.VisModelArguments
+   lmflow.args.DatasetArguments
+   lmflow.args.MultiModalDatasetArguments
+   lmflow.args.FinetunerArguments
+   lmflow.args.RewardModelTunerArguments
+   lmflow.args.EvaluatorArguments
+   lmflow.args.InferencerArguments
+   lmflow.args.RaftAlignerArguments
+   lmflow.args.BenchmarkingArguments
+   lmflow.args.DPOAlignerArguments
+   lmflow.args.DPOv2AlignerArguments
+   lmflow.args.IterativeAlignerArguments
+   lmflow.args.IterativeDPOAlignerArguments
+   lmflow.args.AutoArguments
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.args.split_args
+
+
+Module Contents
+---------------
+
+.. py:data:: MODEL_CONFIG_CLASSES
+
+.. py:data:: MODEL_TYPES
+
+.. py:data:: logger
+
+.. py:class:: OptimizerNames
+
+   .. py:attribute:: DUMMY
+      :value: 'dummy'
+
+
+
+   .. py:attribute:: ADABELIEF
+      :value: 'adabelief'
+
+
+
+   .. py:attribute:: ADABOUND
+      :value: 'adabound'
+
+
+
+   .. py:attribute:: LARS
+      :value: 'lars'
+
+
+
+   .. py:attribute:: LAMB
+      :value: 'lamb'
+
+
+
+   .. py:attribute:: ADAMAX
+      :value: 'adamax'
+
+
+
+   .. py:attribute:: NADAM
+      :value: 'nadam'
+
+
+
+   .. py:attribute:: RADAM
+      :value: 'radam'
+
+
+
+   .. py:attribute:: ADAMP
+      :value: 'adamp'
+
+
+
+   .. py:attribute:: SGDP
+      :value: 'sgdp'
+
+
+
+   .. py:attribute:: YOGI
+      :value: 'yogi'
+
+
+
+   .. py:attribute:: SOPHIA
+      :value: 'sophia'
+
+
+
+   .. py:attribute:: ADAN
+      :value: 'adan'
+
+
+
+   .. py:attribute:: ADAM
+      :value: 'adam'
+
+
+
+   .. py:attribute:: NOVOGRAD
+      :value: 'novograd'
+
+
+
+   .. py:attribute:: ADADELTA
+      :value: 'adadelta'
+
+
+
+   .. py:attribute:: ADAGRAD
+      :value: 'adagrad'
+
+
+
+   .. py:attribute:: MUON
+      :value: 'muon'
+
+
+
+   .. py:attribute:: ADAMW_SCHEDULE_FREE
+      :value: 'adamw_schedule_free'
+
+
+
+   .. py:attribute:: SGD_SCHEDULE_FREE
+      :value: 'sgd_schedule_free'
+
+
+
+.. py:class:: ModelArguments
+
+   
+   Define a class ModelArguments using the dataclass decorator. 
+   The class contains several optional parameters that can be used to configure a model. 
+
+   model_name_or_path : str
+       a string representing the path or name of a pretrained
+       model checkpoint for weights initialization. If None, a model will be trained from scratch.
+
+   model_type :  str
+       a string representing the type of model to use if training from
+       scratch. If not provided, a pretrained model will be used.
+
+   config_overrides :  str
+       a string representing the default config settings to override
+       when training a model from scratch.
+
+   config_name : str
+       a string representing the name or path of the pretrained config to
+       use, if different from the model_name_or_path.
+
+   tokenizer_name :  str
+       a string representing the name or path of the pretrained tokenizer
+       to use, if different from the model_name_or_path.
+
+   cache_dir :  str
+       a string representing the path to the directory where pretrained models
+       downloaded from huggingface.co will be stored.
+
+   use_fast_tokenizer : bool
+       a boolean indicating whether to use a fast tokenizer (backed by the
+       tokenizers library) or not.
+
+   model_revision :  str
+       a string representing the specific model version to use (can be a
+       branch name, tag name, or commit id).
+
+   token : Optional[str]
+       Necessary when accessing a private model/dataset.
+
+   torch_dtype :  str
+       a string representing the dtype to load the model under. If auto is
+       passed, the dtype will be automatically derived from the model's weights.
+
+   use_ram_optimized_load : bool
+       a boolean indicating whether to use disk mapping when memory is not
+       enough.
+
+   use_int8 : bool
+       a boolean indicating whether to load int8 quantization for inference.
+
+   load_in_4bit : bool
+       whether to load the model in 4bit
+
+   model_max_length : int
+       The maximum length of the model.
+
+   truncation_side : str
+       The side on which the model should have truncation applied.
+
+   arch_type : str
+       Model architecture type.
+   padding_side : str
+       The side on which the tokenizer should have padding applied.
+   eos_padding : bool
+       whether to pad with eos token instead of pad token.
+   ignore_bias_buffers : bool
+       fix for DDP issues with LM bias/mask buffers - invalid scalar type,`inplace operation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: model_name_or_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: lora_model_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: model_type
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: config_overrides
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: arch_type
+      :type:  Optional[str]
+      :value: 'decoder_only'
+
+
+
+   .. py:attribute:: config_name
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: tokenizer_name
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: cache_dir
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: use_fast_tokenizer
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: model_revision
+      :type:  str
+      :value: 'main'
+
+
+
+   .. py:attribute:: token
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: trust_remote_code
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: torch_dtype
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: use_dora
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: use_lora
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: use_qlora
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: bits
+      :type:  int
+      :value: 4
+
+
+
+   .. py:attribute:: quant_type
+      :type:  str
+      :value: 'nf4'
+
+
+
+   .. py:attribute:: double_quant
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: lora_r
+      :type:  int
+      :value: 8
+
+
+
+   .. py:attribute:: lora_alpha
+      :type:  int
+      :value: 32
+
+
+
+   .. py:attribute:: lora_target_modules
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: lora_dropout
+      :type:  float
+      :value: 0.1
+
+
+
+   .. py:attribute:: save_aggregated_lora
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: use_ram_optimized_load
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: use_flash_attention
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: truncate_to_model_max_length
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: do_rope_scaling
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: rope_pi_ratio
+      :type:  int
+      :value: 1
+
+
+
+   .. py:attribute:: rope_ntk_ratio
+      :type:  int
+      :value: 1
+
+
+
+   .. py:attribute:: use_int8
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: load_in_4bit
+      :type:  Optional[bool]
+      :value: True
+
+
+
+   .. py:attribute:: model_max_length
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: truncation_side
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: padding_side
+      :type:  str
+      :value: 'right'
+
+
+
+   .. py:attribute:: eos_padding
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: ignore_bias_buffers
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:method:: __post_init__()
+
+
+.. py:class:: VisModelArguments
+
+   Bases: :py:obj:`ModelArguments`
+
+
+   
+   Define a class ModelArguments using the dataclass decorator. 
+   The class contains several optional parameters that can be used to configure a model. 
+
+   model_name_or_path : str
+       a string representing the path or name of a pretrained
+       model checkpoint for weights initialization. If None, a model will be trained from scratch.
+
+   model_type :  str
+       a string representing the type of model to use if training from
+       scratch. If not provided, a pretrained model will be used.
+
+   config_overrides :  str
+       a string representing the default config settings to override
+       when training a model from scratch.
+
+   config_name : str
+       a string representing the name or path of the pretrained config to
+       use, if different from the model_name_or_path.
+
+   tokenizer_name :  str
+       a string representing the name or path of the pretrained tokenizer
+       to use, if different from the model_name_or_path.
+
+   cache_dir :  str
+       a string representing the path to the directory where pretrained models
+       downloaded from huggingface.co will be stored.
+
+   use_fast_tokenizer : bool
+       a boolean indicating whether to use a fast tokenizer (backed by the
+       tokenizers library) or not.
+
+   model_revision :  str
+       a string representing the specific model version to use (can be a
+       branch name, tag name, or commit id).
+
+   token : Optional[str]
+       Necessary when accessing a private model/dataset.
+
+   torch_dtype :  str
+       a string representing the dtype to load the model under. If auto is
+       passed, the dtype will be automatically derived from the model's weights.
+
+   use_ram_optimized_load : bool
+       a boolean indicating whether to use disk mapping when memory is not
+       enough.
+
+   use_int8 : bool
+       a boolean indicating whether to load int8 quantization for inference.
+
+   load_in_4bit : bool
+       whether to load the model in 4bit
+
+   model_max_length : int
+       The maximum length of the model.
+
+   truncation_side : str
+       The side on which the model should have truncation applied.
+
+   arch_type : str
+       Model architecture type.
+   padding_side : str
+       The side on which the tokenizer should have padding applied.
+   eos_padding : bool
+       whether to pad with eos token instead of pad token.
+   ignore_bias_buffers : bool
+       fix for DDP issues with LM bias/mask buffers - invalid scalar type,`inplace operation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: low_resource
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: custom_model
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: pretrained_language_projection_path
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: custom_vision_model
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: image_encoder_name_or_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: qformer_name_or_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: llm_model_name_or_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: use_prompt_cache
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: prompt_cache_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: llava_loading
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: with_qformer
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: vision_select_layer
+      :type:  Optional[int]
+      :value: -2
+
+
+
+   .. py:attribute:: llava_pretrain_model_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: save_pretrain_model_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+.. py:class:: DatasetArguments
+
+   
+   Define a class DatasetArguments using the dataclass decorator.
+   The class contains several optional parameters that can be used to configure a dataset for a language model.
+
+   dataset_path : str
+       a string representing the path of the dataset to use.
+
+   dataset_name : str
+       a string representing the name of the dataset to use. The default value is "customized".
+
+   is_custom_dataset : bool
+       a boolean indicating whether to use custom data. The default value is False.
+
+   customized_cache_dir : str
+       a string representing the path to the directory where customized dataset caches will be stored.
+
+   dataset_config_name : str
+       a string representing the configuration name of the dataset to use (via the datasets library).
+
+   train_file : str
+       a string representing the path to the input training data file (a text file).
+
+   validation_file : str
+       a string representing the path to the input evaluation data file to evaluate the perplexity on (a text file).
+
+   max_train_samples : int
+       an integer indicating the maximum number of training examples to use for debugging or quicker training.
+       If set, the training dataset will be truncated to this number.
+
+   max_eval_samples: int
+       an integer indicating the maximum number of evaluation examples to use for debugging or quicker training.
+       If set, the evaluation dataset will be truncated to this number.
+
+   streaming : bool
+       a boolean indicating whether to enable streaming mode.
+
+   block_size: int
+       an integer indicating the optional input sequence length after tokenization. The training dataset will be
+       truncated in blocks of this size for training.
+
+   train_on_prompt: bool
+       a boolean indicating whether to train on prompt for conversation datasets such as ShareGPT.
+
+   conversation_template: str
+       a string representing the template for conversation datasets.
+
+   dataset_cache_dir: str
+       a string representing the path to the dataset cache directory. Useful when the default cache dir
+       (`~/.cache/huggingface/datasets`) has limited space.
+
+   The class also includes some additional parameters that can be used to configure the dataset further, such as `overwrite_cache`,
+   `validation_split_percentage`, `preprocessing_num_workers`, `disable_group_texts`, `demo_example_in_prompt`, `explanation_in_prompt`,
+   `keep_linebreaks`, and `prompt_structure`.
+
+   The field function is used to set default values and provide help messages for each parameter. The Optional type hint is
+   used to indicate that a parameter is optional. The metadata argument is used to provide additional information about
+   each parameter, such as a help message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: dataset_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: dataset_name
+      :type:  Optional[str]
+      :value: 'customized'
+
+
+
+   .. py:attribute:: is_custom_dataset
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: customized_cache_dir
+      :type:  Optional[str]
+      :value: '.cache/llm-ft/datasets'
+
+
+
+   .. py:attribute:: dataset_config_name
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: train_file
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: validation_file
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: max_train_samples
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: max_eval_samples
+      :type:  Optional[int]
+      :value: 10000000000.0
+
+
+
+   .. py:attribute:: streaming
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: block_size
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: overwrite_cache
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: validation_split_percentage
+      :type:  Optional[int]
+      :value: 5
+
+
+
+   .. py:attribute:: preprocessing_num_workers
+      :type:  Optional[int]
+      :value: None
+
+
+
+   .. py:attribute:: group_texts_batch_size
+      :type:  int
+      :value: 1000
+
+
+
+   .. py:attribute:: disable_group_texts
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: keep_linebreaks
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: test_file
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: train_on_prompt
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: conversation_template
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: dataset_cache_dir
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:method:: __post_init__()
+
+
+.. py:class:: MultiModalDatasetArguments
+
+   Bases: :py:obj:`DatasetArguments`
+
+
+   
+   Define a class DatasetArguments using the dataclass decorator.
+   The class contains several optional parameters that can be used to configure a dataset for a language model.
+
+   dataset_path : str
+       a string representing the path of the dataset to use.
+
+   dataset_name : str
+       a string representing the name of the dataset to use. The default value is "customized".
+
+   is_custom_dataset : bool
+       a boolean indicating whether to use custom data. The default value is False.
+
+   customized_cache_dir : str
+       a string representing the path to the directory where customized dataset caches will be stored.
+
+   dataset_config_name : str
+       a string representing the configuration name of the dataset to use (via the datasets library).
+
+   train_file : str
+       a string representing the path to the input training data file (a text file).
+
+   validation_file : str
+       a string representing the path to the input evaluation data file to evaluate the perplexity on (a text file).
+
+   max_train_samples : int
+       an integer indicating the maximum number of training examples to use for debugging or quicker training.
+       If set, the training dataset will be truncated to this number.
+
+   max_eval_samples: int
+       an integer indicating the maximum number of evaluation examples to use for debugging or quicker training.
+       If set, the evaluation dataset will be truncated to this number.
+
+   streaming : bool
+       a boolean indicating whether to enable streaming mode.
+
+   block_size: int
+       an integer indicating the optional input sequence length after tokenization. The training dataset will be
+       truncated in blocks of this size for training.
+
+   train_on_prompt: bool
+       a boolean indicating whether to train on prompt for conversation datasets such as ShareGPT.
+
+   conversation_template: str
+       a string representing the template for conversation datasets.
+
+   dataset_cache_dir: str
+       a string representing the path to the dataset cache directory. Useful when the default cache dir
+       (`~/.cache/huggingface/datasets`) has limited space.
+
+   The class also includes some additional parameters that can be used to configure the dataset further, such as `overwrite_cache`,
+   `validation_split_percentage`, `preprocessing_num_workers`, `disable_group_texts`, `demo_example_in_prompt`, `explanation_in_prompt`,
+   `keep_linebreaks`, and `prompt_structure`.
+
+   The field function is used to set default values and provide help messages for each parameter. The Optional type hint is
+   used to indicate that a parameter is optional. The metadata argument is used to provide additional information about
+   each parameter, such as a help message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: image_folder
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: image_aspect_ratio
+      :type:  Optional[str]
+      :value: 'pad'
+
+
+
+   .. py:attribute:: is_multimodal
+      :type:  Optional[bool]
+      :value: True
+
+
+
+   .. py:attribute:: use_image_start_end
+      :type:  Optional[bool]
+      :value: True
+
+
+
+   .. py:attribute:: sep_style
+      :type:  Optional[str]
+      :value: 'plain'
+
+
+
+.. py:class:: FinetunerArguments
+
+   Bases: :py:obj:`transformers.TrainingArguments`
+
+
+   
+   Adapt transformers.TrainingArguments
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: eval_dataset_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: remove_unused_columns
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: finetune_part
+      :type:  Optional[str]
+      :value: 'language_projection'
+
+
+
+   .. py:attribute:: save_language_projection
+      :type:  Optional[str]
+      :value: False
+
+
+
+   .. py:attribute:: use_lisa
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: lisa_activated_layers
+      :type:  int
+      :value: 2
+
+
+
+   .. py:attribute:: lisa_interval_steps
+      :type:  int
+      :value: 20
+
+
+
+   .. py:attribute:: lisa_layers_attribute
+      :type:  str
+      :value: 'model.model.layers'
+
+
+
+   .. py:attribute:: use_customized_optim
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: customized_optim
+      :type:  str
+      :value: 'sign_sgd'
+
+
+
+   .. py:attribute:: customized_optim_args
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: optim_dummy_beta1
+      :type:  float
+      :value: 0.9
+
+
+
+   .. py:attribute:: optim_dummy_beta2
+      :type:  float
+      :value: 0.999
+
+
+
+   .. py:attribute:: optim_adam_beta1
+      :type:  float
+      :value: 0.9
+
+
+
+   .. py:attribute:: optim_adam_beta2
+      :type:  float
+      :value: 0.999
+
+
+
+   .. py:attribute:: optim_beta1
+      :type:  float
+      :value: 0.9
+
+
+
+   .. py:attribute:: optim_beta2
+      :type:  float
+      :value: 0.999
+
+
+
+   .. py:attribute:: optim_beta3
+      :type:  float
+      :value: 0.9
+
+
+
+   .. py:attribute:: optim_momentum
+      :type:  float
+      :value: 0.999
+
+
+
+   .. py:attribute:: optim_weight_decay
+      :type:  float
+      :value: 0
+
+
+
+.. py:class:: RewardModelTunerArguments
+
+   Bases: :py:obj:`FinetunerArguments`
+
+
+   
+   Arguments for reward modeling.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:class:: EvaluatorArguments
+
+   
+   Define a class EvaluatorArguments using the dataclass decorator. The class contains several optional
+   parameters that can be used to configure a evaluator.
+
+   local_rank : str
+       For distributed training: local_rank
+
+   random_shuffle : bool
+
+   use_wandb : bool
+
+   random_seed : int, default = 1
+
+   output_dir : str, default = './output_dir',
+
+   mixed_precision : str, choice from ["bf16","fp16"].
+       mixed precision mode, whether to use bf16 or fp16
+
+   deepspeed :
+       Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
+       loaded json file as a dict
+
+   temperature : float
+       An argument of model.generate in huggingface to control the diversity of generation.
+
+   repetition_penalty : float
+       An argument of model.generate in huggingface to penalize repetitions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: local_rank
+      :type:  int
+      :value: -1
+
+
+
+   .. py:attribute:: random_shuffle
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: use_wandb
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: random_seed
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: output_dir
+      :type:  Optional[str]
+      :value: './output_dir'
+
+
+
+   .. py:attribute:: mixed_precision
+      :type:  Optional[str]
+      :value: 'bf16'
+
+
+
+   .. py:attribute:: deepspeed
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: answer_type
+      :type:  Optional[str]
+      :value: 'text'
+
+
+
+   .. py:attribute:: prompt_structure
+      :type:  Optional[str]
+      :value: '{input}'
+
+
+
+   .. py:attribute:: evaluate_block_size
+      :type:  Optional[int]
+      :value: 512
+
+
+
+   .. py:attribute:: metric
+      :type:  Optional[str]
+      :value: 'accuracy'
+
+
+
+   .. py:attribute:: inference_batch_size_per_device
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: use_accelerator_for_evaluator
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: temperature
+      :type:  float
+      :value: 0
+
+
+
+   .. py:attribute:: repetition_penalty
+      :type:  float
+      :value: 1
+
+
+
+   .. py:attribute:: max_new_tokens
+      :type:  int
+      :value: 100
+
+
+
+.. py:class:: InferencerArguments
+
+   
+   Define a class InferencerArguments using the dataclass decorator. The class contains several optional
+   parameters that can be used to configure a inferencer.
+
+   local_rank : str
+       For distributed training: local_rank
+   random_seed : int, default = 1
+   inference_batch_size : int, default = 1
+   deepspeed :
+       Enable deepspeed and pass the path to deepspeed json config file (e.g. ds_config.json) or an already
+       loaded json file as a dict
+   mixed_precision : str, choice from ["bf16","fp16"].
+       mixed precision mode, whether to use bf16 or fp16
+   temperature : float
+       An argument of model.generate in huggingface to control the diversity of generation.
+   repetition_penalty : float
+       An argument of model.generate in huggingface to penalize repetitions.
+   use_beam_search : Optional[bool]
+       Whether to use beam search during inference, By default False.
+   num_output_sequences : Optional[int]
+       Number of output sequences to return for the given prompt, 
+       currently only used in vllm inference, By default 8.
+   top_p : Optional[float]
+       top_p for sampling, By default 1.0.
+   top_k : Optional[int]
+       top_k for sampling, By default -1 (no top_k).
+   additional_stop_token_ids : Optional[List[int]]
+       the ids of the end of sentence tokens, By default [].
+   apply_chat_template : Optional[bool]
+       Whether to apply chat template, By default True.
+   save_results : Optional[bool]
+       Whether to save inference results, By default False.
+   results_path : Optional[str]
+       The **json file** path of inference results, By default None.
+   enable_decode_inference_result : Optional[bool]
+       Whether to detokenize the inference results. 
+
+       NOTE: For iterative align pipelines, whether to detokenize depends on 
+       the homogeneity of the policy model and the reward model 
+       (i.e., if they have the same tokenizer).
+   use_vllm: bool, optional
+       Whether to use VLLM for inference, By default False.
+   vllm_tensor_parallel_size: int, optional
+       The tensor parallel size for VLLM inference.
+   vllm_gpu_memory_utilization: float, optional
+       The GPU memory utilization for VLLM inference. The proportion of GPU
+       memory (per GPU) to use for VLLM inference.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: device
+      :type:  str
+      :value: 'gpu'
+
+
+
+   .. py:attribute:: local_rank
+      :type:  int
+      :value: -1
+
+
+
+   .. py:attribute:: inference_batch_size
+      :type:  int
+      :value: 1
+
+
+
+   .. py:attribute:: vllm_inference_batch_size
+      :type:  int
+      :value: 1
+
+
+
+   .. py:attribute:: temperature
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:attribute:: repetition_penalty
+      :type:  float
+      :value: 1
+
+
+
+   .. py:attribute:: max_new_tokens
+      :type:  int
+      :value: 100
+
+
+
+   .. py:attribute:: random_seed
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: deepspeed
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: mixed_precision
+      :type:  Optional[str]
+      :value: 'bf16'
+
+
+
+   .. py:attribute:: do_sample
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: use_accelerator
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: use_beam_search
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: num_output_sequences
+      :type:  Optional[int]
+      :value: 8
+
+
+
+   .. py:attribute:: top_p
+      :type:  Optional[float]
+      :value: 1.0
+
+
+
+   .. py:attribute:: top_k
+      :type:  Optional[int]
+      :value: -1
+
+
+
+   .. py:attribute:: additional_stop_token_ids
+      :type:  Optional[List[int]]
+      :value: []
+
+
+
+   .. py:attribute:: apply_chat_template
+      :type:  Optional[bool]
+      :value: True
+
+
+
+   .. py:attribute:: enable_decode_inference_result
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: tensor_parallel_size
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: enable_distributed_inference
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: distributed_inference_num_instances
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: use_vllm
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: vllm_tensor_parallel_size
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: vllm_gpu_memory_utilization
+      :type:  Optional[float]
+      :value: 0.95
+
+
+
+   .. py:attribute:: save_results
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: results_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:method:: __post_init__()
+
+
+.. py:class:: RaftAlignerArguments
+
+   Bases: :py:obj:`transformers.TrainingArguments`
+
+
+   
+   Define a class RaftAlignerArguments to configure raft aligner.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: output_reward_path
+      :type:  Optional[str]
+      :value: 'tmp/raft_aligner/'
+
+
+
+   .. py:attribute:: output_min_length
+      :type:  Optional[int]
+      :value: 64
+
+
+
+   .. py:attribute:: output_max_length
+      :type:  Optional[int]
+      :value: 128
+
+
+
+   .. py:attribute:: num_raft_iteration
+      :type:  Optional[int]
+      :value: 20
+
+
+
+   .. py:attribute:: raft_batch_size
+      :type:  Optional[int]
+      :value: 1024
+
+
+
+   .. py:attribute:: top_reward_percentage
+      :type:  Optional[float]
+      :value: 0.2
+
+
+
+   .. py:attribute:: inference_batch_size_per_device
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: collection_strategy
+      :type:  Optional[str]
+      :value: 'top'
+
+
+
+.. py:class:: BenchmarkingArguments
+
+   .. py:attribute:: dataset_name
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: lm_evaluation_metric
+      :type:  Optional[str]
+      :value: 'accuracy'
+
+
+
+.. py:class:: DPOAlignerArguments
+
+   
+   The arguments for the DPO training script.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: local_rank
+      :type:  int
+      :value: -1
+
+
+
+   .. py:attribute:: beta
+      :type:  Optional[float]
+      :value: 0.1
+
+
+
+   .. py:attribute:: learning_rate
+      :type:  Optional[float]
+      :value: 0.0005
+
+
+
+   .. py:attribute:: lr_scheduler_type
+      :type:  Optional[str]
+      :value: 'cosine'
+
+
+
+   .. py:attribute:: warmup_steps
+      :type:  Optional[int]
+      :value: 100
+
+
+
+   .. py:attribute:: weight_decay
+      :type:  Optional[float]
+      :value: 0.05
+
+
+
+   .. py:attribute:: optimizer_type
+      :type:  Optional[str]
+      :value: 'paged_adamw_32bit'
+
+
+
+   .. py:attribute:: per_device_train_batch_size
+      :type:  Optional[int]
+      :value: 4
+
+
+
+   .. py:attribute:: per_device_eval_batch_size
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: gradient_accumulation_steps
+      :type:  Optional[int]
+      :value: 4
+
+
+
+   .. py:attribute:: gradient_checkpointing
+      :type:  Optional[bool]
+      :value: True
+
+
+
+   .. py:attribute:: gradient_checkpointing_use_reentrant
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: max_prompt_length
+      :type:  Optional[int]
+      :value: 512
+
+
+
+   .. py:attribute:: max_length
+      :type:  Optional[int]
+      :value: 1024
+
+
+
+   .. py:attribute:: max_steps
+      :type:  Optional[int]
+      :value: 1000
+
+
+
+   .. py:attribute:: logging_steps
+      :type:  Optional[int]
+      :value: 10
+
+
+
+   .. py:attribute:: save_steps
+      :type:  Optional[int]
+      :value: 100
+
+
+
+   .. py:attribute:: eval_steps
+      :type:  Optional[int]
+      :value: 100
+
+
+
+   .. py:attribute:: output_dir
+      :type:  Optional[str]
+      :value: './results'
+
+
+
+   .. py:attribute:: log_freq
+      :type:  Optional[int]
+      :value: 1
+
+
+
+   .. py:attribute:: sanity_check
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: report_to
+      :type:  Optional[str]
+      :value: 'wandb'
+
+
+
+   .. py:attribute:: seed
+      :type:  Optional[int]
+      :value: 0
+
+
+
+   .. py:attribute:: run_name
+      :type:  Optional[str]
+      :value: 'dpo'
+
+
+
+   .. py:attribute:: eval_dataset_path
+      :type:  Optional[str]
+      :value: None
+
+
+
+.. py:class:: DPOv2AlignerArguments
+
+   Bases: :py:obj:`FinetunerArguments`
+
+
+   
+   The arguments for the DPOv2 training script.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: random_seed
+      :type:  Optional[int]
+      :value: 42
+
+
+
+   .. py:attribute:: accelerate_config_file
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: margin_scale
+      :type:  Optional[float]
+      :value: 1.0
+
+
+
+   .. py:attribute:: sampling_paired_method
+      :type:  Optional[str]
+      :value: 'max_random'
+
+
+
+   .. py:attribute:: length_penalty
+      :type:  Optional[float]
+      :value: 0
+
+
+
+   .. py:attribute:: max_length
+      :type:  Optional[int]
+      :value: 2048
+
+
+
+   .. py:attribute:: max_prompt_length
+      :type:  Optional[int]
+      :value: 1000
+
+
+
+   .. py:attribute:: mask_prompt
+      :type:  Optional[bool]
+      :value: False
+
+
+
+   .. py:attribute:: beta
+      :type:  Optional[float]
+      :value: 0.1
+
+
+
+   .. py:attribute:: loss_type
+      :type:  Optional[str]
+      :value: 'sigmoid'
+
+
+
+.. py:class:: IterativeAlignerArguments
+
+   Bases: :py:obj:`InferencerArguments`
+
+
+   
+   Arguments for iterative aligners.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: dataset_path_list
+      :type:  List[str]
+      :value: []
+
+
+
+   .. py:attribute:: initial_iter_idx
+      :type:  int
+      :value: 0
+
+
+
+.. py:class:: IterativeDPOAlignerArguments
+
+   Bases: :py:obj:`IterativeAlignerArguments`, :py:obj:`DPOv2AlignerArguments`
+
+
+   
+   Arguments for iterative DPO aligners.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: output_dir
+      :type:  Optional[str]
+      :value: './runs'
+
+
+
+   .. py:attribute:: reward_model_inference_batch_size
+      :type:  int
+      :value: 1
+
+
+
+   .. py:attribute:: reward_model_inference_block_size
+      :type:  int
+      :value: 2048
+
+
+
+   .. py:attribute:: do_response_generation
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: do_scoring
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: do_dpo_align
+      :type:  bool
+      :value: True
+
+
+
+.. py:data:: PIPELINE_ARGUMENT_MAPPING
+
+.. py:class:: AutoArguments
+
+   
+   Automatically choose arguments from FinetunerArguments or EvaluatorArguments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: get_pipeline_args_class()
+
+
+.. py:function:: split_args(args)
+
