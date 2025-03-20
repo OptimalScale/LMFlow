@@ -252,6 +252,12 @@ elif [ "${optim}" == "adadelta" ]; then
 elif [ "${optim}" == "adagrad" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
+elif [ "${optim}" == "muon" ]; then
+  optim_suffix_args="--use_customized_optim 1"
+  optim_suffix_args+=" --optim_beta1 ${beta1}"
+  optim_suffix_args+=" --optim_beta2 ${beta2}"
+  optim_suffix_args+=" --optim_weight_decay ${weight_decay}"
+  optim_suffix_args+=" --customized_optim ${optim}"
 elif [ "${optim}" == "adamw_schedule_free" ]; then
   optim_suffix_args="--use_customized_optim 1"
   optim_suffix_args+=" --customized_optim ${optim}"
