@@ -7,7 +7,7 @@ import copy
 import logging
 import os
 import sys
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable, Optional, Tuple, Union
 
 import datasets
 import transformers
@@ -33,8 +33,11 @@ from transformers.utils import (
 import numpy as np
 
 import lmflow.optim.optimizers as optim
-from lmflow.args import OptimizerNames
+from lmflow.args import OptimizerNames, DatasetArguments, ModelArguments, FinetunerArguments
 from lmflow.datasets.dataset import Dataset
+from lmflow.models.hf_decoder_model import HFDecoderModel
+from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
+from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 
@@ -64,7 +67,14 @@ class Finetuner(BaseTuner):
         Keyword arguments.
 
     """
-    def __init__(self, model_args, data_args, finetuner_args, *args, **kwargs):
+    def __init__(
+        self, 
+        model_args: ModelArguments, 
+        data_args: DatasetArguments, 
+        finetuner_args: FinetunerArguments, 
+        *args, 
+        **kwargs
+    ):
 
         self.model_args = model_args
         self.data_args = data_args
@@ -481,8 +491,8 @@ class Finetuner(BaseTuner):
         return CustomizedOptimTrainer
 
     def tune(self,
-             model,
-             dataset,
+             model: Union[HFDecoderModel, HFTextRegressionModel, HFEncoderDecoderModel],
+             dataset: Dataset,
              transform_dataset_in_place=True,
              data_collator=None):
         """
@@ -594,6 +604,7 @@ class Finetuner(BaseTuner):
                         'MixtralForCausalLM': 'model.model.layers',
                         'GemmaForCausalLM': 'model.model.layers',
                         'GPT2LMHeadModel': 'model.transformer.h',
+                        'HymbaForCausalLM': 'model.model.layers',
                     }
                     model_class_name = self.model.__class__.__name__
                     if model_class_name in class_to_layers_map:

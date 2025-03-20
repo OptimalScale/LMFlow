@@ -2,12 +2,14 @@
 loading data from a JSON file, batching data, and extracting answers from generated text.
 """
 
-import random
-import numpy as np
-import torch
 import json
+import os
+import random
 import re
 from typing import Union, List, TypedDict, Dict
+
+import numpy as np
+import torch
 
 
 def set_random_seed(seed: int):
@@ -91,6 +93,63 @@ def batchlize(examples: list, batch_size: int, random_shuffle: bool):
             size += (length - size)
     return dataloader
 
+
+def preview_file(file_path: str, chars: int = 100):
+    """
+    Returns the first and last specified number of characters from a file
+    without loading the entire file into memory, working with any file type.
+    
+    Args:
+        file_path (str): Path to the file to be previewed
+        chars (int, optional): Number of characters to show from start and end. Defaults to 100.
+    
+    Returns:
+        tuple: (first_chars, last_chars) - The first and last characters from the file
+    """
+    file_size = os.path.getsize(file_path)
+    
+    with open(file_path, 'r', encoding='utf-8') as f:
+        first_chars = f.read(chars)
+        
+        if file_size <= 2 * chars:
+            return first_chars, ""
+        
+        last_chunk_position = max(0, file_size - chars)
+        
+        f.seek(0)
+        f.seek(last_chunk_position)
+        
+        last_chars = f.read(chars)
+        
+    return first_chars, last_chars
+
+
+def get_dataset_type_fast(file_path: str, max_chars: int = 100) -> Union[str, None]:
+    '''Get the type values from the first and last n lines of a large json dataset.
+    '''
+    file_content_preview = []
+    dataset_type = None
+    dataset_type_pattern = re.compile(r'[\"\']type[\"\']:\s*[\'\"]([^"]+)[\'\"]')
+    file_content_preview.extend(preview_file(file_path, max_chars))
+    for content in file_content_preview:
+        try:
+            dataset_type = dataset_type_pattern.search(content).group(1)
+            break
+        except AttributeError:
+            continue
+    return dataset_type
+
+
+def check_dataset_instances_key_fast(file_path: str, instances_key: str, max_lines: int = 100) -> bool:
+    '''Check if the dataset instances key matches the instance_key.
+    '''
+    file_content_preview = []
+    instance_key_pattern = re.compile(r'[\"\']' + instances_key + r'[\"\']')
+    file_content_preview.extend(preview_file(file_path, max_lines))
+    for content in file_content_preview:
+        if instance_key_pattern.search(content):
+            return True
+    return False
 
 
 def answer_extraction(response, answer_type=None):   #use this funtion to extract answers from generated text

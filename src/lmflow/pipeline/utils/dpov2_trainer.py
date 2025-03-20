@@ -14,9 +14,14 @@ from transformers import (
 )
 from transformers.trainer_callback import TrainerCallback
 from transformers.trainer_utils import EvalLoopOutput
-from trl import DPOTrainer
 
 from lmflow.pipeline.utils.dpov2_dataprocessor import PreferenceDataCollatorWithPadding
+from lmflow.utils.versioning import is_trl_available
+
+if is_trl_available():
+    from trl import DPOTrainer
+else:
+    raise ImportError("Please install trl package to use dpo_aligner.py")
 
 
 logger = logging.getLogger(__name__)

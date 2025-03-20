@@ -148,27 +148,24 @@ class StringFormatter(Formatter):
 
 
 @dataclass
-class ListFormatter(Formatter):
-    def format(self, **kwargs) -> list:
-        pass # Work in progress
-
-
-@dataclass
 class ConversationTemplate:
     user_formatter: Formatter
     assistant_formatter: Formatter
-    function_formatter: Optional[Formatter] = None,
-    observation_formatter: Optional[Formatter] = None,
+    function_formatter: Optional[Formatter] = None
+    observation_formatter: Optional[Formatter] = None
     system_formatter: Optional[Formatter] = None
+    force_system: bool = False
     tools_formatter: Optional[Formatter] = None
     separator: Optional[TemplateComponent] = None
+    remove_last_sep: bool = False
     special_starter: Optional[TemplateComponent] = None
     special_stopper: Optional[TemplateComponent] = None
     template_name: Optional[str] = None
+    system_default: Optional[str] = None
     
     def __post_init__(self):
         if self.separator:
-            if self.separator.type not in ['string', 'token']:
+            if self.separator.type not in ['string', 'token', 'token_id']:
                 raise NotImplementedError(f"Component type {self.separator.type} cannot be used as a separator.")
             
         if self.special_starter:
@@ -181,7 +178,6 @@ class ConversationTemplate:
         messages: List[Dict[str, str]],
         system: Optional[str] = None,
         tools: Optional[List[str]] = None,
-        remove_last_sep: bool = False,
         **kwargs
     ) -> Sequence[Tuple[List[int], List[int]]]:
         r'''
@@ -216,30 +212,10 @@ class ConversationTemplate:
                     raise ValueError("Your dataset contains system message but no system formatter is provided. "
                                      "Consider either providing a system formatter or removing system prompt from your dataset.")
             else:
-                system = None
+                system = self.system_default if self.system_default else None
         
         encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
-        
-        if self.separator and remove_last_sep:
-            # For models that require a separator between messages, 
-            # user can include the seperator at the end of each template
-            # and specify the separator. Auto formatting will remove the 
-            # last separator once user specifies this option.
-            encoded_pairs = self.remove_last_separator(encoded_pairs, tokenizer)
-            
-        if self.special_starter:
-            # For models that has ONLY ONE bos token at the beginning of 
-            # a conversation session (not a conversation pair), user can
-            # specify a special starter to add that starter to the very
-            # beginning of the conversation session. 
-            # eg:
-            #   llama-2: <s> and </s> at every pair of conversation 
-            #   v.s.
-            #   llama-3: <|begin_of_text|> only at the beginning of a session
-            encoded_pairs = self.add_special_starter(encoded_pairs, tokenizer)
-            
-        if self.special_stopper:
-            encoded_pairs = self.add_special_stopper(encoded_pairs, tokenizer)
+        encoded_pairs = self.post_process_pairs(encoded_pairs=encoded_pairs, tokenizer=tokenizer)
         
         return encoded_pairs
         
@@ -256,7 +232,10 @@ class ConversationTemplate:
         
         res_all = []
         
-        system_formatted = self.system_formatter.format(content=system) if system else []
+        if system:
+            system_formatted = self.system_formatter.format(content=system)
+        else:
+            system_formatted = self.system_formatter.format(content='') if self.force_system else []
         system_encoded = self._encode_template(system_formatted, tokenizer)
         
         for i in range(0, len(messages), 2):
@@ -317,6 +296,30 @@ class ConversationTemplate:
                 raise NotImplementedError(f"Component type {component.type} is not supported yet.")
         return encoded_ids
     
+    def post_process_pairs(self, encoded_pairs, tokenizer):
+        if self.separator and self.remove_last_sep:
+            # For models that require a separator between messages, 
+            # user can include the seperator at the end of each template
+            # and specify the separator. Auto formatting will remove the 
+            # last separator once user specifies this option.
+            encoded_pairs = self.remove_last_separator(encoded_pairs, tokenizer)
+            
+        if self.special_starter:
+            # For models that has ONLY ONE bos token at the beginning of 
+            # a conversation session (not a conversation pair), user can
+            # specify a special starter to add that starter to the very
+            # beginning of the conversation session. 
+            # eg:
+            #   llama-2: <s> and </s> at every pair of conversation 
+            #   v.s.
+            #   llama-3: <|begin_of_text|> only at the beginning of a session
+            encoded_pairs = self.add_special_starter(encoded_pairs, tokenizer)
+            
+        if self.special_stopper:
+            encoded_pairs = self.add_special_stopper(encoded_pairs, tokenizer)
+            
+        return encoded_pairs
+    
     def remove_last_separator(
         self, 
         encoded_pairs: Sequence[Tuple[List[int], List[int]]],
@@ -327,6 +330,8 @@ class ConversationTemplate:
             separator_ids = tokenizer.encode(self.separator.content, add_special_tokens=False)
         elif self.separator.type == 'token':
             separator_ids = self._ensure_id_list(tokenizer.convert_tokens_to_ids(self.separator.content))
+        elif self.separator.type == 'token_id':
+            separator_ids = self._ensure_id_list(self.separator.content)
         else:
             raise ValueError(f"Component type {self.separator.type} cannot be used as a separator.")
         
@@ -404,7 +409,6 @@ class ConversationTemplateForTool(ConversationTemplate):
         messages: List[Dict[str, str]],
         system: Optional[str] = None,
         tools: Optional[List[str]] = None,
-        remove_last_sep: bool = False,
         **kwargs
     ) -> Sequence[Tuple[List[int], List[int]]]:
         r'''
@@ -430,11 +434,7 @@ class ConversationTemplateForTool(ConversationTemplate):
         '''
         assert isinstance(messages, list), "Messages must be a list."
         
-        if tools is None:
-            tools = ''
-        else:
-            tools = ','.join(tools)
-            # logger.warning("Tools are not supported yet. Please include tools in the system message manually.")
+        tools = self._handle_tools(tools)
         
         if system is None:
             system = ""
@@ -444,29 +444,9 @@ class ConversationTemplateForTool(ConversationTemplate):
                     raise ValueError("Your dataset contains system message but no system formatter is provided. "
                                      "Consider either providing a system formatter or removing system prompt from your dataset.")
             else:
-                system = ""
+                system = self.system_default if self.system_default else ""
         encoded_pairs = self._encode(tokenizer, messages, system, tools, **kwargs)
-        
-        if self.separator and remove_last_sep:
-            # For models that require a separator between messages, 
-            # user can include the seperator at the end of each template
-            # and specify the separator. Auto formatting will remove the 
-            # last separator once user specifies this option.
-            encoded_pairs = self.remove_last_separator(encoded_pairs, tokenizer)
-            
-        if self.special_starter:
-            # For models that has ONLY ONE bos token at the beginning of 
-            # a conversation session (not a conversation pair), user can
-            # specify a special starter to add that starter to the very
-            # beginning of the conversation session. 
-            # eg:
-            #   llama-2: <s> and </s> at every pair of conversation 
-            #   v.s.
-            #   llama-3: <|begin_of_text|> only at the beginning of a session
-            encoded_pairs = self.add_special_starter(encoded_pairs, tokenizer)
-            
-        if self.special_stopper:
-            encoded_pairs = self.add_special_stopper(encoded_pairs, tokenizer)
+        encoded_pairs = self.post_process_pairs(encoded_pairs=encoded_pairs, tokenizer=tokenizer)
         
         return encoded_pairs
         
@@ -484,7 +464,10 @@ class ConversationTemplateForTool(ConversationTemplate):
         res_all = []
         # Concatenate the system and tools strings
         system = system + tools
-        system_formatted = self.system_formatter.format(content=system) if system else []
+        if system:
+            system_formatted = self.system_formatter.format(content=system)
+        else:
+            system_formatted = self.system_formatter.format(content='') if self.force_system else []
         system_encoded = self._encode_template(system_formatted, tokenizer)
         ls_for_save = []
         for i in range(0, len(messages), 1):
@@ -559,6 +542,10 @@ class ConversationTemplateForTool(ConversationTemplate):
             else:
                 raise NotImplementedError(f"Component type {component.type} is not supported yet.")
         return encoded_ids
+    
+    def _handle_tools(self, tools: Optional[List[str]]) -> str:
+        tools_out = ','.join(tools) if tools is not None else ''
+        return tools_out
 
 
 EMPTY_TEMPLATE = ConversationTemplate(

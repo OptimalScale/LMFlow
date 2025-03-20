@@ -27,14 +27,17 @@ from peft import (
     prepare_model_for_kbit_training
 )
 from peft.utils.constants import TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
-from vllm import LLM, SamplingParams
-from vllm.distributed.parallel_state import destroy_model_parallel
 
 from lmflow.models.base_model import BaseModel
 from lmflow.utils.constants import (
     LMFLOW_LORA_TARGET_MODULES_MAPPING
 )
 from lmflow.args import ModelArguments
+from lmflow.utils.versioning import is_vllm_available
+
+if is_vllm_available():
+    from vllm import LLM, SamplingParams
+    from vllm.distributed.parallel_state import destroy_model_parallel
 
 
 logger = logging.getLogger(__name__)
@@ -128,7 +131,7 @@ class HFModelMixin(BaseModel):
             "cache_dir": model_args.cache_dir,
             "use_fast": model_args.use_fast_tokenizer,
             "revision": model_args.model_revision,
-            "use_auth_token": True if model_args.use_auth_token else None,
+            "token": model_args.token,
             "trust_remote_code": model_args.trust_remote_code,
         }
         if model_args.padding_side != 'auto':
@@ -200,7 +203,7 @@ class HFModelMixin(BaseModel):
             "attn_implementation": "flash_attention_2" if model_args.use_flash_attention else None,
             "cache_dir": model_args.cache_dir,
             "revision": model_args.model_revision,
-            "use_auth_token": True if model_args.use_auth_token else None,
+            "token": model_args.token,
             "trust_remote_code": model_args.trust_remote_code,
             "from_tf": bool(".ckpt" in model_args.model_name_or_path),
         }
@@ -274,7 +277,29 @@ class HFModelMixin(BaseModel):
                 lora_dropout=model_args.lora_dropout,
                 target_modules=lora_target_modules,
             )
+        if model_args.use_dora:
+            if model_args.lora_target_modules:
+                lora_target_modules = model_args.lora_target_modules
+            else:
+                model_config = self.hf_model_config
+                if hasattr(model_config, "to_dict"):
+                    model_config = model_config.to_dict()
+                if "model_type" not in model_config or not model_config["model_type"]:
+                    logger.warning("It seems that your base model is a custom model, since "
+                                   "model_type is not found in model_config when preparing peft config. "
+                                   "Setting model_type to 'custom' as a fallback.")
+                    model_config["model_type"] = "custom"
+                lora_target_modules = LORA_TARGET_MODULES_MAPPING.get(model_config["model_type"], None)
             
+            peft_config = LoraConfig(
+                use_dora=True,
+                task_type=TaskType.CAUSAL_LM,
+                inference_mode=False,
+                r=model_args.lora_r,
+                lora_alpha=model_args.lora_alpha,
+                lora_dropout=model_args.lora_dropout,
+                target_modules=lora_target_modules,
+            )
         return peft_config
     
     
@@ -304,6 +329,13 @@ class HFModelMixin(BaseModel):
     ):
         assert self.do_train, "To prepare the model for training, please set do_train=True."
         # TODO: change to accelerate
+
+        if 'hymba' in model_args.model_name_or_path:
+            import torch._dynamo
+            torch._dynamo.config.suppress_errors = True
+            torch._dynamo.config.disable = True
+    
+
         logger.info("Preparing model for training")
         if model_args.model_name_or_path:
             model = hf_auto_model.from_pretrained(
@@ -311,6 +343,7 @@ class HFModelMixin(BaseModel):
                 torch_dtype=self.torch_dtype,
                 config=self.hf_model_config,
                 quantization_config=self.quant_config,
+                trust_remote_code=model_args.trust_remote_code,
             )
 
             if model_args.use_qlora:
@@ -330,7 +363,7 @@ class HFModelMixin(BaseModel):
                 name for name, buffer in model.named_buffers() if buffer.dtype == torch.bool
             ]
         
-        if model_args.use_lora:
+        if model_args.use_lora or model_args.use_dora:
             model.enable_input_require_grads()
             if model_args.lora_model_path is not None:
                 # Load model from LoRA weights
@@ -429,6 +462,9 @@ class HFModelMixin(BaseModel):
         vllm_gpu_memory_utilization: float,
         vllm_tensor_parallel_size: int,
     ):
+        if not is_vllm_available():
+            raise ImportError('VLLM is not available. Please install via `pip install -e ".[vllm]"`.')
+        
         self.backend_model_for_inference = LLM(
             model=model_args.model_name_or_path,
             tokenizer=model_args.model_name_or_path,

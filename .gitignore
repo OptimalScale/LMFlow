@@ -24,6 +24,7 @@ data/
 
 # output models
 output_models/
+adapter_model/
 
 # Distribution / packaging
 .Python

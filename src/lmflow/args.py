@@ -22,6 +22,8 @@ from transformers import (
 )
 from transformers.utils.versions import require_version
 
+from lmflow.utils.versioning import is_flash_attn_available
+
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_CAUSAL_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 
@@ -98,9 +100,8 @@ class ModelArguments:
         a string representing the specific model version to use (can be a
         branch name, tag name, or commit id).
 
-    use_auth_token : bool
-        a boolean indicating whether to use the token generated when running
-        huggingface-cli login (necessary to use this script with private models).
+    token : Optional[str]
+        Necessary when accessing a private model/dataset.
 
     torch_dtype :  str
         a string representing the dtype to load the model under. If auto is
@@ -188,13 +189,10 @@ class ModelArguments:
         default="main",
         metadata={"help": "The specific model version to use (can be a branch name, tag name or commit id)."},
     )
-    use_auth_token: bool = field(
-        default=False,
+    token: Optional[str] = field(
+        default=None,
         metadata={
-            "help": (
-                "Will use the token generated when running `huggingface-cli login` (necessary to use this script "
-                "with private models)."
-            )
+            "help": ("Necessary to specify when accessing a private model/dataset.")
         },
     )
     trust_remote_code: bool = field(
@@ -214,6 +212,10 @@ class ModelArguments:
             ),
             "choices": ["auto", "bfloat16", "float16", "float32"],
         },
+    )
+    use_dora: bool = field(
+        default=False,
+        metadata={"help": "Whether to dora, https://github.com/NVlabs/DoRA."},
     )
     use_lora: bool = field(
         default=False,
@@ -246,8 +248,8 @@ class ModelArguments:
         metadata={
             "help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
     )
-    lora_target_modules: List[str] = field(
-        default=None, metadata={"help": "Pretrained config name or path if not the same as model_name",}
+    lora_target_modules: str = field(
+        default=None, metadata={"help": "Model modules to apply LoRA to. Use comma to separate multiple modules."}
     )
     lora_dropout: float = field(
         default=0.1,
@@ -367,6 +369,14 @@ class ModelArguments:
             if not self.use_lora:
                 logger.warning("use_qlora is set to True, but use_lora is not set to True. Setting use_lora to True.")
                 self.use_lora = True
+                
+        if self.use_flash_attention:
+            if not is_flash_attn_available():
+                self.use_flash_attention = False
+                logger.warning("Flash attention is not available in the current environment. Disabling flash attention.")
+                
+        if self.lora_target_modules is not None:
+            self.lora_target_modules: List[str] = split_args(self.lora_target_modules)
 
 
 @dataclass
@@ -492,6 +502,10 @@ class DatasetArguments:
     conversation_template: str
         a string representing the template for conversation datasets.
 
+    dataset_cache_dir: str
+        a string representing the path to the dataset cache directory. Useful when the default cache dir
+        (`~/.cache/huggingface/datasets`) has limited space.
+
     The class also includes some additional parameters that can be used to configure the dataset further, such as `overwrite_cache`,
     `validation_split_percentage`, `preprocessing_num_workers`, `disable_group_texts`, `demo_example_in_prompt`, `explanation_in_prompt`,
     `keep_linebreaks`, and `prompt_structure`.
@@ -607,6 +621,11 @@ class DatasetArguments:
     conversation_template: Optional[str] = field(
         default=None,
         metadata={"help": "The template for conversation datasets."}
+    )
+    dataset_cache_dir: Optional[str] = field(
+        default=None,
+        metadata={"help": ("The path to the dataset cache directory. Useful when the "
+                           "default cache dir (`~/.cache/huggingface/datasets`) has limited space.")}
     )
 
     def __post_init__(self):
@@ -1467,3 +1486,7 @@ class AutoArguments:
 
     def get_pipeline_args_class(pipeline_name: str):
         return PIPELINE_ARGUMENT_MAPPING[pipeline_name]
+
+
+def split_args(args):
+    return [elem.strip() for elem in args.split(",")] if isinstance(args, str) else args

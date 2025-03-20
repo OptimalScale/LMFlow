@@ -29,18 +29,20 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 <img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
-
 ## Latest News
+
+* [2025-03-18] With full support for Accelerate and lots of streamlining, LMFlow-nightly is now available! Feel free to try out the latest features and improvements by `git checkout lmflow-nightly`.
+* [2024-12-02] Support [Hymba](https://github.com/NVlabs/hymba), a new family of small language models featuring a hybrid-head parallel architecture. Check out [Post-training Hymba](https://github.com/OptimalScale/LMFlow/tree/main/experimental/Hymba) for more details.
 * [2024-07-01] 🏆 LMFlow receives the [**Best Demo Paper Award**](https://docs.google.com/presentation/d/1TVDooAZqkNObz5ysVhDFtqnnVHR-u8wqYvgix-gzPMs/edit#slide=id.g2e55907bbcc_0_70) at **NAACL 2024**! 🎉
 * [2024-06-30] Expanding Optimization Options! We now support custom optimizer training with a variety of optimizers. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
 * [2024-04-25] :rocket: Support conversation template! We've preset the latest [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) and [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) conversation templates as well as some frequently used templates such as `chatml` (see all templates [here](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)), and we are working on adding more preset templates. Adding corresponding `--conversation_template` in the shell script and you are all set! :rocket:
 * [2024-03-27] Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! 
 * [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
 * [2023-08-14] Support long context inference with position interpolation (Linear & NTK scaling ) for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
-* [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 
 <details> <summary>More news...</summary>
 
+* [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 * [2023-08-02] Support [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), and [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) models.
 * [2023-07-23] [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh) is now available! Support multimodal inputs of images and texts. [Online Demo](http://multimodal.lmflow.online) is also provided (We hold the service on a single GPU, hence one may experience "queuing" or "application busy" sometimes when multiple users are accessing at the same time, please wait and attempt again later when such event happens)![image](https://github.com/OptimalScale/LMFlow/blob/rpan-vision-encoder/assets/multimodal-chatbot-demo.gif)
 * [2023-06-22]  [LMFlow paper](https://arxiv.org/abs/2306.12420) is out! Check out our implementation details at https://arxiv.org/abs/2306.12420
@@ -59,10 +61,11 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 * [2023-03-27] Support full tuning and lora tuning for all decoder models.
 * [2023-03-27] [Tasked tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance).
 * [2023-03-27] Release code and checkpoints - [version 0.0.1](https://optimalscale.github.io/LMFlow/)! [Our tasked-tuned model beats ChatGPT on medical domain](https://github.com/OptimalScale/LMFlow#model-performance).
+
 </details>
 
-
 ## Table of Contents
+
 - [LMFlow](#lmflow)
   - [Latest News](#latest-news)
   - [Table of Contents](#table-of-contents)
@@ -84,19 +87,19 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 ## Supported Models
 
-|  Model  | Conversation Template (Details) |
-|  :---:  | :-------------------: |
-| [DeepSeek](https://huggingface.co/deepseek-ai) | `deepseek` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#deepseek)) |
-| [Gemma](https://huggingface.co/google) | `gemma` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#gemma)) |
-| [InternLM2](https://huggingface.co/internlm) | `internlm2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#internlm2)) |
-| [LLaMA-2](https://huggingface.co/meta-llama) | `llama2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#llama-2)) |
-| [LLaMA-3](https://huggingface.co/meta-llama) | `llama3` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#llama-3)) |
-| [Phi-3](https://huggingface.co/microsoft) | `phi3` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#phi-3)) |
-| [Qwen1.5 <br> Qwen2](https://huggingface.co/Qwen) | `qwen2` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#qwen-2)) |
-| [Yi](https://huggingface.co/01-ai) | `chatml` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#yi)) |
-| [Yi-1.5](https://huggingface.co/01-ai) | `yi1_5` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#yi-15)) |
-| [Zephyr](https://huggingface.co/HuggingFaceH4) | `zephyr` ([Link](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html#zephyr)) |
+See all conversation template details [here](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html).
 
+|  Model  | Conversation Template |
+|  :---:  | :-------------------: |
+| DeepSeek | `deepseek` <br> `deepseek_v2` <br> `deepseek_r1` <br> `deepseek_r1_distill` <br> `deepseek_v3` |
+| Gemma | `gemma` |
+| Hymba | `hymba` |
+| InternLM2 | `internlm2` |
+| LLaMA | `llama2` <br> `llama3` <br> `llama3_for_tool`|
+| Phi | `phi3` |
+| Qwen | `qwen2` <br> `qwen2_for_tool` <br> `qwen2_5` <br> `qwen2_5_1m` <br> `qwen2_5_math` <br> `qwen_qwq` |
+| Yi | `yi` <br> `yi1_5` |
+| Zephyr | `zephyr` |
 
 ## Quick Start
 
@@ -104,16 +107,54 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 Our package has been tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested, where you may encounter unexpected errors. If you are using LMFlow for the first time, we recommend you to try on a Linux machine or Google Colab.
 
-CUDA versions 10.3-11.7 are supported in versions `v0.0.5` or older. For CUDA versions greater than 11.7, one can use our stable branch `>= v0.0.6`.
-
 ```bash
-git clone https://github.com/OptimalScale/LMFlow.git
+git clone -b v0.0.9 https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
 conda install mpi4py
-bash install.sh
+pip install -e .
 ```
+
+<details><summary> for CUDA versions 10.3-11.7 </summary>
+
+```bash
+git clone -b v0.0.5 https://github.com/OptimalScale/LMFlow.git
+cd LMFlow
+conda create -n lmflow python=3.9 -y
+conda activate lmflow
+conda install mpi4py
+pip install -e .
+```
+
+</details>
+
+> [!TIP]
+> We use WandB to track and visualize the training process by default. Before running the training scripts, users may need to log in to WandB using the command: 
+>
+>```bash
+>wandb login
+>```
+>
+> For detailed instructions, refer to the [WandB Quickstart Guide](https://docs.wandb.ai/quickstart/). Step 1 (registration) and Step 2 (login using your WandB API key) should be sufficient to set up your environment.
+>
+> <details><summary>Disabling wandb</summary>  
+>
+> One can disable wandb by either:  
+>
+> 1. Adding environment variable before running the training command.
+>
+>```bash
+>export WANDB_MODE=disabled
+>```
+>
+> 2. OR, specifying the integrations to report the results and logs to. In the training script, add:
+>
+>```bash
+>--report_to none \
+>```
+>
+> </details>
 
 ### Prepare Dataset
 
@@ -136,10 +177,10 @@ bash ./scripts/run_finetune.sh \
 ```
 
 > [!TIP]
-> For conversation dataset, specify a conversation template for better performance by adding `--conversation_template` to the command. 
-> 
+> For conversation dataset, specify a conversation template for better performance by adding `--conversation_template` to the command.
+>
 > <details><summary>Llama-3-8B conversation dataset example</summary>  
-> 
+>
 >```bash
 >cd data && ./download.sh alpaca && cd -
 >
@@ -149,11 +190,13 @@ bash ./scripts/run_finetune.sh \
 >  --conversation_template llama3 \
 >  --output_model_path output_models/finetuned_llama3_8b
 >```
+>
 > </details>
 
 #### LISA
 
 [LISA](https://arxiv.org/abs/2403.17919) is a memory-efficient finetuning algorithm that allows tradeoff between memory and the number of randomly unfreezed layers. This script currently is only tested in single gpus. Please stay tuned for our latest updates :smile:
+
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -167,7 +210,7 @@ bash ./scripts/run_finetune_with_lisa.sh \
 
 > [!TIP]
 > <details><summary>Llama-2-7B conversation dataset example</summary>  
-> 
+>
 >```bash
 >cd data && ./download.sh alpaca && cd -
 >
@@ -179,11 +222,13 @@ bash ./scripts/run_finetune_with_lisa.sh \
 >  --lisa_activated_layers 1 \
 >  --lisa_interval_steps 20
 >```
+>
 > </details>
 
 #### LoRA
 
 LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
+
 ```sh
 cd data && ./download.sh alpaca && cd -
 
@@ -195,7 +240,7 @@ bash ./scripts/run_finetune_with_lora.sh \
 
 > [!TIP]
 > <details><summary>Llama-2-7B conversation dataset example</summary>  
-> 
+>
 >```bash
 >cd data && ./download.sh alpaca && cd -
 >
@@ -205,20 +250,24 @@ bash ./scripts/run_finetune_with_lora.sh \
 >  --conversation_template llama2 \
 >  --output_model_path output_models/finetuned_llama2_7b_lora \
 >```
+>
 > </details>
 >
 > <details><summary>Merge LoRA Weight</summary>
 >
 >Merge LoRA weight and the base model into one using:  
+>
 >```sh
 >bash ./scripts/run_merge_lora.sh \
 >  --model_name_or_path Qwen/Qwen1.5-1.8B \
 >  --lora_model_path output_models/lora \
 >  --output_model_path output_models/lora_merged \
 >```
+>
 ></details>
 
 ### Inference
+
 After finetuning, you can run the following command to chat with the model.
 ```sh
 bash ./scripts/run_chatbot.sh output_models/finetuned_gpt2
@@ -226,7 +275,7 @@ bash ./scripts/run_chatbot.sh output_models/finetuned_gpt2
 
 > [!TIP]
 > We recommend using vLLM for faster inference.
-> 
+>
 > <details><summary>Faster inference using vLLM</summary>  
 >
 >```bash
@@ -235,9 +284,11 @@ bash ./scripts/run_chatbot.sh output_models/finetuned_gpt2
 >   --dataset_path data/alpaca/test_conversation \
 >   --output_dir data/inference_results \
 >```
+>
 > </details>
 
 ### Deployment
+
 If you want to deploy your own model locally, we provide a gradio-based UI for building chatbots. 
 Running the following command will launch the demo for robin-7b:
 
@@ -246,17 +297,19 @@ pip install gradio
 python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json --model_name_or_path YOUR-LLAMA  --lora_model_path ./robin-7b --prompt_structure "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions.###Human: {input_text}###Assistant:"       --end_string "#" --max_new_tokens 200
 ```
 
-
 ### Evaluation
+
 [LMFlow Benchmark](https://blog.gopenai.com/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418) is an automatic evaluation framework for open-source large language models.
 We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
 
 You can directly run the LMFlow benchmark evaluation to obtain the results to participate in the
 [LLM comparision](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing).
 For example, to run GPT2 XL, one may execute
+
 ```sh
 bash ./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
 ```
+
 `--model_name_or_path` is required, you may fill in huggingface model name or local model path here.
 
 To check the evaluation results, you may check `benchmark.log` in `./output_dir/gpt2-xl_lmflow_chat_nll_eval`,
@@ -281,7 +334,7 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 * Gradient Checkpointing
   
-  [Gradient checkpointing](https://github.com/cybertronai/gradient-checkpointing) is a memory optimization technique that trades compute for memory. 
+  [Gradient checkpointing](https://github.com/cybertronai/gradient-checkpointing) is a memory optimization technique that trades compute for memory.
   It is useful when the model is too large to fit into GPU memory. 
   Use it by just adding `--gradient_checkpointing` to your training command.
 
@@ -291,7 +344,6 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
   We provide an example [deepspeed config](https://github.com/OptimalScale/LMFlow/blob/main/configs/ds_config_zero3.json), and you can directly use it.
 
 </details>
-
 
 <details> <summary>Inference Acceleration</summary>
 
@@ -325,7 +377,6 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 </details>
 
-
 <details> <summary>Multimodal</summary>
 
 * Multimodal Chatbot
@@ -333,7 +384,6 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
   LMFlow supports multimodal inputs of images and texts. Check out our [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh).
 
 </details>
-
 
 <details> <summary>Custom Optimization</summary>
 
@@ -371,20 +421,20 @@ To check the evaluation results, you may check `benchmark.log` in `./output_dir/
 
 </details>
 
-
-
 ## Support
 
 If you need any help, please submit a Github issue.
 
 ## License
+
 The code included in this project is licensed under the [Apache 2.0 license](https://github.com/OptimalScale/LMFlow/blob/main/LICENSE).
 If you wish to use the codes and models included in this project for commercial purposes, please sign this [document](https://docs.google.com/forms/d/e/1FAIpQLSfJYcci6cbgpIvx_Fh1xDL6pNkzsjGDH1QIcm4cYk88K2tqkw/viewform?usp=pp_url) to obtain authorization.
 
 ## Citation
+
 If you find this repository useful, please consider giving ⭐ and citing our [paper](https://arxiv.org/abs/2306.12420):
 
-```
+```citation
 @article{diao2023lmflow,
   title={Lmflow: An extensible toolkit for finetuning and inference of large foundation models},
   author={Diao, Shizhe and Pan, Rui and Dong, Hanze and Shum, Ka Shun and Zhang, Jipeng and Xiong, Wei and Zhang, Tong},
@@ -392,7 +442,8 @@ If you find this repository useful, please consider giving ⭐ and citing our [p
   year={2023}
 }
 ```
-```
+
+```citation
 @article{dong2023raft,
   title={Raft: Reward ranked finetuning for generative foundation model alignment},
   author={Dong, Hanze and Xiong, Wei and Goyal, Deepanshu and Pan, Rui and Diao, Shizhe and Zhang, Jipeng and Shum, Kashun and Zhang, Tong},
@@ -400,7 +451,8 @@ If you find this repository useful, please consider giving ⭐ and citing our [p
   year={2023}
 }
 ```
-```
+
+```citation
 @article{pan2024lisa,
   title={LISA: Layerwise Importance Sampling for Memory-Efficient Large Language Model Fine-Tuning}, 
   author={Pan, Rui and Liu, Xiang and Diao, Shizhe and Pi, Renjie and Zhang, Jipeng and Han, Chi and Zhang, Tong},

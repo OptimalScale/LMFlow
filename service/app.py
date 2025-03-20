@@ -1,19 +1,22 @@
-import json
-import torch
-import os
-
-from flask import Flask, request, stream_with_context
-from flask import render_template
-from flask_cors import CORS
-from accelerate import Accelerator
 from dataclasses import dataclass, field
-from transformers import HfArgumentParser
+import json
+import os
 from typing import Optional
 
-from lmflow.datasets.dataset import Dataset
-from lmflow.pipeline.auto_pipeline import AutoPipeline
+from accelerate import Accelerator
+import torch
+from transformers import HfArgumentParser
+
+from lmflow.args import ModelArguments
 from lmflow.models.auto_model import AutoModel
-from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
+from lmflow.utils.versioning import is_flask_available
+
+if is_flask_available():
+    from flask import Flask, request, stream_with_context
+    from flask import render_template
+    from flask_cors import CORS
+else:
+    raise ImportError("Flask is not available. Please install flask and flask_cors.")
 
 WINDOW_LENGTH = 512
 

@@ -8,8 +8,6 @@ import logging
 from pathlib import Path
 from typing import List, Union, Dict, Optional
 
-import ray
-import ray.data
 import torch
 from peft import (
     LoraConfig,
@@ -20,7 +18,6 @@ from peft import (
     prepare_model_for_kbit_training
 )
 from transformers.modeling_outputs import SequenceClassifierOutputWithPast
-from vllm import SamplingParams
 
 from lmflow.args import ModelArguments
 from lmflow.datasets.dataset import Dataset, KEY_SCORE
@@ -42,6 +39,14 @@ from lmflow.utils.constants import (
     CONVERSATION_DATASET_DESCRIPTION, 
 )
 from lmflow.utils.data_utils import RewardModelInferenceResultWithInput
+from lmflow.utils.versioning import is_ray_available, is_vllm_available
+
+if is_ray_available():
+    import ray
+    import ray.data
+    
+if is_vllm_available():
+    from vllm import SamplingParams
 
 
 logger = logging.getLogger(__name__)
@@ -358,7 +363,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
     def __vllm_inference(
         self, 
         inputs: Union[str, List[str]],
-        sampling_params: Optional[SamplingParams] = None,
+        sampling_params: Optional['SamplingParams'] = None,
         **kwargs,
     ) -> Union[List[List[str]], List[List[List[int]]]]:
         """Perform VLLM inference process of the model.
@@ -384,7 +389,7 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         enable_distributed_inference: bool = False,
         use_vllm: bool = False,
         **kwargs,
-    ) -> Union[Dataset, ray.data.Dataset]:
+    ) -> Union[Dataset, 'ray.data.Dataset']:
         if use_vllm:
             raise NotImplementedError(
                 "VLLM inference is not supported for text regression model."
@@ -393,6 +398,11 @@ class HFTextRegressionModel(TextRegressionModel, HFModelMixin, Tunable):
         inference_inputs = self.tokenize(dataset)
                 
         if enable_distributed_inference:
+            if not is_ray_available():
+                raise ValueError(
+                    'Ray is not available. Please install ray via `pip install -e ".[ray]"`.'
+                )
+            
             inference_inputs.sanity_check(drop_invalid=True)
             inference_inputs = inference_inputs.get_backend_dataset()
             inference_inputs = ray.data.from_items(inference_inputs) 
