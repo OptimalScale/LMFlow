@@ -59,6 +59,7 @@ class OptimizerNames():
     NOVOGRAD = "novograd"
     ADADELTA = "adadelta"
     ADAGRAD = "adagrad"
+    MUON = "muon"
     ADAMW_SCHEDULE_FREE = "adamw_schedule_free"
     SGD_SCHEDULE_FREE = "sgd_schedule_free"
     
