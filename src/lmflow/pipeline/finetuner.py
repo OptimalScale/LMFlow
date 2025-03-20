@@ -344,6 +344,13 @@ class Finetuner(BaseTuner):
                     adagrad_kwargs = {
                     }
                     optimizer_kwargs.update(adagrad_kwargs)
+                elif args.customized_optim == OptimizerNames.MUON:
+                    optimizer_cls = optim.Muon
+                    muon_kwargs = {
+                        "betas": (args.optim_beta1, args.optim_beta2),
+                        "weight_decay": (args.optim_weight_decay),
+                    }
+                    optimizer_kwargs.update(muon_kwargs)
                 elif args.customized_optim == OptimizerNames.ADAMW_SCHEDULE_FREE:
                     optimizer_cls = optim.AdamWScheduleFree
                     adamw_schedule_free_kwargs = {
