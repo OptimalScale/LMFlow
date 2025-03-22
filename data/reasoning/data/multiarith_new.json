@@ -1,0 +1,222 @@
+[
+    {
+        "iIndex": 20,
+        "lAlignments": [
+            10,
+            30,
+            50
+        ],
+        "lEquations": [
+            "X=((15.0+20.0)-10.0)"
+        ],
+        "lSolutions": [
+            25.0
+        ],
+        "question": "Jenny had 15 pencils and she got 20 more from a friend. If she gave away 10 pencils, how many pencils does she have now?",
+        "choices": [
+            40.0,
+            25.0,
+            15.0,
+            35.0
+        ],
+        "answer": 1
+    },
+    {
+        "iIndex": 21,
+        "lAlignments": [
+            23,
+            54,
+            65
+        ],
+        "lEquations": [
+            "X=((20.0+10.0)-15.0)"
+        ],
+        "lSolutions": [
+            15.0
+        ],
+        "question": "A bookstore sold 20 novels and 10 comics in a day. If they had a return of 15 books, how many books did they sell in total?",
+        "choices": [
+            20.0,
+            25.0,
+            15.0,
+            30.0
+        ],
+        "answer": 2
+    },
+    {
+        "iIndex": 22,
+        "lAlignments": [
+            15,
+            35,
+            55
+        ],
+        "lEquations": [
+            "X=((25.0+35.0)-20.0)"
+        ],
+        "lSolutions": [
+            40.0
+        ],
+        "question": "Kevin had 25 marbles and won 35 more in a game. If he lost 20 marbles, how many marbles does he have left?",
+        "choices": [
+            40.0,
+            50.0,
+            30.0,
+            20.0
+        ],
+        "answer": 0
+    },
+    {
+        "iIndex": 23,
+        "lAlignments": [
+            12,
+            38,
+            58
+        ],
+        "lEquations": [
+            "X=((30.0+20.0)-25.0)"
+        ],
+        "lSolutions": [
+            25.0
+        ],
+        "question": "At a charity event, 30 people donated $20 each, and $25 was used for arrangements. How much money did they collect in total?",
+        "choices": [
+            50.0,
+            25.0,
+            45.0,
+            30.0
+        ],
+        "answer": 1
+    },
+    {
+        "iIndex": 24,
+        "lAlignments": [
+            11,
+            31,
+            51
+        ],
+        "lEquations": [
+            "X=((18.0+22.0)-15.0)"
+        ],
+        "lSolutions": [
+            25.0
+        ],
+        "question": "Jenny had 18 markers and got 22 more from a friend. If she gave away 15 markers, how many markers does she have now?",
+        "choices": [
+            50.0,
+            20.0,
+            25.0,
+            55.0
+        ],
+        "answer": 2
+    },
+    {
+        "iIndex": 25,
+        "lAlignments": [
+            18,
+            25,
+            60
+        ],
+        "lEquations": [
+            "X=((15.0+5.0)-10.0)"
+        ],
+        "lSolutions": [
+            10.0
+        ],
+        "question": "A small vegetable store received 15 carrots and 5 potatoes. If 10 of the vegetables spoiled, how many are still good?",
+        "choices": [
+            2.0,
+            12.0,
+            10.0,
+            15.0
+        ],
+        "answer": 2
+    },
+    {
+        "iIndex": 26,
+        "lAlignments": [
+            22,
+            40,
+            67
+        ],
+        "lEquations": [
+            "X=((7.0+5.0)-6.0)"
+        ],
+        "lSolutions": [
+            6.0
+        ],
+        "question": "Tony had 7 red balls and his brother gave him 5 blue balls. If he lost 6 of them, how many balls does he have left?",
+        "choices": [
+            16.0,
+            5.0,
+            6.0,
+            4.0
+        ],
+        "answer": 2
+    },
+    {
+        "iIndex": 27,
+        "lAlignments": [
+            13,
+            28,
+            53
+        ],
+        "lEquations": [
+            "X=((8.0+12.0)-5.0)"
+        ],
+        "lSolutions": [
+            15.0
+        ],
+        "question": "Maria collected 8 stamps from one friend and 12 from another. If she gave away 5 stamps, how many does she have now?",
+        "choices": [
+            20.0,
+            15.0,
+            12.0,
+            10.0
+        ],
+        "answer": 1
+    },
+    {
+        "iIndex": 28,
+        "lAlignments": [
+            18,
+            19,
+            66
+        ],
+        "lEquations": [
+            "X=((12.0+15.0)-3.0)"
+        ],
+        "lSolutions": [
+            24.0
+        ],
+        "question": "Dan planted 12 flowers and bought 15 more from the store. If 3 of them wilted, how many flowers does Dan have left?",
+        "choices": [
+            27.0,
+            24.0,
+            22.0,
+            25.0
+        ],
+        "answer": 1
+    },
+    {
+        "iIndex": 29,
+        "lAlignments": [
+            15,
+            36,
+            46
+        ],
+        "lEquations": [
+            "X=((10.0+18.0)-12.0)"
+        ],
+        "lSolutions": [
+            16.0
+        ],
+        "question": "A train was traveling with 10 passengers and picked up 18 more. If 12 passengers disembarked, how many passengers are now on the train?",
+        "choices": [
+            16.0,
+            18.0,
+            10.0,
+            8.0
+        ],
+        "answer": 0
+    }
+]

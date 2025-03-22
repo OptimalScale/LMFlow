@@ -1,0 +1,182 @@
+[
+    {
+        "question": "A coin is heads up. Whitney flips the coin. Erika does not flip the coin. Tj does not flip the coin. Benito flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Lucky does not flip the coin. Mireya flips the coin. Jj flips the coin. Kc flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Caleb flips the coin. Chase flips the coin. Eleazar flips the coin. Chanel does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Silvia flips the coin. Carolina does not flip the coin. Stan flips the coin. Chuck flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Breanna flips the coin. Trey does not flip the coin. Omar flips the coin. Patrice does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Lilian flips the coin. Ian flips the coin. Bryce flips the coin. Aracely does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Walter does not flip the coin. Mikayla does not flip the coin. Larry does not flip the coin. Ryan does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Angelina flips the coin. Layla flips the coin. Jenny flips the coin. Zane does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Lizzy flips the coin. Juany does not flip the coin. Aisha flips the coin. Brenda does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Elise flips the coin. Lupe flips the coin. Renee does not flip the coin. Noemi does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Jesse flips the coin. Roderick flips the coin. Travis does not flip the coin. Rita does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Cinthia does not flip the coin. Lloyd does not flip the coin. Jacqueline flips the coin. Jc flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Sterling flips the coin. Jenifer flips the coin. Patsy flips the coin. Denise flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Beatriz flips the coin. Gillian does not flip the coin. Coco does not flip the coin. Vivian does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Prince flips the coin. Rene flips the coin. Vishal flips the coin. Patrick does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Jae does not flip the coin. Dennis does not flip the coin. Cris flips the coin. Bernadette flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Hank does not flip the coin. Janine does not flip the coin. Frankie flips the coin. Isa flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Max does not flip the coin. Mikey does not flip the coin. Cynthia does not flip the coin. Holly flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Christy flips the coin. Rey does not flip the coin. Michelle flips the coin. Dolly does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Annie does not flip the coin. Toño flips the coin. Sharon flips the coin. Delores flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    }
+]

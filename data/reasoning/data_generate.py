@@ -13,15 +13,15 @@ client = get_openai_client()
 
 # Define input and output file names
 input_files = {
-    "coin_flip": "coin_flip.json",
-    "multiarith": "multiarith.json",
-    "singleeq": "singleeq.json"
+    "coin_flip": "data/coin_flip.json",
+    "multiarith": "data/multiarith.json",
+    "singleeq": "data/singleeq.json"
 }
 
 output_files = {
-    "coin_flip": "coin_flip_new.json",
-    "multiarith": "multiarith_new.json",
-    "singleeq": "singleeq_new.json"
+    "coin_flip": "data/coin_flip_new.json",
+    "multiarith": "data/multiarith_new.json",
+    "singleeq": "data/singleeq_new.json"
 }
 
 # Define the prompt template
@@ -34,7 +34,15 @@ Your task is to: Generate 200 more question-answer pairs. For each question, gen
 Example Entries:
 {examples}
 
-Please return the generated entries in JSON format with the same structure as the examples without any other special characters or symbols.
+Please return the generated entries in JSON format. Keep the same structure of the examples and additionally add two extra keys: "choices" and "answer". "choices" is a list of four options, one correct answer and three wrong answers. 
+If the answer is yes or no, then only keep two choices "yes" or "no". "answer" is the index of the correct answer in "choices". Example:
+"choices": [
+    "Cotton",
+    "Tiger",
+    "Spot",
+    "Shadow"
+],
+"answer": 0,
 """
 
 # Process each file

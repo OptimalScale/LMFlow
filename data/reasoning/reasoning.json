@@ -1,0 +1,991 @@
+[
+    {
+        "question": "A coin is heads up. Whitney flips the coin. Erika does not flip the coin. Tj does not flip the coin. Benito flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Lucky does not flip the coin. Mireya flips the coin. Jj flips the coin. Kc flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Caleb flips the coin. Chase flips the coin. Eleazar flips the coin. Chanel does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Silvia flips the coin. Carolina does not flip the coin. Stan flips the coin. Chuck flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Breanna flips the coin. Trey does not flip the coin. Omar flips the coin. Patrice does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Lilian flips the coin. Ian flips the coin. Bryce flips the coin. Aracely does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Walter does not flip the coin. Mikayla does not flip the coin. Larry does not flip the coin. Ryan does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Angelina flips the coin. Layla flips the coin. Jenny flips the coin. Zane does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Lizzy flips the coin. Juany does not flip the coin. Aisha flips the coin. Brenda does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Elise flips the coin. Lupe flips the coin. Renee does not flip the coin. Noemi does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Jesse flips the coin. Roderick flips the coin. Travis does not flip the coin. Rita does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Cinthia does not flip the coin. Lloyd does not flip the coin. Jacqueline flips the coin. Jc flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Sterling flips the coin. Jenifer flips the coin. Patsy flips the coin. Denise flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Beatriz flips the coin. Gillian does not flip the coin. Coco does not flip the coin. Vivian does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Prince flips the coin. Rene flips the coin. Vishal flips the coin. Patrick does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Jae does not flip the coin. Dennis does not flip the coin. Cris flips the coin. Bernadette flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Hank does not flip the coin. Janine does not flip the coin. Frankie flips the coin. Isa flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Max does not flip the coin. Mikey does not flip the coin. Cynthia does not flip the coin. Holly flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "question": "A coin is heads up. Christy flips the coin. Rey does not flip the coin. Michelle flips the coin. Dolly does not flip the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "yes",
+        "answer": 0
+    },
+    {
+        "question": "A coin is heads up. Annie does not flip the coin. Toño flips the coin. Sharon flips the coin. Delores flips the coin. Is the coin still heads up? Note that \"flip\" here means \"reverse\".",
+        "choices": [
+            "yes",
+            "no"
+        ],
+        "correct_answer_content": "no",
+        "answer": 1
+    },
+    {
+        "iIndex": 20,
+        "lAlignments": [
+            10,
+            30,
+            50
+        ],
+        "lEquations": [
+            "X=((15.0+20.0)-10.0)"
+        ],
+        "lSolutions": [
+            25.0
+        ],
+        "question": "Jenny had 15 pencils and she got 20 more from a friend. If she gave away 10 pencils, how many pencils does she have now?",
+        "choices": [
+            40.0,
+            25.0,
+            15.0,
+            35.0
+        ],
+        "answer": 1
+    },
+    {
+        "iIndex": 21,
+        "lAlignments": [
+            23,
+            54,
+            65
+        ],
+        "lEquations": [
+            "X=((20.0+10.0)-15.0)"
+        ],
+        "lSolutions": [
+            15.0
+        ],
+        "question": "A bookstore sold 20 novels and 10 comics in a day. If they had a return of 15 books, how many books did they sell in total?",
+        "choices": [
+            20.0,
+            25.0,
+            15.0,
+            30.0
+        ],
+        "answer": 2
+    },
+    {
+        "iIndex": 22,
+        "lAlignments": [
+            15,
+            35,
+            55
+        ],
+        "lEquations": [
+            "X=((25.0+35.0)-20.0)"
+        ],
+        "lSolutions": [
+            40.0
+        ],
+        "question": "Kevin had 25 marbles and won 35 more in a game. If he lost 20 marbles, how many marbles does he have left?",
+        "choices": [
+            40.0,
+            50.0,
+            30.0,
+            20.0
+        ],
+        "answer": 0
+    },
+    {
+        "iIndex": 23,
+        "lAlignments": [
+            12,
+            38,
+            58
+        ],
+        "lEquations": [
+            "X=((30.0+20.0)-25.0)"
+        ],
+        "lSolutions": [
+            25.0
+        ],
+        "question": "At a charity event, 30 people donated $20 each, and $25 was used for arrangements. How much money did they collect in total?",
+        "choices": [
+            50.0,
+            25.0,
+            45.0,
+            30.0
+        ],
+        "answer": 1
+    },
+    {
+        "iIndex": 24,
+        "lAlignments": [
+            11,
+            31,
+            51
+        ],
+        "lEquations": [
+            "X=((18.0+22.0)-15.0)"
+        ],
+        "lSolutions": [
+            25.0
+        ],
+        "question": "Jenny had 18 markers and got 22 more from a friend. If she gave away 15 markers, how many markers does she have now?",
+        "choices": [
+            50.0,
+            20.0,
+            25.0,
+            55.0
+        ],
+        "answer": 2
+    },
+    {
+        "iIndex": 25,
+        "lAlignments": [
+            18,
+            25,
+            60
+        ],
+        "lEquations": [
+            "X=((15.0+5.0)-10.0)"
+        ],
+        "lSolutions": [
+            10.0
+        ],
+        "question": "A small vegetable store received 15 carrots and 5 potatoes. If 10 of the vegetables spoiled, how many are still good?",
+        "choices": [
+            2.0,
+            12.0,
+            10.0,
+            15.0
+        ],
+        "answer": 2
+    },
+    {
+        "iIndex": 26,
+        "lAlignments": [
+            22,
+            40,
+            67
+        ],
+        "lEquations": [
+            "X=((7.0+5.0)-6.0)"
+        ],
+        "lSolutions": [
+            6.0
+        ],
+        "question": "Tony had 7 red balls and his brother gave him 5 blue balls. If he lost 6 of them, how many balls does he have left?",
+        "choices": [
+            16.0,
+            5.0,
+            6.0,
+            4.0
+        ],
+        "answer": 2
+    },
+    {
+        "iIndex": 27,
+        "lAlignments": [
+            13,
+            28,
+            53
+        ],
+        "lEquations": [
+            "X=((8.0+12.0)-5.0)"
+        ],
+        "lSolutions": [
+            15.0
+        ],
+        "question": "Maria collected 8 stamps from one friend and 12 from another. If she gave away 5 stamps, how many does she have now?",
+        "choices": [
+            20.0,
+            15.0,
+            12.0,
+            10.0
+        ],
+        "answer": 1
+    },
+    {
+        "iIndex": 28,
+        "lAlignments": [
+            18,
+            19,
+            66
+        ],
+        "lEquations": [
+            "X=((12.0+15.0)-3.0)"
+        ],
+        "lSolutions": [
+            24.0
+        ],
+        "question": "Dan planted 12 flowers and bought 15 more from the store. If 3 of them wilted, how many flowers does Dan have left?",
+        "choices": [
+            27.0,
+            24.0,
+            22.0,
+            25.0
+        ],
+        "answer": 1
+    },
+    {
+        "iIndex": 29,
+        "lAlignments": [
+            15,
+            36,
+            46
+        ],
+        "lEquations": [
+            "X=((10.0+18.0)-12.0)"
+        ],
+        "lSolutions": [
+            16.0
+        ],
+        "question": "A train was traveling with 10 passengers and picked up 18 more. If 12 passengers disembarked, how many passengers are now on the train?",
+        "choices": [
+            16.0,
+            18.0,
+            10.0,
+            8.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "50-x=13"
+        ],
+        "lSolutions": [
+            37.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Anna found 50 seashells on the beach. She gave some of her seashells to her friend, Jenny. She now has 13 seashells left. How many seashells did she give to Jenny?",
+        "iIndex": 20,
+        "choices": [
+            37.0,
+            27.0,
+            63.0,
+            17.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "21+x=48"
+        ],
+        "lSolutions": [
+            27.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 21 books on the shelf. John added more books to the shelf and now there are 48 books in total. How many books did he add?",
+        "iIndex": 21,
+        "choices": [
+            27.0,
+            42.0,
+            57.0,
+            69.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "39-x=19"
+        ],
+        "lSolutions": [
+            20.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Alice had 39 candies. She gave some to her brother, and now she has 19 candies left. How many candies did she give to her brother?",
+        "iIndex": 22,
+        "choices": [
+            20.0,
+            35.0,
+            19.0,
+            30.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "10+x=33"
+        ],
+        "lSolutions": [
+            23.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 10 balloons in the party hall. More balloons were added and now there are 33 balloons in total. How many balloons were added?",
+        "iIndex": 23,
+        "choices": [
+            23.0,
+            20.0,
+            10.0,
+            30.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "30-x=15"
+        ],
+        "lSolutions": [
+            15.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Peter had 30 apples. He gave some to his friend, and now he has 15 apples left. How many apples did he give?",
+        "iIndex": 24,
+        "choices": [
+            15.0,
+            10.0,
+            5.0,
+            20.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "18+x=45"
+        ],
+        "lSolutions": [
+            27.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Lauren had 18 toys. Some toys were added to her collection and now she has 45 toys in total. How many toys were added?",
+        "iIndex": 25,
+        "choices": [
+            27.0,
+            30.0,
+            20.0,
+            22.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "60-x=21"
+        ],
+        "lSolutions": [
+            39.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Tom had 60 baseball cards. He gave some to his friend and now has 21 cards left. How many did he give away?",
+        "iIndex": 26,
+        "choices": [
+            39.0,
+            21.0,
+            30.0,
+            41.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "15+x=44"
+        ],
+        "lSolutions": [
+            29.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 15 oranges in the basket. More oranges were added and now there are 44 total. How many oranges were added?",
+        "iIndex": 27,
+        "choices": [
+            29.0,
+            10.0,
+            15.0,
+            39.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "50-x=25"
+        ],
+        "lSolutions": [
+            25.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "John had 50 marbles. He lost some marbles and now has 25 left. How many marbles did he lose?",
+        "iIndex": 28,
+        "choices": [
+            25.0,
+            35.0,
+            45.0,
+            15.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "8+x=16"
+        ],
+        "lSolutions": [
+            8.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 8 pencils in the drawer. Sam added some more pencils, and now there are 16. How many pencils did Sam add?",
+        "iIndex": 29,
+        "choices": [
+            8.0,
+            16.0,
+            24.0,
+            4.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "45-x=17"
+        ],
+        "lSolutions": [
+            28.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Susan had 45 crayon sticks. She gave some to her friend and now has 17 crayon sticks left. How many did she give?",
+        "iIndex": 30,
+        "choices": [
+            28.0,
+            32.0,
+            10.0,
+            18.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "25+x=55"
+        ],
+        "lSolutions": [
+            30.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Tim had 25 comic books. He added more to his collection, now he has a total of 55. How many books did he add?",
+        "iIndex": 31,
+        "choices": [
+            30.0,
+            25.0,
+            35.0,
+            55.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "40-x=12"
+        ],
+        "lSolutions": [
+            28.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Jeff had 40 stickers. He gave some to his sister and now has 12 left. How many stickers did he give away?",
+        "iIndex": 32,
+        "choices": [
+            28.0,
+            29.0,
+            22.0,
+            30.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "11+x=50"
+        ],
+        "lSolutions": [
+            39.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 11 hats on the rack. More hats were added, and now there are 50 hats in total. How many hats were added?",
+        "iIndex": 33,
+        "choices": [
+            39.0,
+            40.0,
+            41.0,
+            32.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "55-x=33"
+        ],
+        "lSolutions": [
+            22.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Lisa had 55 gift cards. She used some and now has 33 left. How many gift cards did she use?",
+        "iIndex": 34,
+        "choices": [
+            22.0,
+            35.0,
+            33.0,
+            30.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "20+x=63"
+        ],
+        "lSolutions": [
+            43.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 20 roses in the garden. After planting more, there are now 63 roses. How many more roses were planted?",
+        "iIndex": 35,
+        "choices": [
+            43.0,
+            40.0,
+            23.0,
+            30.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "80-x=20"
+        ],
+        "lSolutions": [
+            60.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "George had 80 toy cars. He gave some to his brother and now has 20 left. How many toy cars did he give?",
+        "iIndex": 36,
+        "choices": [
+            60.0,
+            20.0,
+            30.0,
+            25.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "25+x=66"
+        ],
+        "lSolutions": [
+            41.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 25 pages in the book. After adding more pages, there are now 66 pages in total. How many pages were added?",
+        "iIndex": 37,
+        "choices": [
+            41.0,
+            45.0,
+            39.0,
+            50.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "90-x=45"
+        ],
+        "lSolutions": [
+            45.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Sally had 90 stickers. She gave some to her friend and now has 45 left. How many stickers did she give away?",
+        "iIndex": 38,
+        "choices": [
+            45.0,
+            50.0,
+            24.0,
+            55.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "35+x=78"
+        ],
+        "lSolutions": [
+            43.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 35 cookies in the jar. More cookies were added and now there are 78 cookies in total. How many cookies were added?",
+        "iIndex": 39,
+        "choices": [
+            43.0,
+            50.0,
+            40.0,
+            60.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "100-x=72"
+        ],
+        "lSolutions": [
+            28.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Brooke had 100 candies. She lost some candies and now has 72 left. How many candies did she lose?",
+        "iIndex": 40,
+        "choices": [
+            28.0,
+            32.0,
+            20.0,
+            25.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "55-x=12"
+        ],
+        "lSolutions": [
+            43.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Michael had 55 chocolate bars. He gave some to his friends and now has 12 left. How many did he give?",
+        "iIndex": 41,
+        "choices": [
+            43.0,
+            40.0,
+            30.0,
+            45.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "28+x=49"
+        ],
+        "lSolutions": [
+            21.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 28 pencils on the desk. More pencils were added and now there are 49 pencils in total. How many pencils were added?",
+        "iIndex": 42,
+        "choices": [
+            21.0,
+            23.0,
+            19.0,
+            30.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "90-x=38"
+        ],
+        "lSolutions": [
+            52.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Jessica had 90 apples. She gave some to her neighbors and now has 38 left. How many apples did she give away?",
+        "iIndex": 43,
+        "choices": [
+            52.0,
+            35.0,
+            48.0,
+            50.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "45-x=18"
+        ],
+        "lSolutions": [
+            27.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "David had 45 candies. He gave some to his brother and now has 18 left. How many did he give away?",
+        "iIndex": 44,
+        "choices": [
+            27.0,
+            22.0,
+            30.0,
+            25.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "20+x=42"
+        ],
+        "lSolutions": [
+            22.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 20 pairs of shoes in the shop. More pairs were added and now there are 42 pairs in total. How many pairs were added?",
+        "iIndex": 45,
+        "choices": [
+            22.0,
+            25.0,
+            20.0,
+            30.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "60-x=19"
+        ],
+        "lSolutions": [
+            41.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Tom had 60 marbles. He gave some to his friend and now has 19 left. How many marbles did he give?",
+        "iIndex": 46,
+        "choices": [
+            41.0,
+            39.0,
+            21.0,
+            40.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "95-x=50"
+        ],
+        "lSolutions": [
+            45.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Emma had 95 rainbow stickers. She gave some to her classmates and now has 50 left. How many did she give?",
+        "iIndex": 47,
+        "choices": [
+            45.0,
+            50.0,
+            55.0,
+            12.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "70-x=29"
+        ],
+        "lSolutions": [
+            41.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Karen had 70 dollars. She spent some on toys and now has 29 dollars left. How much did she spend?",
+        "iIndex": 48,
+        "choices": [
+            41.0,
+            42.0,
+            39.0,
+            30.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "100-x=55"
+        ],
+        "lSolutions": [
+            45.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "Bob had 100 paint bottles. He used some for his art project and now has 55 left. How many paint bottles did he use?",
+        "iIndex": 49,
+        "choices": [
+            45.0,
+            50.0,
+            49.0,
+            65.0
+        ],
+        "answer": 0
+    },
+    {
+        "lEquations": [
+            "30+x=78"
+        ],
+        "lSolutions": [
+            48.0
+        ],
+        "grammarCheck": 0,
+        "templateNumber": 0,
+        "question": "There were 30 posters on the wall. After putting up more, there are now 78 posters. How many more were added?",
+        "iIndex": 50,
+        "choices": [
+            48.0,
+            40.0,
+            52.0,
+            38.0
+        ],
+        "answer": 0
+    }
+]
