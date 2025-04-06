@@ -1,0 +1,139 @@
+sequenceDiagram
+    participant User
+    participant Dataset as Dataset
+    participant Backend as Dataset Backend
+    participant Utils as Data Utils
+    participant MultiModal as CustomMultiModalDataset
+    
+    User->>Dataset: Create Dataset(data_args, backend="huggingface")
+    
+    %% Initialization and check process
+    Dataset->>Dataset: Initialize attributes(data_args, backend, etc.)
+    
+    alt if data_args.dataset_path is not None
+        alt backend == "huggingface"
+            Dataset->>Dataset: Get JSON file paths
+            Dataset->>Utils: _check_hf_json_format(data_files)
+            Utils->>Utils: get_dataset_type_fast(single_file)
+            Utils->>Utils: check_dataset_instances_key_fast(single_file)
+            Utils-->>Dataset: Return check results
+            
+            Dataset->>Backend: load_dataset(extensions, data_files, etc.)
+            Backend-->>Dataset: Return raw_dataset
+            Dataset->>Dataset: self.backend_dataset = raw_dataset
+            Dataset->>Dataset: _check_instance_format()
+        else backend == "custom_multi_modal"
+            Dataset->>MultiModal: CustomMultiModalDataset(dataset_path, data_args)
+            MultiModal->>MultiModal: Load JSON data
+            MultiModal->>MultiModal: Initialize image folder
+            MultiModal-->>Dataset: Return raw_dataset
+            Dataset->>Dataset: self.backend_dataset = raw_dataset
+        end
+    end
+    
+    %% Length method
+    User->>Dataset: __len__()
+    Dataset-->>User: Return len(self.backend_dataset)
+    
+    %% Dataset creation methods
+    User->>Dataset: create_from_dict(dict_obj)
+    Dataset->>Dataset: Initialize empty_data_args
+    Dataset->>Dataset: Create new Dataset(empty_data_args)
+    Dataset->>Dataset: from_dict(dict_obj)
+    Dataset-->>User: Return new dataset
+    
+    %% Dataset operation methods
+    alt Data loading methods
+        User->>Dataset: from_dict(dict_obj)
+        Dataset->>Dataset: Validate dict format
+        Dataset->>Backend: HFDataset.from_dict(hf_dict)
+        Backend-->>Dataset: Return converted dataset
+        Dataset->>Dataset: self.backend_dataset = returned dataset
+        Dataset->>Dataset: _check_instance_format()
+        Dataset-->>User: Return self
+    end
+    
+    alt Data export methods
+        User->>Dataset: to_dict()
+        Dataset->>Backend: backend_dataset.to_dict()
+        Backend-->>Dataset: Return hf_dict
+        Dataset->>Dataset: Build dict_obj
+        Dataset-->>User: Return dict_obj
+        
+        User->>Dataset: to_list()
+        alt backend == "huggingface"
+            Dataset->>Backend: [backend_dataset.__getitem__(idx) for idx in range(len)]
+        else backend == "dict"
+            Dataset->>Dataset: copy.deepcopy(backend_dataset[KEY_INSTANCES])
+        end
+        Dataset-->>User: Return instance_list
+    end
+    
+    alt Data mapping methods
+        User->>Dataset: map(*args, **kwargs)
+        Dataset->>Backend: backend_dataset.map(*args, **kwargs)
+        Backend-->>Dataset: Return mapped_backend_dataset
+        Dataset->>Dataset: self.backend_dataset = mapped_backend_dataset
+        Dataset-->>User: Return self
+    end
+    
+    alt Data sampling methods
+        User->>Dataset: sample(n, seed)
+        Dataset->>Backend: backend_dataset.shuffle(seed).select(range(n))
+        Backend-->>Dataset: Return sampled_dataset
+        Dataset->>Dataset: Build dict
+        Dataset->>Dataset: create_from_dict(dict)
+        Dataset-->>User: Return output_dataset
+    end
+    
+    alt Data splitting methods
+        User->>Dataset: train_test_split(test_size, shuffle, seed)
+        Dataset->>Backend: backend_dataset.train_test_split(...)
+        Backend-->>Dataset: Return splited
+        Dataset->>Dataset: Build train_dict and test_dict
+        Dataset->>Dataset: create_from_dict(train_dict)
+        Dataset->>Dataset: create_from_dict(test_dict)
+        Dataset-->>User: Return train_dataset, test_dataset
+    end
+    
+    %% File operations
+    User->>Dataset: save(file_path, format="json")
+    Dataset->>Dataset: to_dict()
+    Dataset->>Utils: json.dump(dict_obj, file)
+    
+    %% Data manipulation
+    User->>Dataset: drop_instances(indices)
+    Dataset->>Backend: backend_dataset.remove_indices(indices)
+    
+    %% Multimodal data processing
+    User->>MultiModal: register_tokenizer(tokenizer, image_processor)
+    User->>MultiModal: __getitem__(i)
+    MultiModal->>MultiModal: Get image data
+    alt If image exists
+        MultiModal->>MultiModal: Process image(preprocess_image)
+        MultiModal->>MultiModal: preprocess_multimodal_llava(data, data_args)
+    end
+    
+    alt sep_style == "plain"
+        MultiModal->>MultiModal: preprocess_llama_from_llava_plain(data, tokenizer, has_image)
+    else
+        MultiModal->>MultiModal: preprocess_llama_from_llava_v1(data, tokenizer, has_image)
+    end
+    
+    MultiModal-->>User: Return data_dict
+    
+    %% DataCollator for MultiModal
+    User->>MultiModal: DataCollatorForSupervisedDataset(tokenizer)
+    User->>MultiModal: __call__(instances)
+    MultiModal->>MultiModal: Pad and process batch
+    MultiModal->>MultiModal: Handle images if present
+    MultiModal-->>User: Return batch
+    
+    %% Data validation methods
+    User->>Dataset: sanity_check(drop_invalid)
+    Dataset->>Dataset: hf_dataset_sanity_check(drop_invalid)
+    alt Invalid data handling
+        Dataset->>Dataset: Filter invalid data
+        Dataset->>Dataset: self.backend_dataset = dataset_cache
+    end
+    Dataset-->>User: Return result
