@@ -1,0 +1,111 @@
+sequenceDiagram
+    participant Dataset as Dataset
+    participant Model as Model (HFDecoderModel/HFTextRegressionModel)
+    participant TokenizerFn as Tokenization Functions
+    participant Blocking as Blocking Functions
+    participant HFTokenizer as HuggingFace Tokenizer
+    
+    Dataset->>Model: tokenize(dataset)
+    
+    %% Main branch based on dataset type
+    alt dataset_type == "text_only" or "text2text"
+        Model->>TokenizerFn: tokenize_function()
+        
+        TokenizerFn->>TokenizerFn: Initialize token_dict with input_ids, attention_mask, labels
+        
+        loop For each column in tokenized_column_order
+            TokenizerFn->>HFTokenizer: tokenizer(examples[column_name], add_special_tokens, truncation)
+            HFTokenizer-->>TokenizerFn: Return encoding
+            
+            alt if column_name in label_columns
+                TokenizerFn->>TokenizerFn: Set labels = encoding["input_ids"].copy()
+            else
+                TokenizerFn->>TokenizerFn: Set labels = [-100] * len(encoding["input_ids"])
+            end
+            
+            TokenizerFn->>TokenizerFn: Update token_dict
+        end
+        
+    else if dataset_type == "conversation"
+        Model->>TokenizerFn: conversation_tokenize_function()
+        
+        TokenizerFn->>TokenizerFn: Initialize token_dict with input_ids, attention_mask, labels
+        
+        loop For each conversation in examples
+            alt if using jinja template
+                TokenizerFn->>HFTokenizer: tokenizer.apply_chat_template(...)
+                HFTokenizer-->>TokenizerFn: Return encoded_conversation with assistant_masks
+                
+                alt if train_on_prompt
+                    TokenizerFn->>TokenizerFn: Set labels = encoded_conversation["input_ids"]
+                else
+                    TokenizerFn->>TokenizerFn: Set labels using assistant_masks
+                end
+            else if using LMFlow template
+                TokenizerFn->>TokenizerFn: Prepare conversation (validate, trim if odd)
+                TokenizerFn->>ConversationTemplate: encode_conversation(tokenizer, messages, system, tools)
+                
+                loop For each conversation turn
+                    TokenizerFn->>TokenizerFn: Process user input and assistant result
+                    
+                    alt if train_on_prompt
+                        TokenizerFn->>TokenizerFn: Add both user input and assistant output to labels
+                    else
+                        TokenizerFn->>TokenizerFn: Mask user input (-100), keep assistant output
+                    end
+                end
+            end
+            
+            TokenizerFn->>TokenizerFn: Update token_dict
+        end
+        
+    else if dataset_type == "paired_conversation"
+        Model->>TokenizerFn: paired_conversation_tokenize_function()
+        
+        TokenizerFn->>TokenizerFn: Initialize token_dict with input_ids_column, attention_mask_column for each column
+        
+        loop For each example
+            loop For each column (chosen/rejected)
+                TokenizerFn->>TokenizerFn: Prepare conversation
+                TokenizerFn->>ConversationTemplate: encode_conversation(tokenizer, messages, system, tools)
+                TokenizerFn->>TokenizerFn: Build input_ids, attention_mask for column
+            end
+        end
+        
+    else if dataset_type == "text_to_textlist"
+        Model->>TokenizerFn: text_to_textlist_tokenize_function()
+        
+        TokenizerFn->>TokenizerFn: Initialize output_dict with original columns
+        
+        loop For each example
+            TokenizerFn->>HFTokenizer: tokenizer([input + each output])
+            HFTokenizer-->>TokenizerFn: Return tokenized sequences
+            TokenizerFn->>TokenizerFn: Store tokenized sequences in output_dict
+        end
+    end
+    
+    %% Check if grouping is disabled to apply blocking/padding
+    alt if data_args.disable_group_texts
+        TokenizerFn->>Blocking: blocking() or blocking_paired() or blocking_text_to_textlist()
+        
+        alt if using blocking()
+            Blocking->>Blocking: Calculate max_length and pad_length for each example
+            
+            alt if pad_length < 0 (sequence too long)
+                Blocking->>Blocking: Truncate based on truncation_side (left/right)
+            else
+                Blocking->>Blocking: Pad based on padding_side (left/right)
+            end
+            
+        else if using blocking_paired()
+            Blocking->>Blocking: Process each column separately for paired data
+            
+        else if using blocking_text_to_textlist()
+            Blocking->>Blocking: Process each output separately for textlist data
+        end
+        
+        Blocking-->>TokenizerFn: Return properly sized sequences
+    end
+    
+    TokenizerFn-->>Model: Return tokenized_dataset
+    Model-->>Dataset: Return tokenized_dataset
