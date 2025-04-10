@@ -31,3 +31,11 @@ for data in if_mix_raw_340k:
     out['instances'].append(data)
 os.mkdir("./data/if_mix_raw_340k")
 json.dump(out, open("./data/if_mix_raw_340k/train.json", "w"), indent=4)
+
+out = {"type": "conversation", "instances": []}
+for data in if_mix_raw_34k:
+    out['instances'].append(data)
+for data in autoif:
+    out['instances'].append(data)
+os.mkdir("./data/if_mix_raw_34k_autoif")
+json.dump(out, open("./data/if_mix_raw_34k_autoif/train.json", "w"), indent=4)
