@@ -19,6 +19,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --disable_group_texts 1 \
     --num_train_epochs 1 \
     --block_size 2048 \
+    --padding_side auto \
     --per_device_train_batch_size 16 \
     --gradient_accumulation_steps 1 \
     --learning_rate 2e-5 \
