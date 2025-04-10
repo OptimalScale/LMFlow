@@ -18,7 +18,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --conversation_template ${conversation_template} \
     --disable_group_texts 1 \
     --num_train_epochs 1 \
-    --block_size 4096 \
+    --block_size 2048 \
     --per_device_train_batch_size 16 \
     --gradient_accumulation_steps 1 \
     --learning_rate 2e-5 \
@@ -30,7 +30,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --do_train \
     --ddp_timeout 72000 \
     --save_steps 5000 \
-    --use_flash_attention 0 \
+    --use_flash_attention 1 \
     --gradient_checkpointing 0 \
     --dataloader_num_workers 8 \
     --report_to wandb \
