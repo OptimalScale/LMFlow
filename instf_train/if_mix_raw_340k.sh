@@ -20,8 +20,8 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --num_train_epochs 1 \
     --block_size 2048 \
     --padding_side left \
-    --per_device_train_batch_size 16 \
-    --gradient_accumulation_steps 1 \
+    --per_device_train_batch_size 1 \
+    --gradient_accumulation_steps 16 \
     --learning_rate 2e-5 \
     --lr_scheduler_type cosine \
     --bf16 \
