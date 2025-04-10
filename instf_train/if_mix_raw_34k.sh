@@ -34,6 +34,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --use_flash_attention 1 \
     --gradient_checkpointing 0 \
     --dataloader_num_workers 8 \
+    --preprocessing_num_workers 8 \
     --report_to wandb \
     --run_name ${exp_id} \
     --seed 42 \
