@@ -18,7 +18,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --conversation_template ${conversation_template} \
     --disable_group_texts 1 \
     --num_train_epochs 1 \
-    --block_size 2048 \
+    --block_size 4096 \
     --padding_side left \
     --per_device_train_batch_size 1 \
     --gradient_accumulation_steps 16 \
