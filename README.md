@@ -82,7 +82,31 @@ Note: Please double-check that you have updated the [training script](https://ra
 
 
 ### Evaluation
-[TODO]
+Aligned with the objective of this challenge, we propose a new benchmark for evaluating edge LMs, named the Edge Language Model Benchmark (ELMB). 
+
+It includes the following tasks: 
+
+- Roleplay: Enhancing performance in interactive digital environments. 
+
+- Reasoning: Improving complex problem-solving for downstream applications like robotics. 
+
+- Function Calling: Optimizing models for mobile device interactions. 
+
+- Retrieval-Augmented Generation (RAG): Boosting capabilities in retrieval-augmented applications. 
+
+To evaluate the performance of the model on the ELMB, you can use the following command:
+```bash
+cd LMFlow/lm-evaluation-harness
+pip install -e . 
+
+lm_eval --model hf \
+    --model_args pretrained=nvidia/Hymba-1.5B-Instruct,trust_remote_code=True,cache_dir=~/.cache \
+    --tasks elmb_roleplay,elmb_reasoning,elmb_functioncalling,elmb_chatrag \
+    --device cuda:0 \
+    --batch_size 1 \
+    --log_samples \
+    --output_path ./eval_results/test_elmb
+```
 
 ## FAQ
 [TODO]
