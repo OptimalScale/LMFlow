@@ -1,0 +1,6 @@
+*.html linguist-detectable=false
+*.js linguist-detectable=false
+*.ipynb linguist-detectable=false
+*RAFT.pdf filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+assets/*.gif filter=lfs diff=lfs merge=lfs -text
