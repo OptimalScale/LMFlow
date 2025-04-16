@@ -150,6 +150,13 @@ def create_customized_optimizer(base_trainer_class, model_args):
                     "weight_decay": (args.optim_weight_decay),
                 }
                 optimizer_kwargs.update(adan_kwargs)
+            elif args.customized_optim == OptimizerNames.MUON:
+                optimizer_cls = optim.Muon
+                muon_kwargs = {
+                    "betas": (args.optim_beta1, args.optim_beta2),
+                    "weight_decay": (args.optim_weight_decay),
+                }
+                optimizer_kwargs.update(muon_kwargs)
             else:
                 raise ValueError(
                     f"Trainer cannot instantiate unsupported optimizer: "
