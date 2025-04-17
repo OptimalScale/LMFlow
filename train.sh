@@ -22,7 +22,7 @@ while [[ $# -ge 1 ]]; do
       dataset_path="$2"
       shift
       ;;
-    -o|--output_lora_path)
+    -o|--output_dora_path)
       output_dir="$2"
       shift
       ;;
@@ -42,7 +42,7 @@ while [[ $# -ge 1 ]]; do
 done
 
 # Finetune
-exp_id=finetune_with_lora
+exp_id=finetune_with_dora
 project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
 mkdir -p ${output_dir} ${log_dir}
@@ -57,7 +57,7 @@ deepspeed ${deepspeed_args} \
     --learning_rate 1e-4 \
     --block_size 512 \
     --per_device_train_batch_size 1 \
-    --use_lora 1 \
+    --use_dora 1 \
     --lora_r 8 \
     --lora_target_modules="embed_tokens,q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj,lm_head" \
     --save_aggregated_lora 0\

@@ -31,11 +31,11 @@ pip install -e .
 ```
 
 > [!TIP]
-> We use WandB to track and visualize the training process by default. Before running the training scripts, users may need to log in to WandB using the command: 
+> We use Wandb to track and visualize the training process by default. Before running the training scripts, users may need to log in to Wandb using the command: 
 >```bash
 >wandb login
 >```
-> For detailed instructions, refer to the [WandB Quickstart Guide](https://docs.wandb.ai/quickstart/). Step 1 (registration) and Step 2 (login using your WandB API key) should be sufficient to set up your environment.
+> For detailed instructions, refer to the [Wandb Quickstart Guide](https://docs.wandb.ai/quickstart/). Step 1 (registration) and Step 2 (login using your Wandb API key) should be sufficient to set up your environment.
 >
 > <details><summary>Disabling wandb</summary>  
 >
@@ -64,19 +64,19 @@ To process your own dataset, please refer to our [doc](https://optimalscale.gith
 ### Training
 LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
 ```sh
-bash run_finetune_with_lora.sh
+bash train.sh
 ```
-Note: Please double-check that you have updated the [training script](https://raw.githubusercontent.com/OptimalScale/LMFlow/refs/heads/data-challenge/run_finetune_with_lora.sh) with the correct arguments for your use case.
+Note: Please double-check that you have updated the [training script](https://github.com/OptimalScale/LMFlow/blob/data4elm/train.sh) with the correct arguments for your use case.
 
 > [!TIP]
-> <details><summary>Merge LoRA Weight</summary>
+> <details><summary>Merge Dora Weight</summary>
 >
->Merge LoRA weight and the base model into one using:  
+>Merge Dora weight and the base model into one using:  
 >```sh
->bash ./scripts/run_merge_lora.sh \
+>bash ./scripts/run_merge_dora.sh \
 >  --model_name_or_path Qwen/Qwen1.5-1.8B \
->  --lora_model_path output_models/lora \
->  --output_model_path output_models/lora_merged \
+>  --lora_model_path output_models/dora \
+>  --output_model_path output_models/dora_merged \
 >```
 ></details>
 
