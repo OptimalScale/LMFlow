@@ -5,7 +5,7 @@ import logging
 
 from lmflow.utils.versioning import is_package_version_at_least
 
-from .base import EMPTY_TEMPLATE, EMPTY_NO_SPECIAL_TOKENS_TEMPLATE, ConversationTemplate, ConversationTemplateForTool
+from .base import EMPTY_TEMPLATE, EMPTY_NO_SPECIAL_TOKENS_TEMPLATE, ConversationTemplate, ConversationTemplateForTool, StringFormatter, TemplateComponent
 from .chatglm import CHATGLM3_TEMPLATE
 from .chatml import CHATML_TEMPLATE
 from .deepseek import (
