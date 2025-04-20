@@ -11,13 +11,17 @@ from unittest.mock import MagicMock, patch
 
 from transformers import AutoTokenizer
 
-from lmflow.utils.conversation_template import (
-    ConversationTemplate,
-    PRESET_TEMPLATES,
-    JINJA_TEMPLATES,
+from lmflow.utils.conversation_template.base import (
     StringFormatter,
     TemplateComponent
 )
+
+from lmflow.utils.conversation_template import (
+    ConversationTemplate,
+    PRESET_TEMPLATES,
+    JINJA_TEMPLATES
+)
+
 from lmflow.utils.constants import CONVERSATION_ROLE_NAMES
 
 # Sample conversations for testing
@@ -99,10 +103,17 @@ def test_string_formatter_multiple_variables():
     # Format a message with multiple variables
     result = formatter.format(role="User", content="Hello world")
     
-    # Check the result
-    assert len(result) == 1
+    # Check the result: two intermediate components, one per placeholder
+    assert len(result) == 2
     assert result[0].type == 'string'
-    assert result[0].content == 'User: Hello world'
+    assert result[1].type == 'string'
+
+    # First, {{role}} is replaced，content left {{content}}
+    assert result[0].content == 'User: {{content}}'
+
+    # Then，{{content}} is replaced，content left {{role}}
+    assert result[1].content == '{{role}}: Hello world'
+
 
 # Tests for ConversationTemplate
 def test_conversation_template_encode_single_message(mock_tokenizer):
@@ -129,8 +140,15 @@ def test_conversation_template_encode_single_message(mock_tokenizer):
     assert isinstance(result[0][1], list)  # Assistant tokens
     
     # Mock tokenizer just returns tokens based on number of words
-    assert len(result[0][0]) == 3  # "User: Hello how are you?" -> 3 tokens (in our mock)
-    assert len(result[0][1]) == 2  # "Assistant: I'm doing..." -> 2 tokens (simplified in mock)
+    user_txt = f"User: {SAMPLE_SINGLE_TURN[0]['content']}"
+    assistant_txt = f"Assistant: {SAMPLE_SINGLE_TURN[1]['content']}"
+
+    expected_user_len = len(mock_tokenizer.encode(user_txt, add_special_tokens=False))
+    expected_assistant_len = len(mock_tokenizer.encode(assistant_txt, add_special_tokens=False))
+
+    assert len(result[0][0]) == expected_user_len
+    assert len(result[0][1]) == expected_assistant_len
+
 
 def test_conversation_template_encode_multi_turn(mock_tokenizer):
     # Create a simple template
@@ -209,7 +227,7 @@ def test_preset_templates(gpt2_tokenizer):
     assert len(result[0][0]) > 0  # User tokens not empty
     assert len(result[0][1]) > 0  # Assistant tokens not empty
 
-def test_conversation_template_invalid_conversation():
+def test_conversation_template_invalid_conversation(mock_tokenizer):
     # Create a simple template
     template = ConversationTemplate(
         user_formatter=StringFormatter([TemplateComponent(type='string', content='User: {{content}}')]),
@@ -222,7 +240,7 @@ def test_conversation_template_invalid_conversation():
     # This should not raise an error, but log a warning
     with patch('lmflow.tokenization.hf_decoder_model.logger.warning') as mock_warning:
         result = template.encode_conversation(
-            tokenizer=mock_tokenizer(),
+            tokenizer=mock_tokenizer,
             messages=invalid_conversation,
             system=None,
             tools=None
@@ -240,7 +258,7 @@ def test_conversation_template_invalid_conversation():
     # This should log a warning and skip this conversation
     with patch('lmflow.tokenization.hf_decoder_model.tok_logger.warning') as mock_warning:
         result = template.encode_conversation(
-            tokenizer=mock_tokenizer(),
+            tokenizer=mock_tokenizer,
             messages=invalid_first_role,
             system=None,
             tools=None

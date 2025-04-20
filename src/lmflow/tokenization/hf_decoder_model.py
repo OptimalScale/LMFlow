@@ -193,6 +193,8 @@ def conversation_tokenize_function(
                     )
                     messages = messages[:-1]
                     
+                system = system if getattr(conversation_template, "system_formatter", None) else None
+                    
                 encoded_conversation = conversation_template.encode_conversation(
                     tokenizer=tokenizer,
                     messages=messages,

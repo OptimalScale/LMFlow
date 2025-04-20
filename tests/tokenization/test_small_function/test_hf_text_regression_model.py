@@ -379,7 +379,7 @@ def test_text_to_textlist_tokenize_function_real(gpt2_tokenizer, data_args, data
             assert len(result_blocked["input_ids"][example_idx][option_idx]) == data_args_with_blocking.block_size
 
 # Test tokenize_function in text_regression_model with real tokenizer
-def test_text_regression_tokenize_function(gpt2_tokenizer, data_args):
+def test_text_regression_tokenize_function(gpt2_tokenizer, data_args, data_args_with_blocking):
     # Create example data
     examples = {
         "text": [SAMPLE_TEXT, SAMPLE_TEXT_ALT],

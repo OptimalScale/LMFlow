@@ -201,6 +201,20 @@ class ConversationTemplate:
         }
         ```
         '''
+        # If odd number of messages, drop the last one to keep pairs
+        if len(messages) % 2 != 0:
+            logger.warning(
+                "Odd number of messages (%d); dropping the last one to keep user-assistant pairs.",
+                len(messages)
+            )
+            messages = messages[:-1]
+        # If conversation does not start with a user message, skip entirely
+        if messages and messages[0].get('role') != CONVERSATION_ROLE_NAMES['user']:
+            logger.warning(
+                "Conversation does not start with a user message (got '%s'); skipping conversation.",
+                messages[0].get('role')
+            )
+            return []
         assert isinstance(messages, list), "Messages must be a list."
         
         if tools:
