@@ -17,7 +17,7 @@ accelerate launch --config_file configs/accelerate_fsdp_config.yaml \
     --output_dir ${output_dir} --overwrite_output_dir \
     --conversation_template ${conversation_template} \
     --disable_group_texts 1 \
-    --num_train_epochs 1 \
+    --num_train_epochs 3 \
     --block_size 4096 \
     --padding_side left \
     --per_device_train_batch_size 1 \
