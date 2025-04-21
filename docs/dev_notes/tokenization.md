@@ -77,9 +77,7 @@ classDiagram
     TextRegressionModel <|-- HFTextRegressionModel
     HFDecoderModel *-- TokenizationUtils
     HFTextRegressionModel *-- TokenizationTextRegressionUtils
-    
-    note for TokenizationUtils "These utility functions\nhandle the core tokenization\nlogic in hf_decoder_model.py"
-    note for TokenizationTextRegressionUtils "These utility functions\nhandle the core tokenization\nlogic in hf_text_regression_model.py"
+
 ```
 
 ##### Sequence Diagram
