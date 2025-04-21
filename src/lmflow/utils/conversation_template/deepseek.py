@@ -249,6 +249,6 @@ DEEPSEEK_R1_DISTILL_TEMPLATE = (
     "{{'<｜tool▁outputs▁end｜>'}}"
     "{% endif %}"
     "{% if add_generation_prompt and not ns.is_tool %}"
-    "{{'<｜Assistant｜>'}}"
+    "{{'<｜Assistant｜><think>\\n'}}"
     "{% endif %}"
 )
