@@ -2,8 +2,8 @@
 # Please run this script under ${project_id} in project directory of
 
 # Parses arguments
-model_name_or_path=meta-llama/Llama-2-7b-hf
-dataset_path=data/wikitext-2-raw-v1/test
+model_name_or_path=data4elm/Llama-400M-12L
+dataset_path=/lustre/fsw/portfolios/nvr/users/sdiao/data-challenge/LMFlow/batched_corpus_v2
 # conversation_template=llama2
 output_dir=output_models/finetune
 deepspeed_args="--master_port=11000"
@@ -53,15 +53,15 @@ deepspeed ${deepspeed_args} \
     --trust_remote_code ${trust_remote_code} \
     --dataset_path ${dataset_path} \
     --output_dir ${output_dir} --overwrite_output_dir \
-    --num_train_epochs 0.01 \
+    --num_train_epochs 1 \
     --learning_rate 1e-4 \
-    --block_size 512 \
-    --per_device_train_batch_size 1 \
+    --block_size 1024 \
+    --per_device_train_batch_size 24 \
     --use_dora 1 \
     --lora_r 8 \
-    --lora_target_modules="embed_tokens,q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj,lm_head" \
-    --save_aggregated_lora 0\
-    --deepspeed configs/ds_config_zero2.json \
+    --lora_target_modules="q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj,lm_head" \
+    --save_aggregated_lora 0 \
+    --deepspeed configs/ds_config_zero0_no_offload.json \
     --fp16 \
     --run_name ${exp_id} \
     --validation_split_percentage 0 \
@@ -70,5 +70,6 @@ deepspeed ${deepspeed_args} \
     --ddp_timeout 72000 \
     --save_steps 5000 \
     --dataloader_num_workers 1 \
+    --preprocessing_num_workers 128 \
     | tee ${log_dir}/train.log \
     2> ${log_dir}/train.err
