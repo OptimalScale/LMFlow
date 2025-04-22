@@ -58,8 +58,8 @@ deepspeed ${deepspeed_args} \
     --block_size 1024 \
     --per_device_train_batch_size 24 \
     --use_dora 1 \
-    --lora_r 8 \
-    --lora_target_modules="q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj,lm_head" \
+    --lora_r 16 \
+    --lora_target_modules="embed_tokens,q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj,lm_head" \
     --save_aggregated_lora 0 \
     --deepspeed configs/ds_config_zero0_no_offload.json \
     --fp16 \

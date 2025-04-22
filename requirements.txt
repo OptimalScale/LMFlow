@@ -2,7 +2,7 @@ packaging
 numpy
 datasets==2.14.6
 tokenizers>=0.13.3
-peft>=0.10.0
+peft==0.15.2
 torch>=2.0.1
 wandb
 deepspeed>=0.14.4
