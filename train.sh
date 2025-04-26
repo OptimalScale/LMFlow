@@ -62,7 +62,7 @@ deepspeed ${deepspeed_args} \
     --lora_target_modules="embed_tokens,q_proj,k_proj,v_proj,o_proj,gate_proj,up_proj,down_proj,lm_head" \
     --save_aggregated_lora 0 \
     --deepspeed configs/ds_config_zero0_no_offload.json \
-    --fp16 \
+    --bf16 \
     --run_name ${exp_id} \
     --validation_split_percentage 0 \
     --logging_steps 20 \
