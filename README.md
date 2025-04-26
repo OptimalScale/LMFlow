@@ -24,6 +24,7 @@ Our package has been tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacO
 ```bash
 git clone -b v0.0.9 https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
+git checkout data4elm
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
 conda install mpi4py
