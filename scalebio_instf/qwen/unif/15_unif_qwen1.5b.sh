@@ -1,15 +1,15 @@
 #!/bin/bash
-export HF_TOKEN=''
-model_name_or_path=meta-llama/Llama-3.2-1B-Instruct
-dataset_path=/root/autodl-tmp/projs/scalebio/data/top10_no_val_test_fixed
-conversation_template=llama3
-output_dir=output_models/finetune/scalebio/instf/unif/llama1b
+model_name_or_path=Qwen/Qwen2.5-1.5B-Instruct
+dataset_path=/home/yizhenjia/datasets/15
+conversation_template=qwen2_5
+output_dir=/home/yizhenjia/models/scalebio/qwen1.5b/15-unif
+export CUDA_VISIBLE_DEVICES=3
+export WANDB_PROJECT='scalebio'
 
 # Finetune
-exp_id=finetune-scalebio-instf-unif-llama1b
+exp_id=qwen1.5b-15-unif
 log_dir=${output_dir}/log/
 mkdir -p ${output_dir} ${log_dir}
-
 accelerate launch --config_file configs/accelerate_singlegpu_config.yaml \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \

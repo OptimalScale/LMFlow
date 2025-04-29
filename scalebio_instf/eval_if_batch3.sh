@@ -1,47 +1,42 @@
-MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
-BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/raw"
+MODEL_NAME="/home/yizhenjia/models/scalebio/gemma1b/10-weighted-doubled"
+BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/gemma1b/10-weighted-doubled"
 DEVICE_ID=0
 mkdir -p "$BASE_OUTPUT_DIR"
 nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
 
-
-MODEL_NAME="/home/yizhenjia/models/scalebio/qwen1.5b/10-unif"
-BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/10-unif"
+MODEL_NAME="/home/yizhenjia/models/scalebio/gemma1b/10-unif"
+BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/gemma1b/10-unif"
 DEVICE_ID=1
 mkdir -p "$BASE_OUTPUT_DIR"
 nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
 
-
-MODEL_NAME="/home/yizhenjia/models/scalebio/qwen1.5b/15-unif"
-BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/15-unif"
+MODEL_NAME="/home/yizhenjia/models/scalebio/gemma1b/10-unif-doubled"
+BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/gemma1b/10-unif-doubled"
 DEVICE_ID=2
 mkdir -p "$BASE_OUTPUT_DIR"
 nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
 
-
-MODEL_NAME="/home/yizhenjia/models/scalebio/qwen1.5b/10-weighted"
-BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/10-weighted"
+MODEL_NAME="/home/yizhenjia/models/scalebio/gemma1b/10-weighted"
+BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/gemma1b/10-weighted"
 DEVICE_ID=3
 mkdir -p "$BASE_OUTPUT_DIR"
 nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
 
-
-MODEL_NAME="/home/yizhenjia/models/scalebio/qwen1.5b/15-weighted"
-BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/15-weighted"
+MODEL_NAME="/home/yizhenjia/models/scalebio/gemma1b/15-unif"
+BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/gemma1b/15-unif"
 DEVICE_ID=4
 mkdir -p "$BASE_OUTPUT_DIR"
 nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
 
-
-MODEL_NAME="/home/yizhenjia/models/scalebio/qwen1.5b/10-3bweighted"
-BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/10-3bweighted"
+MODEL_NAME="/home/yizhenjia/models/scalebio/gemma1b/15-weighted"
+BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/gemma1b/15-weighted"
 DEVICE_ID=5
 mkdir -p "$BASE_OUTPUT_DIR"
 nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
 
-
-MODEL_NAME="/home/yizhenjia/models/scalebio/qwen1.5b/15-3bweighted"
-BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/15-3bweighted"
-DEVICE_ID=7
+MODEL_NAME="google/gemma-3-1b-it"
+BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/gemma1b/raw"
+DEVICE_ID=6
 mkdir -p "$BASE_OUTPUT_DIR"
 nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
+

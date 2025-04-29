@@ -20,11 +20,11 @@ DEVICE_ID=$3
 #     gsm8k
 # )
 tasks=(
-    # commonsense_qa
-    # ifeval
-    # mmlu
+    commonsense_qa
+    ifeval
+    mmlu
     agieval
-    # truthfulqa
+    truthfulqa
 )
 
 declare -A task_batch_sizes=(

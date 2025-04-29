@@ -1,15 +1,16 @@
 #!/bin/bash
-export HF_TOKEN=''
-model_name_or_path=/root/autodl-tmp/models/models--meta-llama--Llama-3.2-1B-Instruct/snapshots/9213176726f574b556790deb65791e0c5aa438b6
-dataset_path=/root/autodl-tmp/projs/scalebio/data/all_no_val_test_fixed
-conversation_template=llama3
-output_dir=output_models/finetune/scalebio/instf/unif-all/llama1b
+
+model_name_or_path=google/gemma-3-1b-it
+dataset_path=/home/yizhenjia/datasets/10_doubled
+conversation_template=gemma3
+output_dir=/home/yizhenjia/models/scalebio/gemma1b/10-unif-doubled
+export CUDA_VISIBLE_DEVICES=5
+export WANDB_PROJECT='scalebio'
 
 # Finetune
-exp_id=finetune-scalebio-instf-unif-all-llama1b
+exp_id=gemma1b-10-unif-doubled
 log_dir=${output_dir}/log/
 mkdir -p ${output_dir} ${log_dir}
-
 accelerate launch --config_file configs/accelerate_singlegpu_config.yaml \
   examples/finetune.py \
     --model_name_or_path ${model_name_or_path} \
