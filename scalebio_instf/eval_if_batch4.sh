@@ -27,6 +27,13 @@ nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $
 
 MODEL_NAME="Qwen/Qwen2.5-3B-Instruct"
 BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen3b/raw"
-DEVICE_ID=3
+DEVICE_ID=4
+mkdir -p "$BASE_OUTPUT_DIR"
+nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
+
+
+MODEL_NAME="/home/yizhenjia/models/scalebio/gemma1b/10-unif-doubled"
+BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/gemma1b/10-unif-doubled"
+DEVICE_ID=5
 mkdir -p "$BASE_OUTPUT_DIR"
 nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
