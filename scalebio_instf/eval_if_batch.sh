@@ -1,10 +1,3 @@
-# MODEL_NAME="Qwen/Qwen2.5-1.5B-Instruct"
-# BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/raw"
-# DEVICE_ID=0
-# mkdir -p "$BASE_OUTPUT_DIR"
-# nohup bash scalebio_instf/eval_if.sh $MODEL_NAME $BASE_OUTPUT_DIR $DEVICE_ID > $BASE_OUTPUT_DIR/eval.log 2>&1 &
-
-
 MODEL_NAME="/home/yizhenjia/models/scalebio/qwen1.5b/10-unif"
 BASE_OUTPUT_DIR="/mnt/yizhenjia/eval_res/scalebio/qwen1.5b/10-unif"
 DEVICE_ID=1
