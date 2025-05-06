@@ -1,7 +1,7 @@
 #!/bin/bash
 export HF_TOKEN=''
-model_name_or_path=wheresmyhair/dsqw_dstl_unif_default
-dataset_path=data/mmlu_ds
+model_name_or_path=/mnt/yizhenjia/iterative_prune_train_Deepseek_1.5B_instruct_1_11_steps_repeat_1_strategy_linear_WSD_max_lr_2e-5_unif/trained_model/train_stage_11_of_11/checkpoint-10045
+dataset_path=/home/yizhenjia/datasets/mmlu_lmflow
 conversation_template=deepseek_r1_distill
 output_dir=output_models/finetune/mmlu_ds
 

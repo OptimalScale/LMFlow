@@ -19,7 +19,7 @@ machine_rank: 0
 main_training_function: main
 mixed_precision: bf16
 num_machines: 1
-num_processes: 8 # NOTE: distributed_type should be `NO` if you're training on a single GPU
+num_processes: 4 # NOTE: distributed_type should be `NO` if you're training on a single GPU
 rdzv_backend: static
 same_network: true
 tpu_env: []
