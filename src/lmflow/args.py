@@ -634,6 +634,15 @@ class DatasetArguments:
         metadata={"help": ("The path to the dataset cache directory. Useful when the "
                            "default cache dir (`~/.cache/huggingface/datasets`) has limited space.")}
     )
+    calculate_dataset_stats: bool = field(
+        default=False,
+        metadata={
+            "help": (
+                "Whether to calculate the dataset statistics, including the number of samples, "
+                "the average length of samples, total tokens, etc."
+            )
+        },
+    )
 
     def __post_init__(self):
         if self.streaming:

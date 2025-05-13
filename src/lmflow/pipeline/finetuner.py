@@ -255,7 +255,28 @@ class Finetuner(BaseTuner):
                     )
 
         train_dataset = lm_dataset.get_backend_dataset()
-        logger.info(f"Number of train samples: {len(train_dataset)}")
+        
+        if data_args.calculate_dataset_stats:
+            total_tokens = 0
+            total_target_tokens = 0
+            pad_token_id = model.get_tokenizer().pad_token_id
+            logger.warning("Calculating dataset stats...")
+            import time
+            start_time = time.time()
+            for datapoint in train_dataset:
+                total_tokens += len([label for label in datapoint["input_ids"] if label != pad_token_id])
+                total_target_tokens += len([label for label in datapoint["labels"] if label != -100])
+            logger.warning(
+                "Dataset stats:\n\n"
+                f"Total tokens: {total_tokens}\n"
+                f"Total target tokens: {total_target_tokens}\n"
+                f"Total samples: {len(train_dataset)}\n"
+                f"Average tokens per sample: {total_tokens / len(train_dataset)}\n"
+                f"Average target tokens per sample: {total_target_tokens / len(train_dataset)}\n"
+            )
+            logger.warning("Calculating data stats took %s seconds", time.time() - start_time)
+        else:
+            logger.warning(f"Number of train samples: {len(train_dataset)}")
 
         if finetuner_args.do_eval:
             eval_dataset_args = deepcopy(data_args)
