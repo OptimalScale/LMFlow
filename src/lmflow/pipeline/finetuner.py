@@ -36,7 +36,6 @@ import lmflow.optim.optimizers as optim
 from lmflow.args import OptimizerNames, DatasetArguments, ModelArguments, FinetunerArguments
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_tuner import BaseTuner
-from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 
 
 logger = logging.getLogger(__name__)
@@ -499,12 +498,8 @@ class Finetuner(BaseTuner):
         # Initialize our Trainer
         training_args = finetuner_args
 
-        if model_args.use_lora:
-            FinetuningTrainer = PeftTrainer
-            trainer_callbacks = [PeftSavingCallback]
-        else:
-            FinetuningTrainer = Trainer
-            trainer_callbacks = []
+        FinetuningTrainer = Trainer
+        trainer_callbacks = []
         if data_collator is None:
             data_collator = default_data_collator
 
