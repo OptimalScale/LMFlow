@@ -92,12 +92,12 @@ See all conversation template details [here](https://optimalscale.github.io/LMFl
 |  Model  | Conversation Template |
 |  :---:  | :-------------------: |
 | DeepSeek | `deepseek` <br> `deepseek_v2` <br> `deepseek_r1` <br> `deepseek_r1_distill` <br> `deepseek_v3` |
-| Gemma | `gemma` |
+| Gemma | `gemma` <br> `gemma3` |
 | Hymba | `hymba` |
 | InternLM2 | `internlm2` |
 | LLaMA | `llama2` <br> `llama3` <br> `llama3_for_tool`|
 | Phi | `phi3` |
-| Qwen | `qwen2` <br> `qwen2_for_tool` <br> `qwen2_5` <br> `qwen2_5_1m` <br> `qwen2_5_math` <br> `qwen_qwq` |
+| Qwen | `qwen2` <br> `qwen2_for_tool` <br> `qwen2_5` <br> `qwen2_5_1m` <br> `qwen2_5_math` <br> `qwen_qwq` <br> `qwen3` |
 | Yi | `yi` <br> `yi1_5` |
 | Zephyr | `zephyr` |
 
@@ -161,6 +161,16 @@ pip install -e .
 Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
 ### Finetuning
+
+#### Estimated Hardware Requirement
+
+| Method                 |  `x`B   |
+| ---------------------- |  -----  |
+| Full `bf16`/`fp16`     | `18x`GB |
+| LoRA                   |  `2x`GB |
+| QLoRA `quant_bit=8`    |  `x`GB  |
+| QLoRA `quant_bit=4`    | `x/2`GB |
+
 
 #### Full Finetuning
 

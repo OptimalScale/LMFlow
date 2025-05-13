@@ -14,7 +14,7 @@ from .deepseek import (
     DEEPSEEK_R1_TEMPLATE,
     DEEPSEEK_R1_DISTILL_TEMPLATE
 )
-from .gemma import GEMMA_TEMPLATE
+from .gemma import GEMMA_TEMPLATE, GEMMA3_TEMPLATE
 from .hymba import HYMBA_TEMPLATE
 from .internlm import INTERNLM2_TEMPLATE
 from .llama import LLAMA2_TEMPLATE, LLAMA3_TEMPLATE, LLAMA3_TEMPLATE_FOR_TOOL
@@ -25,7 +25,8 @@ from .qwen import (
     QWEN2_5_TEMPLATE,
     QWEN2_5_1M_TEMPLATE,
     QWEN2_5_MATH_TEMPLATE,
-    QWEN_QWQ_TEMPLATE
+    QWEN_QWQ_TEMPLATE,
+    QWEN3_TEMPLATE,
 )
 from .yi import YI1_5_TEMPLATE
 from .zephyr import ZEPHYR_TEMPLATE
@@ -64,6 +65,8 @@ JINJA_TEMPLATES = {
     'qwen2_5_1m': QWEN2_5_1M_TEMPLATE,
     'qwen2_5_math': QWEN2_5_MATH_TEMPLATE,
     'qwen_qwq': QWEN_QWQ_TEMPLATE,
+    'qwen3': QWEN3_TEMPLATE,
+    'gemma3': GEMMA3_TEMPLATE,
 }
 
 if is_package_version_at_least("transformers", "4.43.0"):
