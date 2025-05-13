@@ -35,6 +35,7 @@ import numpy as np
 import lmflow.optim.optimizers as optim
 from lmflow.args import OptimizerNames, DatasetArguments, ModelArguments, FinetunerArguments
 from lmflow.datasets.dataset import Dataset
+from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 
@@ -415,10 +416,28 @@ class Finetuner(BaseTuner):
                     self.optimizer = smp.DistributedOptimizer(self.optimizer)
                     
         return CustomizedOptimTrainer
+    
+    def __tokenize_dataset(
+        self, 
+        model: "HFDecoderModel", 
+        dataset: "Dataset",
+    ) -> "Dataset":
+        # Tokenization and text grouping must be done in the main process
+        with self.finetuner_args.main_process_first(desc="dataset map tokenization"):
+            tokenized_dataset = model.tokenize(dataset)
+            if self.data_args.disable_group_texts:
+                lm_dataset = tokenized_dataset
+            else:
+                lm_dataset = self.group_text(
+                    tokenized_dataset,
+                    model_max_length=model.get_max_length(),
+                )
+                
+        return lm_dataset
 
     def tune(self,
              model,
-             dataset,
+             dataset: "Dataset",
              transform_dataset_in_place=True,
              data_collator=None):
         """
@@ -439,57 +458,38 @@ class Finetuner(BaseTuner):
         if not transform_dataset_in_place:
             dataset = copy.deepcopy(dataset)
 
-        # Tokenization and text grouping must be done in the main process
+        train_dataset = None
+        eval_dataset = None
+        
         if dataset.backend == "custom_multi_modal":
             dataset.backend_dataset.register_tokenizer(
                 model.tokenizer, model.image_processor)
-            lm_dataset = dataset
+            train_dataset = dataset.get_backend_dataset()
         else:
-            with finetuner_args.main_process_first(desc="dataset map tokenization"):
-                tokenized_dataset = model.tokenize(dataset)
-                if data_args.disable_group_texts:
-                    lm_dataset = tokenized_dataset
-                else:
-                    lm_dataset = self.group_text(
-                        tokenized_dataset,
-                        model_max_length=model.get_max_length(),
+            if finetuner_args.do_eval:
+                if finetuner_args.eval_dataset_path is None:
+                    assert data_args.validation_split_percentage != 0, (
+                        "You've set `do_eval=True`. If you don't provide an evaluation dataset using"
+                        " `eval_dataset_path`, please set `validation_split_percentage` to a non-zero"
+                        " value."
                     )
-
-        train_dataset = lm_dataset.get_backend_dataset()
+                    train_dataset_raw, eval_dataset_raw = dataset.train_test_split(
+                        test_size=data_args.validation_split_percentage / 100,
+                        shuffle=True,
+                        seed=finetuner_args.seed,
+                    )
+                    train_dataset = self.__tokenize_dataset(model, train_dataset_raw).get_backend_dataset()
+                    eval_dataset = self.__tokenize_dataset(model, eval_dataset_raw).get_backend_dataset()
+                else:
+                    eval_dataset_args = deepcopy(data_args)
+                    eval_dataset_args.dataset_path = finetuner_args.eval_dataset_path
+                    eval_dataset_raw = Dataset(eval_dataset_args)
+                    eval_dataset = self.__tokenize_dataset(model, eval_dataset_raw).get_backend_dataset()
+                logger.info(f"Number of eval samples: {len(eval_dataset)}")
+            
+            else:
+                train_dataset = self.__tokenize_dataset(model, dataset).get_backend_dataset()
         logger.info(f"Number of train samples: {len(train_dataset)}")
-
-        if finetuner_args.do_eval:
-            eval_dataset_args = deepcopy(data_args)
-            eval_dataset_args.dataset_path = finetuner_args.eval_dataset_path
-            eval_dataset = Dataset(eval_dataset_args)
-            with finetuner_args.main_process_first(desc="dataset map tokenization"):
-                tokenized_dataset = model.tokenize(eval_dataset)
-                if data_args.disable_group_texts:
-                    lm_dataset = tokenized_dataset
-                else:
-                    lm_dataset = self.group_text(
-                        tokenized_dataset,
-                        model_max_length=model.get_max_length(),
-                    )
-            eval_dataset = lm_dataset.get_backend_dataset()
-            logger.info(f"Number of eval samples: {len(eval_dataset)}")
-
-            def preprocess_logits_for_metrics(logits, labels):
-                if isinstance(logits, tuple):
-                    # Depending on the model and config, logits may contain extra tensors,
-                    # like past_key_values, but logits always come first
-                    logits = logits[0]
-                return logits.argmax(dim=-1)
-
-            metric = evaluate.load("accuracy")
-
-            def compute_metrics(eval_preds):
-                preds, labels = eval_preds
-                # preds have the same shape as the labels, after the argmax(-1) has been calculated
-                # by preprocess_logits_for_metrics but we need to shift the labels
-                labels = labels[:, 1:].reshape(-1)
-                preds = preds[:, :-1].reshape(-1)
-                return metric.compute(predictions=preds, references=labels)
 
         if finetuner_args.do_train:
             if data_args.max_train_samples is not None:
@@ -583,8 +583,6 @@ class Finetuner(BaseTuner):
             tokenizer=model.get_tokenizer(),
             # Data collator will default to DataCollatorWithPadding, so we change it.
             data_collator=data_collator,
-            compute_metrics=compute_metrics if training_args.do_eval else None,
-            preprocess_logits_for_metrics=preprocess_logits_for_metrics if training_args.do_eval else None,
             callbacks=trainer_callbacks
         )
         # Training
