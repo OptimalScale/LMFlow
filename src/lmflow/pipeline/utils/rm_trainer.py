@@ -3,8 +3,6 @@ import torch
 import torch.nn as nn
 from transformers import Trainer
 
-from .peft_trainer import PeftTrainer
-
 
 def compute_metrics(eval_pred):
     result = {}
@@ -33,10 +31,5 @@ def rm_loss(model, inputs, return_outputs=False):
 
 
 class RewardTrainer(Trainer):
-    def compute_loss(self, model, inputs, return_outputs=False):
-        return rm_loss(model, inputs, return_outputs)
-
-
-class PeftRewardTrainer(PeftTrainer):
     def compute_loss(self, model, inputs, return_outputs=False):
         return rm_loss(model, inputs, return_outputs)
