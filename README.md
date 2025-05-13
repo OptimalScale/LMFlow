@@ -31,7 +31,7 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 ## Latest News
 
-* [2025-03-18] With full support for Accelerate and lots of streamlining, LMFlow-nightly is now available! Feel free to try out the latest features and improvements by `git checkout lmflow-nightly`.
+* [2025-03-18] With full support for Accelerate and lots of streamlining, LMFlow-nightly is now available! Feel free to try out the latest features and improvements by `git checkout lmflow-nightly`, or see [here](https://github.com/OptimalScale/LMFlow/tree/lmflow-nightly).
 * [2024-12-02] Support [Hymba](https://github.com/NVlabs/hymba), a new family of small language models featuring a hybrid-head parallel architecture. Check out [Post-training Hymba](https://github.com/OptimalScale/LMFlow/tree/main/experimental/Hymba) for more details.
 * [2024-07-01] 🏆 LMFlow receives the [**Best Demo Paper Award**](https://docs.google.com/presentation/d/1TVDooAZqkNObz5ysVhDFtqnnVHR-u8wqYvgix-gzPMs/edit#slide=id.g2e55907bbcc_0_70) at **NAACL 2024**! 🎉
 * [2024-06-30] Expanding Optimization Options! We now support custom optimizer training with a variety of optimizers. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).

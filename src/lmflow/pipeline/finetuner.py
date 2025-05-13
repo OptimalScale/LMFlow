@@ -39,7 +39,6 @@ from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.pipeline.base_tuner import BaseTuner
-from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 
 
 logger = logging.getLogger(__name__)
@@ -509,13 +508,9 @@ class Finetuner(BaseTuner):
 
         # Initialize our Trainer
         training_args = finetuner_args
-
-        if model_args.use_lora:
-            FinetuningTrainer = PeftTrainer
-            trainer_callbacks = [PeftSavingCallback]
-        else:
-            FinetuningTrainer = Trainer
-            trainer_callbacks = []
+        FinetuningTrainer = Trainer
+        trainer_callbacks = []
+        
         if data_collator is None:
             data_collator = default_data_collator
 
@@ -603,6 +598,7 @@ class Finetuner(BaseTuner):
             checkpoint = None
             last_checkpoint = self.last_checkpoint
             if training_args.resume_from_checkpoint is not None:
+                # this also supports load from lora checkpoint
                 checkpoint = training_args.resume_from_checkpoint
             elif last_checkpoint is not None:
                 checkpoint = last_checkpoint

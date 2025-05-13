@@ -15,8 +15,7 @@ from transformers.trainer_callback import (
 from lmflow.datasets import Dataset
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.pipeline.finetuner import Finetuner
-from lmflow.pipeline.utils.rm_trainer import compute_metrics, RewardTrainer, PeftRewardTrainer
-from lmflow.pipeline.utils.peft_trainer import PeftSavingCallback
+from lmflow.pipeline.utils.rm_trainer import compute_metrics, RewardTrainer
 from lmflow.pipeline.utils.rm_dataprocessor import RewardDataCollatorWithPadding
 
 
@@ -106,12 +105,8 @@ class RewardModelTuner(Finetuner):
             )
             
         # 2. prepare trainer
-        if self.model_args.use_lora:
-            RewardModelingTrainer = PeftRewardTrainer
-            trainer_callbacks = [PeftSavingCallback]
-        else:
-            RewardModelingTrainer = RewardTrainer
-            trainer_callbacks = []
+        RewardModelingTrainer = RewardTrainer
+        trainer_callbacks = []
             
         if self.finetuner_args.use_lisa:
             class DynamicLayerActivationCallback(TrainerCallback):
