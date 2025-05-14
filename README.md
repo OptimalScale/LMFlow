@@ -165,19 +165,12 @@ If you find this repository useful, please consider giving ⭐ and citing our [p
   year={2023}
 }
 ```
+
 ```
-@article{dong2023raft,
-  title={Raft: Reward ranked finetuning for generative foundation model alignment},
-  author={Dong, Hanze and Xiong, Wei and Goyal, Deepanshu and Pan, Rui and Diao, Shizhe and Zhang, Jipeng and Shum, Kashun and Zhang, Tong},
-  journal={arXiv preprint arXiv:2304.06767},
-  year={2023}
-}
-```
-```
-@article{pan2024lisa,
-  title={LISA: Layerwise Importance Sampling for Memory-Efficient Large Language Model Fine-Tuning}, 
-  author={Pan, Rui and Liu, Xiang and Diao, Shizhe and Pi, Renjie and Zhang, Jipeng and Han, Chi and Zhang, Tong},
-  journal={arXiv preprint arXiv:2403.17919},
+@inproceedings{liu2024dora,
+  title={Dora: Weight-decomposed low-rank adaptation},
+  author={Liu, Shih-Yang and Wang, Chien-Yi and Yin, Hongxu and Molchanov, Pavlo and Wang, Yu-Chiang Frank and Cheng, Kwang-Ting and Chen, Min-Hung},
+  booktitle={Forty-first International Conference on Machine Learning},
   year={2024}
 }
 ```
