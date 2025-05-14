@@ -110,7 +110,7 @@ lm_eval --model hf \
     --output_path ./eval_results/test_elmb
 ```
 
-Note that in order to test your model, you must first upload it to HuggingFace. The [YOUR_MODEL_PATH] is the HuggingFace model path (`username/model_name`) to your uploaded model.
+Note that in order to test your model, you must first upload it to HuggingFace. The `[YOUR_MODEL_PATH]` is the HuggingFace model path (`username/model_name`) to your uploaded model.
 
 Thus, after finetuning your model and merging the DoRA weights, you must upload the model to HuggingFace.
 You may reference `example_upload_peft_model.py` for a starter script on how to upload your DoRA-finetuned model.
@@ -120,23 +120,29 @@ You may reference `example_upload_peft_model.py` for a starter script on how to 
 Below are some commonly asked questions from our [Discord](https://discord.com/invite/TVjjdcbuFG).
 
 **Q:** Where can I go if I have questions about the challenge?
+
 **A:** The main place to ask questions will be under the `challenge-questions` text channel in our [Discord](https://discord.com/invite/TVjjdcbuFG).
 
 **Q:** How can I resume from a checkpoint?
+
 **A:** Users can resume from checkpoints by adding the argument  `--resume_from_checkpoint` to the training script with the path to the latest checkpoint.
 For example, `--resume_from_checkpoint [model-dir]/checkpoint-[checkpoint-index]`.
 
 **Q:** How can I test using a validation split?
+
 **A:** Users can view validation loss during training by adding the arguments `--validation_split_percentage`, `--eval_strategy`, and `--eval_steps`. For instance:
 `--validation_split_percentage 5 \ --eval_strategy steps \ --eval_steps 20` will show the validation loss every 20 steps using a validation split of 5 percent.
 
 **Q:** How do I know if I am registered?
+
 **A:** You will receive a confirmation email titled "PLEASE READ: Data Filtering Challenge - Confirmation of Registration" from an Outlook account named "data4elm". The names of the registered teams will also be listed on our Discord periodically.
 
 **Q:** Where can I find the dataset?
+
 **A:** You can find the starter dataset [here](https://huggingface.co/datasets/nvidia/ClimbLab).
 
 **Q:** The starter dataset consists of tokens. How can I convert it into an LMFlow-friendly format?
+
 **A:** You can use the [unofficial detokenized dataset](http://huggingface.co/datasets/OptimalScale/ClimbLab), or you may detokenize the dataset yourself using the script `detokenize_climblab.py` found [here](http://huggingface.co/datasets/OptimalScale/ClimbLabhuggingface.co/datasets/nvidia/ClimbLab).
 
 ## Support
