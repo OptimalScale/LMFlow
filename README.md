@@ -101,7 +101,7 @@ cd LMFlow/lm-evaluation-harness
 pip install -e . 
 
 lm_eval --model hf \
-    --model_args pretrained=nvidia/Hymba-1.5B-Instruct,trust_remote_code=True,cache_dir=~/.cache \
+    --model_args pretrained=[YOUR_MODEL_PATH]],trust_remote_code=True,cache_dir=~/.cache \
     --tasks elmb_roleplay,elmb_reasoning,elmb_functioncalling,elmb_chatrag \
     --device cuda:0 \
     --batch_size 1 \
