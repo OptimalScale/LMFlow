@@ -58,16 +58,18 @@ pip install -e .
 
 ### Prepare Dataset
 
-For sanity check, we provide [a small dataset](./data/wikitext-2-raw-v1/test) for you to test the finetuning process.
+For sanity check, we provide [a small dataset](./data/wikitext-2-raw-v1/) for you to test the finetuning process.
 
 To process your own dataset, please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
 ### Training
-LoRA is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
+[DoRA](https://arxiv.org/pdf/2402.09353) is a parameter-efficient finetuning algorithm and is more efficient than full finetuning.
 ```sh
 bash train.sh
 ```
 Note: Please double-check that you have updated the [training script](https://github.com/OptimalScale/LMFlow/blob/data4elm/train.sh) with the correct arguments for your use case.
+
+Note: So that we eliminate hyperparameters as a confounding factor, you must keep `num_train_epochs` as `1`, `learning_rate` as `1e-5`, and `lora_r` as 16. 
 
 > [!TIP]
 > <details><summary>Merge Dora Weight</summary>
@@ -80,7 +82,6 @@ Note: Please double-check that you have updated the [training script](https://gi
 >  --output_model_path output_models/dora_merged \
 >```
 ></details>
-
 
 ### Evaluation
 Aligned with the objective of this challenge, we propose a new benchmark for evaluating edge LMs, named the Edge Language Model Benchmark (ELMB). 
@@ -101,7 +102,7 @@ cd LMFlow/lm-evaluation-harness
 pip install -e . 
 
 lm_eval --model hf \
-    --model_args pretrained=nvidia/Hymba-1.5B-Instruct,trust_remote_code=True,cache_dir=~/.cache \
+    --model_args pretrained=[YOUR_MODEL_PATH],trust_remote_code=True,cache_dir=~/.cache \
     --tasks elmb_roleplay,elmb_reasoning,elmb_functioncalling,elmb_chatrag \
     --device cuda:0 \
     --batch_size 1 \
@@ -109,7 +110,11 @@ lm_eval --model hf \
     --output_path ./eval_results/test_elmb
 ```
 
-## FAQ
+Note that in order to test your model, you must first upload it to HuggingFace. The [YOUR_MODEL_PATH] is the HuggingFace model path (`username/model_name`) to your uploaded model.
+
+Thus, after finetuning your model and merging the DoRA weights, you must upload the model to HuggingFace.
+You may reference `example_upload_peft_model.py` for a starter script on how to upload your DoRA-finetuned model.
+
 
 ## FAQ
 Below are some commonly asked questions from our [Discord](https://discord.com/invite/TVjjdcbuFG).
@@ -127,6 +132,12 @@ For example, `--resume_from_checkpoint [model-dir]/checkpoint-[checkpoint-index]
 
 **Q:** How do I know if I am registered?
 **A:** You will receive a confirmation email titled "PLEASE READ: Data Filtering Challenge - Confirmation of Registration" from an Outlook account named "data4elm". The names of the registered teams will also be listed on our Discord periodically.
+
+**Q:** Where can I find the dataset?
+**A:** You can find the starter dataset [here](https://huggingface.co/datasets/nvidia/ClimbLab).
+
+**Q:** The starter dataset consists of tokens. How can I convert it into an LMFlow-friendly format?
+**A:** You can use the [unofficial detokenized dataset](http://huggingface.co/datasets/OptimalScale/ClimbLab), or you may detokenize the dataset yourself using the script `detokenize_climblab.py` found [here](http://huggingface.co/datasets/OptimalScale/ClimbLabhuggingface.co/datasets/nvidia/ClimbLab).
 
 ## Support
 
