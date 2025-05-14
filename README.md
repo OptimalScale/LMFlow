@@ -124,6 +124,10 @@ Below are some commonly asked questions from our [Discord](https://discord.com/i
 
 **A:** The main place to ask questions will be under the `challenge-questions` text channel in our [Discord](https://discord.com/invite/TVjjdcbuFG).
 
+**Q:** How many tokens can I use to finetune my model?
+
+**A:** As listed in the [challenge website](https://sites.google.com/view/datafilteringchallenge/problem), you may use up to 10B tokens total.
+
 **Q:** How can I resume from a checkpoint?
 
 **A:** Users can resume from checkpoints by adding the argument  `--resume_from_checkpoint` to the training script with the path to the latest checkpoint.
