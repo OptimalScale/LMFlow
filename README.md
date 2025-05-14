@@ -110,7 +110,23 @@ lm_eval --model hf \
 ```
 
 ## FAQ
-[TODO]
+
+## FAQ
+Below are some commonly asked questions from our [Discord](https://discord.com/invite/TVjjdcbuFG).
+
+**Q:** Where can I go if I have questions about the challenge?
+**A:** The main place to ask questions will be under the `challenge-questions` text channel in our [Discord](https://discord.com/invite/TVjjdcbuFG).
+
+**Q:** How can I resume from a checkpoint?
+**A:** Users can resume from checkpoints by adding the argument  `--resume_from_checkpoint` to the training script with the path to the latest checkpoint.
+For example, `--resume_from_checkpoint [model-dir]/checkpoint-[checkpoint-index]`.
+
+**Q:** How can I test using a validation split?
+**A:** Users can view validation loss during training by adding the arguments `--validation_split_percentage`, `--eval_strategy`, and `--eval_steps`. For instance:
+`--validation_split_percentage 5 \ --eval_strategy steps \ --eval_steps 20` will show the validation loss every 20 steps using a validation split of 5 percent.
+
+**Q:** How do I know if I am registered?
+**A:** You will receive a confirmation email titled "PLEASE READ: Data Filtering Challenge - Confirmation of Registration" from an Outlook account named "data4elm". The names of the registered teams will also be listed on our Discord periodically.
 
 ## Support
 
