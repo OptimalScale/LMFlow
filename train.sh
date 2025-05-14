@@ -3,7 +3,7 @@
 
 # Parses arguments
 model_name_or_path=data4elm/Llama-400M-12L
-dataset_path=/lustre/fsw/portfolios/nvr/users/sdiao/data-challenge/LMFlow/batched_corpus_v2
+dataset_path=[PATH TO YOUR DATASET HERE]
 # conversation_template=llama2
 output_dir=output_models/finetune
 deepspeed_args="--master_port=11000"
@@ -42,6 +42,7 @@ while [[ $# -ge 1 ]]; do
 done
 
 # Finetune
+# Note that project dir will contain files that show you loss and other metrics during finetuning.
 exp_id=finetune_with_dora
 project_dir=$(cd "$(dirname $0)"/..; pwd)
 log_dir=${project_dir}/log/${exp_id}
