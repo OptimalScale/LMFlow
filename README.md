@@ -110,10 +110,11 @@ lm_eval --model hf \
     --output_path ./eval_results/test_elmb
 ```
 
-Note that in order to test your model, you must first upload it to HuggingFace. The `[YOUR_MODEL_PATH]` is the HuggingFace model path (`username/model_name`) to your uploaded model.
+Note that in order to test your model, you can either use a model path or use a Hugging Face path.
 
-Thus, after finetuning your model and merging the DoRA weights, you must upload the model to HuggingFace.
-You may reference `example_upload_peft_model.py` for a starter script on how to upload your DoRA-finetuned model.
+If using a model path, please merge your DoRA weights into the base model, and then provide the path to the merged model's folder in `[YOUR_MODEL_PATH]`.
+
+If using HuggingFace, `[YOUR_MODEL_PATH]` is the HuggingFace model path (`username/model_name`) to your uploaded model obtained after merging the DoRA weights. You may reference `example_upload_peft_model.py` for a starter script on how to upload your DoRA-finetuned model.
 
 
 ## FAQ
@@ -141,7 +142,7 @@ For example, `--resume_from_checkpoint [model-dir]/checkpoint-[checkpoint-index]
 
 **A:** You can find the starter dataset [here](https://huggingface.co/datasets/nvidia/ClimbLab).
 
-**Q:** The starter dataset consists of tokens. How can I convert it into an LMFlow-friendly format?
+**Q:** The starter dataset consists of tokens. How can I convert it into a raw text format?
 
 **A:** You can use the [unofficial detokenized dataset](http://huggingface.co/datasets/OptimalScale/ClimbLab), or you may detokenize the dataset yourself using the script `detokenize_climblab.py` found [here](http://huggingface.co/datasets/OptimalScale/ClimbLabhuggingface.co/datasets/nvidia/ClimbLab).
 
