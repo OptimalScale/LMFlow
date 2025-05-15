@@ -69,7 +69,6 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 - [LMFlow](#lmflow)
   - [Latest News](#latest-news)
   - [Table of Contents](#table-of-contents)
-  - [Supported Models](#supported-models)
   - [Quick Start](#quick-start)
     - [Setup](#setup)
     - [Prepare Dataset](#prepare-dataset)
@@ -85,21 +84,6 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
   - [License](#license)
   - [Citation](#citation)
 
-## Supported Models
-
-See all conversation template details [here](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html).
-
-|  Model  | Conversation Template |
-|  :---:  | :-------------------: |
-| DeepSeek | `deepseek` <br> `deepseek_v2` <br> `deepseek_r1` <br> `deepseek_r1_distill` <br> `deepseek_v3` |
-| Gemma | `gemma` <br> `gemma3` |
-| Hymba | `hymba` |
-| InternLM2 | `internlm2` |
-| LLaMA | `llama2` <br> `llama3` <br> `llama3_for_tool`|
-| Phi | `phi3` |
-| Qwen | `qwen2` <br> `qwen2_for_tool` <br> `qwen2_5` <br> `qwen2_5_1m` <br> `qwen2_5_math` <br> `qwen_qwq` <br> `qwen3` |
-| Yi | `yi` <br> `yi1_5` |
-| Zephyr | `zephyr` |
 
 ## Quick Start
 
@@ -164,12 +148,12 @@ Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASET
 
 #### Estimated Hardware Requirement
 
-| Method                 |  `x`B   |
-| ---------------------- |  -----  |
-| Full `bf16`/`fp16`     | `18x`GB |
-| LoRA                   |  `2x`GB |
-| QLoRA `quant_bit=8`    |  `x`GB  |
-| QLoRA `quant_bit=4`    | `x/2`GB |
+| Method                 | 0.5B |  3B  |  7B  |  14B  |  30B  |  70B  |  `x`B   |
+| ---------------------- | ---- | ---- | ---- | ----- | ----- | ----- | ------- |
+| Full `bf16`/`fp16`     |  9GB | 55GB |120GB | 240GB | 600GB | 1200GB| `18x`GB |
+| LoRA                   |  1GB | 6GB  | 16GB |  32GB |  64GB | 160GB |  `2x`GB |
+| QLoRA `quant_bit=8`    | 0.7GB| 3GB  | 10GB |  20GB |  40GB |   80GB|  `x`GB  |
+| QLoRA `quant_bit=4`    | 0.4GB| 1.5GB|  6GB |  12GB |  24GB |   48GB| `x/2`GB |
 
 
 #### Full Finetuning
