@@ -1,6 +1,6 @@
 import os
-from setuptools import find_packages
-from setuptools import setup
+
+from setuptools import find_packages, setup
 
 folder = os.path.dirname(__file__)
 version_path = os.path.join(folder, "src", "lmflow", "version.py")
@@ -24,7 +24,8 @@ extra_require = {
     "flash_attn": ["flash-attn>=2.0.2"],
     "trl": ["trl==0.8.0"],
     "deepspeed": ["deepspeed>=0.14.4"],
-    "develop": ["pytest"]
+    "develop": ["pytest"],
+    "dev": ["ruff", "pytest", "pre-commit"],
 }
 
 readme_path = os.path.join(folder, "README.md")

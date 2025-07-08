@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-<img src="../assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
+<img src="../docs/assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 </p>
 
 # LMFlow
@@ -32,7 +32,7 @@
 एक विस्तारयोग्य, सुविधाजनक और दक्ष टूलबॉक्स जो बड़े मशीन लर्निंग मॉडल को finetune करने के लिए बनाया गया है, जो सभी समुदाय के उपयोगकर्ताओं के लिए उपलब्ध होने के साथ-साथ उपयोगकर्ता मित्रता, गति और विश्वसनीयता के साथ डिजाइन किया गया है।
 
 <p align="center" width="100%">
-<img src="../assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
+<img src="../docs/assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 

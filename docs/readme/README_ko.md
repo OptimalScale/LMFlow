@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-<img src="../assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
+<img src="../docs/assets/logo.png" alt="LMFlow" style="width: 100%; min-width: 300px; display: block; margin: auto; background-color: transparent;">
 </p>
 
 # LMFlow
@@ -32,7 +32,7 @@
 다음은 사용자 친화적이고 빠르며 신뢰할 수 있으며 커뮤니티 전체에 액세스할 수 있도록 설계된 대규모 기계 학습 모델을 미세 조정하는 데 유용한 확장 가능하고 편리하며 효율적인 도구 상자입니다.
 
 <p align="center" width="100%">
-<img src="../assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
+<img src="../docs/assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 

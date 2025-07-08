@@ -40,4 +40,4 @@ Recommend on the A100, H100, A40 GPUs.
 
 ## Training Loss
 The training loss curve for `nvidia/Hymba-1.5B-Instruct`, fine-tuned on the `MedMCQA/train` dataset with a learning rate of $5e-5$ over 100 steps using SFT, LoRA, LISA, and DORA, is shown below:
-![Training Loss](../../assets/Hymba_loss.png)
+![Training Loss](../../docs/assets/Hymba_loss.png)
