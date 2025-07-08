@@ -1,38 +1,36 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
-"""A simple Multimodal chatbot implemented with lmflow APIs.
-"""
-from dataclasses import dataclass, field
+"""A simple Multimodal chatbot implemented with lmflow APIs."""
+
 import json
 import logging
 import time
 import warnings
+from dataclasses import dataclass, field
 from typing import Optional
 
 import numpy as np
-from PIL import Image
 import torch
+from PIL import Image
 from transformers import HfArgumentParser
 
+from lmflow.args import AutoArguments, DatasetArguments, VisModelArguments
 from lmflow.datasets.dataset import Dataset
-from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
-from lmflow.args import (VisModelArguments, DatasetArguments, \
-                         InferencerArguments, AutoArguments)
+from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.utils.versioning import is_gradio_available
 
 if is_gradio_available():
     import gradio as gr
 else:
     raise ImportError("Gradio is not available. Please install it via `pip install gradio`.")
-    
+
 
 MAX_BOXES = 20
 
 logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
-torch.multiprocessing.set_start_method('spawn', force=True)
+torch.multiprocessing.set_start_method("spawn", force=True)
 
 css = """
 #user {
@@ -71,43 +69,26 @@ css = """
 class ChatbotArguments:
     prompt_structure: Optional[str] = field(
         default="{input_text}",
-        metadata={
-            "help": "prompt structure given user's input text"
-        },
+        metadata={"help": "prompt structure given user's input text"},
     )
     end_string: Optional[str] = field(
         default="#",
-        metadata={
-            "help": "end string mark of the chatbot's output"
-        },
+        metadata={"help": "end string mark of the chatbot's output"},
     )
-    image_path: Optional[str] = field(
-        default=None,
-        metadata={
-            "help": "image path for input image"}
-    )
-    input_text: Optional[str] = field(
-        default="",
-        metadata={
-            "help": "input text for reasoning"}
-    )
+    image_path: Optional[str] = field(default=None, metadata={"help": "image path for input image"})
+    input_text: Optional[str] = field(default="", metadata={"help": "input text for reasoning"})
     task: Optional[str] = field(
         default="image_caption",
         metadata={
             "help": "task for reasoning",
-        }
+        },
     )
-    chatbot_format: Optional[str] = field(
-        default="None",
-        metadata={
-            "help": "prompt format"
-        }
-    )
+    chatbot_format: Optional[str] = field(default="None", metadata={"help": "prompt format"})
 
 
 def gradio_reset(chat_state, img_list):
     if chat_state is not None:
-        chat_state = ''
+        chat_state = ""
     if img_list is not None:
         img_list = []
     return (
@@ -118,6 +99,7 @@ def gradio_reset(chat_state, img_list):
         img_list,
     )
 
+
 def upload_image(image_file, history, text_input, chat_state, image_list):
     # if gr_image is None:
     #     return None, None, gr.update(interactive=True), chat_state, None
@@ -125,12 +107,14 @@ def upload_image(image_file, history, text_input, chat_state, image_list):
 
     if chat_state is None:
         if chatbot_args.chatbot_format == "mini_gpt":
-            chat_state = "Give the following image: <Img>ImageContent</Img>. " + "You will be able to see the image once I provide it to you. Please answer my questions."
+            chat_state = (
+                "Give the following image: <Img>ImageContent</Img>. "
+                + "You will be able to see the image once I provide it to you. Please answer my questions."
+            )
         else:
-            chat_state = ''
+            chat_state = ""
     image = read_img(image_file.name)
-    if not isinstance(image_list, list) or (
-            isinstance(image_list, list) and len(image_list) == 0):
+    if not isinstance(image_list, list) or (isinstance(image_list, list) and len(image_list) == 0):
         image_list = []
         image_list.append(image)
     else:
@@ -139,45 +123,48 @@ def upload_image(image_file, history, text_input, chat_state, image_list):
     if chatbot_args.chatbot_format == "mini_gpt":
         chat_state += "### Human: " + "<Img><ImageHere></Img>"
     return (
-        gr.update(interactive=True, placeholder='Enter text and press enter, or upload an image'),
+        gr.update(interactive=True, placeholder="Enter text and press enter, or upload an image"),
         history,
         chat_state,
         image_list,
     )
 
+
 def read_img(image):
     if isinstance(image, str):
-        raw_image = Image.open(image).convert('RGB')
+        raw_image = Image.open(image).convert("RGB")
     elif isinstance(image, Image.Image):
         raw_image = image
     else:
         raise NotImplementedError
     return raw_image
 
+
 def gradio_ask(user_message, chatbot, chat_state):
     if len(user_message) == 0:
-        return gr.update(interactive=True, placeholder='Input should not be empty!'), chatbot, chat_state
+        return gr.update(interactive=True, placeholder="Input should not be empty!"), chatbot, chat_state
     prompted_user_message = prompt_structure.format(input_text=user_message)
     if chat_state is None:
-        chat_state = ''
+        chat_state = ""
     chat_state = chat_state + prompted_user_message
 
     chatbot = chatbot + [[user_message, None]]
-    return '', chatbot, chat_state
+    return "", chatbot, chat_state
 
 
 def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0):
-    input_dataset = dataset.from_dict({
-        "type": "image_text",
-        "instances": [{"images": np.stack([np.array(i) for i in image_list]),
-                        "text": chat_state}]
-    })
-    remove_image_flag = chatbot_args.chatbot_format=="mini_gpt"
+    input_dataset = dataset.from_dict(
+        {
+            "type": "image_text",
+            "instances": [{"images": np.stack([np.array(i) for i in image_list]), "text": chat_state}],
+        }
+    )
+    remove_image_flag = chatbot_args.chatbot_format == "mini_gpt"
 
-    chatbot[-1][1] = ''
+    chatbot[-1][1] = ""
 
     print_index = 0
-    token_per_step = 4 # 48
+    token_per_step = 4  # 48
     max_new_tokens = -1
     temperature = 0.7
     context = chatbot
@@ -192,15 +179,9 @@ def gradio_answer(chatbot, chat_state, image_list, num_beams=1, temperature=1.0)
     while not response_queue.empty():
         response_queue.get()
 
-    request_queue.put((
-        context,
-        max_new_tokens,
-        token_per_step,
-        temperature,
-        end_string,
-        input_dataset,
-        remove_image_flag
-    ))
+    request_queue.put(
+        (context, max_new_tokens, token_per_step, temperature, end_string, input_dataset, remove_image_flag)
+    )
 
     while True:
         if not response_queue.empty():
@@ -240,7 +221,7 @@ def start_inferencer(
     dataset,
     chatbot_args,
 ):
-    with open(pipeline_args.deepspeed, "r") as f:
+    with open(pipeline_args.deepspeed) as f:
         ds_config = json.load(f)
 
     model = AutoModel.get_model(
@@ -288,13 +269,13 @@ def start_inferencer(
                     break
 
             if not break_in_the_middle:
-                response_text = ''
+                response_text = ""
                 flag_break = True
                 response_queue.put((response_text, flag_break))
 
             mark = ""
             while mark != "busy":
-                mark = request_queue.get()     # Release the "busy" mark
+                mark = request_queue.get()  # Release the "busy" mark
 
         time.sleep(0.001)
 
@@ -303,14 +284,14 @@ if __name__ == "__main__":
     pipeline_name = "inferencer"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
-    parser = HfArgumentParser((
-        VisModelArguments,
-        PipelineArguments,
-        ChatbotArguments,
-    ))
-    model_args, pipeline_args, chatbot_args = (
-        parser.parse_args_into_dataclasses()
+    parser = HfArgumentParser(
+        (
+            VisModelArguments,
+            PipelineArguments,
+            ChatbotArguments,
+        )
     )
+    model_args, pipeline_args, chatbot_args = parser.parse_args_into_dataclasses()
     data_args = DatasetArguments(dataset_path=None)
     dataset = Dataset(data_args, backend="dict")
 
@@ -372,9 +353,7 @@ if __name__ == "__main__":
             inputs=[chatbot, chat_state, image_list],
             outputs=[chatbot, chat_state, image_list],
         )
-        txt_msg.then(
-            lambda: gr.update(interactive=True), None, [text_input], queue=False
-        )
+        txt_msg.then(lambda: gr.update(interactive=True), None, [text_input], queue=False)
 
         file_msg = upload_button.upload(
             fn=upload_image,
@@ -392,4 +371,3 @@ if __name__ == "__main__":
 
     demo.queue(max_size=1, api_open=False).launch(share=True)
     inferencer_process.join()
-

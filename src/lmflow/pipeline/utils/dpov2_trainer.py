@@ -1,16 +1,15 @@
 import logging
-from typing import Optional, Union, Dict, List, Any, Tuple, Callable, Literal
+from typing import Callable, Literal, Optional, Union
 
-from datasets import Dataset
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from datasets import Dataset
 from transformers import (
-    PreTrainedModel, 
-    PreTrainedTokenizerBase, 
-    DataCollator, 
-    TrainingArguments, 
-    TrainerCallback
+    DataCollator,
+    PreTrainedModel,
+    PreTrainedTokenizerBase,
+    TrainingArguments,
 )
 from transformers.trainer_callback import TrainerCallback
 from transformers.trainer_utils import EvalLoopOutput
@@ -30,7 +29,7 @@ logger = logging.getLogger(__name__)
 class DPOv2Trainer(DPOTrainer):
     def __init__(
         self,
-        model: Union[PreTrainedModel, nn.Module] = None,
+        model: Union[PreTrainedModel, nn.Module],
         ref_model: Optional[Union[PreTrainedModel, nn.Module]] = None,
         beta: float = 0.1,
         loss_type: Literal["sigmoid", "hinge", "cross_entropy", "kl", "rev_kl", "raft"] = "rev_kl",
@@ -40,28 +39,24 @@ class DPOv2Trainer(DPOTrainer):
         padding_value: int = 0,
         truncation_mode: str = "keep_end",
         train_dataset: Optional[Dataset] = None,
-        eval_dataset: Optional[Union[Dataset, Dict[str, Dataset]]] = None,
+        eval_dataset: Optional[Union[Dataset, dict[str, Dataset]]] = None,
         tokenizer: Optional[PreTrainedTokenizerBase] = None,
         model_init: Optional[Callable[[], PreTrainedModel]] = None,
-        callbacks: Optional[List[TrainerCallback]] = None,
-        optimizers: Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (
-            None,
-            None,
-        ),
+        callbacks: Optional[list[TrainerCallback]] = None,
+        optimizers: tuple[Optional[torch.optim.Optimizer], Optional[torch.optim.lr_scheduler.LambdaLR]] = (None, None),
         preprocess_logits_for_metrics: Optional[Callable[[torch.Tensor, torch.Tensor], torch.Tensor]] = None,
         max_length: Optional[int] = None,
         max_prompt_length: Optional[int] = None,
         max_target_length: Optional[int] = None,
-        peft_config: Optional[Dict] = None,
+        peft_config: Optional[dict] = None,
         is_encoder_decoder: Optional[bool] = None,
         disable_dropout: bool = True,
         generate_during_eval: bool = False,
-        compute_metrics: Optional[Callable[[EvalLoopOutput], Dict]] = None,
+        compute_metrics: Optional[Callable[[EvalLoopOutput], dict]] = None,
         mask_prompt: Optional[bool] = False,
         len_penalty: float = 0,
         preprocessing_num_workers: int = 1,
     ):
-
         if data_collator is None:
             data_collator = PreferenceDataCollatorWithPadding(
                 tokenizer,
@@ -113,21 +108,34 @@ class DPOv2Trainer(DPOTrainer):
         reference_free: bool = False,
         margin: Optional[torch.FloatTensor] = None,
         len_penalty: float = 0,
-    ) -> Tuple[torch.FloatTensor, torch.FloatTensor, torch.FloatTensor]:
+    ) -> tuple[torch.FloatTensor, torch.FloatTensor, torch.FloatTensor]:
         """Compute the DPO loss for a batch of policy and reference model log probabilities.
 
         Args:
-            policy_chosen_logps: Log probabilities of the policy model for the chosen responses. Shape: (batch_size,)
-            policy_rejected_logps: Log probabilities of the policy model for the rejected responses. Shape: (batch_size,)
-            reference_chosen_logps: Log probabilities of the reference model for the chosen responses. Shape: (batch_size,)
-            reference_rejected_logps: Log probabilities of the reference model for the rejected responses. Shape: (batch_size,)
-            beta: Temperature parameter for the DPO loss, typically something in the range of 0.1 to 0.5. We ignore the reference model as beta -> 0.
-            reference_free: If True, we ignore the _provided_ reference model and implicitly use a reference model that assigns equal probability to all responses.
+            policy_chosen_logps:
+                Log probabilities of the policy model for the chosen responses.
+                Shape: (batch_size,)
+            policy_rejected_logps:
+                Log probabilities of the policy model for the rejected responses.
+                Shape: (batch_size,)
+            reference_chosen_logps:
+                Log probabilities of the reference model for the chosen responses.
+                Shape: (batch_size,)
+            reference_rejected_logps:
+                Log probabilities of the reference model for the rejected responses.
+                Shape: (batch_size,)
+            beta:
+                Temperature parameter for the DPO loss, typically something in the
+                range of 0.1 to 0.5. We ignore the reference model as beta -> 0.
+            reference_free:
+                If True, we ignore the _provided_ reference model and implicitly use
+                a reference model that assigns equal probability to all responses.
 
         Returns:
             A tuple of three tensors: (losses, chosen_rewards, rejected_rewards).
             The losses tensor contains the DPO loss for each example in the batch.
-            The chosen_rewards and rejected_rewards tensors contain the rewards for the chosen and rejected responses, respectively.
+            The chosen_rewards and rejected_rewards tensors contain the rewards for the chosen and
+            rejected responses, respectively.
         """
         pi_logratios = policy_chosen_logps - policy_rejected_logps
         ref_logratios = reference_chosen_logps - reference_rejected_logps + len_penalty
@@ -148,7 +156,8 @@ class DPOv2Trainer(DPOTrainer):
             losses = -policy_chosen_logps  # F.logsigmoid(self.beta * logits)
         elif self.loss_type == "ipo":
             logits = pi_logratios - ref_logratios
-            # eqn (17) of the paper where beta is the regularization parameter for the IPO loss, denoted by tau in the paper.
+            # eqn (17) of the paper where beta is the regularization parameter for the IPO loss,
+            # denoted by tau in the paper.
             losses = (logits - 1 / (2 * self.beta)) ** 2
         elif self.loss_type == "kl":
             logits = pi_logratios - ref_logratios
@@ -184,7 +193,7 @@ class DPOv2Trainer(DPOTrainer):
     def get_batch_loss_metrics(
         self,
         model,
-        batch: Dict[str, Union[List, torch.LongTensor]],
+        batch: dict[str, Union[list, torch.LongTensor]],
         train_eval: Literal["train", "eval"] = "train",
     ):
         return self.get_batch_metrics(model, batch, train_eval)
@@ -192,7 +201,7 @@ class DPOv2Trainer(DPOTrainer):
     def get_batch_metrics(
         self,
         model,
-        batch: Dict[str, Union[List, torch.LongTensor]],
+        batch: dict[str, Union[list, torch.LongTensor]],
         train_eval: Literal["train", "eval"] = "train",
     ):
         """Compute the DPO loss and other metrics for the given batch of inputs for train or test."""

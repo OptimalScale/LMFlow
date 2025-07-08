@@ -1,10 +1,6 @@
 #!/usr/bin/env python
-# coding=utf-8
-"""Tunable class
-"""
-
-from abc import ABC
+"""Tunable class"""
 
 
-class Tunable(ABC):
+class Tunable:
     pass

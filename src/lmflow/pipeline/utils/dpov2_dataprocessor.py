@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import logging
-from typing import Optional, Union, Dict, List, Any
+from dataclasses import dataclass
+from typing import Any, Optional, Union
 
 import torch
 from torch.nn.utils.rnn import pad_sequence
@@ -8,7 +8,6 @@ from transformers import (
     PreTrainedModel,
     PreTrainedTokenizerBase,
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -27,13 +26,12 @@ class PreferenceDataCollatorWithPadding:
     max_target_length: Optional[int] = None
     mask_prompt: Optional[bool] = False
 
-
     def tokenize_batch_element(
         self,
         prompt: str,
         chosen: str,
         rejected: str,
-    ) -> Dict:
+    ) -> dict[str, Any]:
         """Tokenize a single batch element.
 
         At this stage, we don't convert to PyTorch tensors yet; we just handle the truncation
@@ -48,7 +46,7 @@ class PreferenceDataCollatorWithPadding:
 
         if self.is_encoder_decoder:
             raise NotImplementedError
-        
+
         chosen_tokens = self.tokenizer(chosen, add_special_tokens=False)
         rejected_tokens = self.tokenizer(rejected, add_special_tokens=False)
         prompt_tokens = self.tokenizer(prompt, add_special_tokens=False)
@@ -100,9 +98,7 @@ class PreferenceDataCollatorWithPadding:
         # if that's still too long, truncate the response
         if len(prompt_tokens["input_ids"]) + longer_response_length > self.max_length:
             chosen_tokens = {k: v[: self.max_length - self.max_prompt_length] for k, v in chosen_tokens.items()}
-            rejected_tokens = {
-                k: v[: self.max_length - self.max_prompt_length] for k, v in rejected_tokens.items()
-            }
+            rejected_tokens = {k: v[: self.max_length - self.max_prompt_length] for k, v in rejected_tokens.items()}
 
         # Create labels
         chosen_sequence_tokens = {k: prompt_tokens[k] + chosen_tokens[k] for k in chosen_tokens}
@@ -126,8 +122,6 @@ class PreferenceDataCollatorWithPadding:
                     continue
                 batch[f"{k}_{type_key}"] = tokens
 
-
-
         batch["prompt"] = prompt
         batch["chosen"] = prompt + chosen
         batch["rejected"] = prompt + rejected
@@ -135,7 +129,6 @@ class PreferenceDataCollatorWithPadding:
         batch["rejected_response_only"] = rejected
 
         return batch
-
 
     def collate(self, batch):
         # first, pad everything to the same length
@@ -178,8 +171,7 @@ class PreferenceDataCollatorWithPadding:
 
         return padded_batch
 
-
-    def __call__(self, features: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def __call__(self, features: list[dict[str, Any]]) -> dict[str, Any]:
         tokenized_batch = []
 
         for feature in features:

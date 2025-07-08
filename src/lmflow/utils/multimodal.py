@@ -1,20 +1,19 @@
 import glob
+
 import torch
-from transformers import LlamaConfig
 from tqdm import tqdm
+from transformers import LlamaConfig
 
 
 def update_custom_config(config, model_args):
     if model_args.llm_model_name_or_path is not None:
-        text_config = LlamaConfig.from_pretrained(
-            model_args.llm_model_name_or_path)
+        text_config = LlamaConfig.from_pretrained(model_args.llm_model_name_or_path)
         config.text_config = text_config
     config.with_qformer = model_args.with_qformer
     config.custom_vision_model = model_args.custom_vision_model
     if model_args.custom_vision_model:
         # config.vision_model_args = model_args
-        config.image_encoder_name_or_path = \
-            model_args.image_encoder_name_or_path
+        config.image_encoder_name_or_path = model_args.image_encoder_name_or_path
         config.vision_select_layer = model_args.vision_select_layer
         if getattr(model_args, "vision_select_feature", None) is not None:
             config.vision_select_feature = model_args.vision_select_feature
@@ -35,12 +34,12 @@ def load_llava_pretrain_model(model, checkpoint_path):
         model.load_state_dict(new_state_dict, strict=False)
     return model
 
+
 def adapt_llava_model_to_lmflow_type(state_dict):
     new_state_dict = {}
     for key, item in state_dict.items():
         key = key.replace("model.layers", "language_model.model.layers")
-        key = key.replace("model.embed_tokens",
-                          "language_model.model.embed_tokens")
+        key = key.replace("model.embed_tokens", "language_model.model.embed_tokens")
         key = key.replace("model.mm_projector", "language_projection")
         key = key.replace("lm_head", "language_model.lm_head")
         key = key.replace("model.norm", "language_model.model.norm")

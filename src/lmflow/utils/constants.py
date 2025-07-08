@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-# coding=utf-8
 """
 Commonly used constants.
 """
 
 TEXT_ONLY_DATASET_DESCRIPTION = (
-"""
+    """
 "text_only": a dataset with only raw text instances, with following format:
 
     {
@@ -21,7 +20,7 @@ TEXT_ONLY_DATASET_DESCRIPTION = (
 
 
 TEXT_TO_SCORED_TEXTLIST_DATASET_DESCRIPTION = (
-"""
+    """
 This kind of dataset is commonly used in reward model training/prediction, as well as rl training.
 {
     "type": "text_to_scored_textlist",
@@ -47,7 +46,7 @@ This kind of dataset is commonly used in reward model training/prediction, as we
 
 
 PAIRED_TEXT_TO_TEXT_DATASET_DESCRIPTION = (
-"""
+    """
 This kind of dataset is commonly used in reward model training as well as rl training.
 {
     "type": "paired_text_to_text",
@@ -71,7 +70,7 @@ This kind of dataset is commonly used in reward model training as well as rl tra
 
 
 TEXT_ONLY_DATASET_DETAILS = (
-"""
+    """
     For example,
 
     ```python
@@ -113,7 +112,7 @@ TEXT_ONLY_DATASET_DETAILS = (
 
 
 TEXT2TEXT_DATASET_DESCRIPTION = (
-"""
+    """
 "text2text": a dataset with input & output instances, with following format:
 
     {
@@ -129,7 +128,7 @@ TEXT2TEXT_DATASET_DESCRIPTION = (
 
 
 CONVERSATION_DATASET_DESCRIPTION = (
-"""
+    """
 "conversation": a dataset with conversation instances, with following format (`conversation_id`, `system` and `tools` are optional):
 
     {
@@ -180,7 +179,7 @@ CONVERSATION_DATASET_DESCRIPTION = (
 
 
 PAIRED_CONVERSATION_DATASET_DESCRIPTION = (
-"""
+    """
 "paired_conversation": a dataset with paired conversation instances, with following format:
 
     {
@@ -241,7 +240,7 @@ PAIRED_CONVERSATION_DATASET_DESCRIPTION = (
 
 
 TEXT_TO_TEXTLIST_DATASET_DESCRIPTION = (
-"""
+    """
 This kind of dataset is commonly used in reward model inference.
 {
     "type": "text_to_textlist",
@@ -267,7 +266,7 @@ This kind of dataset is commonly used in reward model inference.
 
 
 TEXT2TEXT_DATASET_DETAILS = (
-"""
+    """
     For example,
 
     ```python
@@ -321,7 +320,7 @@ TEXT2TEXT_DATASET_DETAILS = (
 
 
 FLOAT_ONLY_DATASET_DESCRIPTION = (
-"""
+    """
 "float_only": a dataset with only float instances, with following format:
 
     {
@@ -336,13 +335,9 @@ FLOAT_ONLY_DATASET_DESCRIPTION = (
 ).lstrip("\n")
 
 
-TEXT_ONLY_DATASET_LONG_DESCRITION = (
-    TEXT_ONLY_DATASET_DESCRIPTION + TEXT_ONLY_DATASET_DETAILS
-)
+TEXT_ONLY_DATASET_LONG_DESCRITION = TEXT_ONLY_DATASET_DESCRIPTION + TEXT_ONLY_DATASET_DETAILS
 
-TEXT2TEXT_DATASET_LONG_DESCRITION = (
-    TEXT2TEXT_DATASET_DESCRIPTION + TEXT2TEXT_DATASET_DETAILS
-)
+TEXT2TEXT_DATASET_LONG_DESCRITION = TEXT2TEXT_DATASET_DESCRIPTION + TEXT2TEXT_DATASET_DETAILS
 
 
 DATASET_DESCRIPTION_MAP = {
@@ -354,7 +349,7 @@ DATASET_DESCRIPTION_MAP = {
 INSTANCE_FIELDS_MAP = {
     "text_only": ["text"],
     "text2text": ["input", "output"],
-    "conversation": ["messages"], # system, tools and conversation_id are optional
+    "conversation": ["messages"],  # system, tools and conversation_id are optional
     "paired_conversation": ["chosen", "rejected"],
     "paired_text_to_text": ["prompt", "chosen", "rejected"],
     "float_only": ["value"],
@@ -368,7 +363,7 @@ CONVERSATION_ROLE_NAMES = {
     "user": "user",
     "assistant": "assistant",
     "function": "function",
-    "observation": "observation"
+    "observation": "observation",
 }
 
 # LLAVA constants
@@ -386,28 +381,26 @@ DEFAULT_IM_START_TOKEN = "<im_start>"
 DEFAULT_IM_END_TOKEN = "<im_end>"
 
 # Lora
-# NOTE: This work as a mapping for those models that `peft` library doesn't support yet, and will be 
+# NOTE: This work as a mapping for those models that `peft` library doesn't support yet, and will be
 # overwritten by peft.utils.constants.TRANSFORMERS_MODELS_TO_LORA_TARGET_MODULES_MAPPING
 # if the model is supported (see hf_model_mixin.py).
-# NOTE: When passing lora_target_modules through arg parser, the 
+# NOTE: When passing lora_target_modules through arg parser, the
 # value should be a string. Using commas to separate the module names, e.g.
-# "--lora_target_modules 'q_proj, v_proj'". 
+# "--lora_target_modules 'q_proj, v_proj'".
 # However, when specifying here, they should be lists.
 LMFLOW_LORA_TARGET_MODULES_MAPPING = {
-    'qwen2': ["q_proj", "v_proj"],
-    'internlm2': ["wqkv"],
-    'hymba': ["x_proj.0", "in_proj", "out_proj", "dt_proj.0"]
+    "qwen2": ["q_proj", "v_proj"],
+    "internlm2": ["wqkv"],
+    "hymba": ["x_proj.0", "in_proj", "out_proj", "dt_proj.0"],
 }
 
 # vllm inference
 MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG = "MEMORY_SAFE_VLLM_INFERENCE_DONE"
-RETURN_CODE_ERROR_BUFFER = [
-    134
-]
+RETURN_CODE_ERROR_BUFFER = [134]
 # return code 134:
-# > Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedWriter name='<stdout>'> 
+# > Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedWriter name='<stdout>'>
 # > at interpreter shutdown, possibly due to daemon threads
-# The above error, by our observation, is due to the kill signal with unfinished 
+# The above error, by our observation, is due to the kill signal with unfinished
 # stdout/stderr writing in the subprocess
 MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE = [
     "OMP_NUM_THREADS",

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 """A one-line summary of the module or program, terminated by a period.
 
@@ -14,24 +13,24 @@ Typical usage example:
   bar = foo.FunctionBar()
 """
 
-import sys
 import os
+import sys
+
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from transformers import HfArgumentParser
 
 from lmflow.args import (
-    ModelArguments,
-    DatasetArguments,
     AutoArguments,
+    DatasetArguments,
+    ModelArguments,
 )
-
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.auto_model import AutoModel
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 
 
 def main():
-	# Parses arguments
+    # Parses arguments
     pipeline_name = "finetuner"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
@@ -54,8 +53,8 @@ def main():
     model = AutoModel.get_model(model_args)
 
     # Finetuning
-    tuned_model = finetuner.tune(model=model, dataset=dataset)
+    finetuner.tune(model=model, dataset=dataset)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

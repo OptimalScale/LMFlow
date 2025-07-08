@@ -1,24 +1,24 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
-"""A simple shell chatbot implemented with lmflow APIs.
-"""
-from dataclasses import dataclass, field
-import logging
+"""A simple shell chatbot implemented with lmflow APIs."""
+
 import json
+import logging
 import os
 import sys
+from dataclasses import dataclass, field
+
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
-from typing import Optional
 import warnings
+from typing import Optional
 
 import torch
 from transformers import HfArgumentParser
 
+from lmflow.args import AutoArguments, DatasetArguments, ModelArguments
 from lmflow.datasets.dataset import Dataset
-from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
-from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
+from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.utils.versioning import is_gradio_available
 
 if is_gradio_available():
@@ -80,40 +80,32 @@ css = """
 class ChatbotArguments:
     prompt_structure: Optional[str] = field(
         default="{input_text}",
-        metadata={
-            "help": "prompt structure given user's input text"
-        },
+        metadata={"help": "prompt structure given user's input text"},
     )
     end_string: Optional[str] = field(
         default="\n\n",
-        metadata={
-            "help": "end string mark of the chatbot's output"
-        },
+        metadata={"help": "end string mark of the chatbot's output"},
     )
 
 
 pipeline_name = "inferencer"
 PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
-parser = HfArgumentParser((
-    ModelArguments,
-    PipelineArguments,
-    ChatbotArguments,
-))
-model_args, pipeline_args, chatbot_args = (
-    parser.parse_args_into_dataclasses()
+parser = HfArgumentParser(
+    (
+        ModelArguments,
+        PipelineArguments,
+        ChatbotArguments,
+    )
 )
+model_args, pipeline_args, chatbot_args = parser.parse_args_into_dataclasses()
 inferencer_args = pipeline_args
 
-with open (pipeline_args.deepspeed, "r") as f:
+with open(pipeline_args.deepspeed) as f:
     ds_config = json.load(f)
 
 model = AutoModel.get_model(
-    model_args,
-    do_train=False,
-    ds_config=ds_config,
-    device=pipeline_args.device,
-    torch_dtype=torch.float16
+    model_args, do_train=False, ds_config=ds_config, device=pipeline_args.device, torch_dtype=torch.float16
 )
 
 # We don't need input data, we will read interactively from stdin
@@ -145,55 +137,55 @@ prompt_structure = chatbot_args.prompt_structure
 
 token_per_step = 4
 
+
 def hist2context(hist):
     context = ""
     for query, response in hist:
         context += prompt_structure.format(input_text=query)
-        if not (response is None):
+        if response is not None:
             context += response
     return context
 
-def chat_stream(query: str, history= None, **kwargs):
+
+def chat_stream(query: str, history=None, **kwargs):
     if history is None:
         history = []
 
     context = hist2context(history)
     print_index = 0
     context += prompt_structure.format(input_text=query)
-    context_ = context[-model.get_max_length():] 
-    input_dataset = dataset.from_dict({
-        "type": "text_only",
-        "instances": [ { "text": context_ } ]
-    })
+    context_ = context[-model.get_max_length() :]
+    input_dataset = dataset.from_dict({"type": "text_only", "instances": [{"text": context_}]})
     print(context_)
-    for response, flag_break in inferencer.stream_inference(context=context_, model=model, max_new_tokens=inferencer_args.max_new_tokens, 
-                                    token_per_step=token_per_step, temperature=inferencer_args.temperature,
-                                    end_string=end_string, input_dataset=input_dataset):
+    for response, flag_break in inferencer.stream_inference(
+        context=context_,
+        model=model,
+        max_new_tokens=inferencer_args.max_new_tokens,
+        token_per_step=token_per_step,
+        temperature=inferencer_args.temperature,
+        end_string=end_string,
+        input_dataset=input_dataset,
+    ):
         delta = response[print_index:]
         seq = response
         print_index = len(response)
-        
+
         yield delta, history + [(query, seq)]
         if flag_break:
             break
 
 
-
-
-def predict(input, history=None): 
+def predict(input, history=None):
     if history is None:
         history = []
-    for response, history in chat_stream(input, history):
+    for response, history_ in chat_stream(input, history):
         updates = []
-        for query, response in history:
+        for query, response in history_:
             updates.append(gr.update(visible=True, value="" + query))
             updates.append(gr.update(visible=True, value="" + response))
         if len(updates) < MAX_BOXES:
             updates = updates + [gr.Textbox.update(visible=False)] * (MAX_BOXES - len(updates))
         yield [history] + updates
-
-
-
 
 
 with gr.Blocks(css=css) as demo:
@@ -214,6 +206,3 @@ with gr.Blocks(css=css) as demo:
 
     button.click(predict, [txt, state], [state] + text_boxes)
     demo.queue().launch(share=True)
-
-
-

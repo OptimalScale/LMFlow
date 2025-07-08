@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-# coding=utf-8
-"""Automatically get correct model type.
-"""
+"""Automatically get correct model type."""
 
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
+
 # from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
 
-class AutoModel:
 
+class AutoModel:
     @classmethod
     def get_model(self, model_args, *args, **kwargs):
         arch_type = model_args.arch_type
@@ -20,6 +19,4 @@ class AutoModel:
         #         arch_type == "vision_encoder_decoder":
         #     return HFEncoderDecoderModel(model_args, *args, **kwargs)
         else:
-            raise NotImplementedError(
-                f"model architecture type \"{arch_type}\" is not supported"
-            )
+            raise NotImplementedError(f'model architecture type "{arch_type}" is not supported')

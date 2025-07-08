@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +23,10 @@ import os
 import random
 import shutil
 from pathlib import Path
-from typing import List, Union
+from typing import Union
 
 import accelerate
+import diffusers
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -38,6 +38,17 @@ from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import ProjectConfiguration, set_seed
 from braceexpand import braceexpand
+from diffusers import (
+    AutoencoderKL,
+    DDPMScheduler,
+    LCMScheduler,
+    StableDiffusionPipeline,
+    UNet2DConditionModel,
+)
+from diffusers.optimization import get_scheduler
+from diffusers.training_utils import resolve_interpolation_mode
+from diffusers.utils import check_min_version, is_wandb_available
+from diffusers.utils.import_utils import is_xformers_available
 from huggingface_hub import create_repo, upload_folder
 from packaging import version
 from peft import LoraConfig, get_peft_model, get_peft_model_state_dict
@@ -51,20 +62,6 @@ from webdataset.tariterators import (
     url_opener,
     valid_sample,
 )
-
-import diffusers
-from diffusers import (
-    AutoencoderKL,
-    DDPMScheduler,
-    LCMScheduler,
-    StableDiffusionPipeline,
-    UNet2DConditionModel,
-)
-from diffusers.optimization import get_scheduler
-from diffusers.training_utils import resolve_interpolation_mode
-from diffusers.utils import check_min_version, is_wandb_available
-from diffusers.utils.import_utils import is_xformers_available
-
 
 MAX_SEQ_LENGTH = 77
 
@@ -88,7 +85,7 @@ def get_module_kohya_state_dict(module, prefix: str, dtype: torch.dtype, adapter
 
         # Set alpha parameter
         if "lora_down" in kohya_key:
-            alpha_key = f'{kohya_key.split(".")[0]}.alpha'
+            alpha_key = f"{kohya_key.split('.')[0]}.alpha"
             kohya_ss_state_dict[alpha_key] = torch.tensor(module.peft_config[adapter_name].lora_alpha).to(dtype)
 
     return kohya_ss_state_dict
@@ -160,7 +157,7 @@ class WebdatasetFilter:
 class SDText2ImageDataset:
     def __init__(
         self,
-        train_shards_path_or_url: Union[str, List[str]],
+        train_shards_path_or_url: Union[str, list[str]],
         num_train_examples: int,
         per_gpu_batch_size: int,
         global_batch_size: int,
@@ -264,7 +261,7 @@ def log_validation(vae, unet, args, accelerator, weight_dtype, step):
         generator = torch.Generator(device=accelerator.device).manual_seed(args.seed)
 
     validation_prompts = [
-        "portrait photo of a girl, photograph, highly detailed face, depth of field, moody light, golden hour, style by Dan Winters, Russell James, Steve McCurry, centered, extremely detailed, Nikon D850, award winning photography",
+        "portrait photo of a girl, photograph, highly detailed face, depth of field, moody light, golden hour, style by Dan Winters, Russell James, Steve McCurry, centered, extremely detailed, Nikon D850, award winning photography",  # noqa: E501
         "Self-portrait oil painting, a beautiful cyborg with golden hair, 8k",
         "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k",
         "A photo of beautiful mountain with realistic sunset and blue lake, highly detailed, masterpiece",
@@ -625,8 +622,7 @@ def parse_args():
         type=int,
         default=None,
         help=(
-            "For debugging purposes or quicker training, truncate the number of training examples to this "
-            "value if set."
+            "For debugging purposes or quicker training, truncate the number of training examples to this value if set."
         ),
     )
     # ----Learning Rate----
@@ -884,8 +880,11 @@ def main(args):
         mixed_precision=args.mixed_precision,
         log_with=args.report_to,
         project_config=accelerator_project_config,
-        split_batches=True,  # It's important to set this to True when using webdataset to get the right number of steps for lr scheduling. If set to False, the number of steps will be devide by the number of processes assuming batches are multiplied by the number of processes
+        split_batches=True,
     )
+    # It's important to set `split_batches=True` when using webdataset to get the right number
+    # of steps for lr scheduling. If set to False, the number of steps will be devide by the number of
+    # processes assuming batches are multiplied by the number of processes
 
     # Make one log on every process with the configuration for debugging.
     logging.basicConfig(
@@ -1069,7 +1068,9 @@ def main(args):
             xformers_version = version.parse(xformers.__version__)
             if xformers_version == version.parse("0.0.16"):
                 logger.warning(
-                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during training, please update xFormers to at least 0.0.17. See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
+                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during "
+                    "training, please update xFormers to at least 0.0.17. "
+                    "See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
                 )
             unet.enable_xformers_memory_efficient_attention()
             teacher_unet.enable_xformers_memory_efficient_attention()
@@ -1092,7 +1093,7 @@ def main(args):
         except ImportError:
             raise ImportError(
                 "To use 8-bit Adam, please install the bitsandbytes library: `pip install bitsandbytes`."
-            )
+            ) from None
 
         optimizer_class = bnb.optim.AdamW8bit
     else:
@@ -1324,7 +1325,8 @@ def main(args):
                             sigma_schedule,
                         )
 
-                        # 2. Get teacher model prediction on noisy_model_input z_{t_{n + k}} and unconditional embedding 0
+                        # 2. Get teacher model prediction on noisy_model_input z_{t_{n + k}} and
+                        # unconditional embedding 0
                         uncond_teacher_output = teacher_unet(
                             noisy_model_input.to(weight_dtype),
                             start_timesteps,
@@ -1405,13 +1407,15 @@ def main(args):
                             checkpoints = [d for d in checkpoints if d.startswith("checkpoint")]
                             checkpoints = sorted(checkpoints, key=lambda x: int(x.split("-")[1]))
 
-                            # before we save the new checkpoint, we need to have at _most_ `checkpoints_total_limit - 1` checkpoints
+                            # before we save the new checkpoint, we need to have at _most_
+                            # `checkpoints_total_limit - 1` checkpoints
                             if len(checkpoints) >= args.checkpoints_total_limit:
                                 num_to_remove = len(checkpoints) - args.checkpoints_total_limit + 1
                                 removing_checkpoints = checkpoints[0:num_to_remove]
 
                                 logger.info(
-                                    f"{len(checkpoints)} checkpoints already exist, removing {len(removing_checkpoints)} checkpoints"
+                                    f"{len(checkpoints)} checkpoints already exist, removing "
+                                    f"{len(removing_checkpoints)} checkpoints"
                                 )
                                 logger.info(f"removing checkpoints: {', '.join(removing_checkpoints)}")
 

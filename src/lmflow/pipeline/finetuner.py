@@ -1,19 +1,16 @@
 #!/usr/bin/env python
-# coding=utf-8
-"""The Finetuner class simplifies the process of running finetuning process on a language model for a TunableModel instance with given dataset.
-"""
-
 import copy
 import logging
 import os
 import sys
+from copy import deepcopy
+from itertools import chain
 from typing import Union
 
 import datasets
 import evaluate
+import torch
 import transformers
-from copy import deepcopy
-from itertools import chain
 from transformers import (
     Trainer,
     default_data_collator,
@@ -24,16 +21,16 @@ from transformers.utils import (
     send_example_telemetry,
 )
 
-from lmflow.args import DatasetArguments, ModelArguments, FinetunerArguments
+from lmflow.args import DatasetArguments, FinetunerArguments, ModelArguments
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.hf_decoder_model import HFDecoderModel
+
 # from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.optim import create_customized_optimizer
 from lmflow.pipeline.base_tuner import BaseTuner
 from lmflow.pipeline.utils.lisa_trainer import DynamicLayerActivationCallback
 from lmflow.utils.versioning import is_package_version_at_least
-
 
 logger = logging.getLogger(__name__)
 
@@ -60,15 +57,15 @@ class Finetuner(BaseTuner):
         Keyword arguments.
 
     """
-    def __init__(
-        self, 
-        model_args: ModelArguments, 
-        data_args: DatasetArguments, 
-        finetuner_args: FinetunerArguments, 
-        *args, 
-        **kwargs
-    ):
 
+    def __init__(
+        self,
+        model_args: ModelArguments,
+        data_args: DatasetArguments,
+        finetuner_args: FinetunerArguments,
+        *args,
+        **kwargs,
+    ):
         self.model_args = model_args
         self.data_args = data_args
         self.finetuner_args = finetuner_args
@@ -104,7 +101,11 @@ class Finetuner(BaseTuner):
 
         # Detecting last checkpoint.
         last_checkpoint = None
-        if os.path.isdir(finetuner_args.output_dir) and finetuner_args.do_train and not finetuner_args.overwrite_output_dir:
+        if (
+            os.path.isdir(finetuner_args.output_dir)
+            and finetuner_args.do_train
+            and not finetuner_args.overwrite_output_dir
+        ):
             last_checkpoint = get_last_checkpoint(finetuner_args.output_dir)
             if last_checkpoint is None and len(os.listdir(finetuner_args.output_dir)) > 0:
                 raise ValueError(
@@ -123,7 +124,6 @@ class Finetuner(BaseTuner):
 
         # Set seed before initializing model.
         set_seed(finetuner_args.seed)
-
 
     def group_text(self, tokenized_datasets, model_max_length):
         """
@@ -163,10 +163,12 @@ class Finetuner(BaseTuner):
                         f"The block_size passed ({data_args.block_size}) is larger"
                         f"than the maximum length for the model"
                         f"({model_max_length})."
-                        f"Using block_size={data_args.block_size}.")
+                        f"Using block_size={data_args.block_size}."
+                    )
                     block_size = data_args.block_size
             else:
                 block_size = data_args.block_size
+
         # Main data processing function that will concatenate all texts from
         # our dataset and generate chunks of block_size.
         def group_texts(examples):
@@ -214,12 +216,13 @@ class Finetuner(BaseTuner):
 
         return lm_datasets
 
-
-    def tune(self,
-             model: Union[HFDecoderModel, HFTextRegressionModel],
-             dataset: Dataset,
-             transform_dataset_in_place=True,
-             data_collator=None):
+    def tune(
+        self,
+        model: Union[HFDecoderModel, HFTextRegressionModel],
+        dataset: Dataset,
+        transform_dataset_in_place=True,
+        data_collator=None,
+    ):
         """
         Perform tuning for a model
 
@@ -240,8 +243,7 @@ class Finetuner(BaseTuner):
 
         # Tokenization and text grouping must be done in the main process
         if dataset.backend == "custom_multi_modal":
-            dataset.backend_dataset.register_tokenizer(
-                model.tokenizer, model.image_processor)
+            dataset.backend_dataset.register_tokenizer(model.tokenizer, model.image_processor)
             lm_dataset = dataset
         else:
             with finetuner_args.main_process_first(desc="dataset map tokenization"):
@@ -255,13 +257,14 @@ class Finetuner(BaseTuner):
                     )
 
         train_dataset = lm_dataset.get_backend_dataset()
-        
+
         if data_args.calculate_dataset_stats:
             total_tokens = 0
             total_target_tokens = 0
             pad_token_id = model.get_tokenizer().pad_token_id
             logger.warning("Calculating dataset stats...")
             import time
+
             start_time = time.time()
             for datapoint in train_dataset:
                 total_tokens += len([label for label in datapoint["input_ids"] if label != pad_token_id])
@@ -320,25 +323,23 @@ class Finetuner(BaseTuner):
         training_args = finetuner_args
         FinetuningTrainer = Trainer
         trainer_callbacks = []
-            
+
         if data_collator is None:
             data_collator = default_data_collator
 
         if training_args.use_customized_optim:
             BaseTrainer = FinetuningTrainer
-            FinetuningTrainer = create_customized_optimizer(
-                BaseTrainer, model_args
-            )
+            FinetuningTrainer = create_customized_optimizer(BaseTrainer, model_args)
 
         if training_args.use_lisa:
             dynamic_layer_activation_callback = DynamicLayerActivationCallback(
-                n_layers=training_args.lisa_activated_layers,               # Number of layers to activate
-                interval_steps=training_args.lisa_interval_steps,           # Step interval to update active layers
+                n_layers=training_args.lisa_activated_layers,  # Number of layers to activate
+                interval_steps=training_args.lisa_interval_steps,  # Step interval to update active layers
                 model=model.get_backend_model(),
                 lisa_layers_attribute=training_args.lisa_layers_attribute,  # Attribute to access layers of the model
             )
             trainer_callbacks.append(dynamic_layer_activation_callback)
-            
+
         trainer_kwargs = {
             "model": model.get_backend_model(),
             "args": training_args,
@@ -347,9 +348,9 @@ class Finetuner(BaseTuner):
             "data_collator": data_collator,
             "compute_metrics": compute_metrics if training_args.do_eval else None,
             "preprocess_logits_for_metrics": preprocess_logits_for_metrics if training_args.do_eval else None,
-            "callbacks": trainer_callbacks
+            "callbacks": trainer_callbacks,
         }
-        if is_package_version_at_least('transformers', '4.46.0'):
+        if is_package_version_at_least("transformers", "4.46.0"):
             # https://github.com/huggingface/transformers/pull/32385
             trainer_kwargs["processing_class"] = model.get_tokenizer()
         else:
@@ -377,10 +378,8 @@ class Finetuner(BaseTuner):
             if self.finetuner_args.save_language_projection:
                 language_projection_state = trainer.model.language_projection.state_dict()
                 torch.save(
-                    osp.join(
-                        self.finetuner_args.output_dir,
-                        "language_projection.pth"),
-                    language_projection_state)
+                    os.path.join(self.finetuner_args.output_dir, "language_projection.pth"), language_projection_state
+                )
             metrics = train_result.metrics
 
             max_train_samples = (

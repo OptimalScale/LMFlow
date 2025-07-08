@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 """A one-line summary of the module or program, terminated by a period.
 
 Leave one blank line.  The rest of this docstring should contain an
@@ -17,6 +16,5 @@ from lmflow.models.base_model import BaseModel
 
 
 class DecoderModel(BaseModel):
-
     def __init__(self, *args, **kwargs):
         pass

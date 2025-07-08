@@ -1,5 +1,6 @@
 import pytest
 
+
 def pytest_configure(config: pytest.Config):
     config.addinivalue_line("markers", "gpu: requires gpu")
     config.addinivalue_line("markers", "slow: marks tests as slow")

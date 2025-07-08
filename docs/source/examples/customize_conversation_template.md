@@ -35,8 +35,8 @@ Also, we have a bos token at the beginning of the conversation session.
 ###  2. Choose proper `Formatter`  
 Recall the requirements for a conversation dataset:  
 > - `system`: `Optional[string]`. 
-> - `tools`: `Optional[List[string]]`.  
-> - `messages`: `List[Dict]`.  
+> - `tools`: `Optional[list[string]]`.  
+> - `messages`: `list[dict]`.  
 >    - `role`: `string`.  
 >    - `content`: `string`.  
 

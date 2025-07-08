@@ -19,9 +19,7 @@ import os
 import shutil
 
 import torch
-
 from transformers import LlamaConfig, LlamaForCausalLM
-
 
 """
 Sample usage:
@@ -63,7 +61,7 @@ def compute_intermediate_size(n):
 
 
 def read_json(path):
-    with open(path, "r") as f:
+    with open(path) as f:
         return json.load(f)
 
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
 # FIXME should merge with finetune.py
 """A one-line summary of the module or program, terminated by a period.
@@ -15,25 +14,21 @@ Typical usage example:
   bar = foo.FunctionBar()
 """
 
-import sys
 import os
+import sys
+
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 from transformers import HfArgumentParser
 
 from lmflow.args import (
-    VisModelArguments,
-    MultiModalDatasetArguments,
     AutoArguments,
+    MultiModalDatasetArguments,
+    VisModelArguments,
 )
-
 from lmflow.datasets.dataset import Dataset
+from lmflow.datasets.multi_modal_dataset import DataCollatorForSupervisedDataset
 from lmflow.models.auto_model import AutoModel
 from lmflow.pipeline.auto_pipeline import AutoPipeline
-
-from lmflow.models.vision2seq_model import CustomAutoVision2SeqModel
-from lmflow.models.vision_encoder import build_vision_tower
-from lmflow.datasets.multi_modal_dataset import DataCollatorForSupervisedDataset
-from torch.utils.data import DataLoader
 
 
 def main():
@@ -59,11 +54,14 @@ def main():
     # do not resiger deepspeed in the model.
     # with_deepspeed flag may be removed
     # by modifying the tune strategy in the future.
-    model = AutoModel.get_model(model_args, do_train=True,
-                                ds_config=pipeline_args.deepspeed,
-                                custom_model=True,
-                                with_deepspeed=False,
-                                pipeline_args=pipeline_args)
+    model = AutoModel.get_model(
+        model_args,
+        do_train=True,
+        ds_config=pipeline_args.deepspeed,
+        custom_model=True,
+        with_deepspeed=False,
+        pipeline_args=pipeline_args,
+    )
     # FIXME check if need to move this part to hf_encoder_decoder.py
     for param in model.backend_model.parameters():
         param.requires_grad = False
@@ -81,9 +79,8 @@ def main():
     data_collator = DataCollatorForSupervisedDataset(tokenizer=model.tokenizer)
 
     # Finetuning
-    tuned_model = finetuner.tune(
-        model=model, dataset=dataset, data_collator=data_collator)
+    finetuner.tune(model=model, dataset=dataset, data_collator=data_collator)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

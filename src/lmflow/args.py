@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 """This script defines dataclasses: ModelArguments and DatasetArguments,
 that contain the arguments for the model and dataset used in training.
 
@@ -11,10 +10,11 @@ MODEL_CONFIG_CLASSES is assigned a list of the model config classes from
 MODEL_FOR_CAUSAL_LM_MAPPING. MODEL_TYPES is assigned a tuple of the model types
 extracted from the MODEL_CONFIG_CLASSES.
 """
+
 import logging
-from dataclasses import dataclass, field, fields, Field, make_dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional, List, Union, Dict
+from typing import Optional
 
 from transformers import (
     MODEL_FOR_CAUSAL_LM_MAPPING,
@@ -31,7 +31,7 @@ MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 logger = logging.getLogger(__name__)
 
 
-class OptimizerNames():
+class OptimizerNames:
     DUMMY = "dummy"
     ADABELIEF = "adabelief"
     ADABOUND = "adabound"
@@ -52,13 +52,14 @@ class OptimizerNames():
     MUON = "muon"
     ADAMW_SCHEDULE_FREE = "adamw_schedule_free"
     SGD_SCHEDULE_FREE = "sgd_schedule_free"
-    
+
+
 @dataclass
 class ModelArguments:
     """
-    Define a class ModelArguments using the dataclass decorator. 
-    The class contains several optional parameters that can be used to configure a model. 
-    
+    Define a class ModelArguments using the dataclass decorator.
+    The class contains several optional parameters that can be used to configure a model.
+
     model_name_or_path : str
         a string representing the path or name of a pretrained
         model checkpoint for weights initialization. If None, a model will be trained from scratch.
@@ -66,15 +67,15 @@ class ModelArguments:
     model_type :  str
         a string representing the type of model to use if training from
         scratch. If not provided, a pretrained model will be used.
-    
+
     config_overrides :  str
         a string representing the default config settings to override
         when training a model from scratch.
-    
+
     config_name : str
         a string representing the name or path of the pretrained config to
         use, if different from the model_name_or_path.
-    
+
     tokenizer_name :  str
         a string representing the name or path of the pretrained tokenizer
         to use, if different from the model_name_or_path.
@@ -101,19 +102,19 @@ class ModelArguments:
     use_ram_optimized_load : bool
         a boolean indicating whether to use disk mapping when memory is not
         enough.
-        
+
     use_int8 : bool
         a boolean indicating whether to load int8 quantization for inference.
-        
+
     load_in_4bit : bool
         whether to load the model in 4bit
-        
+
     model_max_length : int
         The maximum length of the model.
-        
+
     truncation_side : str
         The side on which the model should have truncation applied.
-        
+
     arch_type : str
         Model architecture type.
     padding_side : str
@@ -140,7 +141,7 @@ class ModelArguments:
                 " Along with the original non-finetuned model forms the whole"
                 " finetuned model."
             )
-        }
+        },
     )
     model_type: Optional[str] = field(
         default=None,
@@ -182,17 +183,11 @@ class ModelArguments:
     )
     token: Optional[str] = field(
         default=None,
-        metadata={
-            "help": ("Necessary to specify when accessing a private model/dataset.")
-        },
+        metadata={"help": ("Necessary to specify when accessing a private model/dataset.")},
     )
     trust_remote_code: bool = field(
         default=False,
-        metadata={
-            "help": (
-                "Whether to trust remote code when loading model."
-            )
-        },
+        metadata={"help": ("Whether to trust remote code when loading model.")},
     )
     torch_dtype: Optional[str] = field(
         default=None,
@@ -218,18 +213,24 @@ class ModelArguments:
     )
     bits: Optional[int] = field(
         default=None,
-        metadata={"help": "[deprecated] The number of bits for quantization.",
-                  "choices": [4, 8], },
+        metadata={
+            "help": "[deprecated] The number of bits for quantization.",
+            "choices": [4, 8],
+        },
     )
     quant_bit: int = field(
         default=4,
-        metadata={"help": "The number of bits for quantization.",
-                  "choices": [4, 8], },
+        metadata={
+            "help": "The number of bits for quantization.",
+            "choices": [4, 8],
+        },
     )
     quant_type: str = field(
-        default='nf4',
-        metadata={"help": "The quantization type for quantization.",
-                  "choices": ["nf4", "fp4"], },
+        default="nf4",
+        metadata={
+            "help": "The quantization type for quantization.",
+            "choices": ["nf4", "fp4"],
+        },
     )
     double_quant: bool = field(
         default=True,
@@ -242,7 +243,9 @@ class ModelArguments:
     lora_alpha: int = field(
         default=32,
         metadata={
-            "help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter called alpha in the paper."},
+            "help": "Merging ratio between the fine-tuned model and the original. This is controlled by a parameter "
+            "called alpha in the paper."
+        },
     )
     lora_target_modules: str = field(
         default=None, metadata={"help": "Model modules to apply LoRA to. Use comma to separate multiple modules."}
@@ -256,25 +259,14 @@ class ModelArguments:
         metadata={"help": "Whether to save aggregated lora."},
     )
     use_ram_optimized_load: bool = field(
-        default=True,
-        metadata={"help": "Whether use disk mapping when memory is not enough."}
+        default=True, metadata={"help": "Whether use disk mapping when memory is not enough."}
     )
     use_flash_attention: bool = field(
         default=False,
-        metadata={
-            "help": (
-                "whether use flash attention layer to reduce GPU memory with"
-                " higher time cost."
-            )
-        }
+        metadata={"help": ("whether use flash attention layer to reduce GPU memory with higher time cost.")},
     )
     truncate_to_model_max_length: bool = field(
-        default=True,
-        metadata={
-            "help": (
-                "whether truncate the dataset to model max length."
-            )
-        }
+        default=True, metadata={"help": ("whether truncate the dataset to model max length.")}
     )
     do_rope_scaling: bool = field(
         default=False,
@@ -286,39 +278,22 @@ class ModelArguments:
                 "NTK_scaling credits to the Reddit users /u/bloc97 and /u/emozilla."
                 "https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/ntkaware_scaled_rope_allows_llama_models_to_have/"
             )
-        }
+        },
     )
-    rope_pi_ratio: int = field(
-        default=1,
-        metadata={
-            "help": (
-                "the ratio of pi in RoPE scaling."
-            )
-        }
-    )
-    rope_ntk_ratio: int = field(
-        default=1,
-        metadata={
-            "help": (
-                "the ratio of NTK in RoPE scaling."
-            )
-        }
-    )
-    use_int8: bool = field(
-        default=False,
-        metadata={"help": "whether to load int8 quantization for inference"}
-    )
+    rope_pi_ratio: int = field(default=1, metadata={"help": ("the ratio of pi in RoPE scaling.")})
+    rope_ntk_ratio: int = field(default=1, metadata={"help": ("the ratio of NTK in RoPE scaling.")})
+    use_int8: bool = field(default=False, metadata={"help": "whether to load int8 quantization for inference"})
     load_in_4bit: Optional[bool] = field(
         default=True,
-        metadata={
-            "help": "whether to load the model in 4bit"
-        },
+        metadata={"help": "whether to load the model in 4bit"},
     )
     model_max_length: Optional[int] = field(
         default=None,
-        metadata={"help": (
-            "The maximum length of the model. When not specified, "
-            "will follow the model's default max length. (i.e., tokenizer.model_max_length)")
+        metadata={
+            "help": (
+                "The maximum length of the model. When not specified, "
+                "will follow the model's default max length. (i.e., tokenizer.model_max_length)"
+            )
         },
     )
     truncation_side: str = field(
@@ -327,24 +302,23 @@ class ModelArguments:
             "help": (
                 "The side on which the tokenizer should have truncation applied. "
                 "When not specified, will follow the tokenizer's default truncation strategy. "
-                "(i.e., tokenizer.truncation_side)"),
+                "(i.e., tokenizer.truncation_side)"
+            ),
             "choices": [None, "left", "right"],
         },
     )
     padding_side: str = field(
-        default='right',
+        default="right",
         metadata={
             "help": (
                 "The side on which the tokenizer should have padding applied. "
                 "LMFlow uses right padding by default. When set to `auto`, will "
-                "use padding_side from tokenizer.padding_side."),
+                "use padding_side from tokenizer.padding_side."
+            ),
             "choices": ["right", "left", "auto"],
-        }
+        },
     )
-    eos_padding: Optional[bool] = field(
-        default=False, 
-        metadata={"help": "whether to pad with eos token"}
-    )
+    eos_padding: Optional[bool] = field(default=False, metadata={"help": "whether to pad with eos token"})
     ignore_bias_buffers: Optional[bool] = field(
         default=False,
         metadata={
@@ -353,34 +327,38 @@ class ModelArguments:
             "https://github.com/huggingface/transformers/issues/22482#issuecomment-1595790992"
         },
     )
-    
 
     def __post_init__(self):
         if self.config_overrides is not None and (self.config_name is not None or self.model_name_or_path is not None):
             raise ValueError(
                 "--config_overrides can't be used in combination with --config_name or --model_name_or_path"
             )
-            
+
         if self.use_qlora:
             if not self.use_lora:
                 logger.warning("use_qlora is set to True, but use_lora is not set to True. Setting use_lora to True.")
                 self.use_lora = True
-                
+
         if self.use_flash_attention:
             if not is_flash_attn_available():
                 self.use_flash_attention = False
-                logger.warning("Flash attention is not available in the current environment. Disabling flash attention. If you want to use flash attention, please install by `pip install -e '.[flash_attn]'`.")
+                logger.warning(
+                    "Flash attention is not available in the current environment. Disabling "
+                    "flash attention. If you want to use flash attention, please install by "
+                    "`pip install -e '.[flash_attn]'`."
+                )
         else:
-            logger.warning("Flash attention is not enabled. We recommend enabling flash attention by `--use_flash_attention 1` for better performance.")
-                
-        if self.lora_target_modules is not None:
-            self.lora_target_modules: List[str] = split_args(self.lora_target_modules)
-            
-        if "encoder_decoder" in self.arch_type:
-            raise NotImplementedError(
-                "The encoder-decoder model is not fully implemented yet."
+            logger.warning(
+                "Flash attention is not enabled. We recommend enabling flash attention by "
+                "`--use_flash_attention 1` for better performance."
             )
-            
+
+        if self.lora_target_modules is not None:
+            self.lora_target_modules: list[str] = split_args(self.lora_target_modules)
+
+        if "encoder_decoder" in self.arch_type:
+            raise NotImplementedError("The encoder-decoder model is not fully implemented yet.")
+
         if self.bits is not None:
             logger.warning("The argument `bits` is deprecated. Please use `quant_bit` instead.")
             self.quant_bit = self.bits
@@ -388,47 +366,23 @@ class ModelArguments:
 
 @dataclass
 class VisModelArguments(ModelArguments):
-    low_resource: Optional[bool] = field(
-        default=False,
-        metadata={
-            "help": "Use 8 bit and float16 when loading llm"
-        }
-    )
-    custom_model: bool = field(
-        default=False,
-        metadata={"help": "flag for the model from huggingface or not"}
-    )
+    low_resource: Optional[bool] = field(default=False, metadata={"help": "Use 8 bit and float16 when loading llm"})
+    custom_model: bool = field(default=False, metadata={"help": "flag for the model from huggingface or not"})
     pretrained_language_projection_path: str = field(
-        default=None,
-        metadata={"help": "path for model pretrained_language_projection_path"}
+        default=None, metadata={"help": "path for model pretrained_language_projection_path"}
     )
-    custom_vision_model: bool = field(
-        default=False,
-        metadata={"help": "flag for the model from huggingface or not"}
-    )
+    custom_vision_model: bool = field(default=False, metadata={"help": "flag for the model from huggingface or not"})
     image_encoder_name_or_path: Optional[str] = field(
         default=None,
-        metadata={
-            "help": (
-                "The name or path of the image encoder to use."
-            )
-        },
+        metadata={"help": ("The name or path of the image encoder to use.")},
     )
     qformer_name_or_path: Optional[str] = field(
         default=None,
-        metadata={
-            "help": (
-                "llm model in multi-modality model"
-            )
-        },
+        metadata={"help": ("llm model in multi-modality model")},
     )
     llm_model_name_or_path: Optional[str] = field(
         default=None,
-        metadata={
-            "help": (
-                "llm model in multi-modality model"
-            )
-        },
+        metadata={"help": ("llm model in multi-modality model")},
     )
     use_prompt_cache: bool = field(
         default=False,
@@ -513,24 +467,18 @@ class DatasetArguments:
         a string representing the path to the dataset cache directory. Useful when the default cache dir
         (`~/.cache/huggingface/datasets`) has limited space.
 
-    The class also includes some additional parameters that can be used to configure the dataset further, such as `overwrite_cache`,
-    `validation_split_percentage`, `preprocessing_num_workers`, `disable_group_texts`, `demo_example_in_prompt`, `explanation_in_prompt`,
-    `keep_linebreaks`, and `prompt_structure`.
+    The class also includes some additional parameters that can be used to configure the dataset further, such as
+    `overwrite_cache`, `validation_split_percentage`, `preprocessing_num_workers`, `disable_group_texts`,
+    `demo_example_in_prompt`, `explanation_in_prompt`, `keep_linebreaks`, and `prompt_structure`.
 
-    The field function is used to set default values and provide help messages for each parameter. The Optional type hint is
-    used to indicate that a parameter is optional. The metadata argument is used to provide additional information about
-    each parameter, such as a help message.
+    The field function is used to set default values and provide help messages for each parameter. The Optional type
+    hint is used to indicate that a parameter is optional. The metadata argument is used to provide additional
+    information about each parameter, such as a help message.
     """
 
-    dataset_path: Optional[str] = field(
-        default=None, metadata={"help": "The path of the dataset to use."}
-    )
-    dataset_name: Optional[str] = field(
-        default="customized", metadata={"help": "Should be \"customized\""}
-    )
-    is_custom_dataset: Optional[bool] = field(
-        default=False, metadata={"help": "whether to use custom data"}
-    )
+    dataset_path: Optional[str] = field(default=None, metadata={"help": "The path of the dataset to use."})
+    dataset_name: Optional[str] = field(default="customized", metadata={"help": 'Should be "customized"'})
+    is_custom_dataset: Optional[bool] = field(default=False, metadata={"help": "whether to use custom data"})
     customized_cache_dir: Optional[str] = field(
         default=".cache/llm-ft/datasets",
         metadata={"help": "Where do you want to store the customized dataset caches"},
@@ -572,14 +520,10 @@ class DatasetArguments:
             )
         },
     )
-    overwrite_cache: bool = field(
-        default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
-    )
+    overwrite_cache: bool = field(default=False, metadata={"help": "Overwrite the cached training and evaluation sets"})
     validation_split_percentage: Optional[int] = field(
         default=5,
-        metadata={
-            "help": "The percentage of the train set used as validation set in case there's no validation split"
-        },
+        metadata={"help": "The percentage of the train set used as validation set in case there's no validation split"},
     )
     preprocessing_num_workers: Optional[int] = field(
         default=None,
@@ -593,7 +537,7 @@ class DatasetArguments:
                 " `group_texts` operation. See `--disable_group_texts` for"
                 " detailed explanation of this operation."
             )
-        }
+        },
     )
     disable_group_texts: bool = field(
         default=True,
@@ -622,17 +566,19 @@ class DatasetArguments:
         metadata={"help": "Evaluation File Path"},
     )
     train_on_prompt: bool = field(
-        default=False,
-        metadata={"help": "Whether to train on prompt for conversation datasets such as ShareGPT."}
+        default=False, metadata={"help": "Whether to train on prompt for conversation datasets such as ShareGPT."}
     )
     conversation_template: Optional[str] = field(
-        default=None,
-        metadata={"help": "The template for conversation datasets."}
+        default=None, metadata={"help": "The template for conversation datasets."}
     )
     dataset_cache_dir: Optional[str] = field(
         default=None,
-        metadata={"help": ("The path to the dataset cache directory. Useful when the "
-                           "default cache dir (`~/.cache/huggingface/datasets`) has limited space.")}
+        metadata={
+            "help": (
+                "The path to the dataset cache directory. Useful when the "
+                "default cache dir (`~/.cache/huggingface/datasets`) has limited space."
+            )
+        },
     )
     calculate_dataset_stats: bool = field(
         default=False,
@@ -661,21 +607,11 @@ class DatasetArguments:
 
 @dataclass
 class MultiModalDatasetArguments(DatasetArguments):
-    image_folder: Optional[str] = field(
-        default=None, metadata={"help": "The folder of the image file."}
-    )
-    image_aspect_ratio: Optional[str] = field(
-        default="pad", metadata={"help": "The ratio type"}
-    )
-    is_multimodal: Optional[bool] = field(
-        default=True, metadata={"help": "Flag for the modality type."}
-    )
-    use_image_start_end: Optional[bool] = field(
-        default=True, metadata={"help": "Flag for the modality type."}
-    )
-    sep_style: Optional[str] = field(
-        default="plain", metadata={"help": "Sep style in multi_modality dataset."}
-    )
+    image_folder: Optional[str] = field(default=None, metadata={"help": "The folder of the image file."})
+    image_aspect_ratio: Optional[str] = field(default="pad", metadata={"help": "The ratio type"})
+    is_multimodal: Optional[bool] = field(default=True, metadata={"help": "Flag for the modality type."})
+    use_image_start_end: Optional[bool] = field(default=True, metadata={"help": "Flag for the modality type."})
+    sep_style: Optional[str] = field(default="plain", metadata={"help": "Sep style in multi_modality dataset."})
 
 
 @dataclass
@@ -683,128 +619,65 @@ class FinetunerArguments(TrainingArguments):
     """
     Adapt transformers.TrainingArguments
     """
-    eval_dataset_path: Optional[str] = field(
-        default=None, metadata={"help": "The path of the eval dataset to use."}
-    )
+
+    eval_dataset_path: Optional[str] = field(default=None, metadata={"help": "The path of the eval dataset to use."})
     remove_unused_columns: Optional[bool] = field(
-        default=False,
-        metadata={
-            "help": "whether to remove the unused columns in collate fn"}
+        default=False, metadata={"help": "whether to remove the unused columns in collate fn"}
     )
-    finetune_part: Optional[str] = field(
-        default="language_projection",
-        metadata={
-            "help": "the module to finetune."
-        }
-    )
+    finetune_part: Optional[str] = field(default="language_projection", metadata={"help": "the module to finetune."})
     save_language_projection: Optional[str] = field(
-        default=False,
-        metadata={
-            "help": "whether to save language projection layer in multi-modal models."
-        }
+        default=False, metadata={"help": "whether to save language projection layer in multi-modal models."}
     )
-    use_lisa: bool = field(
-        default=False,
-        metadata={
-            "help": "whether to use LISA training strategy."
-        }
-    )
-    lisa_activated_layers: int = field(
-        default=2,
-        metadata={
-            "help": "the number of activated layers in LISA."
-        }
-    )
+    use_lisa: bool = field(default=False, metadata={"help": "whether to use LISA training strategy."})
+    lisa_activated_layers: int = field(default=2, metadata={"help": "the number of activated layers in LISA."})
     lisa_interval_steps: int = field(
         default=20,
         metadata={
-            "help": "the number of steps in each freezing interval of LISA, i.e. the selected unfreezed layers are randomly switched every {lisa_interval_steps} steps."
-        }
+            "help": "the number of steps in each freezing interval of LISA, i.e. the selected unfreezed layers "
+            "are randomly switched every {lisa_interval_steps} steps."
+        },
     )
     lisa_layers_attribute: str = field(
-        default="model.model.layers",
-        metadata={
-            "help": "where the layer attribute stores, e.g. model.model.layers"
-        }
+        default="model.model.layers", metadata={"help": "where the layer attribute stores, e.g. model.model.layers"}
     )
-    use_customized_optim: bool = field(
-        default=False,
-        metadata={
-            "help": "whether to use customized optimizers."
-        }
-    )
-    customized_optim: str = field(
-        default="sign_sgd",
-        metadata={
-            "help": "name of the customized optimizer."
-        }
-    )
-    customized_optim_args: str = field(
-        default=None,
-        metadata={
-            "help": "optional arguments that are supplied."
-        }
-    )
+    use_customized_optim: bool = field(default=False, metadata={"help": "whether to use customized optimizers."})
+    customized_optim: str = field(default="sign_sgd", metadata={"help": "name of the customized optimizer."})
+    customized_optim_args: str = field(default=None, metadata={"help": "optional arguments that are supplied."})
     optim_dummy_beta1: float = field(
-        default=0.9,
-        metadata={
-            "help": "A useless argument for dummy optimizer, just for tutorial"
-        }
+        default=0.9, metadata={"help": "A useless argument for dummy optimizer, just for tutorial"}
     )
     optim_dummy_beta2: float = field(
-        default=0.999,
-        metadata={
-            "help": "A useless argument for dummy optimizer, just for tutorial"
-        }
+        default=0.999, metadata={"help": "A useless argument for dummy optimizer, just for tutorial"}
     )
     optim_adam_beta1: float = field(
-        default=0.9,
-        metadata={
-            "help": "Coefficient used for computing running averages of gradient"
-        }
+        default=0.9, metadata={"help": "Coefficient used for computing running averages of gradient"}
     )
     optim_adam_beta2: float = field(
-        default=0.999,
-        metadata={
-            "help": "Coefficient used for computing running averages of squared gradient"
-        }
+        default=0.999, metadata={"help": "Coefficient used for computing running averages of squared gradient"}
     )
     optim_beta1: float = field(
-        default=0.9,
-        metadata={
-            "help": "Coefficient used for computing running averages of gradient"
-        }
+        default=0.9, metadata={"help": "Coefficient used for computing running averages of gradient"}
     )
     optim_beta2: float = field(
-        default=0.999,
-        metadata={
-            "help": "Coefficient used for computing running averages of squared gradient"
-        }
+        default=0.999, metadata={"help": "Coefficient used for computing running averages of squared gradient"}
     )
     optim_beta3: float = field(
-        default=0.9,
-        metadata={
-            "help": "Coefficient used for computing running averages of gradient"
-        }
+        default=0.9, metadata={"help": "Coefficient used for computing running averages of gradient"}
     )
     optim_momentum: float = field(
-        default=0.999,
-        metadata={
-            "help": "Coefficient used for the momentum term in optimizers like SGD with momentum"
-        }
+        default=0.999, metadata={"help": "Coefficient used for the momentum term in optimizers like SGD with momentum"}
     )
     optim_weight_decay: float = field(
-        default=0,
-        metadata={
-            "help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"
-        }
+        default=0, metadata={"help": "Weight decay (L2 penalty) added to the loss to prevent overfitting"}
     )
-    
+
+
 @dataclass
 class RewardModelTunerArguments(FinetunerArguments):
     """
     Arguments for reward modeling.
     """
+
     pass
 
 
@@ -838,33 +711,18 @@ class EvaluatorArguments:
     repetition_penalty : float
         An argument of model.generate in huggingface to penalize repetitions.
     """
-    local_rank: int = field(
-        default=-1,
-        metadata={"help": "For distributed training: local_rank"
-                  }
-    )
 
-    random_shuffle: Optional[bool] = field(
-        default=False,
-        metadata={"help": ""
-                  }
-    )
+    local_rank: int = field(default=-1, metadata={"help": "For distributed training: local_rank"})
+
+    random_shuffle: Optional[bool] = field(default=False, metadata={"help": ""})
 
     use_wandb: Optional[bool] = field(
         default=False,
-        metadata={
-            "help": (
-                "When this flag is True, wandb will be enabled"
-            )
-        },
+        metadata={"help": ("When this flag is True, wandb will be enabled")},
     )
     random_seed: Optional[int] = field(
         default=1,
-        metadata={
-            "help": (
-                "used to set random seed"
-            )
-        },
+        metadata={"help": ("used to set random seed")},
     )
     output_dir: Optional[str] = field(
         default="./output_dir",
@@ -873,9 +731,7 @@ class EvaluatorArguments:
     mixed_precision: Optional[str] = field(
         default="bf16",
         metadata={
-            "help": (
-                "mixed precision mode, whether to use bf16 or fp16"
-            ),
+            "help": ("mixed precision mode, whether to use bf16 or fp16"),
             "choices": ["bf16", "fp16"],
         },
     )
@@ -892,13 +748,13 @@ class EvaluatorArguments:
         default="text",
         metadata={
             "help": (
-                'Question type for answer extraction from the decoder output.'
-                ' Supported types: \n'
+                "Question type for answer extraction from the decoder output."
+                " Supported types: \n"
                 '   1) "multiple_choice", e.g. A, B, C, D, ...\n'
                 '   2) "binary_choice", e.g. yes, no, maybe\n'
                 '   3) "math", e.g. 1.0, -3.52\n'
                 '   4) "text", e.g. "I think that it is okay"\n'
-                '   5) Special treatment for several datasets\n'
+                "   5) Special treatment for several datasets\n"
                 '     - "gsm8k"\n'
                 '     - "svamp"\n'
                 '     - "asdiv"\n'
@@ -918,9 +774,9 @@ class EvaluatorArguments:
         default="{input}",
         metadata={
             "help": (
-                'Prompt structure to facilitate prompt engineering during'
-                ' inference. The model will receive'
-                ' `prompt_structure.format(input=input)` as its input.'
+                "Prompt structure to facilitate prompt engineering during"
+                " inference. The model will receive"
+                " `prompt_structure.format(input=input)` as its input."
             )
         },
     )
@@ -928,8 +784,9 @@ class EvaluatorArguments:
         default=512,
         metadata={
             "help": (
-                "the model will have at least block_size tokens for context when calculating the conditional likelihood of any one token"
-                " (provided there are block_size preceding tokens available to condition on)"
+                "the model will have at least block_size tokens for context when calculating the "
+                "conditional likelihood of any one token (provided there are block_size preceding "
+                "tokens available to condition on)"
             )
         },
     )
@@ -951,7 +808,8 @@ class EvaluatorArguments:
         },
     )
     use_accelerator_for_evaluator: Optional[bool] = field(
-        default=None, metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
+        default=None,
+        metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
 
     temperature: float = field(
@@ -968,7 +826,12 @@ class EvaluatorArguments:
         default=100,
         metadata={"help": "Maximum length during inference."},
     )
-    
+
+    minibatch_size: int = field(
+        default=1,
+        metadata={"help": "Mini batch size during evaluation."},
+    )
+
     def __post_init__(self):
         if self.use_accelerator_for_evaluator is not None:
             logger.warning(
@@ -1000,13 +863,13 @@ class InferencerArguments:
     use_beam_search : Optional[bool]
         Whether to use beam search during inference, By default False.
     num_output_sequences : Optional[int]
-        Number of output sequences to return for the given prompt, 
+        Number of output sequences to return for the given prompt,
         currently only used in vllm inference, By default 8.
     top_p : Optional[float]
         top_p for sampling, By default 1.0.
     top_k : Optional[int]
         top_k for sampling, By default -1 (no top_k).
-    additional_stop_token_ids : Optional[List[int]]
+    additional_stop_token_ids : Optional[list[int]]
         the ids of the end of sentence tokens, By default [].
     apply_chat_template : Optional[bool]
         Whether to apply chat template, By default True.
@@ -1015,10 +878,10 @@ class InferencerArguments:
     results_path : Optional[str]
         The **json file** path of inference results, By default None.
     enable_decode_inference_result : Optional[bool]
-        Whether to detokenize the inference results. 
+        Whether to detokenize the inference results.
 
-        NOTE: For iterative align pipelines, whether to detokenize depends on 
-        the homogeneity of the policy model and the reward model 
+        NOTE: For iterative align pipelines, whether to detokenize depends on
+        the homogeneity of the policy model and the reward model
         (i.e., if they have the same tokenizer).
     use_vllm: bool, optional
         Whether to use VLLM for inference, By default False.
@@ -1028,6 +891,7 @@ class InferencerArguments:
         The GPU memory utilization for VLLM inference. The proportion of GPU
         memory (per GPU) to use for VLLM inference.
     """
+
     device: str = field(
         default="gpu",
         metadata={
@@ -1037,17 +901,13 @@ class InferencerArguments:
     )
     local_rank: int = field(
         default=-1,
-        metadata={"help": "For distributed training: local_rank"
-                  },
+        metadata={"help": "For distributed training: local_rank"},
     )
     inference_batch_size: int = field(
         default=1,
         metadata={"help": "batch size for inference"},
     )
-    vllm_inference_batch_size: int = field(
-        default=1,
-        metadata={"help": "The batch size for VLLM inference."}
-    )
+    vllm_inference_batch_size: int = field(default=1, metadata={"help": "The batch size for VLLM inference."})
     temperature: float = field(
         default=0.0,
         metadata={"help": "Temperature during inference."},
@@ -1065,11 +925,7 @@ class InferencerArguments:
 
     random_seed: Optional[int] = field(
         default=1,
-        metadata={
-            "help": (
-                "used to set random seed"
-            )
-        },
+        metadata={"help": ("used to set random seed")},
     )
     deepspeed: Optional[str] = field(
         default=None,
@@ -1083,20 +939,17 @@ class InferencerArguments:
     mixed_precision: Optional[str] = field(
         default="bf16",
         metadata={
-            "help": (
-                "mixed precision mode, whether to use bf16 or fp16"
-            ),
+            "help": ("mixed precision mode, whether to use bf16 or fp16"),
             "choices": ["bf16", "fp16"],
         },
     )
     do_sample: Optional[bool] = field(
         default=False,
-        metadata={
-            "help": "whether turn on true random sampling during inference."
-        },
+        metadata={"help": "whether turn on true random sampling during inference."},
     )
     use_accelerator: Optional[bool] = field(
-        default=None, metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
+        default=None,
+        metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
     )
     use_beam_search: Optional[bool] = field(
         default=False,
@@ -1104,10 +957,11 @@ class InferencerArguments:
     )
     num_output_sequences: Optional[int] = field(
         default=8,
-        metadata={"help": (
-            "number of output sequences to return for the given prompt, "
-            "currently only used in vllm inference."
-        )},
+        metadata={
+            "help": (
+                "number of output sequences to return for the given prompt, currently only used in vllm inference."
+            )
+        },
     )
     top_p: Optional[float] = field(
         default=1.0,
@@ -1117,8 +971,8 @@ class InferencerArguments:
         default=-1,
         metadata={"help": "top_k for sampling."},
     )
-    additional_stop_token_ids: Optional[List[int]] = field(
-        default_factory=lambda: [], 
+    additional_stop_token_ids: Optional[list[int]] = field(
+        default_factory=lambda: [],
         metadata={"help": "the ids of the end of sentence tokens"},
     )
     apply_chat_template: Optional[bool] = field(
@@ -1130,40 +984,28 @@ class InferencerArguments:
         metadata={"help": "Whether to decode the inference results."},
     )
     tensor_parallel_size: Optional[int] = field(
-        default=1,
-        metadata={"help": "The tp size for distributed (multi-instance) inference."}
+        default=1, metadata={"help": "The tp size for distributed (multi-instance) inference."}
     )
     enable_distributed_inference: Optional[bool] = field(
-        default=False,
-        metadata={"help": "Whether to use multi-instance VLLM inference."}
+        default=False, metadata={"help": "Whether to use multi-instance VLLM inference."}
     )
     distributed_inference_num_instances: Optional[int] = field(
-        default=1,
-        metadata={"help": "The number of instances for multi-instance VLLM inference."}
+        default=1, metadata={"help": "The number of instances for multi-instance VLLM inference."}
     )
-    
+
     # vllm inference args
-    use_vllm: bool = field(
-        default=False,
-        metadata={"help": "Whether to use VLLM for inference, By default False."}
-    )
+    use_vllm: bool = field(default=False, metadata={"help": "Whether to use VLLM for inference, By default False."})
     vllm_tensor_parallel_size: Optional[int] = field(
-        default=1,
-        metadata={"help": "The tensor parallel size for VLLM inference."}
+        default=1, metadata={"help": "The tensor parallel size for VLLM inference."}
     )
     vllm_gpu_memory_utilization: Optional[float] = field(
-        default=0.95,
-        metadata={"help": "The GPU memory utilization for VLLM inference."}
+        default=0.95, metadata={"help": "The GPU memory utilization for VLLM inference."}
     )
-    
+
     # Args for result saving
-    save_results: Optional[bool] = field(
-        default=False, metadata={"help": "Whether to save inference results."}
-    )
-    results_path: Optional[str] = field(
-        default=None, metadata={"help": "The path of inference results."}
-    )
-    
+    save_results: Optional[bool] = field(default=False, metadata={"help": "Whether to save inference results."})
+    results_path: Optional[str] = field(default=None, metadata={"help": "The path of inference results."})
+
     def __post_init__(self):
         if self.use_accelerator is not None:
             logger.warning(
@@ -1171,7 +1013,7 @@ class InferencerArguments:
                 "It will not take effect and will be removed in a future version, "
                 "since LMFlow now can automatically detect whether is in Accelerate or Deepspeed environment."
             )
-            
+
         if self.save_results:
             if self.results_path is None:
                 raise ValueError("Need to specify results_path when save_results is True.")
@@ -1187,43 +1029,29 @@ class RaftAlignerArguments(TrainingArguments):
     """
     Define a class RaftAlignerArguments to configure raft aligner.
     """
+
     output_reward_path: Optional[str] = field(
-        default="tmp/raft_aligner/",
-        metadata={
-            "help": "The path of output rewards."
-        }
+        default="tmp/raft_aligner/", metadata={"help": "The path of output rewards."}
     )
     output_min_length: Optional[int] = field(
         default=64,
         metadata={
-            "help": (
-                "minimum length of the output token sequence generated from"
-                " model given an input."
-            ),
+            "help": ("minimum length of the output token sequence generated from model given an input."),
         },
     )
     output_max_length: Optional[int] = field(
         default=128,
         metadata={
-            "help": (
-                "maximum length of the output token sequence generated from"
-                " model given an output."
-            ),
+            "help": ("maximum length of the output token sequence generated from model given an output."),
         },
     )
     num_raft_iteration: Optional[int] = field(
         default=20,
-        metadata={
-            "help": "number of iterations of the raft aligner."
-        },
+        metadata={"help": "number of iterations of the raft aligner."},
     )
     raft_batch_size: Optional[int] = field(
         default=1024,
-        metadata={
-            "help": (
-                "only select {raft_batch_size} samples each time for STF training."
-            )
-        },
+        metadata={"help": ("only select {raft_batch_size} samples each time for STF training.")},
     )
     top_reward_percentage: Optional[float] = field(
         default=0.2,
@@ -1260,17 +1088,30 @@ class RaftAlignerArguments(TrainingArguments):
 class BenchmarkingArguments:
     dataset_name: Optional[str] = field(
         default=None,
-        metadata={
-            "help": "benchmark dataset name provided by lmflow"
-        },
+        metadata={"help": "benchmark dataset name provided by lmflow"},
     )
     lm_evaluation_metric: Optional[str] = field(
         default="accuracy",
         metadata={
             "help": "the metric the model will be evaluated on",
-            "choices": ["acc", "acc_norm", "bleu", "chrf", "em", "f1", "ppl", \
-                        "ter", "r@1", "r@2", "mrr", "mc1", "mc2", "word_perplexity", \
-                        "byte_perplexity", "bits_per_byte"],
+            "choices": [
+                "acc",
+                "acc_norm",
+                "bleu",
+                "chrf",
+                "em",
+                "f1",
+                "ppl",
+                "ter",
+                "r@1",
+                "r@2",
+                "mrr",
+                "mc1",
+                "mc2",
+                "word_perplexity",
+                "byte_perplexity",
+                "bits_per_byte",
+            ],
         },
     )
 
@@ -1280,149 +1121,81 @@ class DPOAlignerArguments:
     """
     The arguments for the DPO training script.
     """
+
     local_rank: int = field(
         default=-1,
-        metadata={"help": "For distributed training: local_rank"
-                  },
+        metadata={"help": "For distributed training: local_rank"},
     )
     # data parameters
-    beta: Optional[float] = field(
-        default=0.1,
-        metadata={
-            "help": "the beta parameter for DPO loss"
-        }
-    )
+    beta: Optional[float] = field(default=0.1, metadata={"help": "the beta parameter for DPO loss"})
     # # training parameters
-    learning_rate: Optional[float] = field(
-        default=5e-4,
-        metadata={
-            "help": "optimizer learning rate"
-        }
-    )
-    lr_scheduler_type: Optional[str] = field(
-        default="cosine",
-        metadata={
-            "help": "the lr scheduler type"
-        }
-    )
-    warmup_steps: Optional[int] = field(
-        default=100, metadata={
-            "help": "the number of warmup steps"
-        }
-    )
-    weight_decay: Optional[float] = field(
-        default=0.05, metadata={
-            "help": "the weight decay"
-        }
-    )
-    optimizer_type: Optional[str] = field(
-        default="paged_adamw_32bit",
-        metadata={
-            "help": "the optimizer type"
-        }
-    )
+    learning_rate: Optional[float] = field(default=5e-4, metadata={"help": "optimizer learning rate"})
+    lr_scheduler_type: Optional[str] = field(default="cosine", metadata={"help": "the lr scheduler type"})
+    warmup_steps: Optional[int] = field(default=100, metadata={"help": "the number of warmup steps"})
+    weight_decay: Optional[float] = field(default=0.05, metadata={"help": "the weight decay"})
+    optimizer_type: Optional[str] = field(default="paged_adamw_32bit", metadata={"help": "the optimizer type"})
 
-    per_device_train_batch_size: Optional[int] = field(
-        default=4,
-        metadata={
-            "help": "train batch size per device"
-        }
-    )
-    per_device_eval_batch_size: Optional[int] = field(
-        default=1, metadata={
-            "help": "eval batch size per device"
-        }
-    )
+    per_device_train_batch_size: Optional[int] = field(default=4, metadata={"help": "train batch size per device"})
+    per_device_eval_batch_size: Optional[int] = field(default=1, metadata={"help": "eval batch size per device"})
     gradient_accumulation_steps: Optional[int] = field(
         default=4,
-        metadata={
-            "help": "the number of gradient accumulation steps"
-        },
+        metadata={"help": "the number of gradient accumulation steps"},
     )
     gradient_checkpointing: Optional[bool] = field(
         default=True,
-        metadata={
-            "help": "whether to use gradient checkpointing"
-        },
+        metadata={"help": "whether to use gradient checkpointing"},
     )
 
     gradient_checkpointing_use_reentrant: Optional[bool] = field(
         default=False,
-        metadata={
-            "help": "whether to use reentrant for gradient checkpointing"
-        },
+        metadata={"help": "whether to use reentrant for gradient checkpointing"},
     )
     max_prompt_length: Optional[int] = field(
         default=512,
-        metadata={
-            "help": "the maximum prompt length"
-        },
+        metadata={"help": "the maximum prompt length"},
     )
     max_length: Optional[int] = field(
         default=1024,
-        metadata={
-            "help": "the maximum sequence length"
-        },
+        metadata={"help": "the maximum sequence length"},
     )
     max_steps: Optional[int] = field(
         default=1000,
-        metadata={
-            "help": "max number of training steps"
-        },
+        metadata={"help": "max number of training steps"},
     )
     logging_steps: Optional[int] = field(
         default=10,
-        metadata={
-            "help": "the logging frequency"
-        },
+        metadata={"help": "the logging frequency"},
     )
     save_steps: Optional[int] = field(
         default=100,
-        metadata={
-            "help": "the saving frequency"
-        },
+        metadata={"help": "the saving frequency"},
     )
     eval_steps: Optional[int] = field(
         default=100,
-        metadata={
-            "help": "the evaluation frequency"
-        },
+        metadata={"help": "the evaluation frequency"},
     )
     output_dir: Optional[str] = field(
         default="./results",
-        metadata={
-            "help": "the output directory"
-        },
+        metadata={"help": "the output directory"},
     )
     log_freq: Optional[int] = field(
         default=1,
-        metadata={
-            "help": "the logging frequency"
-        },
+        metadata={"help": "the logging frequency"},
     )
-    sanity_check: Optional[bool] = field(
-        default=False,
-        metadata={
-            "help": "only train on 1000 samples"
-        }
-    )
+    sanity_check: Optional[bool] = field(default=False, metadata={"help": "only train on 1000 samples"})
     report_to: Optional[str] = field(
         default="wandb",
         metadata={
             "help": 'The list of integrations to report the results and logs to. Supported platforms are `"azure_ml"`,'
-                    '`"comet_ml"`, `"mlflow"`, `"neptune"`, `"tensorboard"`,`"clearml"` and `"wandb"`. '
-                    'Use `"all"` to report to all integrations installed, `"none"` for no integrations.'
+            '`"comet_ml"`, `"mlflow"`, `"neptune"`, `"tensorboard"`,`"clearml"` and `"wandb"`. '
+            'Use `"all"` to report to all integrations installed, `"none"` for no integrations.'
         },
     )
     seed: Optional[int] = field(
         default=0, metadata={"help": "Random seed that will be set at the beginning of training."}
     )
-    run_name: Optional[str] = field(
-        default="dpo", metadata={"help": "The name of the run."}
-    )
-    eval_dataset_path: Optional[str] = field(
-        default=None, metadata={"help": "The path of the eval dataset."}
-    )
+    run_name: Optional[str] = field(default="dpo", metadata={"help": "The name of the run."})
+    eval_dataset_path: Optional[str] = field(default=None, metadata={"help": "The path of the eval dataset."})
 
 
 @dataclass
@@ -1430,11 +1203,11 @@ class DPOv2AlignerArguments(FinetunerArguments):
     """
     The arguments for the DPOv2 training script.
     """
+
     # general args
     random_seed: Optional[int] = field(default=42, metadata={"help": "the random seed"})
     accelerate_config_file: Optional[str] = field(
-        default=None, 
-        metadata={"help": "file path for accelerate config file, only used in memory safe dpov2 align."}
+        default=None, metadata={"help": "file path for accelerate config file, only used in memory safe dpov2 align."}
     )
     # pair sampling args
     margin_scale: Optional[float] = field(default=1.0, metadata={"help": "the margin scale"})
@@ -1454,15 +1227,13 @@ class IterativeAlignerArguments(InferencerArguments):
     """
     Arguments for iterative aligners.
     """
-    dataset_path_list: List[str] = field(
-        default_factory=list,
-        metadata={"help": "The list of dataset paths for iterative aligners."}
+
+    dataset_path_list: list[str] = field(
+        default_factory=list, metadata={"help": "The list of dataset paths for iterative aligners."}
     )
     initial_iter_idx: int = field(
-        default=0,
-        metadata={"help": "The initial iteration index, 0 refers to the first dataset in dataset_path_list."}
+        default=0, metadata={"help": "The initial iteration index, 0 refers to the first dataset in dataset_path_list."}
     )
-        
 
 
 @dataclass
@@ -1470,31 +1241,23 @@ class IterativeDPOAlignerArguments(IterativeAlignerArguments, DPOv2AlignerArgume
     """
     Arguments for iterative DPO aligners.
     """
+
     output_dir: Optional[str] = field(
         default="./runs",
         metadata={"help": "Output path for the inferenced results"},
     )
     reward_model_inference_batch_size: int = field(
-        default=1,
-        metadata={"help": "The batch size for reward model inference."}
+        default=1, metadata={"help": "The batch size for reward model inference."}
     )
     reward_model_inference_block_size: int = field(
-        default=2048,
-        metadata={"help": "The block size for reward model inference."}
+        default=2048, metadata={"help": "The block size for reward model inference."}
     )
     do_response_generation: bool = field(
-        default=True,
-        metadata={"help": "Whether to generate responses using the model."}
+        default=True, metadata={"help": "Whether to generate responses using the model."}
     )
-    do_scoring: bool = field(
-        default=True,
-        metadata={"help": "Whether to score the responses using the reward model."}
-    )
-    do_dpo_align: bool = field(
-        default=True,
-        metadata={"help": "Whether to perform DPO alignment."}
-    )
-                    
+    do_scoring: bool = field(default=True, metadata={"help": "Whether to score the responses using the reward model."})
+    do_dpo_align: bool = field(default=True, metadata={"help": "Whether to perform DPO alignment."})
+
 
 PIPELINE_ARGUMENT_MAPPING = {
     "finetuner": FinetunerArguments,

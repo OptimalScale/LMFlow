@@ -1,40 +1,40 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
-"""A simple shell chatbot implemented with lmflow APIs.
-"""
-import logging
+"""A simple shell chatbot implemented with lmflow APIs."""
+
 import json
+import logging
 import os
 import sys
+
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 import warnings
 
-from dataclasses import dataclass, field
 from transformers import HfArgumentParser
-from typing import Optional
 
+from lmflow.args import AutoArguments, DatasetArguments, ModelArguments
 from lmflow.datasets.dataset import Dataset
-from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.models.auto_model import AutoModel
-from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
-
+from lmflow.pipeline.auto_pipeline import AutoPipeline
 
 logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
+
 
 def main():
     pipeline_name = "inferencer"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
-    parser = HfArgumentParser((
-        ModelArguments,
-        PipelineArguments,
-    ))
+    parser = HfArgumentParser(
+        (
+            ModelArguments,
+            PipelineArguments,
+        )
+    )
     model_args, pipeline_args = parser.parse_args_into_dataclasses()
     inferencer_args = pipeline_args
 
-    with open (pipeline_args.deepspeed, "r") as f:
+    with open(pipeline_args.deepspeed) as f:
         ds_config = json.load(f)
 
     model = AutoModel.get_model(
@@ -62,12 +62,9 @@ def main():
 
     while True:
         input_text = input("User >>> ")
-        input_text = input_text[-model.get_max_length():]     # Truncation
+        input_text = input_text[-model.get_max_length() :]  # Truncation
 
-        input_dataset = dataset.from_dict({
-            "type": "text_only",
-            "instances": [ { "text": input_text } ]
-        })
+        input_dataset = dataset.from_dict({"type": "text_only", "instances": [{"text": input_text}]})
 
         output_dataset = inferencer.inference(
             model=model,

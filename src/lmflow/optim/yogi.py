@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import math
+
 import torch
 import torch.nn as nn
 from torch.optim.optimizer import Optimizer
+
 
 class Yogi(Optimizer):
     r"""Implements Yogi Optimizer Algorithm.
@@ -20,7 +21,7 @@ class Yogi(Optimizer):
         self,
         params,
         lr: float = 1e-2,
-        betas = (0.9, 0.999),
+        betas=(0.9, 0.999),
         eps: float = 1e-3,
         initial_accumulator: float = 1e-6,
         weight_decay: float = 0,
@@ -30,17 +31,11 @@ class Yogi(Optimizer):
         if eps < 0.0:
             raise ValueError("Invalid epsilon value: {}".format(eps))
         if not 0.0 <= betas[0] < 1.0:
-            raise ValueError(
-                "Invalid beta parameter at index 0: {}".format(betas[0])
-            )
+            raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
         if not 0.0 <= betas[1] < 1.0:
-            raise ValueError(
-                "Invalid beta parameter at index 1: {}".format(betas[1])
-            )
+            raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
         if weight_decay < 0:
-            raise ValueError(
-                "Invalid weight_decay value: {}".format(weight_decay)
-            )
+            raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
 
         defaults = dict(
             lr=lr,
@@ -49,9 +44,9 @@ class Yogi(Optimizer):
             initial_accumulator=initial_accumulator,
             weight_decay=weight_decay,
         )
-        super(Yogi, self).__init__(params, defaults)
+        super().__init__(params, defaults)
 
-    def step(self, closure = None):
+    def step(self, closure=None):
         r"""Performs a single optimization step.
 
         Arguments:
@@ -67,10 +62,7 @@ class Yogi(Optimizer):
                     continue
                 grad = p.grad.data
                 if grad.is_sparse:
-                    raise RuntimeError(
-                        "Yogi does not support sparse gradients, "
-                        "please consider SparseAdam instead"
-                    )
+                    raise RuntimeError("Yogi does not support sparse gradients, please consider SparseAdam instead")
 
                 state = self.state[p]
 
@@ -83,16 +75,12 @@ class Yogi(Optimizer):
                     state["step"] = 0
                     # Exponential moving average of gradient values
                     state["exp_avg"] = nn.init.constant_(
-                        torch.empty_like(
-                            p.data, memory_format=torch.preserve_format
-                        ),
+                        torch.empty_like(p.data, memory_format=torch.preserve_format),
                         group["initial_accumulator"],
                     )
                     # Exponential moving average of squared gradient values
                     state["exp_avg_sq"] = nn.init.constant_(
-                        torch.empty_like(
-                            p.data, memory_format=torch.preserve_format
-                        ),
+                        torch.empty_like(p.data, memory_format=torch.preserve_format),
                         group["initial_accumulator"],
                     )
 
@@ -117,9 +105,7 @@ class Yogi(Optimizer):
                     value=-(1 - beta2),
                 )
 
-                denom = (exp_avg_sq.sqrt() / math.sqrt(bias_correction2)).add_(
-                    group["eps"]
-                )
+                denom = (exp_avg_sq.sqrt() / math.sqrt(bias_correction2)).add_(group["eps"])
                 step_size = group["lr"] / bias_correction1
                 p.data.addcdiv_(exp_avg, denom, value=-step_size)
 

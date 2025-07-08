@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +24,7 @@ from pathlib import Path
 
 import accelerate
 import datasets
+import diffusers
 import numpy as np
 import PIL
 import requests
@@ -37,20 +37,17 @@ from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import ProjectConfiguration, set_seed
 from datasets import load_dataset
-from huggingface_hub import create_repo, upload_folder
-from packaging import version
-from torchvision import transforms
-from tqdm.auto import tqdm
-from transformers import CLIPTextModel, CLIPTokenizer
-
-import diffusers
 from diffusers import AutoencoderKL, DDPMScheduler, StableDiffusionInstructPix2PixPipeline, UNet2DConditionModel
 from diffusers.optimization import get_scheduler
 from diffusers.training_utils import EMAModel
 from diffusers.utils import check_min_version, deprecate, is_wandb_available
 from diffusers.utils.import_utils import is_xformers_available
 from diffusers.utils.torch_utils import is_compiled_module
-
+from huggingface_hub import create_repo, upload_folder
+from packaging import version
+from torchvision import transforms
+from tqdm.auto import tqdm
+from transformers import CLIPTextModel, CLIPTokenizer
 
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
 check_min_version("0.28.0.dev0")
@@ -158,8 +155,7 @@ def parse_args():
         type=int,
         default=None,
         help=(
-            "For debugging purposes or quicker training, truncate the number of training examples to this "
-            "value if set."
+            "For debugging purposes or quicker training, truncate the number of training examples to this value if set."
         ),
     )
     parser.add_argument(
@@ -247,7 +243,11 @@ def parse_args():
         "--conditioning_dropout_prob",
         type=float,
         default=None,
-        help="Conditioning dropout probability. Drops out the conditionings (image and edit prompt) used in training InstructPix2Pix. See section 3.2.1 in the paper: https://arxiv.org/abs/2211.09800.",
+        help=(
+            "Conditioning dropout probability. Drops out the conditionings (image and edit prompt) used "
+            "in training InstructPix2Pix. See section 3.2.1 in the paper: "
+            "https://arxiv.org/abs/2211.09800."
+        ),
     )
     parser.add_argument(
         "--use_8bit_adam", action="store_true", help="Whether or not to use 8-bit Adam from bitsandbytes."
@@ -377,25 +377,28 @@ def download_image(url):
     image = image.convert("RGB")
     return image
 
+
 def freeze_all_layers(model):
     for param in model.parameters():
         param.requires_grad = False
 
-def random_activate_layers(model,p):
-    activate_number = int((len(list(model.parameters()))-2) * p)
-    index = np.random.choice(range(0,len(list(model.parameters()))-1,1), activate_number, replace=False)
+
+def random_activate_layers(model, p):
+    activate_number = int((len(list(model.parameters())) - 2) * p)
+    index = np.random.choice(range(0, len(list(model.parameters())) - 1, 1), activate_number, replace=False)
     count = 0
     for param in model.parameters():
-        if count == 0 or count == len(list(model.parameters()))-1:
+        if count == 0 or count == len(list(model.parameters())) - 1:
             param.requires_grad = True
         elif count in index:
             param.requires_grad = True
-        
+
         count += 1
 
-def lisa(model,p=0.25):
+
+def lisa(model, p=0.25):
     freeze_all_layers(model)
-    random_activate_layers(model,p)
+    random_activate_layers(model, p)
 
 
 def main():
@@ -418,13 +421,14 @@ def main():
     logging_dir = os.path.join(args.output_dir, args.logging_dir)
     accelerator_project_config = ProjectConfiguration(project_dir=args.output_dir, logging_dir=logging_dir)
     from accelerate import DistributedDataParallelKwargs
+
     ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         mixed_precision=args.mixed_precision,
         log_with=args.report_to,
         project_config=accelerator_project_config,
-        kwargs_handlers=[ddp_kwargs]
+        kwargs_handlers=[ddp_kwargs],
     )
 
     generator = torch.Generator(device=accelerator.device).manual_seed(args.seed)
@@ -512,7 +516,9 @@ def main():
             xformers_version = version.parse(xformers.__version__)
             if xformers_version == version.parse("0.0.16"):
                 logger.warning(
-                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during training, please update xFormers to at least 0.0.17. See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
+                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during "
+                    "training, please update xFormers to at least 0.0.17. "
+                    "See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
                 )
             unet.enable_xformers_memory_efficient_attention()
         else:
@@ -578,7 +584,7 @@ def main():
         except ImportError:
             raise ImportError(
                 "Please install bitsandbytes to use 8-bit Adam. You can do so by running `pip install bitsandbytes`"
-            )
+            ) from None
 
         optimizer_cls = bnb.optim.AdamW8bit
     else:
@@ -588,25 +594,28 @@ def main():
     scheduler_dict = dict()
     param_number = len(list(unet.parameters()))
     lisa_p = 8 / param_number
-    lisa(model=unet,p=lisa_p)
+    lisa(model=unet, p=lisa_p)
     for p in unet.parameters():
         if p.requires_grad:
-            optimizer_dict[p] = optimizer_cls([{"params":p}],
-                                                lr=args.learning_rate,
-                                                betas=(args.adam_beta1, args.adam_beta2),
-                                                weight_decay=args.adam_weight_decay,
-                                                eps=args.adam_epsilon)
+            optimizer_dict[p] = optimizer_cls(
+                [{"params": p}],
+                lr=args.learning_rate,
+                betas=(args.adam_beta1, args.adam_beta2),
+                weight_decay=args.adam_weight_decay,
+                eps=args.adam_epsilon,
+            )
             optimizer_dict[p] = accelerator.prepare_optimizer(optimizer_dict[p])
-    
+
     for p in unet.parameters():
         if p.requires_grad:
             scheduler_dict[p] = get_scheduler(
-                                args.lr_scheduler,
-                                optimizer=optimizer_dict[p],
-                                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
-                                num_training_steps=args.max_train_steps * accelerator.num_processes)
+                args.lr_scheduler,
+                optimizer=optimizer_dict[p],
+                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                num_training_steps=args.max_train_steps * accelerator.num_processes,
+            )
             scheduler_dict[p] = accelerator.prepare_scheduler(scheduler_dict[p])
-    
+
     # define a hook function to update the parameter p during the backward pass
     def optimizer_hook(p):
         if p.grad is None:
@@ -615,18 +624,21 @@ def main():
             return
         else:
             if p not in optimizer_dict:
-                optimizer_dict[p] = optimizer_cls([{"params":p}],
-                                                lr=args.learning_rate,
-                                                betas=(args.adam_beta1, args.adam_beta2),
-                                                weight_decay=args.adam_weight_decay,
-                                                eps=args.adam_epsilon)
+                optimizer_dict[p] = optimizer_cls(
+                    [{"params": p}],
+                    lr=args.learning_rate,
+                    betas=(args.adam_beta1, args.adam_beta2),
+                    weight_decay=args.adam_weight_decay,
+                    eps=args.adam_epsilon,
+                )
                 optimizer_dict[p] = accelerator.prepare_optimizer(optimizer_dict[p])
             if p not in scheduler_dict:
                 scheduler_dict[p] = get_scheduler(
-                                args.lr_scheduler,
-                                optimizer=optimizer_dict[p],
-                                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
-                                num_training_steps=args.max_train_steps * accelerator.num_processes)
+                    args.lr_scheduler,
+                    optimizer=optimizer_dict[p],
+                    num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                    num_training_steps=args.max_train_steps * accelerator.num_processes,
+                )
                 scheduler_dict[p] = accelerator.prepare_scheduler(scheduler_dict[p])
         optimizer_dict[p].step()
         optimizer_dict[p].zero_grad(set_to_none=True)
@@ -675,7 +687,8 @@ def main():
         original_image_column = args.original_image_column
         if original_image_column not in column_names:
             raise ValueError(
-                f"--original_image_column' value '{args.original_image_column}' needs to be one of: {', '.join(column_names)}"
+                f"--original_image_column' value '{args.original_image_column}' needs to be one of: "
+                f"{', '.join(column_names)}"
             )
     if args.edit_prompt_column is None:
         edit_prompt_column = dataset_columns[1] if dataset_columns is not None else column_names[1]
@@ -691,7 +704,8 @@ def main():
         edited_image_column = args.edited_image_column
         if edited_image_column not in column_names:
             raise ValueError(
-                f"--edited_image_column' value '{args.edited_image_column}' needs to be one of: {', '.join(column_names)}"
+                f"--edited_image_column' value '{args.edited_image_column}' needs to be one of: "
+                f"{', '.join(column_names)}"
             )
 
     # Preprocessing the datasets.
@@ -854,10 +868,9 @@ def main():
         unet.train()
         train_loss = 0.0
         for step, batch in enumerate(train_dataloader):
-
             if total_count % 20 == 0 and total_count != 0:
                 param_number = len(list(unet.parameters()))
-                lisa(model=unet,p=lisa_p)
+                lisa(model=unet, p=lisa_p)
             total_count += 1
             if args.resume_from_checkpoint and epoch == first_epoch and step < resume_step:
                 if step % args.gradient_accumulation_steps == 0:
@@ -933,7 +946,7 @@ def main():
                 accelerator.backward(loss)
                 if accelerator.sync_gradients:
                     accelerator.clip_grad_norm_(unet.parameters(), args.max_grad_norm)
-                
+
             # Checks if the accelerator has performed an optimization step behind the scenes
             if accelerator.sync_gradients:
                 if args.use_ema:
@@ -951,13 +964,15 @@ def main():
                             checkpoints = [d for d in checkpoints if d.startswith("checkpoint")]
                             checkpoints = sorted(checkpoints, key=lambda x: int(x.split("-")[1]))
 
-                            # before we save the new checkpoint, we need to have at _most_ `checkpoints_total_limit - 1` checkpoints
+                            # before we save the new checkpoint, we need to have at _most_
+                            # `checkpoints_total_limit - 1` checkpoints
                             if len(checkpoints) >= args.checkpoints_total_limit:
                                 num_to_remove = len(checkpoints) - args.checkpoints_total_limit + 1
                                 removing_checkpoints = checkpoints[0:num_to_remove]
 
                                 logger.info(
-                                    f"{len(checkpoints)} checkpoints already exist, removing {len(removing_checkpoints)} checkpoints"
+                                    f"{len(checkpoints)} checkpoints already exist, removing "
+                                    f"{len(removing_checkpoints)} checkpoints"
                                 )
                                 logger.info(f"removing checkpoints: {', '.join(removing_checkpoints)}")
 

@@ -9,16 +9,12 @@ def compute_metrics(eval_pred):
     pos_predictions_scores = eval_pred.predictions[0]
     neg_predictions_scores = eval_pred.predictions[1]
     # We assume that the first sample is preferred by default in groundtruth
-    result['accuracy'] = np.sum(
-        pos_predictions_scores > neg_predictions_scores) / len(pos_predictions_scores)
+    result["accuracy"] = np.sum(pos_predictions_scores > neg_predictions_scores) / len(pos_predictions_scores)
     return result
 
 
 def rm_loss(model, inputs, return_outputs=False):
-    rewards = model(
-        input_ids=inputs["input_ids"], 
-        attention_mask=inputs["attention_mask"]
-    )[0]
+    rewards = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"])[0]
     bsz = rewards.size(0)
     jidx = torch.arange(0, bsz, 2)
     kidx = jidx + 1

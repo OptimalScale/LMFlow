@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
-from .base import StringFormatter, TemplateComponent, ConversationTemplateForTool
-from typing import Dict, Set, Sequence, Literal, Union, List, Optional, Tuple
+from typing import Optional
 
-from transformers import PreTrainedTokenizer
+from .base import ConversationTemplateForTool, StringFormatter, TemplateComponent
 
 # NOTE: 'contexts' are not used in sft
 # {{'<extra_id_0>System'}}
@@ -37,8 +35,8 @@ from transformers import PreTrainedTokenizer
 
 
 class HymbaConversationTemplate(ConversationTemplateForTool):
-    def _handle_tools(self, tools: Optional[List[str]]) -> str:
-        tools_out = ''
+    def _handle_tools(self, tools: Optional[list[str]]) -> str:
+        tools_out = ""
         if tools is not None:
             for tool in tools:
                 tools_out += "\n<tool> " + tool + " </tool>"
@@ -46,34 +44,24 @@ class HymbaConversationTemplate(ConversationTemplateForTool):
 
 
 HYMBA_TEMPLATE = HymbaConversationTemplate(
-    template_name='hymba',
+    template_name="hymba",
     user_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<extra_id_1>User\n{{content}}\n')
-        ]
+        template=[TemplateComponent(type="string", content="<extra_id_1>User\n{{content}}\n")]
     ),
     assistant_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<extra_id_1>Assistant\n{{content}}\n')
-        ]
+        template=[TemplateComponent(type="string", content="<extra_id_1>Assistant\n{{content}}\n")]
     ),
     function_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<extra_id_1>Assistant\n{{content}}\n')
-        ]
+        template=[TemplateComponent(type="string", content="<extra_id_1>Assistant\n{{content}}\n")]
     ),
     observation_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<extra_id_1>Tool\n{{content}}\n')
-        ]
+        template=[TemplateComponent(type="string", content="<extra_id_1>Tool\n{{content}}\n")]
     ),
     system_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='<extra_id_0>System{{content}}\n\n')
-        ]
+        template=[TemplateComponent(type="string", content="<extra_id_0>System{{content}}\n\n")]
     ),
-    separator=TemplateComponent(type='token_id', content=13),
+    separator=TemplateComponent(type="token_id", content=13),
     remove_last_sep=True,
-    special_stopper=TemplateComponent(type='token', content='eos_token'),
-    force_system=True
+    special_stopper=TemplateComponent(type="token", content="eos_token"),
+    force_system=True,
 )

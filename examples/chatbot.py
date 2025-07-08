@@ -1,24 +1,23 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2023 Statistics and Machine Learning Research Group at HKUST. All rights reserved.
-"""A simple shell chatbot implemented with lmflow APIs.
-"""
-import logging
+"""A simple shell chatbot implemented with lmflow APIs."""
+
 import json
+import logging
 import os
 import sys
+
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 import warnings
-
 from dataclasses import dataclass, field
-from transformers import HfArgumentParser
 from typing import Optional
 
-from lmflow.datasets.dataset import Dataset
-from lmflow.pipeline.auto_pipeline import AutoPipeline
-from lmflow.models.auto_model import AutoModel
-from lmflow.args import ModelArguments, DatasetArguments, AutoArguments
+from transformers import HfArgumentParser
 
+from lmflow.args import AutoArguments, DatasetArguments, ModelArguments
+from lmflow.datasets.dataset import Dataset
+from lmflow.models.auto_model import AutoModel
+from lmflow.pipeline.auto_pipeline import AutoPipeline
 
 logging.disable(logging.ERROR)
 warnings.filterwarnings("ignore")
@@ -28,38 +27,33 @@ warnings.filterwarnings("ignore")
 class ChatbotArguments:
     prompt_structure: Optional[str] = field(
         default="{input_text}",
-        metadata={
-            "help": "prompt structure given user's input text"
-        },
+        metadata={"help": "prompt structure given user's input text"},
     )
     end_string: Optional[str] = field(
         default="\n\n",
-        metadata={
-            "help": "end string mark of the chatbot's output"
-        },
+        metadata={"help": "end string mark of the chatbot's output"},
     )
     num_token_per_step: int = field(
         default=4,
-        metadata={
-            "help": "Number of tokens per step for stream inference"
-        },
+        metadata={"help": "Number of tokens per step for stream inference"},
     )
+
 
 def main():
     pipeline_name = "inferencer"
     PipelineArguments = AutoArguments.get_pipeline_args_class(pipeline_name)
 
-    parser = HfArgumentParser((
-        ModelArguments,
-        PipelineArguments,
-        ChatbotArguments,
-    ))
-    model_args, pipeline_args, chatbot_args = (
-        parser.parse_args_into_dataclasses()
+    parser = HfArgumentParser(
+        (
+            ModelArguments,
+            PipelineArguments,
+            ChatbotArguments,
+        )
     )
+    model_args, pipeline_args, chatbot_args = parser.parse_args_into_dataclasses()
     inferencer_args = pipeline_args
 
-    with open (pipeline_args.deepspeed, "r") as f:
+    with open(pipeline_args.deepspeed) as f:
         ds_config = json.load(f)
 
     model = AutoModel.get_model(
@@ -116,12 +110,9 @@ def main():
             input_text = " "
 
         context += prompt_structure.format(input_text=input_text)
-        context = context[-model.get_max_length():]     # Memory of the bot
+        context = context[-model.get_max_length() :]  # Memory of the bot
 
-        input_dataset = dataset.from_dict({
-            "type": "text_only",
-            "instances": [ { "text": context } ]
-        })
+        input_dataset = dataset.from_dict({"type": "text_only", "instances": [{"text": context}]})
 
         print("Bot: ", end="")
         print_index = 0
@@ -135,7 +126,7 @@ def main():
             token_per_step=token_per_step,
             temperature=inferencer_args.temperature,
             end_string=end_string,
-            input_dataset=input_dataset
+            input_dataset=input_dataset,
         ):
             # Prints characters in the buffer
             new_print_index = print_index
