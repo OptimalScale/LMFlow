@@ -93,13 +93,26 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 Our package has been tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested, where you may encounter unexpected errors. If you are using LMFlow for the first time, we recommend you to try on a Linux machine or Google Colab.
 
 ```bash
-git clone -b v0.0.9 https://github.com/OptimalScale/LMFlow.git
+git clone -b v1.0.0 https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
 conda install mpi4py
 pip install -e .
 ```
+
+<details><summary> Looking for a previous version? </summary>
+
+```bash
+git clone -b v0.0.10 https://github.com/OptimalScale/LMFlow.git
+cd LMFlow
+conda create -n lmflow python=3.9 -y
+conda activate lmflow
+conda install mpi4py
+pip install -e .
+```
+
+</details>
 
 <details><summary> for CUDA versions 10.3-11.7 </summary>
 
