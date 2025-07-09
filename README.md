@@ -31,18 +31,18 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 
 ## Latest News
 > [!IMPORTANT]
-> * [2025-07-09] We have a major update to LMFlow with full Accelerate support and extensive streamlining. If you're looking for the previous version, please use `git checkout v0.0.10`, or check out the [v0.0.10 branch](https://github.com/OptimalScale/LMFlow/tree/v0.0.10). View all releases [here](https://github.com/OptimalScale/LMFlow/tags).
+> * :exclamation: [2025-07-09] We have a major update to LMFlow with full Accelerate support and extensive streamlining. If you're looking for the previous version, please use `git checkout v0.0.10`, or check out the [v0.0.10 branch](https://github.com/OptimalScale/LMFlow/tree/v0.0.10). View all releases [here](https://github.com/OptimalScale/LMFlow/tags).
 
 * [2024-12-02] Support [Hymba](https://github.com/NVlabs/hymba), a new family of small language models featuring a hybrid-head parallel architecture. Check out [Post-training Hymba](https://github.com/OptimalScale/LMFlow/tree/main/experimental/Hymba) for more details.
 * [2024-07-01] 🏆 LMFlow receives the [**Best Demo Paper Award**](https://docs.google.com/presentation/d/1TVDooAZqkNObz5ysVhDFtqnnVHR-u8wqYvgix-gzPMs/edit#slide=id.g2e55907bbcc_0_70) at **NAACL 2024**! 🎉
 * [2024-06-30] Expanding Optimization Options! We now support custom optimizer training with a variety of optimizers. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
 * [2024-04-25] :rocket: Support conversation template! We've preset the latest [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) and [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) conversation templates as well as some frequently used templates such as `chatml` (see all templates [here](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)), and we are working on adding more preset templates. Adding corresponding `--conversation_template` in the shell script and you are all set! :rocket:
-* [2024-03-27] Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! 
-* [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
-* [2023-08-14] Support long context inference with position interpolation (Linear & NTK scaling ) for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 
 <details> <summary>More news...</summary>
 
+* [2024-03-27] Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! 
+* [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
+* [2023-08-14] Support long context inference with position interpolation (Linear & NTK scaling ) for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 * [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 * [2023-08-02] Support [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), and [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) models.
 * [2023-07-23] [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh) is now available! Support multimodal inputs of images and texts. [Online Demo](http://multimodal.lmflow.online) is also provided (We hold the service on a single GPU, hence one may experience "queuing" or "application busy" sometimes when multiple users are accessing at the same time, please wait and attempt again later when such event happens)![image](https://github.com/OptimalScale/LMFlow/blob/rpan-vision-encoder/docs/assets/multimodal-chatbot-demo.gif)
@@ -115,7 +115,7 @@ pip install -e .
 
 </details>
 
-<details><summary> for CUDA versions 10.3-11.7 </summary>
+<details><summary> For CUDA versions 10.3-11.7 </summary>
 
 ```bash
 git clone -b v0.0.5 https://github.com/OptimalScale/LMFlow.git
