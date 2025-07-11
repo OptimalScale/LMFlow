@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2024 bram-w, The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +21,7 @@ import os
 import shutil
 from pathlib import Path
 
+import diffusers
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -32,16 +32,6 @@ from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import ProjectConfiguration, set_seed
 from datasets import load_dataset
-from huggingface_hub import create_repo, upload_folder
-from packaging import version
-from peft import LoraConfig
-from peft.utils import get_peft_model_state_dict
-from PIL import Image
-from torchvision import transforms
-from tqdm.auto import tqdm
-from transformers import AutoTokenizer, PretrainedConfig
-
-import diffusers
 from diffusers import (
     AutoencoderKL,
     DDPMScheduler,
@@ -53,7 +43,14 @@ from diffusers.loaders import LoraLoaderMixin
 from diffusers.optimization import get_scheduler
 from diffusers.utils import check_min_version, convert_state_dict_to_diffusers
 from diffusers.utils.import_utils import is_xformers_available
-
+from huggingface_hub import create_repo, upload_folder
+from packaging import version
+from peft import LoraConfig
+from peft.utils import get_peft_model_state_dict
+from PIL import Image
+from torchvision import transforms
+from tqdm.auto import tqdm
+from transformers import AutoTokenizer, PretrainedConfig
 
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
 check_min_version("0.25.0.dev0")
@@ -62,7 +59,7 @@ logger = get_logger(__name__)
 
 
 VALIDATION_PROMPTS = [
-    "portrait photo of a girl, photograph, highly detailed face, depth of field, moody light, golden hour, style by Dan Winters, Russell James, Steve McCurry, centered, extremely detailed, Nikon D850, award winning photography",
+    "portrait photo of a girl, photograph, highly detailed face, depth of field, moody light, golden hour, style by Dan Winters, Russell James, Steve McCurry, centered, extremely detailed, Nikon D850, award winning photography",  # noqa: E501
     "Self-portrait oil painting, a beautiful cyborg with golden hair, 8k",
     "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k",
     "A photo of beautiful mountain with realistic sunset and blue lake, highly detailed, masterpiece",
@@ -86,7 +83,7 @@ def import_model_class_from_model_name_or_path(pretrained_model_name_or_path: st
 
 
 def log_validation(args, unet, accelerator, weight_dtype, epoch, is_final_validation=False):
-    logger.info(f"Running validation... \n Generating images with prompts:\n" f" {VALIDATION_PROMPTS}.")
+    logger.info(f"Running validation... \n Generating images with prompts:\n {VALIDATION_PROMPTS}.")
 
     # create pipeline
     pipeline = DiffusionPipeline.from_pretrained(
@@ -192,7 +189,9 @@ def parse_args(input_args=None):
         "--run_validation",
         default=False,
         action="store_true",
-        help="Whether to run validation inference in between training and also after training. Helps to track progress.",
+        help=(
+            "Whether to run validation inference in between training and also after training. Helps to track progress."
+        ),
     )
     parser.add_argument(
         "--validation_steps",
@@ -205,8 +204,7 @@ def parse_args(input_args=None):
         type=int,
         default=None,
         help=(
-            "For debugging purposes or quicker training, truncate the number of training examples to this "
-            "value if set."
+            "For debugging purposes or quicker training, truncate the number of training examples to this value if set."
         ),
     )
     parser.add_argument(
@@ -448,9 +446,7 @@ def tokenize_captions(tokenizer, examples):
     for caption in examples["caption"]:
         captions.append(caption)
 
-    text_inputs = tokenizer(
-        captions, truncation=True, padding="max_length", max_length=max_length, return_tensors="pt"
-    )
+    text_inputs = tokenizer(captions, truncation=True, padding="max_length", max_length=max_length, return_tensors="pt")
 
     return text_inputs.input_ids
 
@@ -540,8 +536,8 @@ def main(args):
     text_encoder.requires_grad_(False)
     unet.requires_grad_(False)
 
-    # For mixed precision training we cast all non-trainable weights (vae, non-lora text_encoder and non-lora unet) to half-precision
-    # as these weights are only used for inference, keeping weights in full precision is not required.
+    # For mixed precision training we cast all non-trainable weights (vae, non-lora text_encoder and non-lora unet)
+    # to half-precision as these weights are only used for inference, keeping weights in full precision is not required.
     weight_dtype = torch.float32
     if accelerator.mixed_precision == "fp16":
         weight_dtype = torch.float16
@@ -575,7 +571,9 @@ def main(args):
             xformers_version = version.parse(xformers.__version__)
             if xformers_version == version.parse("0.0.16"):
                 logger.warning(
-                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during training, please update xFormers to at least 0.0.17. See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
+                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during "
+                    "training, please update xFormers to at least 0.0.17. "
+                    "See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
                 )
             unet.enable_xformers_memory_efficient_attention()
         else:
@@ -640,7 +638,7 @@ def main(args):
         except ImportError:
             raise ImportError(
                 "To use 8-bit Adam, please install the bitsandbytes library: `pip install bitsandbytes`."
-            )
+            ) from None
 
         optimizer_class = bnb.optim.AdamW8bit
     else:
@@ -904,13 +902,15 @@ def main(args):
                             checkpoints = [d for d in checkpoints if d.startswith("checkpoint")]
                             checkpoints = sorted(checkpoints, key=lambda x: int(x.split("-")[1]))
 
-                            # before we save the new checkpoint, we need to have at _most_ `checkpoints_total_limit - 1` checkpoints
+                            # before we save the new checkpoint, we need to have at _most_
+                            # `checkpoints_total_limit - 1` checkpoints
                             if len(checkpoints) >= args.checkpoints_total_limit:
                                 num_to_remove = len(checkpoints) - args.checkpoints_total_limit + 1
                                 removing_checkpoints = checkpoints[0:num_to_remove]
 
                                 logger.info(
-                                    f"{len(checkpoints)} checkpoints already exist, removing {len(removing_checkpoints)} checkpoints"
+                                    f"{len(checkpoints)} checkpoints already exist, removing "
+                                    f"{len(removing_checkpoints)} checkpoints"
                                 )
                                 logger.info(f"removing checkpoints: {', '.join(removing_checkpoints)}")
 
@@ -923,9 +923,7 @@ def main(args):
                         logger.info(f"Saved state to {save_path}")
 
                     if args.run_validation and global_step % args.validation_steps == 0:
-                        log_validation(
-                            args, unet=unet, accelerator=accelerator, weight_dtype=weight_dtype, epoch=epoch
-                        )
+                        log_validation(args, unet=unet, accelerator=accelerator, weight_dtype=weight_dtype, epoch=epoch)
 
             logs = {
                 "loss": loss.detach().item(),

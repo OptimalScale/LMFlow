@@ -1,11 +1,9 @@
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
-from datasets import load_dataset
 from transformers import AutoTokenizer
 from transformers.utils import PaddingStrategy
-
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +16,7 @@ class RewardDataCollatorWithPadding:
     pad_to_multiple_of: Optional[int] = None
     return_tensors: str = "pt"
 
-    def __call__(self, features: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def __call__(self, features: list[dict[str, Any]]) -> dict[str, Any]:
         merged_features = []
         for feature in features:
             merged_features.append(

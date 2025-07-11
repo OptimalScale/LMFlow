@@ -65,7 +65,7 @@ deepspeed ${deepspeed_args} \
     --disable_group_texts 1 \
     --block_size 1024 \
     --per_device_train_batch_size 1 \
-    --deepspeed configs/ds_config_zero3.json \
+    --deepspeed configs/archive/ds_config_zero3.json \
     --fp16 \
     --run_name finetune \
     --validation_split_percentage 0 \

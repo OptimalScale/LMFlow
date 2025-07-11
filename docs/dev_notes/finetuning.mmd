@@ -1,0 +1,62 @@
+sequenceDiagram
+    participant User
+    participant Finetuner as LMFlow Finetuner
+    participant Model as LMFlow Model
+    participant Dataset as LMFlow Dataset
+    participant Trainer as Trainer
+    
+    User->>Finetuner: tune(model, dataset)
+        
+    %% Tokenization
+    Finetuner->>Model: tokenize(dataset)
+    Model->>Dataset: Apply tokenization to dataset
+    
+    alt if not disable_group_texts
+        Finetuner->>Finetuner: group_text(tokenized_dataset, model_max_length)
+    end
+    
+    %% Prepare for training
+    Finetuner->>Finetuner: Prepare dataset for trainer
+    
+    %% Create appropriate trainer based on configuration
+    alt if model_args.use_lora
+        Finetuner->>Finetuner: Initialize PeftTrainer
+    else
+        Finetuner->>Finetuner: Initialize standard Trainer
+    end
+    
+    alt if training_args.use_customized_optim
+        Finetuner->>Finetuner: create_customized_optimizer()
+    end
+    
+    alt if training_args.use_lisa
+        Finetuner->>Finetuner: Create DynamicLayerActivationCallback
+    end
+    
+    %% Start training
+    Finetuner->>Trainer: train(resume_from_checkpoint)
+    
+    %% Training loop (simplified)
+    loop Training iterations (Trainer._inner_training_loop simplified)
+        Trainer->>Model: Forward pass
+        Model-->>Trainer: Return predictions
+        Trainer->>Trainer: Compute loss
+        Trainer->>Model: Backward pass
+        Model->>Model: Compute Gradient  
+        Trainer->>Trainer: Optimizer step
+    end
+    
+    %% Save the model
+    alt if not model_args.use_lora
+        Trainer->>Trainer: save_model()
+    else
+        alt if model_args.save_aggregated_lora
+            Finetuner->>Model: merge_lora_weights()
+        end
+        Finetuner->>Model: save(output_dir, save_aggregated_lora)
+    end
+    
+    %% Finish and return
+    Trainer-->>Finetuner: Return train result
+    Finetuner->>Finetuner: Log metrics
+    Finetuner-->>User: Return fine-tuned model

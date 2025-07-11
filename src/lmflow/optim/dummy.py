@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-# coding=utf-8
-"""Dummy Optimizer.
-"""
-import math
-import warnings
-from typing import Callable, Iterable, Tuple
+"""Dummy Optimizer."""
+
+from collections.abc import Iterable
+from typing import Callable
 
 import torch
 from torch import nn
 from torch.optim import Optimizer
+
 
 class Dummy(Optimizer):
     """
@@ -24,8 +23,8 @@ class Dummy(Optimizer):
     def __init__(
         self,
         params: Iterable[nn.parameter.Parameter],
-        lr: float = 0.,
-        betas: Tuple[float, float] = (0.9, 0.999),
+        lr: float = 0.0,
+        betas: tuple[float, float] = (0.9, 0.999),
         weight_decay: float = 0.0,
     ):
         if lr < 0.0:
@@ -37,9 +36,8 @@ class Dummy(Optimizer):
         defaults = {"lr": lr, "betas": betas, "weight_decay": weight_decay}
         super().__init__(params, defaults)
 
-
     @torch.no_grad()
-    def step(self, closure: Callable=None):
+    def step(self, closure: Callable = None):
         """
         Performs a single optimization step.
 
@@ -68,9 +66,9 @@ class Dummy(Optimizer):
 
                 # v := exp_avg
                 # m := double_exp_avg
-                v, m = state["exp_avg"], state["exp_avg2"]
-                beta1, beta2 = group["betas"]
-                step_size = group["lr"]
+                _, m = state["exp_avg"], state["exp_avg2"]
+                # beta1, beta2 = group["betas"]
+                # step_size = group["lr"]
 
                 state["step"] += 1
 

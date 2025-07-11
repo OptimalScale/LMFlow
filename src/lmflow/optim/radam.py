@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import math
 import warnings
+
 import torch
 from torch.optim.optimizer import Optimizer
+
 
 class RAdam(Optimizer):
     r"""Implements RAdam optimization algorithm.
@@ -24,13 +25,12 @@ class RAdam(Optimizer):
         self,
         params,
         lr: float = 1e-3,
-        betas = (0.9, 0.999),
+        betas=(0.9, 0.999),
         eps: float = 1e-8,
         weight_decay: float = 0,
     ) -> None:
         warnings.warn(
-            "RAdam optimizer is deprecated, since it is included "
-            "in pytorch natively.",
+            "RAdam optimizer is deprecated, since it is included in pytorch natively.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -39,28 +39,15 @@ class RAdam(Optimizer):
         if eps < 0.0:
             raise ValueError("Invalid epsilon value: {}".format(eps))
         if not 0.0 <= betas[0] < 1.0:
-            raise ValueError(
-                "Invalid beta parameter at index 0: {}".format(betas[0])
-            )
+            raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
         if not 0.0 <= betas[1] < 1.0:
-            raise ValueError(
-                "Invalid beta parameter at index 1: {}".format(betas[1])
-            )
+            raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
         if weight_decay < 0:
-            raise ValueError(
-                "Invalid weight_decay value: {}".format(weight_decay)
-            )
+            raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
 
-        if (
-            isinstance(params, (list, tuple))
-            and len(params) > 0
-            and isinstance(params[0], dict)
-        ):
+        if isinstance(params, (list, tuple)) and len(params) > 0 and isinstance(params[0], dict):
             for param in params:
-                if "betas" in param and (
-                    param["betas"][0] != betas[0]
-                    or param["betas"][1] != betas[1]
-                ):
+                if "betas" in param and (param["betas"][0] != betas[0] or param["betas"][1] != betas[1]):
                     param["buffer"] = [[None, None, None] for _ in range(10)]
 
         defaults = dict(
@@ -70,12 +57,12 @@ class RAdam(Optimizer):
             weight_decay=weight_decay,
             buffer=[[None, None, None] for _ in range(10)],
         )
-        super(RAdam, self).__init__(params, defaults)
+        super().__init__(params, defaults)
 
     def __setstate__(self, state):
-        super(RAdam, self).__setstate__(state)
+        super().__setstate__(state)
 
-    def step(self, closure = None):
+    def step(self, closure=None):
         r"""Performs a single optimization step.
 
         Arguments:
@@ -97,10 +84,7 @@ class RAdam(Optimizer):
                     continue
                 grad = p.grad.data.float()
                 if grad.is_sparse:
-                    msg = (
-                        "RAdam does not support sparse gradients, "
-                        "please consider SparseAdam instead"
-                    )
+                    msg = "RAdam does not support sparse gradients, please consider SparseAdam instead"
                     raise RuntimeError(msg)
 
                 p_data_fp32 = p.data.float()
@@ -109,17 +93,11 @@ class RAdam(Optimizer):
 
                 if len(state) == 0:
                     state["step"] = 0
-                    state["exp_avg"] = torch.zeros_like(
-                        p_data_fp32, memory_format=torch.preserve_format
-                    )
-                    state["exp_avg_sq"] = torch.zeros_like(
-                        p_data_fp32, memory_format=torch.preserve_format
-                    )
+                    state["exp_avg"] = torch.zeros_like(p_data_fp32, memory_format=torch.preserve_format)
+                    state["exp_avg_sq"] = torch.zeros_like(p_data_fp32, memory_format=torch.preserve_format)
                 else:
                     state["exp_avg"] = state["exp_avg"].type_as(p_data_fp32)
-                    state["exp_avg_sq"] = state["exp_avg_sq"].type_as(
-                        p_data_fp32
-                    )
+                    state["exp_avg_sq"] = state["exp_avg_sq"].type_as(p_data_fp32)
 
                 exp_avg, exp_avg_sq = state["exp_avg"], state["exp_avg_sq"]
 
@@ -134,9 +112,7 @@ class RAdam(Optimizer):
                     buffered[0] = state["step"]
                     beta2_t = beta2 ** state["step"]
                     N_sma_max = 2 / (1 - beta2) - 1
-                    N_sma = N_sma_max - 2 * state["step"] * beta2_t / (
-                        1 - beta2_t
-                    )
+                    N_sma = N_sma_max - 2 * state["step"] * beta2_t / (1 - beta2_t)
                     buffered[1] = N_sma
 
                     # more conservative since it's an approximated value

@@ -1,42 +1,32 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 import copy
-import os
-import torch
-import wandb
-import deepspeed
-import sys
-import numpy as np
-import datetime
-import json
-import time
 import logging
-from typing import Dict, List, Union, Tuple, Any
+import os
+from typing import Any, Union
 
-from accelerate import Accelerator
+import numpy as np
 import torch
-from tqdm import tqdm
-from transformers import AutoConfig
-from transformers.modeling_outputs import SequenceClassifierOutputWithPast
 import torch.distributed as dist
-import torch.nn.functional as F
+from accelerate import Accelerator
+from tqdm import tqdm
+from transformers.modeling_outputs import SequenceClassifierOutputWithPast
 
 from lmflow.args import (
     DatasetArguments,
-    ModelArguments,
     InferencerArguments,
+    ModelArguments,
 )
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.hf_text_regression_model import HFTextRegressionModel
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.utils.data_utils import (
-    set_random_seed,
-    batchlize,
     RewardModelInferenceResultWithInput,
+    batchlize,
+    set_random_seed,
 )
-from lmflow.datasets.dataset import KEY_SCORE
-from lmflow.utils.versioning import is_ray_available
+from lmflow.utils.envs import is_accelerate_env
+from lmflow.utils.versioning import is_deepspeed_available, is_ray_available
 
 if is_ray_available():
     import ray
@@ -63,10 +53,11 @@ class RewardModelInferencer(BasePipeline):
     inferencer_args : InferencerArguments object.
         Contains the arguments required to perform inference.
     """
+
     def __init__(
-        self, 
-        model_args: ModelArguments, 
-        data_args: DatasetArguments, 
+        self,
+        model_args: ModelArguments,
+        data_args: DatasetArguments,
         inferencer_args: InferencerArguments,
         **kwargs,
     ):
@@ -78,23 +69,23 @@ class RewardModelInferencer(BasePipeline):
 
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
-        if inferencer_args.device == "gpu":
+        if inferencer_args.device == "gpu":  # FIXME: a bit weird here
             torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
-            deepspeed.init_distributed()
-        else:
-            dist.init_process_group(
-                "gloo", rank=self.local_rank, world_size=self.world_size
-            )
+            if not is_accelerate_env() and is_deepspeed_available():
+                import deepspeed
 
-        if inferencer_args.use_accelerator:
-            self.accelerator: Accelerator = kwargs.get('accelerator', Accelerator())
-            
+                deepspeed.init_distributed()
+        else:
+            dist.init_process_group("gloo", rank=self.local_rank, world_size=self.world_size)
+
+        if is_accelerate_env():
+            self.accelerator: Accelerator = kwargs.get("accelerator", Accelerator())
 
     def inference(
         self,
         model: HFTextRegressionModel,
         dataset: Dataset,
-        transform_dataset_in_place: bool=True,
+        transform_dataset_in_place: bool = True,
         use_vllm: bool = False,
         enable_distributed_inference: bool = False,
         **kwargs,
@@ -102,21 +93,21 @@ class RewardModelInferencer(BasePipeline):
         if use_vllm:
             logger.warning("VLLM doesn't support reward model inference, using normal inference instead.")
             use_vllm = False
-            
+
         assert isinstance(model, HFTextRegressionModel), "model should be HFTextRegressionModel"
         if not transform_dataset_in_place:
             dataset = copy.deepcopy(dataset)
-            
+
         model_input = model.prepare_inputs_for_inference(
             dataset=dataset,
             apply_chat_template=True,
             enable_distributed_inference=enable_distributed_inference,
-            use_vllm=use_vllm
+            use_vllm=use_vllm,
         )
-            
+
         if use_vllm:
             inference_result = self.__vllm_inference(
-                model=model, 
+                model=model,
                 model_input=model_input,
                 enable_distributed_inference=enable_distributed_inference,
             )
@@ -127,117 +118,103 @@ class RewardModelInferencer(BasePipeline):
                 enable_distributed_inference=enable_distributed_inference,
                 **kwargs,
             )
-        
+
         if enable_distributed_inference:
             output_dataset = model.postprocess_distributed_inference_outputs(
                 dataset=dataset,
                 inference_result=inference_result,
             )
         else:
-            output_dataset = model.postprocess_inference_outputs(
-                dataset=dataset, 
-                scores=inference_result
-            )
-        
+            output_dataset = model.postprocess_inference_outputs(dataset=dataset, scores=inference_result)
+
         return output_dataset
-    
-    
+
     def _inference(
         self,
         model: HFTextRegressionModel,
-        model_input: Union[Dataset, 'ray.data.Dataset'],
+        model_input: Union[Dataset, "ray.data.Dataset"],
         enable_distributed_inference: bool = False,
         **kwargs,
     ):
         if enable_distributed_inference:
             if not is_ray_available():
                 raise ImportError('Ray is not installed. Please install via `pip install -e ".[ray]"`.')
-            
+
             inference_res = self.__distributed_inference(
-                model=model, 
-                model_input=model_input, 
+                model=model,
+                model_input=model_input,
                 num_instances=kwargs.get("distributed_inference_num_instances", 1),
                 batch_size=kwargs.get("inference_batch_size", 1),
             )
         else:
             inference_res = self.__inference(
-                model=model, 
+                model=model,
                 model_input=model_input,
             )
-        
-        return inference_res
 
+        return inference_res
 
     def __inference(
         self,
         model: HFTextRegressionModel,
         model_input: Dataset,
-    ) -> Union[List[float], List[List[float]]]:
+    ) -> Union[list[float], list[list[float]]]:
         if model_input.get_type() in ["text_to_textlist"]:
             model_input_ids, num_outputs = self.flatten_list(model_input.get_backend_dataset()["input_ids"])
         else:
             model_input_ids = model_input.get_backend_dataset()["input_ids"]
-            
+
         dataloader = batchlize(
             examples=model_input_ids,
             batch_size=self.inferencer_args.inference_batch_size,
-            random_shuffle=False, # DO NOT shuffle when inference
+            random_shuffle=False,  # DO NOT shuffle when inference
         )
         num_batches = len(dataloader)
         final_output = []
-        
+
         for batch_index, batched_input_ids in tqdm(
-            iterable=enumerate(dataloader), 
-            total=num_batches, 
-            desc="Inference", 
-            unit="batch"
+            iterable=enumerate(dataloader), total=num_batches, desc="Inference", unit="batch"
         ):
             # len(batch) = batch_size, and batch element is dataset sample
             model_input_tensor = torch.LongTensor(batched_input_ids).to("cpu" if model.device == "cpu" else "cuda")
-            if self.inferencer_args.use_accelerator:
+            if is_accelerate_env():
                 with self.accelerator.autocast():
                     batch_output = model.inference(
-                        inputs=model_input_tensor, 
+                        inputs=model_input_tensor,
                         use_vllm=False,
                     )
             else:
                 batch_output = model.inference(
-                    inputs=model_input_tensor, 
+                    inputs=model_input_tensor,
                     use_vllm=False,
                 )
-            
+
             batch_output = self.__post_process_model_output(batch_output)
             final_output.extend(batch_output)
-        
+
         if model_input.get_type() in ["text_to_textlist"]:
             final_output = self.compress_list(final_output, num_outputs)
-        
+
         return final_output
-    
-    
+
     def __distributed_inference(
         self,
         model: HFTextRegressionModel,
-        model_input: 'ray.data.Dataset',
+        model_input: "ray.data.Dataset",
         num_instances: int,
         batch_size: int,
-    ) -> List[RewardModelInferenceResultWithInput]:
+    ) -> list[RewardModelInferenceResultWithInput]:
         def scheduling_strategy_fn():
             # One bundle per tensor parallel worker
             pg = ray.util.placement_group(
-                [{
-                    "GPU": 1,
-                    "CPU": 1
-                }] * self.inferencer_args.tensor_parallel_size,
+                [{"GPU": 1, "CPU": 1}] * self.inferencer_args.tensor_parallel_size,
                 strategy="STRICT_PACK",
             )
             return dict(
-                scheduling_strategy=PlacementGroupSchedulingStrategy(
-                    pg, placement_group_capture_child_tasks=True
-                )
+                scheduling_strategy=PlacementGroupSchedulingStrategy(pg, placement_group_capture_child_tasks=True)
             )
-            
-        resources_kwarg: Dict[str, Any] = {}
+
+        resources_kwarg: dict[str, Any] = {}
         if self.inferencer_args.tensor_parallel_size == 1:
             # For tensor_parallel_size == 1, we simply set num_gpus=1.
             resources_kwarg["num_gpus"] = 1
@@ -247,113 +224,108 @@ class RewardModelInferencer(BasePipeline):
             # each instance.
             resources_kwarg["num_gpus"] = 0
             resources_kwarg["ray_remote_args_fn"] = scheduling_strategy_fn
-            
+
         ## predictor
         class DistributedPredictor:
             def __init__(
-                self, 
+                self,
                 model_args: ModelArguments,
             ):
                 self.model = HFTextRegressionModel(
-                    model_args=model_args, 
-                    tune_strategy='none', 
-                    use_accelerator=True
+                    model_args=model_args,
+                    do_train=False,
                 )
                 self.model.activate_model_for_inference(use_vllm=False)
-                
-            def __call__(self, batch: Dict[str, np.ndarray]):
-                """batch: Dict[str, np.ndarray]
+
+            def __call__(self, batch: dict[str, np.ndarray]):
+                """batch: dict[str, np.ndarray]
                 Example (batch size=2):
                 {'input': array(['...','...'], dtype=object),
-                 'output': array([array(["...", "..."], dtype=object), array(['...','...'], dtype=object)], dtype=object),
+                 'output': array([array(["...", "..."], dtype=object),
+                                  array(["...", "..."], dtype=object),],
+                                dtype=object),
                  'input_ids': array([[[128000, 128006,    882, ..., 128256, 128256, 128256],
                          [128000, 128006,    882, ..., 128256, 128256, 128256]],
                         [[128000, 128006,    882, ..., 128256, 128256, 128256],
                          [128000, 128006,    882, ..., 128256, 128256, 128256]]])}
                 """
-                # The batch is managed by ray and the actual batch size may smaller than 
-                # inference_batch_size in config, since there may be some remainders. 
+                # The batch is managed by ray and the actual batch size may smaller than
+                # inference_batch_size in config, since there may be some remainders.
                 # For example, 10 examples with 2 inference instances and inference_batch_size=4,
-                # there will be only 2 examples for instance 0 to run and then the 
+                # there will be only 2 examples for instance 0 to run and then the
                 # actual batch size changes.
-                actual_batch_size = len(batch['input'])
-                input_tensor = torch.LongTensor([
-                    [list(arr) for arr in batch['input_ids'][batch_idx]] 
-                    for batch_idx in range(actual_batch_size)
-                ]).flatten(start_dim=0, end_dim=1).to("cuda")
+                actual_batch_size = len(batch["input"])
+                input_tensor = (
+                    torch.LongTensor(
+                        [[list(arr) for arr in batch["input_ids"][batch_idx]] for batch_idx in range(actual_batch_size)]
+                    )
+                    .flatten(start_dim=0, end_dim=1)
+                    .to("cuda")
+                )
                 batched_inference_res = self.model.inference(input_tensor).logits
-                batched_inference_res = batched_inference_res.to("cpu").reshape(actual_batch_size, -1, 1).squeeze(dim=-1).tolist() 
+                batched_inference_res = (
+                    batched_inference_res.to("cpu").reshape(actual_batch_size, -1, 1).squeeze(dim=-1).tolist()
+                )
                 # [bs, num_output_sequences]
                 batched_final_res = {
-                    "input": batch['input'].tolist(),
+                    "input": batch["input"].tolist(),
                     "output": [
                         [
                             {"score": batched_inference_res[j][i], "text": batch["output"][j][i]}
-                            for i in range(len(batch['output'][j]))
-                        ] 
+                            for i in range(len(batch["output"][j]))
+                        ]
                         for j in range(actual_batch_size)
                     ],
-                } # do this since we're writing to a pandas dataframe
+                }  # do this since we're writing to a pandas dataframe
                 return batched_final_res
 
         # inference
         model_input_mapping = model_input.map_batches(
             DistributedPredictor,
-            concurrency=num_instances, # Set the concurrency to the number of LLM instances.
+            concurrency=num_instances,  # Set the concurrency to the number of LLM instances.
             batch_size=batch_size,
             fn_constructor_kwargs={
                 "model_args": model.model_args,
             },
             **resources_kwarg,
         )
-        
-        df_model_output = model_input_mapping.to_pandas() # the actual forwards are executed here
+
+        df_model_output = model_input_mapping.to_pandas()  # the actual forwards are executed here
         logger.info(f"Distributed reward model inference result preview:\n{df_model_output.head(10)}")
-        
-        model_output = [
-            {"input": row["input"], "output": row["output"]} for _, row in df_model_output[:].iterrows()
-        ]
-        
+
+        model_output = [{"input": row["input"], "output": row["output"]} for _, row in df_model_output[:].iterrows()]
+
         return model_output
-    
-    
+
     def __vllm_inference(
         self,
         model: HFTextRegressionModel,
-        model_input: List[str],
+        model_input: list[str],
         enable_distributed_inference: bool = False,
-    ) -> List[float]:
+    ) -> list[float]:
         raise NotImplementedError("VLLM inference for reward model is not implemented yet.")
-        
-    
+
     def __post_process_model_output(
         self,
         model_output: SequenceClassifierOutputWithPast,
-    ) -> List[float]:
+    ) -> list[float]:
         final_output = model_output.logits.to("cpu").reshape(-1).tolist()
-        
+
         return final_output
-            
-    
-    def flatten_list(
-        self, 
-        list_of_list: List[List]
-    ) -> Tuple[List, List[int]]:
+
+    def flatten_list(self, list_of_list: list[list]) -> tuple[list, list[int]]:
         sublist_lengths = [len(sublist) for sublist in list_of_list]
         flattened_list = [item for sublist in list_of_list for item in sublist]
         return flattened_list, sublist_lengths
-    
 
-    def compress_list(
-        self, 
-        list_to_compress: List, 
-        sublist_lengths: List[int]
-    ) -> List[List]:
-        assert sum(sublist_lengths) == len(list_to_compress), "Sum of sublist lengths should be equal to length of list to compress."
+    def compress_list(self, list_to_compress: list, sublist_lengths: list[int]) -> list[list]:
+        assert sum(sublist_lengths) == len(list_to_compress), (
+            "Sum of sublist lengths should be equal to length of list to compress."
+        )
         compressed_list = []
         start_index = 0
         for length in sublist_lengths:
-            sublist = list_to_compress[start_index: start_index + length]
+            sublist = list_to_compress[start_index : start_index + length]
             compressed_list.append(sublist)
             start_index += length
         return compressed_list

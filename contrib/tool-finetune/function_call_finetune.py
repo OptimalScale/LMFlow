@@ -1,57 +1,51 @@
 import os
 import sys
+
 sys.path.remove(os.path.abspath(os.path.dirname(sys.argv[0])))
 import hashlib
-from typing import Dict, List, Union, Tuple, Optional, Sequence
 import logging
-from datasets import Features
+from typing import Union
+
 import transformers
-from transformers.tokenization_utils import PreTrainedTokenizer
-from transformers.testing_utils import CaptureLogger
 from transformers import HfArgumentParser, PreTrainedTokenizer, PreTrainedTokenizerFast
-from peft import LoraConfig, TaskType
+from transformers.testing_utils import CaptureLogger
+
+from lmflow.args import (
+    AutoArguments,
+    DatasetArguments,
+    ModelArguments,
+)
 from lmflow.datasets.dataset import Dataset
+from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.auto_pipeline import AutoPipeline
 from lmflow.tokenization.hf_decoder_model import blocking
-from lmflow.utils.conversation_template.base import TemplateComponent
 from lmflow.utils.constants import (
-    TEXT_ONLY_DATASET_DESCRIPTION,
-    TEXT2TEXT_DATASET_DESCRIPTION,
     CONVERSATION_DATASET_DESCRIPTION,
-    CONVERSATION_ROLE_NAMES
+    CONVERSATION_ROLE_NAMES,
+    TEXT2TEXT_DATASET_DESCRIPTION,
+    TEXT_ONLY_DATASET_DESCRIPTION,
 )
-from lmflow.utils.conversation_template import ConversationTemplateForTool, PRESET_TEMPLATES
-from lmflow.args import (
-    ModelArguments,
-    DatasetArguments,
-    AutoArguments,
-)
-from lmflow.models.hf_decoder_model import HFDecoderModel
+from lmflow.utils.conversation_template import PRESET_TEMPLATES, ConversationTemplateForTool
+
 tok_logger = transformers.utils.logging.get_logger("transformers.tokenization_utils_base")
 logger = logging.getLogger(__name__)
 
 
 class HFDecoderModelForTool(HFDecoderModel):
-    def tokenize(
-        self, 
-        dataset, 
-        add_special_tokens=True, 
-        *args, 
-        **kwargs
-    ) -> Dataset:
+    def tokenize(self, dataset, add_special_tokens=True, *args, **kwargs) -> Dataset:
         """
         Tokenize the full dataset.
-    
+
         Parameters
         ------------
         dataset : lmflow.datasets.Dataset.
 
         args : Optional.
             Positional arguments.
-        
+
         kwargs : Optional.
-            Keyword arguments.    
-        
+            Keyword arguments.
+
         Returns
         ------------
         tokenized_datasets :
@@ -62,10 +56,7 @@ class HFDecoderModelForTool(HFDecoderModel):
         # Preprocessing the datasets.
         # First we tokenize all the texts.
         if dataset.get_backend() != "huggingface":
-            raise NotImplementedError(
-                "tokenization of datasets with non-huggingface backend are"
-                "not supported yet"
-            )
+            raise NotImplementedError("tokenization of datasets with non-huggingface backend arenot supported yet")
 
         dataset_type = dataset.get_type()
         model_args = self.model_args
@@ -84,8 +75,8 @@ class HFDecoderModelForTool(HFDecoderModel):
         #   3) Which fields require loss in final computation, e.g.
         #        "text_only": "text"
         #        "text2text": "output" only
-        tokenized_column_order = None       # Handles 1) and 2)
-        label_columns = None                # Handles 3)
+        tokenized_column_order = None  # Handles 1) and 2)
+        label_columns = None  # Handles 3)
         if dataset_type == "text_only":
             tokenized_column_order = ["text"]
             label_columns = ["text"]
@@ -103,12 +94,12 @@ class HFDecoderModelForTool(HFDecoderModel):
                     )
             else:
                 logger.warning("No conversation template provided. Using default template.")
-                conversation_template = PRESET_TEMPLATES['empty']
-                        
+                conversation_template = PRESET_TEMPLATES["empty"]
+
             logger.warning(f"Conversation template: {conversation_template}")
         else:
             raise NotImplementedError(
-                f"dataset type \"{dataset_type}\" is not supported, currently"
+                f'dataset type "{dataset_type}" is not supported, currently'
                 " only support following data types:\n"
                 f"    1) {TEXT_ONLY_DATASET_DESCRIPTION}\n"
                 f"    2) {TEXT2TEXT_DATASET_DESCRIPTION}\n"
@@ -119,7 +110,7 @@ class HFDecoderModelForTool(HFDecoderModel):
         use_truncation = False
         if model_args.use_lora or data_args.disable_group_texts:
             use_truncation = True
-        
+
         tokenize_fn = conversation_tokenize_function
         tokenize_fn_kwargs = {
             "data_args": data_args,
@@ -133,17 +124,21 @@ class HFDecoderModelForTool(HFDecoderModel):
             tokenize_fn_kwargs["tokenized_column_order"] = tokenized_column_order
             tokenize_fn_kwargs["add_special_tokens"] = add_special_tokens
             tokenize_fn_kwargs["use_truncation"] = use_truncation
-                           
+
         tokenize_kwargs = {}
         if not data_args.streaming:
             fingerprint = hashlib.md5(
                 (
                     raw_datasets.get_fingerprint()
                     + str(self.tokenizer)
-                    + f'###padding_side={self.tokenizer.padding_side}'
-                    + ('###conversation_template=' + str(conversation_template) if "conversation" in dataset_type else "")
-                    + f'###disable_group_texts={data_args.disable_group_texts}'
-                    + f'###block_size={data_args.block_size}'
+                    + f"###padding_side={self.tokenizer.padding_side}"
+                    + (
+                        "###conversation_template=" + str(conversation_template)
+                        if "conversation" in dataset_type
+                        else ""
+                    )
+                    + f"###disable_group_texts={data_args.disable_group_texts}"
+                    + f"###block_size={data_args.block_size}"
                 ).encode("utf-8")
             ).hexdigest()
             tokenize_kwargs = {
@@ -154,24 +149,20 @@ class HFDecoderModelForTool(HFDecoderModel):
             }
 
         tokenized_datasets = raw_datasets.map(
-            tokenize_fn,
-            batched=True,
-            remove_columns=column_names,
-            fn_kwargs=tokenize_fn_kwargs,
-            **tokenize_kwargs
+            tokenize_fn, batched=True, remove_columns=column_names, fn_kwargs=tokenize_fn_kwargs, **tokenize_kwargs
         )
 
         return tokenized_datasets
 
+
 def conversation_tokenize_function(
-    examples, 
+    examples,
     data_args: DatasetArguments,
-    tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast], 
+    tokenizer: Union[PreTrainedTokenizer, PreTrainedTokenizerFast],
     column_names,
     conversation_template: ConversationTemplateForTool,
-) -> Dict:
-    """Handels conversation datasets tokenization
-    """
+) -> dict:
+    """Handels conversation datasets tokenization"""
     num_example = len(examples[column_names[0]])
     token_dict = {
         "input_ids": [[] for _ in range(num_example)],
@@ -183,19 +174,17 @@ def conversation_tokenize_function(
             messages = examples["messages"][i]
             system = examples.get("system", [None] * num_example)[i]
             tools = examples.get("tools", [None] * num_example)[i]
-            if len(messages) < 2 or messages[0]['role'] != CONVERSATION_ROLE_NAMES['user']:
+            if len(messages) < 2 or messages[0]["role"] != CONVERSATION_ROLE_NAMES["user"]:
                 tok_logger.warning(
                     "Invalid instance encountered. Either the conversation has less than "
                     "one round or the first message is not from the user."
                 )
                 continue
-        
+
             if len(messages) % 2 != 0:
-                logger.warning(
-                    "The number of messages is not even, the last message will be ignored."
-                )
+                logger.warning("The number of messages is not even, the last message will be ignored.")
                 messages = messages[:-1]
-                
+
             encoded_conversation = conversation_template.encode_conversation(
                 tokenizer=tokenizer,
                 messages=messages,
@@ -222,10 +211,15 @@ def conversation_tokenize_function(
                     if data_args.train_on_prompt:
                         labels += user_input + function_result + observation_input + assistant_result
                     else:
-                        labels += [-100] * len(user_input) + function_result + [-100] * len(observation_input) + assistant_result
+                        labels += (
+                            [-100] * len(user_input)
+                            + function_result
+                            + [-100] * len(observation_input)
+                            + assistant_result
+                        )
                 else:
                     logger.warning("The number of roles in conversation is not appropriate")
-                
+
             token_dict["input_ids"][i].extend(input_ids)
             token_dict["attention_mask"][i].extend([1] * len(input_ids))
             token_dict["labels"][i].extend(labels)
@@ -249,7 +243,6 @@ def conversation_tokenize_function(
 
 
 def train():
-
     # Initialize args
     ## Prepare training_args
     pipeline_name = "finetuner"
@@ -258,7 +251,7 @@ def train():
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
         model_args, data_args, pipeline_args = parser.parse_json_file(json_file=os.path.abspath(sys.argv[1]))
     else:
-        model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses() 
+        model_args, data_args, pipeline_args = parser.parse_args_into_dataclasses()
     print("Model args", model_args)
     print("data_args", data_args)
     print("training_args", pipeline_args)
@@ -276,7 +269,8 @@ def train():
         data_args=data_args,
         pipeline_args=pipeline_args,
     )
-    tuned_model = finetuner.tune(model=model, dataset=dataset)
+    finetuner.tune(model=model, dataset=dataset)
+
 
 if __name__ == "__main__":
     train()

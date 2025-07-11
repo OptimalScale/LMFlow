@@ -1,4 +1,3 @@
-# coding=utf-8
 # Copyright 2023 The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +22,7 @@ from pathlib import Path
 from typing import Optional
 
 import datasets
+import diffusers
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -32,20 +32,17 @@ from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import ProjectConfiguration, set_seed
 from datasets import load_dataset
-from huggingface_hub import HfFolder, Repository, create_repo, whoami, upload_folder
-from packaging import version
-from torchvision import transforms
-from tqdm.auto import tqdm
-from transformers import CLIPTextModel, CLIPTokenizer
-
-import diffusers
 from diffusers import AutoencoderKL, DDPMScheduler, DiffusionPipeline, UNet2DConditionModel
 from diffusers.loaders import AttnProcsLayers
 from diffusers.models.attention_processor import LoRAAttnProcessor
 from diffusers.optimization import get_scheduler
 from diffusers.utils import check_min_version, is_wandb_available
 from diffusers.utils.import_utils import is_xformers_available
-
+from huggingface_hub import HfFolder, create_repo, upload_folder, whoami
+from packaging import version
+from torchvision import transforms
+from tqdm.auto import tqdm
+from transformers import CLIPTextModel, CLIPTokenizer
 
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
 check_min_version("0.15.0.dev0")
@@ -74,7 +71,8 @@ inference: true
     """
     model_card = f"""
 # LoRA text2image fine-tuning - {repo_name}
-These are LoRA adaption weights for {base_model}. The weights were fine-tuned on the {dataset_name} dataset. You can find some example images in the following. \n
+These are LoRA adaption weights for {base_model}. The weights were fine-tuned on the {dataset_name} dataset.
+You can find some example images in the following. \n\n
 {img_str}
 """
     with open(os.path.join(repo_folder, "README.md"), "w") as f:
@@ -155,8 +153,7 @@ def parse_args():
         type=int,
         default=None,
         help=(
-            "For debugging purposes or quicker training, truncate the number of training examples to this "
-            "value if set."
+            "For debugging purposes or quicker training, truncate the number of training examples to this value if set."
         ),
     )
     parser.add_argument(
@@ -410,7 +407,7 @@ def main():
             ).repo_id
 
     # Load scheduler, tokenizer and models.
-    noise_scheduler = DDPMScheduler.from_pretrained( args.pretrained_model_name_or_path, subfolder="scheduler")
+    noise_scheduler = DDPMScheduler.from_pretrained(args.pretrained_model_name_or_path, subfolder="scheduler")
     tokenizer = CLIPTokenizer.from_pretrained(
         args.pretrained_model_name_or_path, subfolder="tokenizer", revision=args.revision
     )
@@ -476,8 +473,10 @@ def main():
 
             xformers_version = version.parse(xformers.__version__)
             if xformers_version == version.parse("0.0.16"):
-                logger.warn(
-                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during training, please update xFormers to at least 0.0.17. See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
+                logger.warning(
+                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during "
+                    "training, please update xFormers to at least 0.0.17. "
+                    "See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
                 )
             unet.enable_xformers_memory_efficient_attention()
         else:
@@ -499,10 +498,10 @@ def main():
     if args.use_8bit_adam:
         try:
             import bitsandbytes as bnb
-        except ImportError:
+        except ImportError as ex:
             raise ImportError(
                 "Please install bitsandbytes to use 8-bit Adam. You can do so by running `pip install bitsandbytes`"
-            )
+            ) from ex
 
         optimizer_cls = bnb.optim.AdamW8bit
     else:
@@ -712,7 +711,7 @@ def main():
                 # Sample a random timestep for each image
                 timesteps = torch.randint(0, noise_scheduler.num_train_timesteps, (bsz,), device=latents.device)
                 timesteps = timesteps.long()
-                
+
                 # Add noise to the latents according to the noise magnitude at each timestep
                 # (this is the forward diffusion process)
                 noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
@@ -841,7 +840,6 @@ def main():
     # images = []
     # for _ in range(args.num_validation_images):
     #     images.append(pipeline(args.validation_prompt, num_inference_steps=30, generator=generator).images[0])
-
 
     # for _ in range(1):
     #     images.append(pipeline('a photo of cat').images[0])

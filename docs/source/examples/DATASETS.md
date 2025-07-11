@@ -129,8 +129,8 @@ Conversational data are commonly used in sft process. We currently support conve
 Data types:
 - `conversation_id`: `Optional[Any]`. An identifier for the conversation. `conversation_id` is only for convience of tracking the conversation and will not be used in the pipeline.
 - `system`: `Optional[string]`. A system prompt that is used to start the conversation.
-- `tools`: `Optional[List[string]]`. A list of tools that are used in the conversation.
-- `messages`: `List[Dict]`. A list of messages in the conversation. Each message contains the following fields:
+- `tools`: `Optional[list[string]]`. A list of tools that are used in the conversation.
+- `messages`: `list[dict]`. A list of messages in the conversation. Each message contains the following fields:
   - `role`: `string`. The role of the message. It can be either `user` or `assistant`.
   - `content`: `string`. The content of the message.
 

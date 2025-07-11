@@ -13,10 +13,7 @@ import warnings
 from collections.abc import Mapping
 from distutils.util import strtobool
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union
-
-from tqdm.auto import tqdm
-
+from typing import Any, Callable, Optional, Union
 
 # Integrations must be imported before ML frameworks:
 # isort: off
@@ -39,13 +36,12 @@ try:
     )
 except ImportError:
     from transformers.integrations import (
-    get_reporting_integration_callbacks,
-    hp_params,
-    is_fairscale_available,
+        get_reporting_integration_callbacks,
+        hp_params,
+        is_fairscale_available,
     )
-    from transformers.hyperparameter_search import default_hp_search_backend,ALL_HYPERPARAMETER_SEARCH_BACKENDS
+    from transformers.hyperparameter_search import default_hp_search_backend, ALL_HYPERPARAMETER_SEARCH_BACKENDS
 
-    
 
 # isort: on
 
@@ -57,12 +53,9 @@ from packaging import version
 from torch import nn
 from torch.utils.data import DataLoader, Dataset, RandomSampler, SequentialSampler
 from torch.utils.data.distributed import DistributedSampler
-
-
 from transformers.configuration_utils import PretrainedConfig
 from transformers.data.data_collator import DataCollator, DataCollatorWithPadding, default_data_collator
 from transformers.debug_utils import DebugOption, DebugUnderflowOverflow
-from transformers.deepspeed import deepspeed_init, is_deepspeed_zero3_enabled
 from transformers.dependency_versions_check import dep_version_check
 from transformers.modelcard import TrainingSummary
 from transformers.modeling_utils import PreTrainedModel, load_sharded_checkpoint, unwrap_model
@@ -136,7 +129,6 @@ from transformers.utils import (
     can_return_loss,
     find_labels,
     get_full_repo_name,
-    is_accelerate_available,
     is_apex_available,
     is_datasets_available,
     is_in_notebook,
@@ -149,6 +141,13 @@ from transformers.utils import (
     logging,
 )
 from transformers.utils.generic import ContextManagers
+
+from lmflow.utils.versioning import is_package_version_at_least
+
+if is_package_version_at_least("transformers", "4.46.0"):
+    from transformers.integrations.deepspeed import deepspeed_init, is_deepspeed_zero3_enabled
+else:
+    from transformers.deepspeed import deepspeed_init, is_deepspeed_zero3_enabled
 
 
 _is_native_cpu_amp_available = is_torch_greater_or_equal_than_1_10
@@ -196,7 +195,6 @@ else:
 skip_first_batches = None
 
 
-
 logger = logging.get_logger(__name__)
 
 
@@ -234,7 +232,7 @@ class RaftTrainer:
             `torch.Generator` for the randomization that must be identical on all processes (and the Trainer will
             manually set the seed of this `generator` at each epoch) or have a `set_epoch()` method that internally
             sets the seed of the RNGs used.
-        eval_dataset (Union[`torch.utils.data.Dataset`, Dict[str, `torch.utils.data.Dataset`]), *optional*):
+        eval_dataset (Union[`torch.utils.data.Dataset`, dict[str, `torch.utils.data.Dataset`]), *optional*):
              The dataset to use for evaluation. If it is a [`~datasets.Dataset`], columns not accepted by the
              `model.forward()` method are automatically removed. If it is a dictionary, it will evaluate on each
              dataset prepending the dictionary key to the metric name.
@@ -248,14 +246,14 @@ class RaftTrainer:
             The function may have zero argument, or a single one containing the optuna/Ray Tune/SigOpt trial object, to
             be able to choose different architectures according to hyper parameters (such as layer count, sizes of
             inner layers, dropout probabilities etc).
-        compute_metrics (`Callable[[EvalPrediction], Dict]`, *optional*):
+        compute_metrics (`Callable[[EvalPrediction], dict]`, *optional*):
             The function that will be used to compute metrics at evaluation. Must take a [`EvalPrediction`] and return
             a dictionary string to metric values.
-        callbacks (List of [`TrainerCallback`], *optional*):
+        callbacks (list of [`TrainerCallback`], *optional*):
             A list of callbacks to customize the training loop. Will add those to the list of default callbacks
             detailed in [here](callback).
             If you want to remove one of the default callbacks used, use the [`Trainer.remove_callback`] method.
-        optimizers (`Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR]`, *optional*): A tuple
+        optimizers (`tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR]`, *optional*): A tuple
             containing the optimizer and the scheduler to use. Will default to an instance of [`AdamW`] on your model
             and a scheduler given by [`get_linear_schedule_with_warmup`] controlled by `args`.
         preprocess_logits_for_metrics (`Callable[[torch.Tensor, torch.Tensor], torch.Tensor]`, *optional*):
@@ -287,12 +285,12 @@ class RaftTrainer:
         args: TrainingArguments = None,
         data_collator: Optional[DataCollator] = None,
         train_dataset: Optional[Dataset] = None,
-        eval_dataset: Optional[Union[Dataset, Dict[str, Dataset]]] = None,
+        eval_dataset: Optional[Union[Dataset, dict[str, Dataset]]] = None,
         tokenizer: Optional[PreTrainedTokenizerBase] = None,
         model_init: Optional[Callable[[], PreTrainedModel]] = None,
-        compute_metrics: Optional[Callable[[EvalPrediction], Dict]] = None,
-        callbacks: Optional[List[TrainerCallback]] = None,
-        optimizers: Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (None, None),
+        compute_metrics: Optional[Callable[[EvalPrediction], dict]] = None,
+        callbacks: Optional[list[TrainerCallback]] = None,
+        optimizers: tuple[Optional[torch.optim.Optimizer], Optional[torch.optim.lr_scheduler.LambdaLR]] = (None, None),
         preprocess_logits_for_metrics: Optional[Callable[[torch.Tensor, torch.Tensor], torch.Tensor]] = None,
     ):
         ############
@@ -1047,10 +1045,10 @@ class RaftTrainer:
                     for module in opt_model.modules():
                         if isinstance(module, nn.Embedding):
                             skipped += sum({p.data_ptr(): p.numel() for p in module.parameters()}.values())
-                            print(f"skipped {module}: {skipped/2**20}M params")
+                            print(f"skipped {module}: {skipped / 2**20}M params")
                             manager.register_module_override(module, "weight", {"optim_bits": 32})
                             logger.debug(f"bitsandbytes: will optimize {module} in fp32")
-                    print(f"skipped: {skipped/2**20}M params")
+                    print(f"skipped: {skipped / 2**20}M params")
 
         if is_sagemaker_mp_enabled():
             self.optimizer = smp.DistributedOptimizer(self.optimizer)
@@ -1058,7 +1056,7 @@ class RaftTrainer:
         return self.optimizer
 
     @staticmethod
-    def get_optimizer_cls_and_kwargs(args: TrainingArguments) -> Tuple[Any, Any]:
+    def get_optimizer_cls_and_kwargs(args: TrainingArguments) -> tuple[Any, Any]:
         """
         Returns the optimizer class and optimizer parameters based on the training arguments.
         Args:
@@ -1179,7 +1177,7 @@ class RaftTrainer:
         except (NameError, AttributeError, TypeError):  # no dataset or length, estimate by length of dataloader
             return len(dataloader) * self.args.per_device_train_batch_size
 
-    def _hp_search_setup(self, trial: Union["optuna.Trial", Dict[str, Any]]):
+    def _hp_search_setup(self, trial: Union["optuna.Trial", dict[str, Any]]):
         """HP search setup code"""
         self._trial = trial
 
@@ -1220,7 +1218,7 @@ class RaftTrainer:
             self.args.hf_deepspeed_config = HfTrainerDeepSpeedConfig(self.args.deepspeed)
             self.args.hf_deepspeed_config.trainer_config_process(self.args)
 
-    def _report_to_hp_search(self, trial: Union["optuna.Trial", Dict[str, Any]], step: int, metrics: Dict[str, float]):
+    def _report_to_hp_search(self, trial: Union["optuna.Trial", dict[str, Any]], step: int, metrics: dict[str, float]):
         if self.hp_search_backend is None or trial is None:
             return
         self.objective = self.compute_objective(metrics.copy())
@@ -1491,9 +1489,7 @@ class RaftTrainer:
 
                 xm.optimizer_step = patched_optimizer_step
         elif is_sagemaker_dp_enabled():
-            model = nn.parallel.DistributedDataParallel(
-                model, device_ids=[int(os.getenv("SMDATAPARALLEL_LOCAL_RANK"))]
-            )
+            model = nn.parallel.DistributedDataParallel(model, device_ids=[int(os.getenv("SMDATAPARALLEL_LOCAL_RANK"))])
         elif self.args.local_rank != -1:
             kwargs = {}
             if self.args.ddp_find_unused_parameters is not None:
@@ -1521,9 +1517,9 @@ class RaftTrainer:
     def train(
         self,
         resume_from_checkpoint: Optional[Union[str, bool]] = None,
-        trial: Union["optuna.Trial", Dict[str, Any]] = None,
-        ignore_keys_for_eval: Optional[List[str]] = None,
-        is_first_time = False,
+        trial: Union["optuna.Trial", dict[str, Any]] = None,
+        ignore_keys_for_eval: Optional[list[str]] = None,
+        is_first_time=False,
         **kwargs,
     ):
         """
@@ -1533,9 +1529,9 @@ class RaftTrainer:
                 If a `str`, local path to a saved checkpoint as saved by a previous instance of [`Trainer`]. If a
                 `bool` and equals `True`, load the last checkpoint in *args.output_dir* as saved by a previous instance
                 of [`Trainer`]. If present, training will resume from the model/optimizer/scheduler states loaded here.
-            trial (`optuna.Trial` or `Dict[str, Any]`, *optional*):
+            trial (`optuna.Trial` or `dict[str, Any]`, *optional*):
                 The trial run or the hyperparameter dictionary for hyperparameter search.
-            ignore_keys_for_eval (`List[str]`, *optional*)
+            ignore_keys_for_eval (`list[str]`, *optional*)
                 A list of keys in the output of your model (if it is a dictionary) that should be ignored when
                 gathering predictions for evaluation during the training.
             kwargs:
@@ -1549,7 +1545,7 @@ class RaftTrainer:
 
         args = self.args
 
-        #self.is_in_train = True
+        # self.is_in_train = True
 
         # do_train is not a reliable argument, as it might not be set and .train() still called, so
         # the following is a workaround:
@@ -1613,14 +1609,12 @@ class RaftTrainer:
                 trial=trial,
                 ignore_keys_for_eval=ignore_keys_for_eval,
             )
-            
-    
+
     def _one_train(
         self, batch_size=None, args=None, resume_from_checkpoint=None, trial=None, ignore_keys_for_eval=None
     ):
-        #print(self.lr_scheduler)
-        #print(dir(self.lr_scheduler))
-        
+        # print(self.lr_scheduler)
+        # print(dir(self.lr_scheduler))
 
         self.state = TrainerState()
         self.state.is_hyper_param_search = trial is not None
@@ -1628,7 +1622,7 @@ class RaftTrainer:
         self._train_batch_size = batch_size
         # Data loader and number of training steps
         train_dataloader = self.get_train_dataloader()
-        #print("AAAAAAA", len(train_dataloader))
+        # print("AAAAAAA", len(train_dataloader))
 
         total_train_batch_size = args.train_batch_size * args.gradient_accumulation_steps * args.world_size
 
@@ -1663,7 +1657,7 @@ class RaftTrainer:
                 f" {args.max_steps}"
             )
         ###########
-        #num_train_epochs = 5
+        # num_train_epochs = 5
 
         # Train!
         logger.info("***** Running training *****")
@@ -1709,14 +1703,14 @@ class RaftTrainer:
         # _total_loss_scalar is updated everytime .item() has to be called on tr_loss and stores the sum of all losses
         self._total_loss_scalar = 0.0
         self._globalstep_last_logged = self.state.global_step
-        #model.zero_grad()
+        # model.zero_grad()
         self.tmp_model.zero_grad()
 
         self.control = self.callback_handler.on_train_begin(args, self.state, self.control)
 
         # Skip the first epochs_trained epochs to get the random state of the dataloader at the right point.
         if not args.ignore_data_skip:
-            #print("I skip!") called
+            # print("I skip!") called
             for epoch in range(epochs_trained):
                 is_random_sampler = hasattr(train_dataloader, "sampler") and isinstance(
                     train_dataloader.sampler, RandomSampler
@@ -1732,10 +1726,10 @@ class RaftTrainer:
                     _ = list(train_dataloader.sampler)
 
         ###############
-        #num_train_epochs = 10
+        # num_train_epochs = 10
         self.is_in_train = True
-        #print("The number of epoches: ", num_train_epochs)
-        ############# 
+        # print("The number of epoches: ", num_train_epochs)
+        #############
         total_batched_samples = 0
         for epoch in range(epochs_trained, num_train_epochs):
             if isinstance(train_dataloader, DataLoader) and isinstance(train_dataloader.sampler, DistributedSampler):
@@ -1754,9 +1748,7 @@ class RaftTrainer:
                 self._past = None
 
             steps_in_epoch = (
-                len(epoch_iterator)
-                if len_dataloader is not None
-                else args.max_steps * args.gradient_accumulation_steps
+                len(epoch_iterator) if len_dataloader is not None else args.max_steps * args.gradient_accumulation_steps
             )
             self.control = self.callback_handler.on_epoch_begin(args, self.state, self.control)
 
@@ -1771,7 +1763,7 @@ class RaftTrainer:
                 steps_trained_in_current_epoch = 0
                 rng_to_sync = True
 
-            #print("The number of one epoch: ", len(epoch_iterator))
+            # print("The number of one epoch: ", len(epoch_iterator))
             step = -1
             for step, inputs in enumerate(epoch_iterator):
                 total_batched_samples += 1
@@ -1802,8 +1794,8 @@ class RaftTrainer:
                     # Avoid unnecessary DDP synchronization since there will be no backward pass on this example.
                     with self.tmp_model.no_sync():
                         tr_loss_step = self.training_step(self.tmp_model, inputs)
-                    #with model.no_sync():
-                        #tr_loss_step = self.training_step(model, inputs)
+                    # with model.no_sync():
+                    # tr_loss_step = self.training_step(model, inputs)
                 else:
                     tr_loss_step = self.training_step(self.tmp_model, inputs)
 
@@ -1825,8 +1817,7 @@ class RaftTrainer:
 
                 if total_batched_samples % args.gradient_accumulation_steps == 0 or (
                     # last step in epoch but step is always smaller than gradient_accumulation_steps
-                    steps_in_epoch <= args.gradient_accumulation_steps
-                    and (step + 1) == steps_in_epoch
+                    steps_in_epoch <= args.gradient_accumulation_steps and (step + 1) == steps_in_epoch
                 ):
                     # Gradient clipping
                     if args.max_grad_norm is not None and args.max_grad_norm > 0 and not self.deepspeed:
@@ -1959,10 +1950,10 @@ class RaftTrainer:
     def _inner_training_loop(
         self, batch_size=None, args=None, resume_from_checkpoint=None, trial=None, ignore_keys_for_eval=None
     ):
-        '''
+        """
         0 This function serves to train one time
         1 Update the self.train_dataset before calling this function
-        '''
+        """
         # 1 Get dataloader
         self._train_batch_size = batch_size
         # Data loader and number of training steps
@@ -2026,7 +2017,7 @@ class RaftTrainer:
             self.deepspeed = deepspeed_engine
             self.optimizer = optimizer
             self.lr_scheduler = lr_scheduler
-            #print("I just create a optimizer here!")  # called
+            # print("I just create a optimizer here!")  # called
         elif not delay_optimizer_creation:
             self.create_optimizer_and_scheduler(num_training_steps=max_steps)
 
@@ -2037,11 +2028,10 @@ class RaftTrainer:
         if args.gradient_checkpointing:
             self.model.gradient_checkpointing_enable()
 
-        #model = self._wrap_model(self.model_wrapped)
+        # model = self._wrap_model(self.model_wrapped)
         self.tmp_model = self._wrap_model(self.model_wrapped)
 
-
-        #if is_sagemaker_mp_enabled() and resume_from_checkpoint is not None:
+        # if is_sagemaker_mp_enabled() and resume_from_checkpoint is not None:
         #    self._load_from_checkpoint(resume_from_checkpoint, model)
 
         # for the rest of this function `model` is the outside model, whether it was wrapped or not
@@ -2054,13 +2044,11 @@ class RaftTrainer:
 
         return True
         # Check if saved optimizer or scheduler states exist
-        #self._load_optimizer_and_scheduler(resume_from_checkpoint)
+        # self._load_optimizer_and_scheduler(resume_from_checkpoint)
 
         # important: at this point:
         # self.model         is the Transformers Model
         # self.model_wrapped is DDP(Transformers Model), Deepspeed(Transformers Model), etc.
-
-        
 
     def _get_output_dir(self, trial):
         if self.hp_search_backend is not None and trial is not None:
@@ -2209,16 +2197,14 @@ class RaftTrainer:
             else:
                 logger.warning(f"There were missing keys in the checkpoint model loaded: {load_result.missing_keys}.")
         if len(load_result.unexpected_keys) != 0:
-            logger.warning(
-                f"There were unexpected keys in the checkpoint model loaded: {load_result.unexpected_keys}."
-            )
+            logger.warning(f"There were unexpected keys in the checkpoint model loaded: {load_result.unexpected_keys}.")
 
     def _maybe_log_save_evaluate(self, tr_loss, model, trial, epoch, ignore_keys_for_eval):
         if self.control.should_log:
             if is_torch_tpu_available():
                 xm.mark_step()
 
-            logs: Dict[str, float] = {}
+            logs: dict[str, float] = {}
 
             # all_gather + mean() to get average loss over all processes
             tr_loss_scalar = self._nested_gather(tr_loss).mean().item()
@@ -2299,7 +2285,7 @@ class RaftTrainer:
         # assert unwrap_model(model) is self.model, "internal model should be a reference to self.model"
 
         # Save model checkpoint
-        #checkpoint_folder = f"{PREFIX_CHECKPOINT_DIR}-{self.state.global_step}"
+        # checkpoint_folder = f"{PREFIX_CHECKPOINT_DIR}-{self.state.global_step}"
         checkpoint_folder = f"{PREFIX_CHECKPOINT_DIR}-{self.save_counter}"
         ##########
         self.save_counter += 1
@@ -2461,8 +2447,8 @@ class RaftTrainer:
 
     def hyperparameter_search(
         self,
-        hp_space: Optional[Callable[["optuna.Trial"], Dict[str, float]]] = None,
-        compute_objective: Optional[Callable[[Dict[str, float]], float]] = None,
+        hp_space: Optional[Callable[["optuna.Trial"], dict[str, float]]] = None,
+        compute_objective: Optional[Callable[[dict[str, float]], float]] = None,
         n_trials: int = 20,
         direction: str = "minimize",
         backend: Optional[Union["str", HPSearchBackend]] = None,
@@ -2480,11 +2466,11 @@ class RaftTrainer:
         optimizer/scheduler.
         </Tip>
         Args:
-            hp_space (`Callable[["optuna.Trial"], Dict[str, float]]`, *optional*):
+            hp_space (`Callable[["optuna.Trial"], dict[str, float]]`, *optional*):
                 A function that defines the hyperparameter search space. Will default to
                 [`~trainer_utils.default_hp_space_optuna`] or [`~trainer_utils.default_hp_space_ray`] or
                 [`~trainer_utils.default_hp_space_sigopt`] depending on your backend.
-            compute_objective (`Callable[[Dict[str, float]], float]`, *optional*):
+            compute_objective (`Callable[[dict[str, float]], float]`, *optional*):
                 A function computing the objective to minimize or maximize from the metrics returned by the `evaluate`
                 method. Will default to [`~trainer_utils.default_compute_objective`].
             n_trials (`int`, *optional*, defaults to 100):
@@ -2497,7 +2483,7 @@ class RaftTrainer:
                 on which one is installed. If all are installed, will default to optuna.
             hp_name (`Callable[["optuna.Trial"], str]]`, *optional*):
                 A function that defines the trial/run name. Will default to None.
-            kwargs (`Dict[str, Any]`, *optional*):
+            kwargs (`dict[str, Any]`, *optional*):
                 Additional keyword arguments passed along to `optuna.create_study` or `ray.tune.run`. For more
                 information see:
                 - the documentation of
@@ -2542,7 +2528,6 @@ class RaftTrainer:
             }
             backend_run = backend_dict[backend]
         except NameError:
-            ALL_HYPERPARAMETER_SEARCH_BACKENDS
             backend_obj = ALL_HYPERPARAMETER_SEARCH_BACKENDS[backend]()
             backend_run = backend_obj.run
         try:
@@ -2554,17 +2539,16 @@ class RaftTrainer:
         self.hp_name = hp_name
         self.compute_objective = default_compute_objective if compute_objective is None else compute_objective
 
-
         best_run = backend_run(self, n_trials, direction, **kwargs)
         self.hp_search_backend = None
         return best_run
 
-    def log(self, logs: Dict[str, float]) -> None:
+    def log(self, logs: dict[str, float]) -> None:
         """
         Log `logs` on the various objects watching training.
         Subclass and override this method to inject custom behavior.
         Args:
-            logs (`Dict[str, float]`):
+            logs (`dict[str, float]`):
                 The values to log.
         """
         if self.state.epoch is not None:
@@ -2592,7 +2576,7 @@ class RaftTrainer:
             return data.to(**kwargs)
         return data
 
-    def _prepare_inputs(self, inputs: Dict[str, Union[torch.Tensor, Any]]) -> Dict[str, Union[torch.Tensor, Any]]:
+    def _prepare_inputs(self, inputs: dict[str, Union[torch.Tensor, Any]]) -> dict[str, Union[torch.Tensor, Any]]:
         """
         Prepare `inputs` before feeding them to the model, converting them to tensors if they are not already and
         handling potential state.
@@ -2633,14 +2617,14 @@ class RaftTrainer:
 
         return ctx_manager
 
-    def training_step(self, model: nn.Module, inputs: Dict[str, Union[torch.Tensor, Any]]) -> torch.Tensor:
+    def training_step(self, model: nn.Module, inputs: dict[str, Union[torch.Tensor, Any]]) -> torch.Tensor:
         """
         Perform a training step on a batch of inputs.
         Subclass and override to inject custom behavior.
         Args:
             model (`nn.Module`):
                 The model to train.
-            inputs (`Dict[str, Union[torch.Tensor, Any]]`):
+            inputs (`dict[str, Union[torch.Tensor, Any]]`):
                 The inputs and targets of the model.
                 The dictionary will be unpacked before being fed to the model. Most models expect the targets under the
                 argument `labels`. Check your model's documentation for all accepted arguments.
@@ -2856,7 +2840,7 @@ class RaftTrainer:
 
     def _sorted_checkpoints(
         self, output_dir=None, checkpoint_prefix=PREFIX_CHECKPOINT_DIR, use_mtime=False
-    ) -> List[str]:
+    ) -> list[str]:
         ordering_and_checkpoint_path = []
 
         glob_checkpoints = [str(x) for x in Path(output_dir).glob(f"{checkpoint_prefix}-*") if os.path.isdir(x)]
@@ -2906,9 +2890,9 @@ class RaftTrainer:
     def evaluate(
         self,
         eval_dataset: Optional[Dataset] = None,
-        ignore_keys: Optional[List[str]] = None,
+        ignore_keys: Optional[list[str]] = None,
         metric_key_prefix: str = "eval",
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Run evaluation and returns metrics.
         The calling script will be responsible for providing a method to compute metrics, as they are task-dependent
@@ -2971,7 +2955,7 @@ class RaftTrainer:
         return output.metrics
 
     def predict(
-        self, test_dataset: Dataset, ignore_keys: Optional[List[str]] = None, metric_key_prefix: str = "test"
+        self, test_dataset: Dataset, ignore_keys: Optional[list[str]] = None, metric_key_prefix: str = "test"
     ) -> PredictionOutput:
         """
         Run prediction and returns predictions and potential metrics.
@@ -2992,10 +2976,10 @@ class RaftTrainer:
         in a token classification task) the predictions will be padded (on the right) to allow for concatenation into
         one array. The padding index is -100.
         </Tip>
-        Returns: *NamedTuple* A namedtuple with the following keys:
+        Returns: *Namedtuple* A namedtuple with the following keys:
             - predictions (`np.ndarray`): The predictions on `test_dataset`.
             - label_ids (`np.ndarray`, *optional*): The labels (if the dataset contained some).
-            - metrics (`Dict[str, float]`, *optional*): The potential dictionary of metrics (if the dataset contained
+            - metrics (`dict[str, float]`, *optional*): The potential dictionary of metrics (if the dataset contained
               labels).
         """
         # memory metrics - must set up as early as possible
@@ -3030,7 +3014,7 @@ class RaftTrainer:
         dataloader: DataLoader,
         description: str,
         prediction_loss_only: Optional[bool] = None,
-        ignore_keys: Optional[List[str]] = None,
+        ignore_keys: Optional[list[str]] = None,
         metric_key_prefix: str = "eval",
     ) -> EvalLoopOutput:
         """
@@ -3156,9 +3140,7 @@ class RaftTrainer:
                     )
                 if labels_host is not None:
                     labels = nested_numpify(labels_host)
-                    all_labels = (
-                        labels if all_labels is None else nested_concat(all_labels, labels, padding_index=-100)
-                    )
+                    all_labels = labels if all_labels is None else nested_concat(all_labels, labels, padding_index=-100)
 
                 # Set back to None to begin a new accumulation
                 losses_host, preds_host, inputs_host, labels_host = None, None, None, None
@@ -3263,9 +3245,7 @@ class RaftTrainer:
         elif isinstance(tensor, dict):
             return type(tensor)({k: self._pad_across_processes(v, pad_index=pad_index) for k, v in tensor.items()})
         elif not isinstance(tensor, torch.Tensor):
-            raise TypeError(
-                f"Can't pad the values of type {type(tensor)}, only of nested list/tuple/dicts of tensors."
-            )
+            raise TypeError(f"Can't pad the values of type {type(tensor)}, only of nested list/tuple/dicts of tensors.")
 
         if len(tensor.shape) < 2:
             return tensor
@@ -3290,17 +3270,17 @@ class RaftTrainer:
     def prediction_step(
         self,
         model: nn.Module,
-        inputs: Dict[str, Union[torch.Tensor, Any]],
+        inputs: dict[str, Union[torch.Tensor, Any]],
         prediction_loss_only: bool,
-        ignore_keys: Optional[List[str]] = None,
-    ) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], Optional[torch.Tensor]]:
+        ignore_keys: Optional[list[str]] = None,
+    ) -> tuple[Optional[torch.Tensor], Optional[torch.Tensor], Optional[torch.Tensor]]:
         """
         Perform an evaluation step on `model` using `inputs`.
         Subclass and override to inject custom behavior.
         Args:
             model (`nn.Module`):
                 The model to evaluate.
-            inputs (`Dict[str, Union[torch.Tensor, Any]]`):
+            inputs (`dict[str, Union[torch.Tensor, Any]]`):
                 The inputs and targets of the model.
                 The dictionary will be unpacked before being fed to the model. Most models expect the targets under the
                 argument `labels`. Check your model's documentation for all accepted arguments.
@@ -3310,7 +3290,7 @@ class RaftTrainer:
                 A list of keys in the output of your model (if it is a dictionary) that should be ignored when
                 gathering predictions.
         Return:
-            Tuple[Optional[torch.Tensor], Optional[torch.Tensor], Optional[torch.Tensor]]: A tuple with the loss,
+            tuple[Optional[torch.Tensor], Optional[torch.Tensor], Optional[torch.Tensor]]: A tuple with the loss,
             logits and labels (each being optional).
         """
         has_labels = False if len(self.label_names) == 0 else all(inputs.get(k) is not None for k in self.label_names)
@@ -3388,13 +3368,13 @@ class RaftTrainer:
 
         return (loss, logits, labels)
 
-    def floating_point_ops(self, inputs: Dict[str, Union[torch.Tensor, Any]]):
+    def floating_point_ops(self, inputs: dict[str, Union[torch.Tensor, Any]]):
         """
         For models that inherit from [`PreTrainedModel`], uses that method to compute the number of floating point
         operations for every backward + forward pass. If using another model, either implement such a method in the
         model or subclass and override this method.
         Args:
-            inputs (`Dict[str, Union[torch.Tensor, Any]]`):
+            inputs (`dict[str, Union[torch.Tensor, Any]]`):
                 The inputs and targets of the model.
         Returns:
             `int`: The number of floating-point operations.
@@ -3426,7 +3406,7 @@ class RaftTrainer:
         create_repo(repo_name, token=self.args.hub_token, private=self.args.hub_private_repo, exist_ok=True)
         try:
             self.repo = Repository(self.args.output_dir, clone_from=repo_name, token=self.args.hub_token)
-        except EnvironmentError:
+        except OSError:
             if self.args.overwrite_output_dir and at_init:
                 # Try again after wiping output_dir
                 shutil.rmtree(self.args.output_dir)
@@ -3454,13 +3434,13 @@ class RaftTrainer:
         self,
         language: Optional[str] = None,
         license: Optional[str] = None,
-        tags: Union[str, List[str], None] = None,
+        tags: Union[str, list[str], None] = None,
         model_name: Optional[str] = None,
         finetuned_from: Optional[str] = None,
-        tasks: Union[str, List[str], None] = None,
-        dataset_tags: Union[str, List[str], None] = None,
-        dataset: Union[str, List[str], None] = None,
-        dataset_args: Union[str, List[str], None] = None,
+        tasks: Union[str, list[str], None] = None,
+        dataset_tags: Union[str, list[str], None] = None,
+        dataset: Union[str, list[str], None] = None,
+        dataset_args: Union[str, list[str], None] = None,
     ):
         """
         Creates a draft of a model card using the information available to the `Trainer`.
@@ -3470,20 +3450,20 @@ class RaftTrainer:
             license (`str`, *optional*):
                 The license of the model. Will default to the license of the pretrained model used, if the original
                 model given to the `Trainer` comes from a repo on the Hub.
-            tags (`str` or `List[str]`, *optional*):
+            tags (`str` or `list[str]`, *optional*):
                 Some tags to be included in the metadata of the model card.
             model_name (`str`, *optional*):
                 The name of the model.
             finetuned_from (`str`, *optional*):
                 The name of the model used to fine-tune this one (if applicable). Will default to the name of the repo
                 of the original model given to the `Trainer` (if it comes from the Hub).
-            tasks (`str` or `List[str]`, *optional*):
+            tasks (`str` or `list[str]`, *optional*):
                 One or several task identifiers, to be included in the metadata of the model card.
-            dataset_tags (`str` or `List[str]`, *optional*):
+            dataset_tags (`str` or `list[str]`, *optional*):
                 One or several dataset tags, to be included in the metadata of the model card.
-            dataset (`str` or `List[str]`, *optional*):
+            dataset (`str` or `list[str]`, *optional*):
                 One or several dataset identifiers, to be included in the metadata of the model card.
-            dataset_args (`str` or `List[str]`, *optional*):
+            dataset_args (`str` or `list[str]`, *optional*):
                One or several dataset arguments, to be included in the metadata of the model card.
         """
         if not self.is_world_process_zero():
@@ -3596,7 +3576,7 @@ class RaftTrainer:
                 self.repo.push_to_hub(
                     commit_message="update model card README.md", blocking=blocking, auto_lfs_prune=True
                 )
-            except EnvironmentError as exc:
+            except OSError as exc:
                 logger.error(f"Error pushing update to the model card. Please read logs and retry.\n${exc}")
 
         return git_head_commit_url
@@ -3610,7 +3590,7 @@ class RaftTrainer:
         dataloader: DataLoader,
         description: str,
         prediction_loss_only: Optional[bool] = None,
-        ignore_keys: Optional[List[str]] = None,
+        ignore_keys: Optional[list[str]] = None,
         metric_key_prefix: str = "eval",
     ) -> EvalLoopOutput:
         """
@@ -3654,9 +3634,9 @@ class RaftTrainer:
         logger.info(f"  Num examples = {num_examples}")
         logger.info(f"  Batch size = {batch_size}")
         losses_host: torch.Tensor = None
-        preds_host: Union[torch.Tensor, List[torch.Tensor]] = None
-        labels_host: Union[torch.Tensor, List[torch.Tensor]] = None
-        inputs_host: Union[torch.Tensor, List[torch.Tensor]] = None
+        preds_host: Union[torch.Tensor, list[torch.Tensor]] = None
+        labels_host: Union[torch.Tensor, list[torch.Tensor]] = None
+        inputs_host: Union[torch.Tensor, list[torch.Tensor]] = None
 
         world_size = max(1, args.world_size)
 
@@ -3776,7 +3756,7 @@ class RaftTrainer:
 
         # Get current .gitignore content
         if os.path.exists(os.path.join(self.repo.local_dir, ".gitignore")):
-            with open(os.path.join(self.repo.local_dir, ".gitignore"), "r") as f:
+            with open(os.path.join(self.repo.local_dir, ".gitignore")) as f:
                 current_content = f.read()
         else:
             current_content = ""

@@ -1,11 +1,10 @@
 import importlib
-import sys
 import logging
-from typing import Tuple, List, Union
-from importlib.metadata import version, PackageNotFoundError
+import sys
+from pathlib import Path
+from typing import Union
 
 import pkg_resources
-
 
 logger = logging.getLogger(__name__)
 
@@ -20,30 +19,29 @@ def _is_package_available(package_name: str, skippable: bool = False):
         importlib.import_module(package_name)
         return True
     except Exception as e:
-        if e.__class__ == ModuleNotFoundError:
+        if isinstance(e, ModuleNotFoundError):
             return False
         else:
             if skippable:
-                logger.warning(f'An error occurred when importing {package_name}:\n{e}\n{package_name} is disabled.')
+                logger.warning(f"An error occurred when importing {package_name}:\n{e}\n{package_name} is disabled.")
                 return False
             else:
                 raise e
-            
-            
-def _is_packages_available(packages: Union[List[str], List[Tuple[str, bool]]]):
+
+
+def _is_packages_available(packages: Union[list[str], list[tuple[str, bool]]]):
     if isinstance(packages[0], str):
         return all([_is_package_available(package) for package in packages])
     elif isinstance(packages[0], tuple):
         return all([_is_package_available(package, skippable) for package, skippable in packages])
     else:
         raise ValueError(f"Invalid type of packages: {type(packages[0])}")
-    
+
 
 def is_package_version_at_least(package_name, min_version):
     try:
         package_version = pkg_resources.get_distribution(package_name).version
-        if (pkg_resources.parse_version(package_version)
-                < pkg_resources.parse_version(min_version)):
+        if pkg_resources.parse_version(package_version) < pkg_resources.parse_version(min_version):
             return False
     except pkg_resources.DistributionNotFound:
         return False
@@ -76,3 +74,31 @@ def is_trl_available():
 
 def is_multimodal_available():
     return _is_packages_available(["PIL"])
+
+
+def is_deepspeed_available():
+    return _is_package_available("deepspeed")
+
+
+def get_lmflow_dir(return_src_dir: bool = False) -> Path:
+    try:
+        from importlib.util import find_spec
+
+        spec = find_spec("lmflow")
+        if spec is None:
+            return None
+
+        origin = Path(spec.origin)
+        if origin is None:
+            return None
+
+        if origin.name == "__init__.py":
+            if return_src_dir:
+                return origin.parent
+            else:
+                return origin.parent.parent.parent
+        else:
+            return None
+
+    except (ImportError, AttributeError):
+        return None

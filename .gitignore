@@ -18,12 +18,13 @@ log/
 regression_test/*/new_output_models
 regression_test/*/new_log
 output_dir/
+tests_out
 
 # data files
 data/
 
 # output models
-output_models/
+output_models
 adapter_model/
 
 # Distribution / packaging
@@ -167,9 +168,6 @@ debug.env
 
 #ctags
 tags
-
-# pre-commit
-.pre-commit*
 
 # .lock
 *.lock

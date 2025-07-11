@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # @Time    : 7/4/2024 21:12
 # @Author  : Yu Li
 # @Site    :
 # @File    : dpo_pipeline.py
 import os
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 from datasets import Dataset, load_dataset
 from peft import LoraConfig
@@ -22,29 +21,26 @@ else:
 
 
 def get_paired_dataset(
-        data_root: str,
-        data_dir: str,
-        sanity_check: bool = False,
-        cache_dir: Optional[str] = None,
-        num_proc=24,
+    data_root: str,
+    data_dir: str,
+    sanity_check: bool = False,
+    cache_dir: Optional[str] = None,
+    num_proc=24,
 ) -> Dataset:
     """Load dataset and convert it to the necessary format.
 
     The dataset is converted to a dictionary with the following structure:
     {
-        'prompt': List[str],
-        'chosen': List[str],
-        'rejected': List[str],
+        'prompt': list[str],
+        'chosen': list[str],
+        'rejected': list[str],
     }
 
     Prompts are structured as follows:
       "Question: " + <prompt> + "\n\nAnswer: "
     """
     data_path = Path(data_root) / data_dir
-    data_files = [
-        x.absolute().as_posix()
-            for x in data_path.glob("*.json")
-    ]
+    data_files = [x.absolute().as_posix() for x in data_path.glob("*.json")]
     dataset = load_dataset(
         path=data_root,
         split="train",
@@ -56,7 +52,7 @@ def get_paired_dataset(
     if sanity_check:
         dataset = dataset.select(range(min(len(dataset), 1000)))
 
-    def return_prompt_and_responses(samples) -> Dict[str, str]:
+    def return_prompt_and_responses(samples) -> dict[str, str]:
         return {
             "prompt": ["Question: " + question + "\n\nAnswer: " for question in samples["question"]],
             "chosen": samples["response_j"],
@@ -135,21 +131,21 @@ class DPOAligner(BaseAligner):
 
     def _load_dataset(self):
         # load training set
-        self.train_dataset = get_paired_dataset(data_root=self.data_args.dataset_path,
-                                                data_dir="train",
-                                                sanity_check=self.aligner_args.sanity_check)
+        self.train_dataset = get_paired_dataset(
+            data_root=self.data_args.dataset_path, data_dir="train", sanity_check=self.aligner_args.sanity_check
+        )
         self.train_dataset = self.train_dataset.filter(
             lambda x: len(x["prompt"]) + len(x["chosen"]) <= self.aligner_args.max_length
-                      and len(x["prompt"]) + len(x["rejected"]) <= self.aligner_args.max_length
+            and len(x["prompt"]) + len(x["rejected"]) <= self.aligner_args.max_length
         )
         # load evaluation set
         if self.aligner_args.eval_dataset_path:
-            self.eval_dataset = get_paired_dataset(data_root=self.aligner_args.eval_dataset_path,
-                                                data_dir="test",
-                                                sanity_check=True)
+            self.eval_dataset = get_paired_dataset(
+                data_root=self.aligner_args.eval_dataset_path, data_dir="test", sanity_check=True
+            )
             self.eval_dataset = self.eval_dataset.filter(
                 lambda x: len(x["prompt"]) + len(x["chosen"]) <= self.aligner_args.max_length
-                        and len(x["prompt"]) + len(x["rejected"]) <= self.aligner_args.max_length
+                and len(x["prompt"]) + len(x["rejected"]) <= self.aligner_args.max_length
             )
 
     def align(self, model, dataset, reward_model):
@@ -158,7 +154,6 @@ class DPOAligner(BaseAligner):
         tokenizer.pad_token_id = tokenizer.eos_token_id
         self._load_dataset()
 
-        wrapped_model = model
         model = model.get_backend_model()
 
         dpo_trainer = self._initialize_trainer(model, tokenizer)
@@ -168,7 +163,3 @@ class DPOAligner(BaseAligner):
         # 7. save
         output_dir = os.path.join(self.aligner_args.output_dir, "final_checkpoint")
         dpo_trainer.model.save_pretrained(output_dir)
-
-
-
-

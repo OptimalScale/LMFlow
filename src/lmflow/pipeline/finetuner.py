@@ -1,46 +1,36 @@
 #!/usr/bin/env python
-# coding=utf-8
-"""The Finetuner class simplifies the process of running finetuning process on a language model for a TunableModel instance with given dataset.
-"""
-
 import copy
 import logging
 import os
 import sys
-from typing import Any, Iterable, Optional, Tuple, Union
+from copy import deepcopy
+from itertools import chain
+from typing import Union
 
 import datasets
-import transformers
 import evaluate
-from itertools import chain
+import torch
+import transformers
 from transformers import (
     Trainer,
     default_data_collator,
     set_seed,
 )
-from copy import deepcopy
-from transformers import PreTrainedModel, TrainingArguments
 from transformers.trainer_utils import get_last_checkpoint
-from transformers.trainer_callback import (
-    TrainerCallback,
-    TrainerControl,
-    TrainerState,
-)
 from transformers.utils import (
-    is_sagemaker_mp_enabled,
     send_example_telemetry,
 )
-import numpy as np
 
-import lmflow.optim.optimizers as optim
-from lmflow.args import OptimizerNames, DatasetArguments, ModelArguments, FinetunerArguments
+from lmflow.args import DatasetArguments, FinetunerArguments, ModelArguments
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.hf_decoder_model import HFDecoderModel
-from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
-from lmflow.models.hf_text_regression_model import HFTextRegressionModel
-from lmflow.pipeline.base_tuner import BaseTuner
-from lmflow.pipeline.utils.peft_trainer import PeftTrainer, PeftSavingCallback
 
+# from lmflow.models.hf_encoder_decoder_model import HFEncoderDecoderModel
+from lmflow.models.hf_text_regression_model import HFTextRegressionModel
+from lmflow.optim import create_customized_optimizer
+from lmflow.pipeline.base_tuner import BaseTuner
+from lmflow.pipeline.utils.lisa_trainer import DynamicLayerActivationCallback
+from lmflow.utils.versioning import is_package_version_at_least
 
 logger = logging.getLogger(__name__)
 
@@ -67,15 +57,15 @@ class Finetuner(BaseTuner):
         Keyword arguments.
 
     """
-    def __init__(
-        self, 
-        model_args: ModelArguments, 
-        data_args: DatasetArguments, 
-        finetuner_args: FinetunerArguments, 
-        *args, 
-        **kwargs
-    ):
 
+    def __init__(
+        self,
+        model_args: ModelArguments,
+        data_args: DatasetArguments,
+        finetuner_args: FinetunerArguments,
+        *args,
+        **kwargs,
+    ):
         self.model_args = model_args
         self.data_args = data_args
         self.finetuner_args = finetuner_args
@@ -111,7 +101,11 @@ class Finetuner(BaseTuner):
 
         # Detecting last checkpoint.
         last_checkpoint = None
-        if os.path.isdir(finetuner_args.output_dir) and finetuner_args.do_train and not finetuner_args.overwrite_output_dir:
+        if (
+            os.path.isdir(finetuner_args.output_dir)
+            and finetuner_args.do_train
+            and not finetuner_args.overwrite_output_dir
+        ):
             last_checkpoint = get_last_checkpoint(finetuner_args.output_dir)
             if last_checkpoint is None and len(os.listdir(finetuner_args.output_dir)) > 0:
                 raise ValueError(
@@ -130,7 +124,6 @@ class Finetuner(BaseTuner):
 
         # Set seed before initializing model.
         set_seed(finetuner_args.seed)
-
 
     def group_text(self, tokenized_datasets, model_max_length):
         """
@@ -170,10 +163,12 @@ class Finetuner(BaseTuner):
                         f"The block_size passed ({data_args.block_size}) is larger"
                         f"than the maximum length for the model"
                         f"({model_max_length})."
-                        f"Using block_size={data_args.block_size}.")
+                        f"Using block_size={data_args.block_size}."
+                    )
                     block_size = data_args.block_size
             else:
                 block_size = data_args.block_size
+
         # Main data processing function that will concatenate all texts from
         # our dataset and generate chunks of block_size.
         def group_texts(examples):
@@ -221,217 +216,13 @@ class Finetuner(BaseTuner):
 
         return lm_datasets
 
-    def create_customized_optimizer(self, base_trainer_class, model_args):
-        class CustomizedOptimTrainer(base_trainer_class):
-
-            @staticmethod
-            def get_optimizer_cls_and_kwargs(
-                args: TrainingArguments,
-                model: Optional[PreTrainedModel] = None,
-            ) -> Tuple[Any, Any]:
-                # parse args.optim_args
-                optim_args = {}
-                if args.customized_optim_args:
-                    for mapping in args.customized_optim_args.replace(" ", "").split(","):
-                        key, value = mapping.split("=")
-                        optim_args[key] = value
-
-                optimizer_kwargs = {"lr": args.learning_rate}
-
-                if args.customized_optim == OptimizerNames.DUMMY:
-                    optimizer_cls = optim.Dummy
-                    dummy_kwargs = {
-                        "betas": (args.optim_dummy_beta1, args.optim_dummy_beta2),
-                    }
-                    optimizer_kwargs.update(dummy_kwargs)
-                elif args.customized_optim == OptimizerNames.ADABELIEF:
-                    optimizer_cls = optim.AdaBelief
-                    adabelief_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay)
-                    }
-                    optimizer_kwargs.update(adabelief_kwargs)
-                elif args.customized_optim == OptimizerNames.ADABOUND:
-                    optimizer_cls = optim.AdaBound
-                    adabound_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay)
-                    }
-                    optimizer_kwargs.update(adabound_kwargs)
-                elif args.customized_optim == OptimizerNames.LARS:
-                    optimizer_cls = optim.LARS
-                    lars_kwargs = {
-                        "momentum": (args.optim_momentum),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(lars_kwargs)
-                elif args.customized_optim == OptimizerNames.LAMB:
-                    optimizer_cls = optim.Lamb
-                    lamb_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(lamb_kwargs)
-                elif args.customized_optim == OptimizerNames.ADAMAX:
-                    optimizer_cls = optim.Adamax
-                    adamax_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(adamax_kwargs)
-                elif args.customized_optim == OptimizerNames.NADAM:
-                    optimizer_cls = optim.NAdam
-                    nadam_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(nadam_kwargs)
-                elif args.customized_optim == OptimizerNames.RADAM:
-                    optimizer_cls = optim.RAdam
-                    radam_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(radam_kwargs)
-                elif args.customized_optim == OptimizerNames.ADAMP:
-                    optimizer_cls = optim.AdamP
-                    adamp_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(adamp_kwargs)
-                elif args.customized_optim == OptimizerNames.SGDP:
-                    optimizer_cls = optim.SGDP
-                    sgdp_kwargs = {
-                        "momentum": (args.optim_momentum),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(sgdp_kwargs)
-                elif args.customized_optim == OptimizerNames.YOGI:
-                    optimizer_cls = optim.Yogi
-                    yogi_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(yogi_kwargs)
-                elif args.customized_optim == OptimizerNames.SOPHIA:
-                    optimizer_cls = optim.SophiaG
-                    sophia_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(sophia_kwargs)
-                elif args.customized_optim == OptimizerNames.ADAM:
-                    optimizer_cls = optim.Adam
-                    adam_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                    }
-                    optimizer_kwargs.update(adam_kwargs)
-                elif args.customized_optim == OptimizerNames.NOVOGRAD:
-                    optimizer_cls = optim.NovoGrad
-                    novograd_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(novograd_kwargs)
-                elif args.customized_optim == OptimizerNames.ADADELTA:
-                    optimizer_cls = optim.Adadelta
-                    adadelta_kwargs = {
-                    }
-                    optimizer_kwargs.update(adadelta_kwargs)
-                elif args.customized_optim == OptimizerNames.ADAGRAD:
-                    optimizer_cls = optim.AdaGrad
-                    adagrad_kwargs = {
-                    }
-                    optimizer_kwargs.update(adagrad_kwargs)
-                elif args.customized_optim == OptimizerNames.MUON:
-                    optimizer_cls = optim.Muon
-                    muon_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(muon_kwargs)
-                elif args.customized_optim == OptimizerNames.ADAMW_SCHEDULE_FREE:
-                    optimizer_cls = optim.AdamWScheduleFree
-                    adamw_schedule_free_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(adamw_schedule_free_kwargs)
-                elif args.customized_optim == OptimizerNames.SGD_SCHEDULE_FREE:
-                    optimizer_cls = optim.SGDScheduleFree
-                    sgd_schedule_free_kwargs = {
-                        "momentum": (args.optim_momentum),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(sgd_schedule_free_kwargs)
-                elif args.customized_optim == OptimizerNames.ADAN:
-                    optimizer_cls = optim.Adan
-                    adan_kwargs = {
-                        "betas": (args.optim_beta1, args.optim_beta2, args.optim_beta3),
-                        "weight_decay": (args.optim_weight_decay),
-                    }
-                    optimizer_kwargs.update(adan_kwargs)
-                else:
-                    raise ValueError(
-                        f"Trainer cannot instantiate unsupported optimizer: "
-                        f" {args.customized_optim}"
-                    )
-                return optimizer_cls, optimizer_kwargs
-
-            def create_optimizer(self):
-                opt_model = self.model_wrapped if is_sagemaker_mp_enabled() else self.model
-
-                if self.optimizer is None:
-                    decay_parameters = self.get_decay_parameter_names(opt_model)
-                    optimizer_grouped_parameters = [
-                        {
-                            "params": [
-                                p for n, p in opt_model.named_parameters()
-                                    if (n in decay_parameters and p.requires_grad)
-                            ],
-                            "weight_decay": self.args.weight_decay,
-                        },
-                        {
-                            "params": [
-                                p for n, p in opt_model.named_parameters()
-                                    if (n not in decay_parameters and p.requires_grad)
-                            ],
-                            "weight_decay": 0.0,
-                        },
-                    ]
-
-                    optimizer_cls, optimizer_kwargs = CustomizedOptimTrainer.get_optimizer_cls_and_kwargs(self.args, opt_model)
-
-                    # Overwrite `params` in case it's created by
-                    # `get_optimizer_cls_and_kwargs` e.g. for GaLore optimizer.
-                    if "params" in optimizer_kwargs:
-                        optimizer_grouped_parameters = optimizer_kwargs.pop(
-                            "params"
-                        )
-
-                    # For layer-wise dummy optimizers we overwrite
-                    # optimizer_grouped_parameters with `optimizer_dict` to
-                    # avoid arguments conflicts.
-                    if "optimizer_dict" in optimizer_kwargs:
-                        optimizer_grouped_parameters = optimizer_kwargs.pop(
-                            "optimizer_dict"
-                        )
-
-                    self.optimizer = optimizer_cls(
-                        optimizer_grouped_parameters,
-                        **optimizer_kwargs
-                    )
-                if is_sagemaker_mp_enabled():
-                    self.optimizer = smp.DistributedOptimizer(self.optimizer)
-                    
-        return CustomizedOptimTrainer
-
-    def tune(self,
-             model: Union[HFDecoderModel, HFTextRegressionModel, HFEncoderDecoderModel],
-             dataset: Dataset,
-             transform_dataset_in_place=True,
-             data_collator=None):
+    def tune(
+        self,
+        model: Union[HFDecoderModel, HFTextRegressionModel],
+        dataset: Dataset,
+        transform_dataset_in_place=True,
+        data_collator=None,
+    ):
         """
         Perform tuning for a model
 
@@ -452,8 +243,7 @@ class Finetuner(BaseTuner):
 
         # Tokenization and text grouping must be done in the main process
         if dataset.backend == "custom_multi_modal":
-            dataset.backend_dataset.register_tokenizer(
-                model.tokenizer, model.image_processor)
+            dataset.backend_dataset.register_tokenizer(model.tokenizer, model.image_processor)
             lm_dataset = dataset
         else:
             with finetuner_args.main_process_first(desc="dataset map tokenization"):
@@ -467,7 +257,29 @@ class Finetuner(BaseTuner):
                     )
 
         train_dataset = lm_dataset.get_backend_dataset()
-        logger.info(f"Number of train samples: {len(train_dataset)}")
+
+        if data_args.calculate_dataset_stats:
+            total_tokens = 0
+            total_target_tokens = 0
+            pad_token_id = model.get_tokenizer().pad_token_id
+            logger.warning("Calculating dataset stats...")
+            import time
+
+            start_time = time.time()
+            for datapoint in train_dataset:
+                total_tokens += len([label for label in datapoint["input_ids"] if label != pad_token_id])
+                total_target_tokens += len([label for label in datapoint["labels"] if label != -100])
+            logger.warning(
+                "Dataset stats:\n\n"
+                f"Total tokens: {total_tokens}\n"
+                f"Total target tokens: {total_target_tokens}\n"
+                f"Total samples: {len(train_dataset)}\n"
+                f"Average tokens per sample: {total_tokens / len(train_dataset)}\n"
+                f"Average target tokens per sample: {total_target_tokens / len(train_dataset)}\n"
+            )
+            logger.warning("Calculating data stats took %s seconds", time.time() - start_time)
+        else:
+            logger.warning(f"Number of train samples: {len(train_dataset)}")
 
         if finetuner_args.do_eval:
             eval_dataset_args = deepcopy(data_args)
@@ -509,100 +321,48 @@ class Finetuner(BaseTuner):
 
         # Initialize our Trainer
         training_args = finetuner_args
+        FinetuningTrainer = Trainer
+        trainer_callbacks = []
 
-        if model_args.use_lora:
-            FinetuningTrainer = PeftTrainer
-            trainer_callbacks = [PeftSavingCallback]
-        else:
-            FinetuningTrainer = Trainer
-            trainer_callbacks = []
         if data_collator is None:
             data_collator = default_data_collator
 
         if training_args.use_customized_optim:
             BaseTrainer = FinetuningTrainer
-            FinetuningTrainer = self.create_customized_optimizer(
-                BaseTrainer, model_args
-            )
+            FinetuningTrainer = create_customized_optimizer(BaseTrainer, model_args)
 
         if training_args.use_lisa:
-            class DynamicLayerActivationCallback(TrainerCallback):
-                def __init__(self, n_layers, interval_steps, model):
-                    super().__init__()
-                    self.n_layers = n_layers
-                    self.interval_steps = interval_steps
-                    self.model = model
-
-                    # Determine the way to access layers based on the model type
-                    class_to_layers_map = {
-                        'LlamaForCausalLM': 'model.model.layers',
-                        'Qwen2ForCausalLM': 'model.model.layers',
-                        'MistralForCausalLM': 'model.model.layers',
-                        'MixtralForCausalLM': 'model.model.layers',
-                        'GemmaForCausalLM': 'model.model.layers',
-                        'GPT2LMHeadModel': 'model.transformer.h',
-                        'HymbaForCausalLM': 'model.model.layers',
-                    }
-                    model_class_name = self.model.__class__.__name__
-                    if model_class_name in class_to_layers_map:
-                        self.layers_attribute = class_to_layers_map[model_class_name]
-                    else:
-                        self.layers_attribute = training_args.lisa_layers_attribute
-                    self.total_layers = len(eval('self.' + self.layers_attribute))  # Dynamically execute to get the number of layers
-
-                    self.active_layers_indices = []
-
-                def freeze_all_layers(self):
-                    layers = eval('self.' + self.layers_attribute)  # Dynamically execute to get layers
-                    for layer in layers:
-                        for param in layer.parameters():
-                            param.requires_grad = False
-
-                def on_step_begin(self, args, state, control, **kwargs):
-                    # Check if it's time to switch active layers, including at step 0
-                    if state.global_step % self.interval_steps == 0:
-                        self.switch_active_layers()
-
-                def switch_active_layers(self):
-                    # First, disable gradients for all layers
-                    self.freeze_all_layers()
-
-                     # Randomly select n_layers to activate
-                    layers = eval('self.' + self.layers_attribute)  # Re-fetch layer references
-                    self.active_layers_indices = np.random.choice(range(self.total_layers), self.n_layers, replace=False)
-                    print(f"Activating layers at indices: {self.active_layers_indices} for the next steps.", flush=True)
-
-                    # Enable gradients only for the selected layers
-                    for idx in self.active_layers_indices:
-                        for param in layers[idx].parameters():
-                            param.requires_grad = True
-
-            # Instantiate the callback
             dynamic_layer_activation_callback = DynamicLayerActivationCallback(
-                n_layers=training_args.lisa_activated_layers,               # Number of layers to activate
-                interval_steps=training_args.lisa_interval_steps,           # Step interval to update active layers
-                model=model.get_backend_model()
+                n_layers=training_args.lisa_activated_layers,  # Number of layers to activate
+                interval_steps=training_args.lisa_interval_steps,  # Step interval to update active layers
+                model=model.get_backend_model(),
+                lisa_layers_attribute=training_args.lisa_layers_attribute,  # Attribute to access layers of the model
             )
-
             trainer_callbacks.append(dynamic_layer_activation_callback)
 
-        trainer = FinetuningTrainer(
-            model=model.get_backend_model(),
-            args=training_args,
-            train_dataset=train_dataset if training_args.do_train else None,
-            eval_dataset=eval_dataset if training_args.do_eval else None,
-            tokenizer=model.get_tokenizer(),
-            # Data collator will default to DataCollatorWithPadding, so we change it.
-            data_collator=data_collator,
-            compute_metrics=compute_metrics if training_args.do_eval else None,
-            preprocess_logits_for_metrics=preprocess_logits_for_metrics if training_args.do_eval else None,
-            callbacks=trainer_callbacks
-        )
+        trainer_kwargs = {
+            "model": model.get_backend_model(),
+            "args": training_args,
+            "train_dataset": train_dataset if training_args.do_train else None,
+            "eval_dataset": eval_dataset if training_args.do_eval else None,
+            "data_collator": data_collator,
+            "compute_metrics": compute_metrics if training_args.do_eval else None,
+            "preprocess_logits_for_metrics": preprocess_logits_for_metrics if training_args.do_eval else None,
+            "callbacks": trainer_callbacks,
+        }
+        if is_package_version_at_least("transformers", "4.46.0"):
+            # https://github.com/huggingface/transformers/pull/32385
+            trainer_kwargs["processing_class"] = model.get_tokenizer()
+        else:
+            trainer_kwargs["tokenizer"] = model.get_tokenizer()
+        trainer = FinetuningTrainer(**trainer_kwargs)
+
         # Training
         if training_args.do_train:
             checkpoint = None
             last_checkpoint = self.last_checkpoint
             if training_args.resume_from_checkpoint is not None:
+                # load from lora checkpoint is also supported
                 checkpoint = training_args.resume_from_checkpoint
             elif last_checkpoint is not None:
                 checkpoint = last_checkpoint
@@ -618,10 +378,8 @@ class Finetuner(BaseTuner):
             if self.finetuner_args.save_language_projection:
                 language_projection_state = trainer.model.language_projection.state_dict()
                 torch.save(
-                    osp.join(
-                        self.finetuner_args.output_dir,
-                        "language_projection.pth"),
-                    language_projection_state)
+                    os.path.join(self.finetuner_args.output_dir, "language_projection.pth"), language_projection_state
+                )
             metrics = train_result.metrics
 
             max_train_samples = (

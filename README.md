@@ -1,5 +1,5 @@
 <p align="center" width="50%">
-<img src="assets/logo.png" alt="LMFlow" style="width: 50%; min-width: 200px; display: block; margin: auto; background-color: transparent;">
+<img src="docs/assets/logo.png" alt="LMFlow" style="width: 50%; min-width: 200px; display: block; margin: auto; background-color: transparent;">
 </p>
 
 # LMFlow
@@ -26,25 +26,26 @@
 An extensible, convenient, and efficient toolbox for finetuning large machine learning models, designed to be user-friendly, speedy and reliable, and accessible to the entire community.
 
 <p align="center" width="100%">
-<img src="assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
+<img src="docs/assets/features.png" alt="LMFlow-features" style="width: 100%; min-width: 300px; display: block; margin: auto;">
 </p>
 
 ## Latest News
+> [!IMPORTANT]
+> * :exclamation: [2025-07-09] We have a major update to LMFlow with full Accelerate support and extensive streamlining. If you're looking for the previous version, please use `git checkout v0.0.10`, or check out the [v0.0.10 branch](https://github.com/OptimalScale/LMFlow/tree/v0.0.10). View all releases [here](https://github.com/OptimalScale/LMFlow/tags).
 
-* [2025-03-18] With full support for Accelerate and lots of streamlining, LMFlow-nightly is now available! Feel free to try out the latest features and improvements by `git checkout lmflow-nightly`.
 * [2024-12-02] Support [Hymba](https://github.com/NVlabs/hymba), a new family of small language models featuring a hybrid-head parallel architecture. Check out [Post-training Hymba](https://github.com/OptimalScale/LMFlow/tree/main/experimental/Hymba) for more details.
 * [2024-07-01] 🏆 LMFlow receives the [**Best Demo Paper Award**](https://docs.google.com/presentation/d/1TVDooAZqkNObz5ysVhDFtqnnVHR-u8wqYvgix-gzPMs/edit#slide=id.g2e55907bbcc_0_70) at **NAACL 2024**! 🎉
 * [2024-06-30] Expanding Optimization Options! We now support custom optimizer training with a variety of optimizers. Dive into the details and try out the new features with our updated script at [custom_optimizers](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_finetune_with_custom_optim.sh).
 * [2024-04-25] :rocket: Support conversation template! We've preset the latest [Llama-3](https://huggingface.co/meta-llama/Meta-Llama-3-70B) and [Phi-3](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct) conversation templates as well as some frequently used templates such as `chatml` (see all templates [here](https://optimalscale.github.io/LMFlow/examples/DATASETS.html#conversation-template)), and we are working on adding more preset templates. Adding corresponding `--conversation_template` in the shell script and you are all set! :rocket:
-* [2024-03-27] Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! 
-* [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
-* [2023-08-14] Support long context inference with position interpolation (Linear & NTK scaling ) for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 
 <details> <summary>More news...</summary>
 
+* [2024-03-27] Support [LISA](https://arxiv.org/abs/2403.17919), enabling 7B training in 24G memory without offloading! 
+* [2023-09-11] Support [speculative decoding](https://arxiv.org/abs/2211.17192). Check out [speculative_decoding](https://github.com/OptimalScale/LMFlow/blob/main/scripts/speculative_decoding/README.md) for the usage and acceleration details.
+* [2023-08-14] Support long context inference with position interpolation (Linear & NTK scaling ) for LLaMA models. Check out [postion_interpolation](https://github.com/OptimalScale/LMFlow/blob/main/readme/Position_Interpolation.md) for more details.
 * [2023-08-07] Support [Flash Attention-2](https://crfm.stanford.edu/2023/07/17/flash2.html). Check out [flash_attention](https://github.com/OptimalScale/LMFlow/blob/main/readme/flash_attn2.md) for more details.
 * [2023-08-02] Support [Llama2](https://ai.meta.com/llama/), [ChatGLM2](https://huggingface.co/THUDM/chatglm2-6b), and [Baichuan](https://huggingface.co/baichuan-inc/Baichuan-7B) models.
-* [2023-07-23] [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh) is now available! Support multimodal inputs of images and texts. [Online Demo](http://multimodal.lmflow.online) is also provided (We hold the service on a single GPU, hence one may experience "queuing" or "application busy" sometimes when multiple users are accessing at the same time, please wait and attempt again later when such event happens)![image](https://github.com/OptimalScale/LMFlow/blob/rpan-vision-encoder/assets/multimodal-chatbot-demo.gif)
+* [2023-07-23] [LMFlow multimodal chatbot](https://github.com/OptimalScale/LMFlow/blob/main/scripts/run_vis_chatbot_gradio_minigpt4.sh) is now available! Support multimodal inputs of images and texts. [Online Demo](http://multimodal.lmflow.online) is also provided (We hold the service on a single GPU, hence one may experience "queuing" or "application busy" sometimes when multiple users are accessing at the same time, please wait and attempt again later when such event happens)![image](https://github.com/OptimalScale/LMFlow/blob/rpan-vision-encoder/docs/assets/multimodal-chatbot-demo.gif)
 * [2023-06-22]  [LMFlow paper](https://arxiv.org/abs/2306.12420) is out! Check out our implementation details at https://arxiv.org/abs/2306.12420
 * [2023-06-16] Our finetuned Robin-33B-V2 scored an impressive 64.1 on the Huggingface LLM leaderboard in our offline evaluation, outperforming major open-source LLMs! All checkpoints (7B, 13B, 33B, and 65B) are [released](https://huggingface.co/OptimalScale)! Checkout the performance [here](https://medium.com/@hkust.ml/robin-v2-launches-achieves-unparalleled-performance-on-openllm-4f6886e822c1).
 * [2023-06-07] LMFlow is now officially available on PyPI! Install it with `pip install lmflow-finetune`!
@@ -69,11 +70,11 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
 - [LMFlow](#lmflow)
   - [Latest News](#latest-news)
   - [Table of Contents](#table-of-contents)
-  - [Supported Models](#supported-models)
   - [Quick Start](#quick-start)
     - [Setup](#setup)
     - [Prepare Dataset](#prepare-dataset)
     - [Finetuning](#finetuning)
+      - [Estimated Hardware Requirement](#estimated-hardware-requirement)
       - [Full Finetuning](#full-finetuning)
       - [LISA](#lisa)
       - [LoRA](#lora)
@@ -85,21 +86,6 @@ An extensible, convenient, and efficient toolbox for finetuning large machine le
   - [License](#license)
   - [Citation](#citation)
 
-## Supported Models
-
-See all conversation template details [here](https://optimalscale.github.io/LMFlow/examples/supported_conversation_template.html).
-
-|  Model  | Conversation Template |
-|  :---:  | :-------------------: |
-| DeepSeek | `deepseek` <br> `deepseek_v2` <br> `deepseek_r1` <br> `deepseek_r1_distill` <br> `deepseek_v3` |
-| Gemma | `gemma` |
-| Hymba | `hymba` |
-| InternLM2 | `internlm2` |
-| LLaMA | `llama2` <br> `llama3` <br> `llama3_for_tool`|
-| Phi | `phi3` |
-| Qwen | `qwen2` <br> `qwen2_for_tool` <br> `qwen2_5` <br> `qwen2_5_1m` <br> `qwen2_5_math` <br> `qwen_qwq` |
-| Yi | `yi` <br> `yi1_5` |
-| Zephyr | `zephyr` |
 
 ## Quick Start
 
@@ -108,7 +94,7 @@ See all conversation template details [here](https://optimalscale.github.io/LMFl
 Our package has been tested on Linux OS (Ubuntu 20.04). Other OS platforms (MacOS, Windows) are not fully tested, where you may encounter unexpected errors. If you are using LMFlow for the first time, we recommend you to try on a Linux machine or Google Colab.
 
 ```bash
-git clone -b v0.0.9 https://github.com/OptimalScale/LMFlow.git
+git clone -b v1.0.0 https://github.com/OptimalScale/LMFlow.git
 cd LMFlow
 conda create -n lmflow python=3.9 -y
 conda activate lmflow
@@ -116,7 +102,20 @@ conda install mpi4py
 pip install -e .
 ```
 
-<details><summary> for CUDA versions 10.3-11.7 </summary>
+<details><summary> Looking for a previous version? </summary>
+
+```bash
+git clone -b v0.0.10 https://github.com/OptimalScale/LMFlow.git
+cd LMFlow
+conda create -n lmflow python=3.9 -y
+conda activate lmflow
+conda install mpi4py
+pip install -e .
+```
+
+</details>
+
+<details><summary> For CUDA versions 10.3-11.7 </summary>
 
 ```bash
 git clone -b v0.0.5 https://github.com/OptimalScale/LMFlow.git
@@ -161,6 +160,16 @@ pip install -e .
 Please refer to our [doc](https://optimalscale.github.io/LMFlow/examples/DATASETS.html).
 
 ### Finetuning
+
+#### Estimated Hardware Requirement
+
+| Method                 | 0.5B |  3B  |  7B  |  14B  |  30B  |  70B  |  `x`B   |
+| ---------------------- | ---- | ---- | ---- | ----- | ----- | ----- | ------- |
+| Full `bf16`/`fp16`     |  9GB | 55GB |120GB | 240GB | 600GB | 1200GB| `18x`GB |
+| LoRA                   |  1GB | 6GB  | 16GB |  32GB |  64GB | 160GB |  `2x`GB |
+| QLoRA `quant_bit=8`    | 0.7GB| 3GB  | 10GB |  20GB |  40GB |   80GB|  `x`GB  |
+| QLoRA `quant_bit=4`    | 0.4GB| 1.5GB|  6GB |  12GB |  24GB |   48GB| `x/2`GB |
+
 
 #### Full Finetuning
 

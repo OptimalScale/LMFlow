@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import torch
 from torch.optim.optimizer import Optimizer
 
+
 class Adadelta(Optimizer):
     def __init__(self, params, lr=1.0, rho=0.95, eps=1e-6):
         defaults = dict(lr=lr, rho=rho, eps=eps)
-        super(Adadelta, self).__init__(params, defaults)
+        super().__init__(params, defaults)
 
     def step(self, closure=None):
         loss = None
@@ -15,21 +15,21 @@ class Adadelta(Optimizer):
             loss = closure()
 
         for group in self.param_groups:
-            for p in group['params']:
+            for p in group["params"]:
                 if p.grad is None:
                     continue
                 grad = p.grad.data
                 state = self.state[p]
 
                 if len(state) == 0:
-                    state['step'] = 0
-                    state['square_avg'] = torch.zeros_like(p.data)
-                    state['acc_delta'] = torch.zeros_like(p.data)
+                    state["step"] = 0
+                    state["square_avg"] = torch.zeros_like(p.data)
+                    state["acc_delta"] = torch.zeros_like(p.data)
 
-                square_avg, acc_delta = state['square_avg'], state['acc_delta']
-                rho, eps = group['rho'], group['eps']
+                square_avg, acc_delta = state["square_avg"], state["acc_delta"]
+                rho, eps = group["rho"], group["eps"]
 
-                state['step'] += 1
+                state["step"] += 1
 
                 square_avg.mul_(rho).addcmul_(1 - rho, grad, grad)
 

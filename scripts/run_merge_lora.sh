@@ -1,13 +1,9 @@
 #!/bin/bash
-
 # Parses arguments
 model_name_or_path=gpt2
 lora_model_path=output_models/lora
 output_model_path=output_models/merge_lora
 device=cpu
-
-# if gpu
-deepspeed_args="--master_port=11000"
 
 while [[ $# -ge 1 ]]; do
   key="$1"
@@ -28,10 +24,6 @@ while [[ $# -ge 1 ]]; do
       device="$2"
       shift
       ;;
-    --deepspeed_args)
-      deepspeed_args="$2"
-      shift
-      ;;
     *)
       echo "error: unknown option \"${key}\"" 1>&2
       exit 1
@@ -46,7 +38,6 @@ if [ ${device} == "cpu" ]; then
         --lora_model_path ${lora_model_path} \
         --output_model_path ${output_model_path} \
         --device ${device} \
-        --ds_config configs/ds_config_eval.json
 elif [ ${device} == "gpu" ]; then
     echo "Error: Merging LoRA weights using gpu not supported yet. Please use cpu."
 else

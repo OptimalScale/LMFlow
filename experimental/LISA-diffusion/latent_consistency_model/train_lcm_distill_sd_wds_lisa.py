@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2024 The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +23,10 @@ import os
 import random
 import shutil
 from pathlib import Path
-from typing import List, Union
+from typing import Union
 
 import accelerate
+import diffusers
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -38,6 +38,17 @@ from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import ProjectConfiguration, set_seed
 from braceexpand import braceexpand
+from diffusers import (
+    AutoencoderKL,
+    DDPMScheduler,
+    LCMScheduler,
+    StableDiffusionPipeline,
+    UNet2DConditionModel,
+)
+from diffusers.optimization import get_scheduler
+from diffusers.training_utils import resolve_interpolation_mode
+from diffusers.utils import check_min_version, is_wandb_available
+from diffusers.utils.import_utils import is_xformers_available
 from huggingface_hub import create_repo, upload_folder
 from packaging import version
 from torch.utils.data import default_collate
@@ -50,20 +61,6 @@ from webdataset.tariterators import (
     url_opener,
     valid_sample,
 )
-
-import diffusers
-from diffusers import (
-    AutoencoderKL,
-    DDPMScheduler,
-    LCMScheduler,
-    StableDiffusionPipeline,
-    UNet2DConditionModel,
-)
-from diffusers.optimization import get_scheduler
-from diffusers.training_utils import resolve_interpolation_mode
-from diffusers.utils import check_min_version, is_wandb_available
-from diffusers.utils.import_utils import is_xformers_available
-
 
 MAX_SEQ_LENGTH = 77
 
@@ -80,21 +77,23 @@ def freeze_all_layers(model):
     for param in model.parameters():
         param.requires_grad = False
 
-def random_activate_layers(model,p):
-    activate_number = int((len(list(model.parameters()))-2) * p)
-    index = np.random.choice(range(0,len(list(model.parameters()))-1,1), activate_number, replace=False)
+
+def random_activate_layers(model, p):
+    activate_number = int((len(list(model.parameters())) - 2) * p)
+    index = np.random.choice(range(0, len(list(model.parameters())) - 1, 1), activate_number, replace=False)
     count = 0
     for param in model.parameters():
-        if count == 0 or count == len(list(model.parameters()))-1:
+        if count == 0 or count == len(list(model.parameters())) - 1:
             param.requires_grad = True
         elif count in index:
             param.requires_grad = True
-        
+
         count += 1
 
-def lisa(model,p=0.25):
+
+def lisa(model, p=0.25):
     freeze_all_layers(model)
-    random_activate_layers(model,p)
+    random_activate_layers(model, p)
 
 
 def filter_keys(key_set):
@@ -163,7 +162,7 @@ class WebdatasetFilter:
 class SDText2ImageDataset:
     def __init__(
         self,
-        train_shards_path_or_url: Union[str, List[str]],
+        train_shards_path_or_url: Union[str, list[str]],
         num_train_examples: int,
         per_gpu_batch_size: int,
         global_batch_size: int,
@@ -239,7 +238,6 @@ class SDText2ImageDataset:
         return self._train_dataloader
 
 
-
 def log_validation(vae, unet, args, accelerator, weight_dtype, step, name="target"):
     logger.info("Running validation... ")
 
@@ -264,7 +262,7 @@ def log_validation(vae, unet, args, accelerator, weight_dtype, step, name="targe
         generator = torch.Generator(device=accelerator.device).manual_seed(args.seed)
 
     validation_prompts = [
-        "portrait photo of a girl, photograph, highly detailed face, depth of field, moody light, golden hour, style by Dan Winters, Russell James, Steve McCurry, centered, extremely detailed, Nikon D850, award winning photography",
+        "portrait photo of a girl, photograph, highly detailed face, depth of field, moody light, golden hour, style by Dan Winters, Russell James, Steve McCurry, centered, extremely detailed, Nikon D850, award winning photography",  # noqa: E501
         # "Self-portrait oil painting, a beautiful cyborg with golden hair, 8k",
         # "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k",
         # "A photo of beautiful mountain with realistic sunset and blue lake, highly detailed, masterpiece",
@@ -275,7 +273,10 @@ def log_validation(vae, unet, args, accelerator, weight_dtype, step, name="targe
     for _, prompt in enumerate(validation_prompts):
         images = []
         from diffusers import UniPCMultistepScheduler
-        pipeline.scheduler = UniPCMultistepScheduler.from_pretrained("CompVis/stable-diffusion-v1-4", subfolder="scheduler")
+
+        pipeline.scheduler = UniPCMultistepScheduler.from_pretrained(
+            "CompVis/stable-diffusion-v1-4", subfolder="scheduler"
+        )
         with torch.autocast("cuda"):
             images = pipeline(
                 prompt=prompt,
@@ -288,7 +289,7 @@ def log_validation(vae, unet, args, accelerator, weight_dtype, step, name="targe
 
     for _, prompt in enumerate(validation_prompts):
         images = []
-        pipeline.scheduler=LCMScheduler.from_pretrained(args.pretrained_teacher_model, subfolder="scheduler")
+        pipeline.scheduler = LCMScheduler.from_pretrained(args.pretrained_teacher_model, subfolder="scheduler")
         with torch.autocast("cuda"):
             images = pipeline(
                 prompt=prompt,
@@ -330,7 +331,7 @@ def log_validation(vae, unet, args, accelerator, weight_dtype, step, name="targe
         torch.cuda.empty_cache()
 
         return image_logs
-    
+
 
 # From LatentConsistencyModel.get_guidance_scale_embedding
 def guidance_scale_embedding(w, embedding_dim=512, dtype=torch.float32):
@@ -641,8 +642,7 @@ def parse_args():
         type=int,
         default=None,
         help=(
-            "For debugging purposes or quicker training, truncate the number of training examples to this "
-            "value if set."
+            "For debugging purposes or quicker training, truncate the number of training examples to this value if set."
         ),
     )
     # ----Learning Rate----
@@ -882,6 +882,7 @@ def main(args):
 
     accelerator_project_config = ProjectConfiguration(project_dir=args.output_dir, logging_dir=logging_dir)
     from accelerate import DistributedDataParallelKwargs
+
     ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -889,8 +890,11 @@ def main(args):
         log_with=args.report_to,
         project_config=accelerator_project_config,
         kwargs_handlers=[ddp_kwargs],
-        split_batches=True,  # It's important to set this to True when using webdataset to get the right number of steps for lr scheduling. If set to False, the number of steps will be devide by the number of processes assuming batches are multiplied by the number of processes
+        split_batches=True,
     )
+    # It's important to set `split_batches=True` when using webdataset to get the right number
+    # of steps for lr scheduling. If set to False, the number of steps will be devide by the number of
+    # processes assuming batches are multiplied by the number of processes
 
     # Make one log on every process with the configuration for debugging.
     logging.basicConfig(
@@ -1066,7 +1070,9 @@ def main(args):
             xformers_version = version.parse(xformers.__version__)
             if xformers_version == version.parse("0.0.16"):
                 logger.warning(
-                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during training, please update xFormers to at least 0.0.17. See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
+                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during "
+                    "training, please update xFormers to at least 0.0.17. "
+                    "See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
                 )
             unet.enable_xformers_memory_efficient_attention()
             teacher_unet.enable_xformers_memory_efficient_attention()
@@ -1089,7 +1095,7 @@ def main(args):
         except ImportError:
             raise ImportError(
                 "To use 8-bit Adam, please install the bitsandbytes library: `pip install bitsandbytes`."
-            )
+            ) from None
 
         optimizer_class = bnb.optim.AdamW8bit
     else:
@@ -1099,28 +1105,30 @@ def main(args):
     scheduler_dict = dict()
     param_number = len(list(unet.parameters()))
     print(param_number)
-    lisa_p = 0.25 # 128 / param_number # 32 / param_number
-    lisa(model=unet,p=lisa_p)
+    lisa_p = 0.25  # 128 / param_number # 32 / param_number
+    lisa(model=unet, p=lisa_p)
     for p in unet.parameters():
         if p.requires_grad:
-            optimizer_dict[p] = optimizer_class([{"params":p}],
-                                                lr=args.learning_rate,
-                                                betas=(args.adam_beta1, args.adam_beta2),
-                                                weight_decay=args.adam_weight_decay,
-                                                eps=args.adam_epsilon)
+            optimizer_dict[p] = optimizer_class(
+                [{"params": p}],
+                lr=args.learning_rate,
+                betas=(args.adam_beta1, args.adam_beta2),
+                weight_decay=args.adam_weight_decay,
+                eps=args.adam_epsilon,
+            )
             optimizer_dict[p] = accelerator.prepare_optimizer(optimizer_dict[p])
     dataset = SDText2ImageDataset(
-            train_shards_path_or_url=args.train_shards_path_or_url,
-            num_train_examples=args.max_train_samples,
-            per_gpu_batch_size=args.train_batch_size,
-            global_batch_size=args.train_batch_size * accelerator.num_processes,
-            num_workers=args.dataloader_num_workers,
-            resolution=args.resolution,
-            interpolation_type=args.interpolation_type,
-            shuffle_buffer_size=1000,
-            pin_memory=True,
-            persistent_workers=True,
-        )
+        train_shards_path_or_url=args.train_shards_path_or_url,
+        num_train_examples=args.max_train_samples,
+        per_gpu_batch_size=args.train_batch_size,
+        global_batch_size=args.train_batch_size * accelerator.num_processes,
+        num_workers=args.dataloader_num_workers,
+        resolution=args.resolution,
+        interpolation_type=args.interpolation_type,
+        shuffle_buffer_size=1000,
+        pin_memory=True,
+        persistent_workers=True,
+    )
     train_dataloader = dataset.train_dataloader
 
     def compute_embeddings(prompt_batch, proportion_empty_prompts, text_encoder, tokenizer, is_train=True):
@@ -1128,11 +1136,11 @@ def main(args):
         return {"prompt_embeds": prompt_embeds}
 
     compute_embeddings_fn = functools.partial(
-            compute_embeddings,
-            proportion_empty_prompts=0,
-            text_encoder=text_encoder,
-            tokenizer=tokenizer,
-        )
+        compute_embeddings,
+        proportion_empty_prompts=0,
+        text_encoder=text_encoder,
+        tokenizer=tokenizer,
+    )
 
     # 14. LR Scheduler creation
     # Scheduler and math around the number of training steps.
@@ -1145,12 +1153,13 @@ def main(args):
     for p in unet.parameters():
         if p.requires_grad:
             scheduler_dict[p] = get_scheduler(
-                                args.lr_scheduler,
-                                optimizer=optimizer_dict[p],
-                                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
-                                num_training_steps=args.max_train_steps * accelerator.num_processes)
+                args.lr_scheduler,
+                optimizer=optimizer_dict[p],
+                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                num_training_steps=args.max_train_steps * accelerator.num_processes,
+            )
             scheduler_dict[p] = accelerator.prepare_scheduler(scheduler_dict[p])
-    
+
     # define a hook function to update the parameter p during the backward pass
     def optimizer_hook(p):
         if p.grad is None:
@@ -1159,18 +1168,21 @@ def main(args):
             return
         else:
             if p not in optimizer_dict:
-                optimizer_dict[p] = optimizer_class([{"params":p}],
-                                                lr=args.learning_rate,
-                                                betas=(args.adam_beta1, args.adam_beta2),
-                                                weight_decay=args.adam_weight_decay,
-                                                eps=args.adam_epsilon)
+                optimizer_dict[p] = optimizer_class(
+                    [{"params": p}],
+                    lr=args.learning_rate,
+                    betas=(args.adam_beta1, args.adam_beta2),
+                    weight_decay=args.adam_weight_decay,
+                    eps=args.adam_epsilon,
+                )
                 optimizer_dict[p] = accelerator.prepare_optimizer(optimizer_dict[p])
             if p not in scheduler_dict:
                 scheduler_dict[p] = get_scheduler(
-                                args.lr_scheduler,
-                                optimizer=optimizer_dict[p],
-                                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
-                                num_training_steps=args.max_train_steps * accelerator.num_processes)
+                    args.lr_scheduler,
+                    optimizer=optimizer_dict[p],
+                    num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                    num_training_steps=args.max_train_steps * accelerator.num_processes,
+                )
                 scheduler_dict[p] = accelerator.prepare_scheduler(scheduler_dict[p])
         if accelerator.sync_gradients:
             torch.nn.utils.clip_grad_norm_(p, args.max_grad_norm)
@@ -1259,7 +1271,7 @@ def main(args):
         for step, batch in enumerate(train_dataloader):
             if total_count % 5 == 0 and total_count != 0:
                 param_number = len(list(unet.parameters()))
-                lisa(model=unet,p=lisa_p)
+                lisa(model=unet, p=lisa_p)
             total_count += 1
             with accelerator.accumulate(unet):
                 # 1. Load and process the image and text conditioning
@@ -1365,7 +1377,8 @@ def main(args):
                             sigma_schedule,
                         )
 
-                        # 2. Get teacher model prediction on noisy_model_input z_{t_{n + k}} and unconditional embedding 0
+                        # 2. Get teacher model prediction on noisy_model_input z_{t_{n + k}} and
+                        # unconditional embedding 0
                         uncond_teacher_output = teacher_unet(
                             noisy_model_input.to(weight_dtype),
                             start_timesteps,
@@ -1442,13 +1455,15 @@ def main(args):
                             checkpoints = [d for d in checkpoints if d.startswith("checkpoint")]
                             checkpoints = sorted(checkpoints, key=lambda x: int(x.split("-")[1]))
 
-                            # before we save the new checkpoint, we need to have at _most_ `checkpoints_total_limit - 1` checkpoints
+                            # before we save the new checkpoint, we need to have at _most_
+                            # `checkpoints_total_limit - 1` checkpoints
                             if len(checkpoints) >= args.checkpoints_total_limit:
                                 num_to_remove = len(checkpoints) - args.checkpoints_total_limit + 1
                                 removing_checkpoints = checkpoints[0:num_to_remove]
 
                                 logger.info(
-                                    f"{len(checkpoints)} checkpoints already exist, removing {len(removing_checkpoints)} checkpoints"
+                                    f"{len(checkpoints)} checkpoints already exist, removing "
+                                    f"{len(removing_checkpoints)} checkpoints"
                                 )
                                 logger.info(f"removing checkpoints: {', '.join(removing_checkpoints)}")
 

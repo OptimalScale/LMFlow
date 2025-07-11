@@ -1,28 +1,18 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
-from .base import StringFormatter, TemplateComponent, ConversationTemplate
-
+from .base import ConversationTemplate, StringFormatter, TemplateComponent
 
 DEEPSEEK_V2_TEMPLATE = ConversationTemplate(
-    template_name='deepseek_v2',
-    user_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='User: {{content}}\n\n')
-        ]
-    ),
+    template_name="deepseek_v2",
+    user_formatter=StringFormatter(template=[TemplateComponent(type="string", content="User: {{content}}\n\n")]),
     assistant_formatter=StringFormatter(
         template=[
-            TemplateComponent(type='string', content='Assistant: {{content}}'),
-            TemplateComponent(type='token', content='eos_token')
+            TemplateComponent(type="string", content="Assistant: {{content}}"),
+            TemplateComponent(type="token", content="eos_token"),
         ]
     ),
-    system_formatter=StringFormatter(
-        template=[
-            TemplateComponent(type='string', content='{{content}}\n\n')
-        ]
-    ),
-    special_starter=TemplateComponent(type='token', content='bos_token')
+    system_formatter=StringFormatter(template=[TemplateComponent(type="string", content="{{content}}\n\n")]),
+    special_starter=TemplateComponent(type="token", content="bos_token"),
 )
 
 
@@ -249,6 +239,6 @@ DEEPSEEK_R1_DISTILL_TEMPLATE = (
     "{{'<｜tool▁outputs▁end｜>'}}"
     "{% endif %}"
     "{% if add_generation_prompt and not ns.is_tool %}"
-    "{{'<｜Assistant｜>'}}"
+    "{{'<｜Assistant｜><think>\\n'}}"
     "{% endif %}"
 )

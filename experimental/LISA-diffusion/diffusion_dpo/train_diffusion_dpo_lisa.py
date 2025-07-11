@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding=utf-8
 # Copyright 2024 bram-w, The HuggingFace Inc. team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,27 +21,18 @@ import os
 import shutil
 from pathlib import Path
 
+import accelerate
+import diffusers
 import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.utils.checkpoint
 import transformers
 import wandb
-import accelerate
 from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import ProjectConfiguration, set_seed
 from datasets import load_dataset
-from huggingface_hub import create_repo, upload_folder
-from packaging import version
-from peft import LoraConfig
-from peft.utils import get_peft_model_state_dict
-from PIL import Image
-from torchvision import transforms
-from tqdm.auto import tqdm
-from transformers import AutoTokenizer, PretrainedConfig
-
-import diffusers
 from diffusers import (
     AutoencoderKL,
     DDPMScheduler,
@@ -50,11 +40,15 @@ from diffusers import (
     DPMSolverMultistepScheduler,
     UNet2DConditionModel,
 )
-from diffusers.loaders import LoraLoaderMixin
 from diffusers.optimization import get_scheduler
-from diffusers.utils import check_min_version, convert_state_dict_to_diffusers
+from diffusers.utils import check_min_version
 from diffusers.utils.import_utils import is_xformers_available
-
+from huggingface_hub import create_repo, upload_folder
+from packaging import version
+from PIL import Image
+from torchvision import transforms
+from tqdm.auto import tqdm
+from transformers import AutoTokenizer, PretrainedConfig
 
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
 check_min_version("0.25.0.dev0")
@@ -63,31 +57,34 @@ logger = get_logger(__name__)
 
 
 VALIDATION_PROMPTS = [
-    "portrait photo of a girl, photograph, highly detailed face, depth of field, moody light, golden hour, style by Dan Winters, Russell James, Steve McCurry, centered, extremely detailed, Nikon D850, award winning photography",
+    "portrait photo of a girl, photograph, highly detailed face, depth of field, moody light, golden hour, style by Dan Winters, Russell James, Steve McCurry, centered, extremely detailed, Nikon D850, award winning photography",  # noqa: E501
     "Self-portrait oil painting, a beautiful cyborg with golden hair, 8k",
     "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k",
     "A photo of beautiful mountain with realistic sunset and blue lake, highly detailed, masterpiece",
 ]
 
+
 def freeze_all_layers(model):
     for param in model.parameters():
         param.requires_grad = False
 
-def random_activate_layers(model,p):
-    activate_number = int((len(list(model.parameters()))-2) * p)
-    index = np.random.choice(range(0,len(list(model.parameters()))-1,1), activate_number, replace=False)
+
+def random_activate_layers(model, p):
+    activate_number = int((len(list(model.parameters())) - 2) * p)
+    index = np.random.choice(range(0, len(list(model.parameters())) - 1, 1), activate_number, replace=False)
     count = 0
     for param in model.parameters():
-        if count == 0 or count == len(list(model.parameters()))-1:
+        if count == 0 or count == len(list(model.parameters())) - 1:
             param.requires_grad = True
         elif count in index:
             param.requires_grad = True
-        
+
         count += 1
 
-def lisa(model,p=0.25):
+
+def lisa(model, p=0.25):
     freeze_all_layers(model)
-    random_activate_layers(model,p)
+    random_activate_layers(model, p)
 
 
 def import_model_class_from_model_name_or_path(pretrained_model_name_or_path: str, revision: str):
@@ -120,8 +117,9 @@ def update_ema(target_params, source_params, rate=0.99):
         # if src.requires_grad == True:
         targ.detach().mul_(rate).add_(src, alpha=1 - rate)
 
+
 def log_validation(args, unet, accelerator, weight_dtype, epoch, is_final_validation=False):
-    logger.info(f"Running validation... \n Generating images with prompts:\n" f" {VALIDATION_PROMPTS}.")
+    logger.info(f"Running validation... \n Generating images with prompts:\n {VALIDATION_PROMPTS}.")
 
     # create pipeline
     pipeline = DiffusionPipeline.from_pretrained(
@@ -226,7 +224,9 @@ def parse_args(input_args=None):
         "--run_validation",
         default=False,
         action="store_true",
-        help="Whether to run validation inference in between training and also after training. Helps to track progress.",
+        help=(
+            "Whether to run validation inference in between training and also after training. Helps to track progress."
+        ),
     )
     parser.add_argument(
         "--validation_steps",
@@ -239,8 +239,7 @@ def parse_args(input_args=None):
         type=int,
         default=None,
         help=(
-            "For debugging purposes or quicker training, truncate the number of training examples to this "
-            "value if set."
+            "For debugging purposes or quicker training, truncate the number of training examples to this value if set."
         ),
     )
     parser.add_argument(
@@ -476,9 +475,7 @@ def tokenize_captions(tokenizer, examples):
     for caption in examples["caption"]:
         captions.append(caption)
 
-    text_inputs = tokenizer(
-        captions, truncation=True, padding="max_length", max_length=max_length, return_tensors="pt"
-    )
+    text_inputs = tokenizer(captions, truncation=True, padding="max_length", max_length=max_length, return_tensors="pt")
 
     return text_inputs.input_ids
 
@@ -505,6 +502,7 @@ def main(args):
 
     accelerator_project_config = ProjectConfiguration(project_dir=args.output_dir, logging_dir=logging_dir)
     from accelerate import DistributedDataParallelKwargs
+
     ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
     accelerator = Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -597,7 +595,9 @@ def main(args):
             xformers_version = version.parse(xformers.__version__)
             if xformers_version == version.parse("0.0.16"):
                 logger.warning(
-                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during training, please update xFormers to at least 0.0.17. See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
+                    "xFormers 0.0.16 cannot be used for training in some GPUs. If you observe problems during "
+                    "training, please update xFormers to at least 0.0.17. "
+                    "See https://huggingface.co/docs/diffusers/main/en/optimization/xformers for more details."
                 )
             unet.enable_xformers_memory_efficient_attention()
         else:
@@ -629,8 +629,8 @@ def main(args):
                 del load_model
 
         accelerator.register_save_state_pre_hook(save_model_hook)
-        accelerator.register_load_state_pre_hook(load_model_hook)    # Enable TF32 for faster training on Ampere GPUs,
-    
+        accelerator.register_load_state_pre_hook(load_model_hook)  # Enable TF32 for faster training on Ampere GPUs,
+
     # cf https://pytorch.org/docs/stable/notes/cuda.html#tensorfloat-32-tf32-on-ampere-devices
     if args.allow_tf32:
         torch.backends.cuda.matmul.allow_tf32 = True
@@ -647,7 +647,7 @@ def main(args):
         except ImportError:
             raise ImportError(
                 "To use 8-bit Adam, please install the bitsandbytes library: `pip install bitsandbytes`."
-            )
+            ) from None
 
         optimizer_class = bnb.optim.AdamW8bit
     else:
@@ -657,16 +657,18 @@ def main(args):
     scheduler_dict = dict()
     param_number = len(list(unet.parameters()))
     print(param_number)
-    lisa_p = 0.25 # 128 / param_number # 32 / param_number
-    lisa(model=unet,p=lisa_p)
+    lisa_p = 0.25  # 128 / param_number # 32 / param_number
+    lisa(model=unet, p=lisa_p)
 
     for p in unet.parameters():
         if p.requires_grad:
-            optimizer_dict[p] = optimizer_class([{"params":p}],
-                                                lr=args.learning_rate,
-                                                betas=(args.adam_beta1, args.adam_beta2),
-                                                weight_decay=args.adam_weight_decay,
-                                                eps=args.adam_epsilon)
+            optimizer_dict[p] = optimizer_class(
+                [{"params": p}],
+                lr=args.learning_rate,
+                betas=(args.adam_beta1, args.adam_beta2),
+                weight_decay=args.adam_weight_decay,
+                eps=args.adam_epsilon,
+            )
             optimizer_dict[p] = accelerator.prepare_optimizer(optimizer_dict[p])
 
     # Dataset and DataLoaders creation:
@@ -737,12 +739,13 @@ def main(args):
     for p in unet.parameters():
         if p.requires_grad:
             scheduler_dict[p] = get_scheduler(
-                                args.lr_scheduler,
-                                optimizer=optimizer_dict[p],
-                                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
-                                num_training_steps=args.max_train_steps * accelerator.num_processes)
+                args.lr_scheduler,
+                optimizer=optimizer_dict[p],
+                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                num_training_steps=args.max_train_steps * accelerator.num_processes,
+            )
             scheduler_dict[p] = accelerator.prepare_scheduler(scheduler_dict[p])
-  
+
     # define a hook function to update the parameter p during the backward pass
     def optimizer_hook(p):
         if p.grad is None:
@@ -751,18 +754,21 @@ def main(args):
             return
         else:
             if p not in optimizer_dict:
-                optimizer_dict[p] = optimizer_class([{"params":p}],
-                                                lr=args.learning_rate,
-                                                betas=(args.adam_beta1, args.adam_beta2),
-                                                weight_decay=args.adam_weight_decay,
-                                                eps=args.adam_epsilon)
+                optimizer_dict[p] = optimizer_class(
+                    [{"params": p}],
+                    lr=args.learning_rate,
+                    betas=(args.adam_beta1, args.adam_beta2),
+                    weight_decay=args.adam_weight_decay,
+                    eps=args.adam_epsilon,
+                )
                 optimizer_dict[p] = accelerator.prepare_optimizer(optimizer_dict[p])
             if p not in scheduler_dict:
                 scheduler_dict[p] = get_scheduler(
-                                args.lr_scheduler,
-                                optimizer=optimizer_dict[p],
-                                num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
-                                num_training_steps=args.max_train_steps * accelerator.num_processes)
+                    args.lr_scheduler,
+                    optimizer=optimizer_dict[p],
+                    num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                    num_training_steps=args.max_train_steps * accelerator.num_processes,
+                )
                 scheduler_dict[p] = accelerator.prepare_scheduler(scheduler_dict[p])
         if accelerator.sync_gradients:
             torch.nn.utils.clip_grad_norm_(p, args.max_grad_norm)
@@ -844,7 +850,7 @@ def main(args):
         for step, batch in enumerate(train_dataloader):
             if total_count % 6 == 0 and total_count != 0:
                 param_number = len(list(unet.parameters()))
-                lisa(model=unet,p=lisa_p)
+                lisa(model=unet, p=lisa_p)
             total_count += 1
             with accelerator.accumulate(unet):
                 # (batch_size, 2*channels, h, w) -> (2*batch_size, channels, h, w)
@@ -902,11 +908,15 @@ def main(args):
 
                 # Reference model predictions.
                 with torch.no_grad():
-                    ref_preds = ref_net(
-                        noisy_model_input.half(),
-                        timesteps.half(),
-                        encoder_hidden_states.half(),
-                    ).sample.detach().float()
+                    ref_preds = (
+                        ref_net(
+                            noisy_model_input.half(),
+                            timesteps.half(),
+                            encoder_hidden_states.half(),
+                        )
+                        .sample.detach()
+                        .float()
+                    )
                     ref_loss = F.mse_loss(ref_preds.float(), target.float(), reduction="none")
                     ref_loss = ref_loss.mean(dim=list(range(1, len(ref_loss.shape))))
 
@@ -945,13 +955,15 @@ def main(args):
                             checkpoints = [d for d in checkpoints if d.startswith("checkpoint")]
                             checkpoints = sorted(checkpoints, key=lambda x: int(x.split("-")[1]))
 
-                            # before we save the new checkpoint, we need to have at _most_ `checkpoints_total_limit - 1` checkpoints
+                            # before we save the new checkpoint, we need to have at _most_
+                            # `checkpoints_total_limit - 1` checkpoints
                             if len(checkpoints) >= args.checkpoints_total_limit:
                                 num_to_remove = len(checkpoints) - args.checkpoints_total_limit + 1
                                 removing_checkpoints = checkpoints[0:num_to_remove]
 
                                 logger.info(
-                                    f"{len(checkpoints)} checkpoints already exist, removing {len(removing_checkpoints)} checkpoints"
+                                    f"{len(checkpoints)} checkpoints already exist, removing "
+                                    f"{len(removing_checkpoints)} checkpoints"
                                 )
                                 logger.info(f"removing checkpoints: {', '.join(removing_checkpoints)}")
 
@@ -964,9 +976,7 @@ def main(args):
                         logger.info(f"Saved state to {save_path}")
 
                     if global_step == 1 or (args.run_validation and global_step % args.validation_steps == 0):
-                        log_validation(
-                            args, unet=unet, accelerator=accelerator, weight_dtype=weight_dtype, epoch=epoch
-                        )
+                        log_validation(args, unet=unet, accelerator=accelerator, weight_dtype=weight_dtype, epoch=epoch)
 
             logs = {
                 "loss": loss.detach().item(),

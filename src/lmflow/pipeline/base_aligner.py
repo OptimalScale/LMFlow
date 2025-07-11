@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-# coding=utf-8
-""" BaseTuner: a subclass of BasePipeline.
-"""
+"""BaseTuner: a subclass of BasePipeline."""
+
+from abc import abstractmethod
 
 from lmflow.pipeline.base_pipeline import BasePipeline
 
 
 class BaseAligner(BasePipeline):
-    """ A subclass of BasePipeline which is alignable.
-    """
+    """A subclass of BasePipeline which is alignable."""
+
     def __init__(self, *args, **kwargs):
         pass
 
@@ -17,5 +17,6 @@ class BaseAligner(BasePipeline):
         # TODO: add reward_model
         pass
 
+    @abstractmethod
     def align(self, model, dataset, reward_model):
         raise NotImplementedError(".align is not implemented")

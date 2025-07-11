@@ -1,4 +1,3 @@
-# coding=utf-8
 # Copyright 2024 HuggingFace Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +17,8 @@ import os
 import sys
 import tempfile
 
-
 sys.path.append("..")
 from test_examples_utils import ExamplesTestsAccelerate, run_command  # noqa: E402
-
 
 logging.basicConfig(level=logging.DEBUG)
 

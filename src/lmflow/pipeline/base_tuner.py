@@ -1,14 +1,14 @@
 #!/usr/bin/env python
-# coding=utf-8
-""" BaseTuner: a subclass of BasePipeline.
-"""
+"""BaseTuner: a subclass of BasePipeline."""
+
+from abc import abstractmethod
 
 from lmflow.pipeline.base_pipeline import BasePipeline
 
 
 class BaseTuner(BasePipeline):
-    """ A subclass of BasePipeline which is tunable.
-    """
+    """A subclass of BasePipeline which is tunable."""
+
     def __init__(self, *args, **kwargs):
         pass
 
@@ -16,5 +16,6 @@ class BaseTuner(BasePipeline):
         # TODO: check if the model is tunable and dataset is compatible
         pass
 
+    @abstractmethod
     def tune(self, model, dataset):
         raise NotImplementedError(".tune is not implemented")

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import math
+
 import torch
 from torch.optim.optimizer import Optimizer
+
 
 class Lamb(Optimizer):
     r"""Implements Lamb algorithm.
@@ -20,7 +21,7 @@ class Lamb(Optimizer):
         self,
         params,
         lr: float = 1e-3,
-        betas = (0.9, 0.999),
+        betas=(0.9, 0.999),
         eps: float = 1e-6,
         weight_decay: float = 0,
         clamp_value: float = 10,
@@ -32,17 +33,11 @@ class Lamb(Optimizer):
         if eps < 0.0:
             raise ValueError("Invalid epsilon value: {}".format(eps))
         if not 0.0 <= betas[0] < 1.0:
-            raise ValueError(
-                "Invalid beta parameter at index 0: {}".format(betas[0])
-            )
+            raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
         if not 0.0 <= betas[1] < 1.0:
-            raise ValueError(
-                "Invalid beta parameter at index 1: {}".format(betas[1])
-            )
+            raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
         if weight_decay < 0:
-            raise ValueError(
-                "Invalid weight_decay value: {}".format(weight_decay)
-            )
+            raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
         if clamp_value < 0.0:
             raise ValueError("Invalid clamp value: {}".format(clamp_value))
 
@@ -51,9 +46,9 @@ class Lamb(Optimizer):
         self.adam = adam
         self.debias = debias
 
-        super(Lamb, self).__init__(params, defaults)
+        super().__init__(params, defaults)
 
-    def step(self, closure = None):
+    def step(self, closure=None):
         r"""Performs a single optimization step.
 
         Arguments:
@@ -69,10 +64,7 @@ class Lamb(Optimizer):
                     continue
                 grad = p.grad.data
                 if grad.is_sparse:
-                    msg = (
-                        "Lamb does not support sparse gradients, "
-                        "please consider SparseAdam instead"
-                    )
+                    msg = "Lamb does not support sparse gradients, please consider SparseAdam instead"
                     raise RuntimeError(msg)
 
                 state = self.state[p]
@@ -81,13 +73,9 @@ class Lamb(Optimizer):
                 if len(state) == 0:
                     state["step"] = 0
                     # Exponential moving average of gradient values
-                    state["exp_avg"] = torch.zeros_like(
-                        p, memory_format=torch.preserve_format
-                    )
+                    state["exp_avg"] = torch.zeros_like(p, memory_format=torch.preserve_format)
                     # Exponential moving average of squared gradient values
-                    state["exp_avg_sq"] = torch.zeros_like(
-                        p, memory_format=torch.preserve_format
-                    )
+                    state["exp_avg_sq"] = torch.zeros_like(p, memory_format=torch.preserve_format)
 
                 exp_avg, exp_avg_sq = state["exp_avg"], state["exp_avg_sq"]
                 beta1, beta2 = group["betas"]

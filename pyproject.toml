@@ -2,17 +2,55 @@
 requires = ["setuptools >= 64"]
 build-backend = "setuptools.build_meta"
 
+# -------------------------------
+# tool.ruff - Linting configuration
+# -------------------------------
 [tool.ruff]
+# Note: While the formatter will attempt to format lines such that they remain within the line-length,
+# it isn't a hard upper bound, and formatted lines may exceed the line-length.
 target-version = "py39"
-indent-width = 4
+line-length = 120
+exclude = [
+    "tests/utils/test_data_utils.py",
+    "tests/pipeline/test_memory_safe_vllm_inferencer.py",
+    "tests/models/test_hf_decoder_model.py",
+    "src/lmflow/pipeline/utils/raft_trainer.py",
+    "src/lmflow/pipeline/raft_aligner.py",
+    "examples/chatbot_gradio.py",
+]
 
-[tool.ruff.lint.isort]
-lines-after-imports = 2
-known-first-party = ["lmflow"]
+[tool.ruff.lint]
+isort = {known-first-party = ["lmflow"]}
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # isort
+    "I",
+    "G",
+]
+ignore = [
+    # star imports
+    "F405", "F403",
+    # lambda expression assignment
+    "E731",
+    # Loop control variable not used within loop body
+    "B007",
+    # f-string format
+    "UP032",
+    # Can remove once 3.10+ is the minimum Python version
+    "UP007",
+    # `.log()` statement uses f-string
+    "G004",
+]
 
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-docstring-code-format = true
-skip-magic-trailing-comma = false
-line-ending = "auto"
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["F841"]
+"src/lmflow/utils/conversation_template/*.py" = ["E501"]
+"src/lmflow/utils/llava_conversation_lib.py" = ["E501"]
+"src/lmflow/utils/constants.py" = ["E501"]
