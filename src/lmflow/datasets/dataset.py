@@ -265,15 +265,16 @@ class Dataset:
 
 
     @classmethod
-    def create_from_dict(cls, dict_obj, *args, **kwargs):
+    def create_from_dict(cls, dict_obj, dataset_args: Optional[DatasetArguments] = None, backend: str = "huggingface"):
         r"""
         Returns
         --------
 
         Returns a Dataset object given a dict.
         """
-        empty_data_args = DatasetArguments(dataset_path=None)
-        dataset = Dataset(empty_data_args)
+        if dataset_args is None:
+            dataset_args = DatasetArguments(dataset_path=None)
+        dataset = Dataset(dataset_args, backend=backend)
         return dataset.from_dict(dict_obj)
 
 
@@ -467,14 +468,12 @@ class Dataset:
         if self.backend == "huggingface":
             sampled_dataset = self.backend_dataset.shuffle(seed=seed).select(range(n))
             output_dataset = self.create_from_dict(
-                {
-                    "type": self.get_type(),
-                    "instances": [
-                        {
-                            col_name: sampled_dataset[col_name][i] for col_name in sampled_dataset.column_names
-                        } for i in range(n)
-                    ]
-                }
+                dict_obj={
+                    "type": self.get_type(), 
+                    "instances": [data_point for data_point in tqdm(sampled_dataset, desc="Train Dataset")]
+                },
+                dataset_args=self.data_args,
+                backend=self.backend,
             )
             return output_dataset
         else:
@@ -506,24 +505,20 @@ class Dataset:
                 test_size=test_size, shuffle=shuffle, seed=seed
             )
             train_dataset = self.create_from_dict(
-                {
-                    "type": self.get_type(),
-                    "instances": [
-                        {
-                            col_name: splited["train"][col_name][i] for col_name in splited["train"].column_names
-                        } for i in range(len(splited["train"]))
-                    ]
-                }
+                dict_obj={
+                    "type": self.get_type(), 
+                    "instances": [data_point for data_point in tqdm(splited["train"], desc="Train Dataset")]
+                },
+                dataset_args=self.data_args,
+                backend=self.backend,
             )
             test_dataset = self.create_from_dict(
-                {
-                    "type": self.get_type(),
-                    "instances": [
-                        {
-                            col_name: splited["test"][col_name][i] for col_name in splited["test"].column_names
-                        } for i in range(len(splited["test"]))
-                    ]
-                }
+                dict_obj={
+                    "type": self.get_type(), 
+                    "instances": [data_point for data_point in tqdm(splited["test"], desc="Test Dataset")]
+                },
+                dataset_args=self.data_args,
+                backend=self.backend,
             )
             return train_dataset, test_dataset
         else:
