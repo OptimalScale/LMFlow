@@ -504,6 +504,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
                     return sample_out
 
+                # TODO: investigate performance issue
                 dataset = dataset.map(
                     preprocess_conversation,
                     num_proc=dataset.data_args.preprocessing_num_workers,

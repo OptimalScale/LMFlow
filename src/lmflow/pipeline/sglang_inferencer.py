@@ -44,12 +44,14 @@ class SGLangInferencer(BasePipeline):
         self,
         inference_args: InferencerArguments,
     ) -> dict:
+        if inference_args.use_beam_search:
+            logger.warning("`use_beam_search` is ignored, as SGLang does not support currently.")
+            
         sampling_params = {
-            "use_beam_search": inference_args.use_beam_search,
             "n": inference_args.num_output_sequences,
             "temperature": inference_args.temperature + 1e-6,
-            "max_tokens": inference_args.max_new_tokens,
-            "seed": inference_args.random_seed,
+            "max_new_tokens": inference_args.max_new_tokens,
+            "sampling_seed": inference_args.random_seed,
             "top_p": inference_args.top_p,
             "top_k": inference_args.top_k,
             "stop_token_ids": [self.eos_token_id] + inference_args.additional_stop_token_ids,
@@ -70,15 +72,18 @@ class SGLangInferencer(BasePipeline):
         else:
             sampling_params = self.sampling_params
 
+        # TODO: we need lmflow data sample protocol for better programming experience, data tracking, etc.
         model_input = model.prepare_inputs_for_inference(
             dataset=dataset,
             apply_chat_template=self.inferencer_args.apply_chat_template,
             inference_engine="sglang",
         )
+        # handling n>1 since we don't want one-to-many mapping
+        model_input = [sample for sample in model_input for _ in range(sampling_params["n"])]
 
         outputs = model.inference(
             inputs=model_input,
-            sampling_params=sampling_params,
+            sampling_params=sampling_params.copy().update({"n": 1}),
             release_gpu=release_gpu,
             inference_engine="sglang",
             gpu_memory_utilization=self.inferencer_args.inference_gpu_memory_utilization,

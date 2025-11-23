@@ -479,7 +479,7 @@ class HFModelMixin(BaseModel):
         sgl_server_args = ServerArgs(
             model_path=model_args.model_name_or_path,
             mem_fraction_static=gpu_memory_utilization,
-            tensor_parallel_size=tensor_parallel_size,
+            tp_size=tensor_parallel_size,
         )
         self.backend_model_for_inference = Engine(server_args=sgl_server_args)
 
