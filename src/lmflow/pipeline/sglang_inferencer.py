@@ -2,7 +2,6 @@
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 import json
 import logging
-
 from typing import Optional, Union
 
 from transformers import AutoTokenizer
@@ -46,7 +45,7 @@ class SGLangInferencer(BasePipeline):
     ) -> dict:
         if inference_args.use_beam_search:
             logger.warning("`use_beam_search` is ignored, as SGLang does not support currently.")
-            
+
         sampling_params = {
             "n": inference_args.num_output_sequences,
             "temperature": inference_args.temperature + 1e-6,
@@ -56,7 +55,7 @@ class SGLangInferencer(BasePipeline):
             "top_k": inference_args.top_k,
             "stop_token_ids": [self.eos_token_id] + inference_args.additional_stop_token_ids,
         }
-        
+
         return sampling_params
 
     def inference(

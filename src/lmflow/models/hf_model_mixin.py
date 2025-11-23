@@ -25,8 +25,7 @@ from lmflow.args import ModelArguments
 from lmflow.models.base_model import BaseModel
 from lmflow.utils.constants import LMFLOW_LORA_TARGET_MODULES_MAPPING
 from lmflow.utils.envs import is_accelerate_env
-from lmflow.utils.versioning import is_deepspeed_available, is_vllm_available, is_sglang_available
-
+from lmflow.utils.versioning import is_deepspeed_available, is_sglang_available, is_vllm_available
 
 logger = logging.getLogger(__name__)
 
@@ -452,7 +451,7 @@ class HFModelMixin(BaseModel):
     ):
         if not is_vllm_available():
             raise ImportError('VLLM is not available. Please install via `pip install -e ".[vllm]"`.')
-        
+
         from vllm import LLM
 
         self.backend_model_for_inference = LLM(
@@ -463,7 +462,7 @@ class HFModelMixin(BaseModel):
             gpu_memory_utilization=gpu_memory_utilization,
             tensor_parallel_size=tensor_parallel_size,
         )
-        
+
     def __prepare_model_for_sglang_inference(
         self,
         model_args: ModelArguments,
@@ -472,10 +471,10 @@ class HFModelMixin(BaseModel):
     ):
         if not is_sglang_available():
             raise ImportError('SGLang is not available. Please install via `pip install -e ".[sglang]"`.')
-        
+
         from sglang.srt.entrypoints.engine import Engine
         from sglang.srt.server_args import ServerArgs
-        
+
         sgl_server_args = ServerArgs(
             model_path=model_args.model_name_or_path,
             mem_fraction_static=gpu_memory_utilization,
@@ -552,6 +551,7 @@ class HFModelMixin(BaseModel):
 
         if inference_engine == "vllm":
             from vllm.distributed.parallel_state import destroy_model_parallel
+
             destroy_model_parallel()
             del self.backend_model_for_inference.llm_engine.model_executor.driver_worker
             del self.backend_model_for_inference

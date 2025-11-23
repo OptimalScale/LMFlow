@@ -276,20 +276,23 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
     @deprecated_args(
         use_vllm={
-            'replacement': 'inference_engine',
-            'mapper': lambda x: 'vllm' if x is True else 'huggingface',
-            'message': "use_vllm is deprecated and will be removed in a future version. Please use `inference_engine='vllm'` instead."
+            "replacement": "inference_engine",
+            "mapper": lambda x: "vllm" if x is True else "huggingface",
+            "message": (
+                "use_vllm is deprecated and will be removed in a future version. "
+                "Please use `inference_engine='vllm'` instead."
+            ),
         }
     )
     def inference(
-        self, 
-        inputs: Union[str, list[str], torch.Tensor], 
+        self,
+        inputs: Union[str, list[str], torch.Tensor],
         sampling_params: Optional[Union[dict, "SamplingParams"]] = None,
-        release_gpu: bool = False, 
-        inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface", 
+        release_gpu: bool = False,
+        inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
         gpu_memory_utilization: Optional[float] = None,
         tensor_parallel_size: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ):
         """
         Perform generation process of the model.
@@ -318,14 +321,14 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         """
         if isinstance(inputs, str):
             inputs = [inputs]
-            
+
         if not self._activated:
             self.activate_model_for_inference(
                 inference_engine=inference_engine,
                 gpu_memory_utilization=gpu_memory_utilization,
                 tensor_parallel_size=tensor_parallel_size,
             )
-        
+
         if inference_engine == "vllm":
             res = self.__vllm_inference(inputs=inputs, sampling_params=sampling_params)
         elif inference_engine == "sglang":
@@ -418,29 +421,31 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             final_output.append({"input": output.prompt, "output": output_list})
 
         return final_output
-    
+
     def __sglang_inference(
         self,
         inputs: list[str],
         sampling_params: Optional[dict] = None,
     ):
-        """Perform SGLang inference process of the model.
-        """
+        """Perform SGLang inference process of the model."""
         sglang_outputs = self.backend_model_for_inference.generate(
             prompt=inputs,
             sampling_params=sampling_params,
         )
         # TODO: unified lmflow sample format
         for idx, output in enumerate(sglang_outputs):
-            output['input'] = inputs[idx]
-            output['output'] = output.pop('text')
+            output["input"] = inputs[idx]
+            output["output"] = output.pop("text")
         return sglang_outputs
 
     @deprecated_args(
         use_vllm={
-            'replacement': 'inference_engine',
-            'mapper': lambda x: 'vllm' if x is True else 'huggingface',
-            'message': "use_vllm is deprecated and will be removed in a future version. Please use `inference_engine='vllm'` instead."
+            "replacement": "inference_engine",
+            "mapper": lambda x: "vllm" if x is True else "huggingface",
+            "message": (
+                "use_vllm is deprecated and will be removed in a future version. "
+                "Please use `inference_engine='vllm'` instead."
+            ),
         }
     )
     def prepare_inputs_for_inference(
@@ -528,7 +533,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             inference_inputs = ray.data.from_items(
                 inference_inputs
             )  # -> dict[str, np.ndarray], {"item": array(['...', '...', '...'])}
-            
+
         if inference_engine == "sglang" and self.tokenizer.bos_token:
             # in consistent with sglang bench_serving.py demo
             inference_inputs = [sentence.replace(self.tokenizer.bos_token, "") for sentence in inference_inputs]
