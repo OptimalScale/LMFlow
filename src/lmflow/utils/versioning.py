@@ -60,6 +60,10 @@ def is_vllm_available():
     return _is_package_available("vllm")
 
 
+def is_sglang_available():
+    return _is_package_available("sglang")
+
+
 def is_flash_attn_available():
     return _is_package_available("flash_attn", skippable=True)
 

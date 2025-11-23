@@ -32,8 +32,8 @@ inferencer_args = InferencerArguments(
     results_path="./data/mem_safe_vllm_res.json",
     use_vllm=True,
     enable_decode_inference_result=False,
-    vllm_gpu_memory_utilization=0.95,
-    vllm_tensor_parallel_size=2,
+    inference_gpu_memory_utilization=0.95,
+    inference_tensor_parallel_size=2,
 )
 
 

@@ -4,7 +4,7 @@ import copy
 import gc
 import logging
 from contextlib import nullcontext
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 import torch
 from peft import LoraConfig, PeftModel, TaskType, get_peft_model
@@ -25,11 +25,7 @@ from lmflow.args import ModelArguments
 from lmflow.models.base_model import BaseModel
 from lmflow.utils.constants import LMFLOW_LORA_TARGET_MODULES_MAPPING
 from lmflow.utils.envs import is_accelerate_env
-from lmflow.utils.versioning import is_deepspeed_available, is_vllm_available
-
-if is_vllm_available():
-    from vllm import LLM
-    from vllm.distributed.parallel_state import destroy_model_parallel
+from lmflow.utils.versioning import is_deepspeed_available, is_vllm_available, is_sglang_available
 
 
 logger = logging.getLogger(__name__)
@@ -451,20 +447,41 @@ class HFModelMixin(BaseModel):
     def __prepare_model_for_vllm_inference(
         self,
         model_args: ModelArguments,
-        vllm_gpu_memory_utilization: float,
-        vllm_tensor_parallel_size: int,
+        gpu_memory_utilization: float,
+        tensor_parallel_size: int,
     ):
         if not is_vllm_available():
             raise ImportError('VLLM is not available. Please install via `pip install -e ".[vllm]"`.')
+        
+        from vllm import LLM
 
         self.backend_model_for_inference = LLM(
             model=model_args.model_name_or_path,
             tokenizer=model_args.model_name_or_path,
             dtype=model_args.torch_dtype if model_args.torch_dtype else "auto",
             load_format="auto",
-            gpu_memory_utilization=vllm_gpu_memory_utilization,
-            tensor_parallel_size=vllm_tensor_parallel_size,
+            gpu_memory_utilization=gpu_memory_utilization,
+            tensor_parallel_size=tensor_parallel_size,
         )
+        
+    def __prepare_model_for_sglang_inference(
+        self,
+        model_args: ModelArguments,
+        gpu_memory_utilization: Optional[float] = None,
+        tensor_parallel_size: Optional[int] = None,
+    ):
+        if not is_sglang_available():
+            raise ImportError('SGLang is not available. Please install via `pip install -e ".[sglang]"`.')
+        
+        from sglang.srt.entrypoints.engine import Engine
+        from sglang.srt.server_args import ServerArgs
+        
+        sgl_server_args = ServerArgs(
+            model_path=model_args.model_name_or_path,
+            mem_fraction_static=gpu_memory_utilization,
+            tensor_parallel_size=tensor_parallel_size,
+        )
+        self.backend_model_for_inference = Engine(server_args=sgl_server_args)
 
     def __fix_special_tokens(self):
         # old models/tokenizers may not have these attributes, fixing
@@ -490,18 +507,25 @@ class HFModelMixin(BaseModel):
 
     def activate_model_for_inference(
         self,
-        use_vllm: bool = False,
-        **kwargs,
+        inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
+        gpu_memory_utilization: Optional[float] = None,
+        tensor_parallel_size: Optional[int] = None,
     ):
         if self._activated:
             logger.warning("You are trying to activate the model for inference, but it is already activated.")
             return
 
-        if use_vllm:
+        if inference_engine == "vllm":
             self.__prepare_model_for_vllm_inference(
                 model_args=self.model_args,
-                vllm_gpu_memory_utilization=kwargs.get("vllm_gpu_memory_utilization"),
-                vllm_tensor_parallel_size=kwargs.get("vllm_tensor_parallel_size"),
+                gpu_memory_utilization=gpu_memory_utilization,
+                tensor_parallel_size=tensor_parallel_size,
+            )
+        elif inference_engine == "sglang":
+            self.__prepare_model_for_sglang_inference(
+                model_args=self.model_args,
+                gpu_memory_utilization=gpu_memory_utilization,
+                tensor_parallel_size=tensor_parallel_size,
             )
         else:
             self.__prepare_model_for_inference(
@@ -513,7 +537,7 @@ class HFModelMixin(BaseModel):
 
     def deactivate_model_for_inference(
         self,
-        use_vllm: bool = False,
+        inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
     ):
         """Deactivate the model and release the resources.
 
@@ -526,15 +550,17 @@ class HFModelMixin(BaseModel):
             logger.warning("You are trying to deactivate the model for inference, but it is already deactivated.")
             return
 
-        if use_vllm:
+        if inference_engine == "vllm":
+            from vllm.distributed.parallel_state import destroy_model_parallel
             destroy_model_parallel()
             del self.backend_model_for_inference.llm_engine.model_executor.driver_worker
             del self.backend_model_for_inference
             gc.collect()
             torch.cuda.empty_cache()
+        elif inference_engine == "sglang":
+            pass
         else:
             self.backend_model.to("cpu")
-            pass
 
         self._activated = False
 

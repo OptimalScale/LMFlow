@@ -180,8 +180,8 @@ class VLLMInferencer(InferencerWithOffloading):
             sampling_params=sampling_params,
             release_gpu=release_gpu,
             use_vllm=True,
-            vllm_gpu_memory_utilization=self.inferencer_args.vllm_gpu_memory_utilization,
-            vllm_tensor_parallel_size=self.inferencer_args.vllm_tensor_parallel_size,
+            gpu_memory_utilization=self.inferencer_args.inference_gpu_memory_utilization,
+            tensor_parallel_size=self.inferencer_args.inference_tensor_parallel_size,
         )
 
         return outputs
@@ -201,7 +201,7 @@ class VLLMInferencer(InferencerWithOffloading):
         def scheduling_strategy_fn():
             # One bundle per tensor parallel worker
             pg = ray.util.placement_group(
-                [{"GPU": 1, "CPU": 1}] * self.inferencer_args.vllm_tensor_parallel_size,
+                [{"GPU": 1, "CPU": 1}] * self.inferencer_args.inference_tensor_parallel_size,
                 strategy="STRICT_PACK",
             )
             return dict(
@@ -209,7 +209,7 @@ class VLLMInferencer(InferencerWithOffloading):
             )
 
         resources_kwarg: dict[str, Any] = {}
-        if self.inferencer_args.vllm_tensor_parallel_size == 1:
+        if self.inferencer_args.inference_tensor_parallel_size == 1:
             # For tensor_parallel_size == 1, we simply set num_gpus=1.
             resources_kwarg["num_gpus"] = 1
         else:
@@ -225,15 +225,15 @@ class VLLMInferencer(InferencerWithOffloading):
                 self,
                 model: HFDecoderModel,
                 sampling_params: SamplingParams,
-                vllm_gpu_memory_utilization: float,
-                vllm_tensor_parallel_size: int,
+                gpu_memory_utilization: float,
+                tensor_parallel_size: int,
                 release_gpu: bool = False,
             ):
                 self.model = copy.deepcopy(model)
                 self.model.activate_model_for_inference(
                     use_vllm=True,
-                    vllm_gpu_memory_utilization=vllm_gpu_memory_utilization,
-                    vllm_tensor_parallel_size=vllm_tensor_parallel_size,
+                    gpu_memory_utilization=gpu_memory_utilization,
+                    tensor_parallel_size=tensor_parallel_size,
                 )
                 self.sampling_params = sampling_params
                 self.release_gpu = release_gpu
@@ -260,8 +260,8 @@ class VLLMInferencer(InferencerWithOffloading):
             fn_constructor_kwargs={
                 "model": model,
                 "sampling_params": sampling_params,
-                "vllm_gpu_memory_utilization": self.inferencer_args.vllm_gpu_memory_utilization,
-                "vllm_tensor_parallel_size": self.inferencer_args.vllm_tensor_parallel_size,
+                "gpu_memory_utilization": self.inferencer_args.inference_gpu_memory_utilization,
+                "tensor_parallel_size": self.inferencer_args.inference_tensor_parallel_size,
                 "release_gpu": release_gpu,
             },
             **resources_kwarg,
