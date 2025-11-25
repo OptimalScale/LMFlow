@@ -344,8 +344,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             res = self.__vllm_inference(inputs=inputs, sampling_params=sampling_params)
         elif inference_engine == "sglang":
             res = self.__sglang_inference(
-                inputs=inputs, 
-                sampling_params=sampling_params, 
+                inputs=inputs,
+                sampling_params=sampling_params,
                 return_logprob=return_logprob,
             )
         else:

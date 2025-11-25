@@ -1,5 +1,3 @@
-from typing import List, Tuple
-
 import numpy as np
 import pytest
 from sglang.srt.entrypoints.engine import Engine
@@ -9,8 +7,7 @@ from lmflow.args import InferencerArguments, ModelArguments
 from lmflow.datasets.dataset import Dataset
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.sglang_inferencer import SGLangInferencer
-
-from tests.datasets.conftest import dataset_inference_conversation_batch
+from tests.datasets.conftest import dataset_inference_conversation_batch  # noqa: F401
 
 
 @pytest.fixture
@@ -31,11 +28,11 @@ def sglang_test_inferencer_args() -> InferencerArguments:
 
 
 def test_sglang_inferencer(
-    dataset_inference_conversation_batch: Dataset,
+    dataset_inference_conversation_batch: Dataset,  # noqa: F811
     sglang_test_model_args: ModelArguments,
     sglang_test_inferencer_args: InferencerArguments,
 ):
-    def parse_logprob(logprob_list: List[Tuple[float, int, None]]) -> List[float]:
+    def parse_logprob(logprob_list: list[tuple[float, int, None]]) -> list[float]:
         return np.array([logprob for logprob, _, _ in logprob_list])
 
     model = HFDecoderModel(model_args=sglang_test_model_args)
@@ -65,7 +62,8 @@ def test_sglang_inferencer(
     )
     llm = Engine(server_args=sgl_server_args)
     model_input = [
-        sample for sample in dataset_inference_conversation_batch.backend_dataset['templated'] 
+        sample
+        for sample in dataset_inference_conversation_batch.backend_dataset["templated"]
         for _ in range(sglang_test_inferencer_args.num_output_sequences)
     ]
     sglang_outputs = llm.generate(
@@ -75,8 +73,8 @@ def test_sglang_inferencer(
     )
     logprobs_lmflow = [parse_logprob(x["meta_info"]["output_token_logprobs"]) for x in res]
     logprobs_sglang = [parse_logprob(x["meta_info"]["output_token_logprobs"]) for x in sglang_outputs]
-    
+
     assert all(
-        np.allclose(logprobs_lmflow, logprobs_sglang, atol=1e-10) 
+        np.allclose(logprobs_lmflow, logprobs_sglang, atol=1e-10)
         for logprobs_lmflow, logprobs_sglang in zip(logprobs_lmflow, logprobs_sglang)
     )
