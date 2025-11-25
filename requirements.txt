@@ -1,6 +1,6 @@
 packaging
 numpy
-datasets==2.14.6
+datasets==3.6.0
 tokenizers>=0.13.3
 peft>=0.10.0
 torch>=2.0.1

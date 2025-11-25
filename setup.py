@@ -18,6 +18,7 @@ if os.path.exists(req_path):
 extra_require = {
     "multimodal": ["Pillow"],
     "vllm": ["vllm>=0.4.3"],
+    "sglang": ["sglang"],
     "ray": ["ray>=2.22.0"],
     "gradio": ["gradio"],
     "flask": ["flask", "flask_cors"],

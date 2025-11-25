@@ -947,6 +947,10 @@ class InferencerArguments:
         default=False,
         metadata={"help": "whether turn on true random sampling during inference."},
     )
+    return_logprob: Optional[bool] = field(
+        default=False,
+        metadata={"help": "whether to return log probability during inference."},
+    )
     use_accelerator: Optional[bool] = field(
         default=None,
         metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
@@ -994,12 +998,58 @@ class InferencerArguments:
     )
 
     # vllm inference args
-    use_vllm: bool = field(default=False, metadata={"help": "Whether to use VLLM for inference, By default False."})
+    use_vllm: Optional[bool] = field(
+        default=None,
+        metadata={
+            "help": "Whether to use VLLM for inference, By default None. Deprecated, use inference_engine instead."
+        },
+    )
     vllm_tensor_parallel_size: Optional[int] = field(
-        default=1, metadata={"help": "The tensor parallel size for VLLM inference."}
+        default=None,
+        metadata={
+            "help": (
+                "The tensor parallel size for VLLM inference. Deprecated, use inference_tensor_parallel_size instead."
+            )
+        },
     )
     vllm_gpu_memory_utilization: Optional[float] = field(
-        default=0.95, metadata={"help": "The GPU memory utilization for VLLM inference."}
+        default=None,
+        metadata={
+            "help": (
+                "The GPU memory utilization for VLLM inference. "
+                "Deprecated, use inference_gpu_memory_utilization instead."
+            )
+        },
+    )
+
+    # inference engine args
+    inference_engine: Optional[str] = field(
+        default="huggingface",
+        metadata={
+            "help": "The inference engine to use, by default huggingface.",
+            "choices": ["huggingface", "vllm", "sglang"],
+        },
+    )
+    inference_tensor_parallel_size: Optional[int] = field(
+        default=1, metadata={"help": "The tensor parallel size for inference."}
+    )
+    inference_gpu_memory_utilization: Optional[float] = field(
+        default=0.95, metadata={"help": "The GPU memory utilization for inference."}
+    )
+    enable_deterministic_inference: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to enable deterministic inference. Only supported for SGLang inference engine currently."
+        },
+    )
+    attention_backend: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "The attention backend to use. Only supported for SGLang inference engine currently. "
+                "Please leave it as None to let SGLang automatically choose if you're not sure."
+            )
+        },
     )
 
     # Args for result saving
@@ -1022,6 +1072,44 @@ class InferencerArguments:
                     raise ValueError("The results_path must be a json file.")
                 else:
                     Path(self.results_path).parent.mkdir(parents=True, exist_ok=True)
+
+        if self.use_vllm is True:
+            logger.warning(
+                "Inference engine is set to vllm. You've specified `use_vllm`. This argument is deprecated and "
+                "will be removed in a future version. Please use `inference_engine` instead."
+            )
+            self.inference_engine = "vllm"
+
+            if self.vllm_tensor_parallel_size is not None:
+                logger.warning(
+                    "You've specified `vllm_tensor_parallel_size`. This argument is deprecated and "
+                    "will be removed in a future version. Please use `inference_tensor_parallel_size` instead."
+                )
+                self.inference_tensor_parallel_size = self.vllm_tensor_parallel_size
+
+            if self.vllm_gpu_memory_utilization is not None:
+                logger.warning(
+                    "You've specified `vllm_gpu_memory_utilization`. This argument is deprecated and "
+                    "will be removed in a future version. Please use `inference_gpu_memory_utilization` instead."
+                )
+                self.inference_gpu_memory_utilization = self.vllm_gpu_memory_utilization
+
+        if self.inference_engine != "sglang":
+            if self.return_logprob:
+                logger.warning("`return_logprob` is only supported for SGLang inference engine currently. ")
+
+        if self.inference_engine == "sglang":
+            if self.enable_deterministic_inference:
+                if self.attention_backend is None:
+                    self.attention_backend = "fa3"
+                    logger.warning(
+                        "`enable_deterministic_inference` is enabled, but `attention_backend` is not specified. "
+                        "Using `fa3` as the attention backend by default."
+                    )
+                else:
+                    assert self.attention_backend in ["fa3", "flashinfer", "triton"], (
+                        "Invalid attention backend. Please choose from 'fa3', 'flashinfer', or 'triton'."
+                    )
 
 
 @dataclass
