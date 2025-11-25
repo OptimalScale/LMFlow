@@ -83,10 +83,13 @@ class SGLangInferencer(BasePipeline):
         outputs = model.inference(
             inputs=model_input,
             sampling_params=sampling_params.copy().update({"n": 1}),
+            return_logprob=self.inferencer_args.return_logprob,
             release_gpu=release_gpu,
             inference_engine="sglang",
             gpu_memory_utilization=self.inferencer_args.inference_gpu_memory_utilization,
             tensor_parallel_size=self.inferencer_args.inference_tensor_parallel_size,
+            enable_deterministic_inference=self.inferencer_args.enable_deterministic_inference,
+            attention_backend=self.inferencer_args.attention_backend,
         )
 
         if self.inferencer_args.save_results:

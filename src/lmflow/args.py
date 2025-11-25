@@ -947,6 +947,10 @@ class InferencerArguments:
         default=False,
         metadata={"help": "whether turn on true random sampling during inference."},
     )
+    return_logprob: Optional[bool] = field(
+        default=False,
+        metadata={"help": "whether to return log probability during inference."},
+    )
     use_accelerator: Optional[bool] = field(
         default=None,
         metadata={"help": "[Deprecated] Whether to use Huggingface Accelerator instead of Deepspeed"},
@@ -1032,6 +1036,16 @@ class InferencerArguments:
     inference_gpu_memory_utilization: Optional[float] = field(
         default=0.95, metadata={"help": "The GPU memory utilization for inference."}
     )
+    enable_deterministic_inference: bool = field(
+        default=False,
+        metadata={"help": "Whether to enable deterministic inference. Only supported for SGLang inference engine currently."},
+    )
+    attention_backend: Optional[str] = field(
+        default=None,
+        metadata={"help": ("The attention backend to use. Only supported for SGLang inference engine currently. "
+                           "Please leave it as None to let SGLang automatically choose if you're not sure.")
+        },
+    )
 
     # Args for result saving
     save_results: Optional[bool] = field(default=False, metadata={"help": "Whether to save inference results."})
@@ -1074,6 +1088,20 @@ class InferencerArguments:
                     "will be removed in a future version. Please use `inference_gpu_memory_utilization` instead."
                 )
                 self.inference_gpu_memory_utilization = self.vllm_gpu_memory_utilization
+                
+        if self.inference_engine != "sglang":
+            if self.return_logprob:
+                logger.warning("`return_logprob` is only supported for SGLang inference engine currently. ")
+                
+        if self.inference_engine == "sglang":
+            if self.enable_deterministic_inference:
+                if self.attention_backend is None:
+                    self.attention_backend = "fa3"
+                    logger.warning("`enable_deterministic_inference` is enabled, but `attention_backend` is not specified. "
+                                   "Using `fa3` as the attention backend by default.")
+                else:
+                    assert self.attention_backend in ["fa3", "flashinfer", "triton"], (
+                        "Invalid attention backend. Please choose from 'fa3', 'flashinfer', or 'triton'.")
 
 
 @dataclass

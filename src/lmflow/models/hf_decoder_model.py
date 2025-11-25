@@ -288,10 +288,13 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self,
         inputs: Union[str, list[str], torch.Tensor],
         sampling_params: Optional[Union[dict, "SamplingParams"]] = None,
+        return_logprob: bool = False,
         release_gpu: bool = False,
         inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
         gpu_memory_utilization: Optional[float] = None,
         tensor_parallel_size: Optional[int] = None,
+        enable_deterministic_inference: bool = False,
+        attention_backend: Optional[str] = None,
         **kwargs,
     ):
         """
@@ -305,6 +308,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             When the inference engine is "huggingface", this should be a tensor.
         sampling_params : Optional[Union[dict, "SamplingParams"]], optional
             The sampling parameters to use, by default None.
+        return_logprob : bool, optional
+            Whether to return log probability during inference, by default False.
         release_gpu : bool, optional
             Whether to release the GPU resource after inference, by default False.
         inference_engine : Literal["huggingface", "vllm", "sglang"], optional
@@ -313,6 +318,10 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             The GPU memory utilization to use, by default None.
         tensor_parallel_size : int, optional
             The tensor parallel size to use, by default None.
+        enable_deterministic_inference : bool, optional
+            Whether to enable deterministic inference, by default False.
+        attention_backend : Optional[str], optional
+            The attention backend to use, by default None.
 
         Returns
         ------------
@@ -327,12 +336,18 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                 inference_engine=inference_engine,
                 gpu_memory_utilization=gpu_memory_utilization,
                 tensor_parallel_size=tensor_parallel_size,
+                enable_deterministic_inference=enable_deterministic_inference,
+                attention_backend=attention_backend,
             )
 
         if inference_engine == "vllm":
             res = self.__vllm_inference(inputs=inputs, sampling_params=sampling_params)
         elif inference_engine == "sglang":
-            res = self.__sglang_inference(inputs=inputs, sampling_params=sampling_params)
+            res = self.__sglang_inference(
+                inputs=inputs, 
+                sampling_params=sampling_params, 
+                return_logprob=return_logprob,
+            )
         else:
             res = self.__inference(inputs=inputs, **kwargs)
 
@@ -426,11 +441,13 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         self,
         inputs: list[str],
         sampling_params: Optional[dict] = None,
+        return_logprob: bool = False,
     ):
         """Perform SGLang inference process of the model."""
         sglang_outputs = self.backend_model_for_inference.generate(
             prompt=inputs,
             sampling_params=sampling_params,
+            return_logprob=return_logprob,
         )
         # TODO: unified lmflow sample format
         for idx, output in enumerate(sglang_outputs):

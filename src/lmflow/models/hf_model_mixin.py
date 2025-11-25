@@ -468,6 +468,8 @@ class HFModelMixin(BaseModel):
         model_args: ModelArguments,
         gpu_memory_utilization: Optional[float] = None,
         tensor_parallel_size: Optional[int] = None,
+        enable_deterministic_inference: bool = False,
+        attention_backend: Optional[str] = None,
     ):
         if not is_sglang_available():
             raise ImportError('SGLang is not available. Please install via `pip install -e ".[sglang]"`.')
@@ -479,6 +481,8 @@ class HFModelMixin(BaseModel):
             model_path=model_args.model_name_or_path,
             mem_fraction_static=gpu_memory_utilization,
             tp_size=tensor_parallel_size,
+            enable_deterministic_inference=enable_deterministic_inference,
+            attention_backend=attention_backend,
         )
         self.backend_model_for_inference = Engine(server_args=sgl_server_args)
 
@@ -509,6 +513,8 @@ class HFModelMixin(BaseModel):
         inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
         gpu_memory_utilization: Optional[float] = None,
         tensor_parallel_size: Optional[int] = None,
+        enable_deterministic_inference: bool = False,
+        attention_backend: Optional[str] = None,
     ):
         if self._activated:
             logger.warning("You are trying to activate the model for inference, but it is already activated.")
@@ -525,6 +531,8 @@ class HFModelMixin(BaseModel):
                 model_args=self.model_args,
                 gpu_memory_utilization=gpu_memory_utilization,
                 tensor_parallel_size=tensor_parallel_size,
+                enable_deterministic_inference=enable_deterministic_inference,
+                attention_backend=attention_backend,
             )
         else:
             self.__prepare_model_for_inference(
@@ -558,7 +566,7 @@ class HFModelMixin(BaseModel):
             gc.collect()
             torch.cuda.empty_cache()
         elif inference_engine == "sglang":
-            pass
+            self.backend_model_for_inference.shutdown()
         else:
             self.backend_model.to("cpu")
 
