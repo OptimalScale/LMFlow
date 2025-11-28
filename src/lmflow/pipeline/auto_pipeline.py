@@ -4,6 +4,7 @@
 from lmflow.pipeline.evaluator import Evaluator
 from lmflow.pipeline.finetuner import Finetuner
 from lmflow.pipeline.inferencer import Inferencer
+from lmflow.pipeline.sglang_inferencer import SGLangInferencer
 from lmflow.pipeline.rm_inferencer import RewardModelInferencer
 from lmflow.pipeline.rm_tuner import RewardModelTuner
 from lmflow.utils.versioning import is_package_version_at_least, is_ray_available, is_trl_available, is_vllm_available
@@ -12,6 +13,7 @@ PIPELINE_MAPPING = {
     "evaluator": Evaluator,
     "finetuner": Finetuner,
     "inferencer": Inferencer,
+    "sglang_inferencer": SGLangInferencer,
     "rm_inferencer": RewardModelInferencer,
     "rm_tuner": RewardModelTuner,
 }

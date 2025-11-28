@@ -283,15 +283,12 @@ bash ./scripts/run_chatbot.sh output_models/finetuned_gpt2
 ```
 
 > [!TIP]
-> We recommend using vLLM for faster inference.
+> We recommend using SGLang for faster batch inference.
 >
-> <details><summary>Faster inference using vLLM</summary>  
+> <details><summary>Faster inference using SGLang</summary>  
 >
 >```bash
->bash ./scripts/run_vllm_inference.sh \
->   --model_name_or_path Qwen/Qwen2-0.5B \
->   --dataset_path data/alpaca/test_conversation \
->   --output_dir data/inference_results \
+>bash ./scripts/run_sglang_inference.sh
 >```
 >
 > </details>
