@@ -1,0 +1,28 @@
+lmflow.optim.nadam
+==================
+
+.. py:module:: lmflow.optim.nadam
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.nadam.NAdam
+
+
+Module Contents
+---------------
+
+.. py:class:: NAdam(params, lr=0.002, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, momentum_decay=0.004)
+
+   Bases: :py:obj:`torch.optim.Optimizer`
+
+
+   .. py:method:: __setstate__(state)
+
+
+   .. py:method:: step(closure=None)
+
+

@@ -1,0 +1,19 @@
+lmflow.utils.envs
+=================
+
+.. py:module:: lmflow.utils.envs
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.utils.envs.is_accelerate_env
+
+
+Module Contents
+---------------
+
+.. py:function:: is_accelerate_env()
+

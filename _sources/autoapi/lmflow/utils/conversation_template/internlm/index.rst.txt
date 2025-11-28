@@ -1,0 +1,19 @@
+lmflow.utils.conversation_template.internlm
+===========================================
+
+.. py:module:: lmflow.utils.conversation_template.internlm
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.internlm.INTERNLM2_TEMPLATE
+
+
+Module Contents
+---------------
+
+.. py:data:: INTERNLM2_TEMPLATE
+

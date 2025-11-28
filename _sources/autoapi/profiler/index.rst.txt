@@ -1,0 +1,53 @@
+profiler
+========
+
+.. py:module:: profiler
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   profiler.timer
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   profiler.Timer
+
+
+Module Contents
+---------------
+
+.. py:class:: Timer(name)
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: runtimes
+
+
+   .. py:attribute:: runtimes_readable
+
+
+   .. py:method:: start(tag)
+
+
+   .. py:method:: end(tag)
+
+
+   .. py:method:: get_runtime(tag)
+
+
+   .. py:method:: show()
+
+
+   .. py:method:: _to_readable()
+
+
+.. py:data:: timer
+
