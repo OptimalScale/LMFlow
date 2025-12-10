@@ -1,0 +1,90 @@
+lmflow.optim.lamb
+=================
+
+.. py:module:: lmflow.optim.lamb
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.lamb.Lamb
+
+
+Module Contents
+---------------
+
+.. py:class:: Lamb(params, lr: float = 0.001, betas=(0.9, 0.999), eps: float = 1e-06, weight_decay: float = 0, clamp_value: float = 10, adam: bool = False, debias: bool = False)
+
+   Bases: :py:obj:`torch.optim.optimizer.Optimizer`
+
+
+   
+   Implements Lamb algorithm.
+
+   It has been proposed in `Large Batch Optimization for Deep Learning:
+   Training BERT in 76 minutes`
+   https://arxiv.org/abs/1904.00962
+
+   Note:
+       Reference code: https://github.com/cybertronai/pytorch-lamb
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:attribute:: clamp_value
+      :value: 10
+
+
+
+   .. py:attribute:: adam
+      :value: False
+
+
+
+   .. py:attribute:: debias
+      :value: False
+
+
+
+   .. py:method:: step(closure=None)
+
+      
+      Performs a single optimization step.
+
+      Arguments:
+          closure: A closure that reevaluates the model and returns the loss.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
