@@ -305,21 +305,7 @@ python ./examples/chatbot_gradio.py --deepspeed configs/ds_config_chatbot.json -
 
 ### Evaluation
 
-[LMFlow Benchmark](https://blog.gopenai.com/lmflow-benchmark-an-automatic-evaluation-framework-for-open-source-llms-ef5c6f142418) is an automatic evaluation framework for open-source large language models.
-We use negative log likelihood (NLL) as the metric to evaluate different aspects of a language model: chitchat, commonsense reasoning, and instruction following abilities.
-
-You can directly run the LMFlow benchmark evaluation to obtain the results to participate in the
-[LLM comparision](https://docs.google.com/spreadsheets/d/1JYh4_pxNzmNA9I0YM2epgRA7VXBIeIGS64gPJBg5NHA/edit?usp=sharing).
-For example, to run GPT2 XL, one may execute
-
-```sh
-bash ./scripts/run_benchmark.sh --model_name_or_path gpt2-xl
-```
-
-`--model_name_or_path` is required, you may fill in huggingface model name or local model path here.
-
-To check the evaluation results, you may check `benchmark.log` in `./output_dir/gpt2-xl_lmflow_chat_nll_eval`,
-`./output_dir/gpt2-xl_all_nll_eval` and `./output_dir/gpt2-xl_commonsense_qa_eval`.
+We recommend using [LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness) for most evaluation purposes.
 
 ## Supported Features
 
