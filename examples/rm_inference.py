@@ -42,8 +42,8 @@ def main():
         dataset,
     )
 
-    if pipeline_args.save_results:
-        res.save(pipeline_args.results_path)
+    if pipeline_args.save_inference_results:
+        res.save(pipeline_args.inference_results_path)
 
 
 if __name__ == "__main__":

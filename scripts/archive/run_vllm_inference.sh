@@ -69,8 +69,8 @@ python examples/vllm_inference.py \
   --temperature 1.0 \
   --top_p 0.9 \
   --max_new_tokens 1024 \
-  --save_results True \
-  --results_path ${output_file_path} \
+  --save_inference_results True \
+  --inference_results_path ${output_file_path} \
   --enable_decode_inference_result False \
   --vllm_gpu_memory_utilization 0.95 \
   --vllm_tensor_parallel_size 2 \

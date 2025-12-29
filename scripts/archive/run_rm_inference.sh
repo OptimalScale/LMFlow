@@ -67,6 +67,6 @@ accelerate launch --config_file configs/accelerator_multigpu_config.yaml \
         --overwrite_cache True \
         --conversation_template ${conversation_template} \
         --preprocessing_num_workers 16 \
-        --save_results True \
-        --results_path ${output_file_path} \
+        --save_inference_results True \
+        --inference_results_path ${output_file_path} \
         2>&1 | tee ${log_dir}/rm_inference.log

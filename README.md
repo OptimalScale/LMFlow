@@ -290,7 +290,7 @@ bash ./scripts/run_chatbot.sh output_models/finetuned_gpt2
 >```bash
 >bash ./scripts/run_sglang_inference.sh
 >```
->
+> Note: If you encounter error ModuleNotFoundError: No module named 'common_ops' when using SGLang, please try `apt-get update` and then `apt install numactl`. 
 > </details>
 
 ### Deployment

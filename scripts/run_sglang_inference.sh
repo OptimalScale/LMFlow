@@ -1,8 +1,6 @@
 python examples/sglang_inference.py \
     --model_name_or_path Qwen/Qwen3-4B-Instruct-2507 \
-    --dataset_path data/alpaca/test_conversation \
-    --output_dir output_data/sglang_inference_results \
-    --output_file_name results.json \
+    --dataset_path data/alpaca/prompt_only \
     --inference_engine sglang \
     --inference_gpu_memory_utilization 0.8 \
     --num_output_sequences 2 \
@@ -10,5 +8,5 @@ python examples/sglang_inference.py \
     --max_new_tokens 2048 \
     --top_p 0.95 \
     --random_seed 42 \
-    --save_results True \
-    --results_path output_data/sglang_inference_results/results.json
+    --save_inference_results True \
+    --inference_results_path output_data/sglang_inference_results/results.json

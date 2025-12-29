@@ -18,6 +18,7 @@ import logging
 import os
 from typing import Literal, Optional, Union
 
+import numpy as np
 import torch
 from peft import PeftModel
 from transformers import (
@@ -40,6 +41,7 @@ from lmflow.utils.data_utils import VLLMInferenceResultWithInput
 from lmflow.utils.deprecated import deprecated_args
 from lmflow.utils.envs import is_accelerate_env
 from lmflow.utils.versioning import is_flash_attn_available, is_ray_available, is_vllm_available
+from lmflow.utils.protocol import DataProto
 
 logger = logging.getLogger(__name__)
 
@@ -286,7 +288,7 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
     )
     def inference(
         self,
-        inputs: Union[str, list[str], torch.Tensor],
+        inputs: Union[str, list[str], torch.Tensor, DataProto],
         sampling_params: Optional[Union[dict, "SamplingParams"]] = None,
         return_logprob: bool = False,
         release_gpu: bool = False,
@@ -296,16 +298,17 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         enable_deterministic_inference: bool = False,
         attention_backend: Optional[str] = None,
         **kwargs,
-    ):
+    ) -> Union[list[VLLMInferenceResultWithInput] | DataProto]:
         """
         Perform generation process of the model.
 
         Parameters
         ------------
-        inputs : Union[str, list[str], torch.Tensor]
+        inputs : Union[str, list[str], torch.Tensor, DataProto]
             The sequence used as a prompt for the generation or as model inputs to the model.
-            When the inference engine is "vllm" or "sglang", this should be a string or a list of strings.
+            When the inference engine is "vllm", this should be a string or a list of strings.
             When the inference engine is "huggingface", this should be a tensor.
+            When the inference engine is "sglang", this should be a DataProto.
         sampling_params : Optional[Union[dict, "SamplingParams"]], optional
             The sampling parameters to use, by default None.
         return_logprob : bool, optional
@@ -345,7 +348,6 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         elif inference_engine == "sglang":
             res = self.__sglang_inference(
                 inputs=inputs,
-                sampling_params=sampling_params,
                 return_logprob=return_logprob,
             )
         else:
@@ -439,21 +441,18 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
     def __sglang_inference(
         self,
-        inputs: list[str],
-        sampling_params: Optional[dict] = None,
+        inputs: DataProto,
         return_logprob: bool = False,
-    ):
+    ) -> DataProto:
         """Perform SGLang inference process of the model."""
         sglang_outputs = self.backend_model_for_inference.generate(
-            prompt=inputs,
-            sampling_params=sampling_params,
+            prompt=inputs.non_tensor_batch["inputs"].tolist(), # use tensor instead of str later
+            sampling_params=inputs.meta_info["sampling_params"],
             return_logprob=return_logprob,
         )
-        # TODO: unified lmflow sample format
-        for idx, output in enumerate(sglang_outputs):
-            output["input"] = inputs[idx]
-            output["output"] = output.pop("text")
-        return sglang_outputs
+        inputs.non_tensor_batch["outputs"] = [output["text"] for output in sglang_outputs]
+        # TODO: padding for batching the output ids; generatin details
+        return inputs
 
     @deprecated_args(
         use_vllm={
@@ -471,7 +470,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         apply_chat_template: bool = True,
         inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
         enable_distributed_inference: bool = False,
-    ) -> Union[list[str], "ray.data.Dataset"]:
+        sampling_params: Optional[dict] = None,
+    ) -> Union[list[str], "ray.data.Dataset", DataProto]:
         if dataset.get_type() == "text_only":
             if apply_chat_template:
                 dataset = dataset.map(
@@ -551,9 +551,20 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                 inference_inputs
             )  # -> dict[str, np.ndarray], {"item": array(['...', '...', '...'])}
 
-        if inference_engine == "sglang" and self.tokenizer.bos_token:
-            # in consistent with sglang bench_serving.py demo
-            inference_inputs = [sentence.replace(self.tokenizer.bos_token, "") for sentence in inference_inputs]
+        if inference_engine == "sglang":
+            if self.tokenizer.bos_token:
+                # in consistent with sglang bench_serving.py demo
+                inference_inputs = [sentence.replace(self.tokenizer.bos_token, "") for sentence in inference_inputs]
+
+            # currently only test dataproto on sglang inference
+            inference_inputs = np.array(inference_inputs)
+            inference_inputs = DataProto.from_single_dict(
+                data={"inputs": inference_inputs},
+                meta_info={"sampling_params": {**sampling_params, "n": 1}, "actual_n_rollouts": sampling_params["n"]}
+            )
+            
+            # handling n>1 since we don't want one-to-many mapping. Later this will be applied to all inference engines.
+            inference_inputs = inference_inputs.repeat(sampling_params["n"])
 
         return inference_inputs
 

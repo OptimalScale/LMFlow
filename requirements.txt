@@ -13,3 +13,4 @@ bitsandbytes>=0.40.0
 pydantic
 accelerate>=0.27.2
 einops>=0.6.1
+tensordict
