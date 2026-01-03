@@ -1053,8 +1053,11 @@ class InferencerArguments:
     )
 
     # Args for result saving
-    save_results: Optional[bool] = field(default=False, metadata={"help": "Whether to save inference results."})
-    results_path: Optional[str] = field(default=None, metadata={"help": "The path of inference results."})
+    save_results: Optional[bool] = field(default=None, metadata={"help": "Whether to save results."})
+    results_path: Optional[str] = field(default=None, metadata={"help": "The path of results."})
+    
+    save_inference_results: Optional[bool] = field(default=False, metadata={"help": "Whether to save inference results."})
+    inference_results_path: Optional[str] = field(default=None, metadata={"help": "The path of inference results."})
 
     def __post_init__(self):
         if self.use_accelerator is not None:
@@ -1063,15 +1066,23 @@ class InferencerArguments:
                 "It will not take effect and will be removed in a future version, "
                 "since LMFlow now can automatically detect whether is in Accelerate or Deepspeed environment."
             )
-
+            
         if self.save_results:
-            if self.results_path is None:
-                raise ValueError("Need to specify results_path when save_results is True.")
+            logger.warning("`save_results` is deprecated and will be removed in a future version. Please use `save_inference_results` instead.")
+            self.save_inference_results = self.save_results
+        
+        if self.results_path:
+            logger.warning("`results_path` is deprecated and will be removed in a future version. Please use `inference_results_path` instead.")
+            self.inference_results_path = self.results_path
+
+        if self.save_inference_results:
+            if self.inference_results_path is None:
+                raise ValueError("Need to specify inference_results_path when save_inference_results is True.")
             else:
-                if not self.results_path.endswith(".json"):
-                    raise ValueError("The results_path must be a json file.")
+                if not self.inference_results_path.endswith(".json"):
+                    raise ValueError("The inference_results_path must be a json file.")
                 else:
-                    Path(self.results_path).parent.mkdir(parents=True, exist_ok=True)
+                    Path(self.inference_results_path).parent.mkdir(parents=True, exist_ok=True)
 
         if self.use_vllm is True:
             logger.warning(
@@ -1352,6 +1363,7 @@ PIPELINE_ARGUMENT_MAPPING = {
     "evaluator": EvaluatorArguments,
     "inferencer": InferencerArguments,
     "vllm_inferencer": InferencerArguments,
+    "sglang_inferencer": InferencerArguments,
     "rm_inferencer": InferencerArguments,
     "raft_aligner": RaftAlignerArguments,
     "dpo_aligner": DPOAlignerArguments,

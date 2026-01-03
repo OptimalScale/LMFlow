@@ -27,6 +27,9 @@ data/
 output_models
 adapter_model/
 
+# output data
+output_data/
+
 # Distribution / packaging
 .Python
 build/

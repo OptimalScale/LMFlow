@@ -15,6 +15,7 @@ from lmflow.datasets import Dataset
 from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.utils.versioning import is_sglang_available
+from lmflow.utils.protocol import DataProto
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,7 @@ class SGLangInferencer(BasePipeline):
         dataset: Dataset,
         release_gpu: bool = False,
         inference_args: Optional[InferencerArguments] = None,
-    ):
+    ) -> DataProto:
         if inference_args:
             logger.warning("Overriding the default inference arguments with the provided arguments in .inference()")
             sampling_params = self._parse_args_to_sampling_params(inference_args)
@@ -76,13 +77,11 @@ class SGLangInferencer(BasePipeline):
             dataset=dataset,
             apply_chat_template=self.inferencer_args.apply_chat_template,
             inference_engine="sglang",
+            sampling_params=sampling_params,
         )
-        # handling n>1 since we don't want one-to-many mapping
-        model_input = [sample for sample in model_input for _ in range(sampling_params["n"])]
 
         outputs = model.inference(
             inputs=model_input,
-            sampling_params=sampling_params.copy().update({"n": 1}),
             return_logprob=self.inferencer_args.return_logprob,
             release_gpu=release_gpu,
             inference_engine="sglang",
@@ -92,26 +91,24 @@ class SGLangInferencer(BasePipeline):
             attention_backend=self.inferencer_args.attention_backend,
         )
 
-        if self.inferencer_args.save_results:
-            self.save_inference_results(outputs, self.inferencer_args.results_path)
+        if self.inferencer_args.save_inference_results:
+            self.save_inference_results(outputs, self.inferencer_args.inference_results_path)
 
         return outputs
 
     def save_inference_results(
         self,
-        outputs: Union[list[list[str]], list[list[list[int]]]],
-        save_file_path: str,
+        outputs: DataProto,
+        inference_results_path: str,
     ):
-        with open(save_file_path, "w", encoding="utf-8") as f:
-            json.dump(outputs, f, ensure_ascii=False, indent=4)
-
-        logger.info(f"Inference results are saved to {save_file_path}.")
+        if not inference_results_path.endswith(".pkl"):
+            logger.warning(f"The inference results path must be a pickle file. Change the path to {inference_results_path}.pkl")
+            inference_results_path = inference_results_path + ".pkl"
+        outputs.save_to_disk(inference_results_path)
+        logger.info(f"Inference results are saved to {inference_results_path}.")
 
     def load_inference_results(
         self,
-        results_path: str,
-    ) -> Union[list[list[str]], list[list[list[int]]]]:
-        with open(results_path) as f:
-            results = json.load(f)
-
-        return results
+        inference_results_path: str,
+    ) -> DataProto:
+        return DataProto.load_from_disk(inference_results_path)
