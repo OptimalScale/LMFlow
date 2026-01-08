@@ -1,0 +1,101 @@
+lmflow.models.vision_encoder.clip_encoder
+=========================================
+
+.. py:module:: lmflow.models.vision_encoder.clip_encoder
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.models.vision_encoder.clip_encoder.CLIPVisionTower
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.models.vision_encoder.clip_encoder.build_vision_tower
+
+
+Module Contents
+---------------
+
+.. py:function:: build_vision_tower(vision_tower_cfg, **kwargs)
+
+.. py:class:: CLIPVisionTower(vision_tower, args, delay_load=False)
+
+   Bases: :py:obj:`torch.nn.Module`
+
+
+   .. py:attribute:: is_loaded
+      :value: False
+
+
+
+   .. py:attribute:: vision_tower_name
+
+
+   .. py:attribute:: select_layer
+
+
+   .. py:attribute:: select_feature
+
+
+   .. py:method:: load_model()
+
+
+   .. py:method:: encode_images(images, language_projection)
+
+
+   .. py:method:: feature_select(image_forward_outs)
+
+
+   .. py:method:: forward(images)
+
+
+   .. py:property:: dummy_feature
+
+
+   .. py:property:: dtype
+
+
+   .. py:property:: device
+
+
+   .. py:property:: config
+
+
+   .. py:property:: hidden_size
+
+
+   .. py:property:: num_patches
+
+
+   .. py:method:: prepare_inputs_labels_for_multimodal(input_ids, attention_mask, past_key_values, labels, images, language_projection=None, language_model=None, **kwargs)
+
+      
+      Copy from the LLAVA code base.
+      Should be polished.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

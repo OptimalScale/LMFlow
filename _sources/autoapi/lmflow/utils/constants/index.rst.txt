@@ -1,0 +1,160 @@
+lmflow.utils.constants
+======================
+
+.. py:module:: lmflow.utils.constants
+
+.. autoapi-nested-parse::
+
+   Commonly used constants.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.constants.TEXT_ONLY_DATASET_DESCRIPTION
+   lmflow.utils.constants.TEXT_TO_SCORED_TEXTLIST_DATASET_DESCRIPTION
+   lmflow.utils.constants.PAIRED_TEXT_TO_TEXT_DATASET_DESCRIPTION
+   lmflow.utils.constants.TEXT_ONLY_DATASET_DETAILS
+   lmflow.utils.constants.TEXT2TEXT_DATASET_DESCRIPTION
+   lmflow.utils.constants.CONVERSATION_DATASET_DESCRIPTION
+   lmflow.utils.constants.PAIRED_CONVERSATION_DATASET_DESCRIPTION
+   lmflow.utils.constants.TEXT_TO_TEXTLIST_DATASET_DESCRIPTION
+   lmflow.utils.constants.TEXT2TEXT_DATASET_DETAILS
+   lmflow.utils.constants.FLOAT_ONLY_DATASET_DESCRIPTION
+   lmflow.utils.constants.TEXT_ONLY_DATASET_LONG_DESCRITION
+   lmflow.utils.constants.TEXT2TEXT_DATASET_LONG_DESCRITION
+   lmflow.utils.constants.DATASET_DESCRIPTION_MAP
+   lmflow.utils.constants.INSTANCE_FIELDS_MAP
+   lmflow.utils.constants.CONVERSATION_ROLE_NAMES
+   lmflow.utils.constants.CONTROLLER_HEART_BEAT_EXPIRATION
+   lmflow.utils.constants.WORKER_HEART_BEAT_INTERVAL
+   lmflow.utils.constants.LOGDIR
+   lmflow.utils.constants.IGNORE_INDEX
+   lmflow.utils.constants.IMAGE_TOKEN_INDEX
+   lmflow.utils.constants.DEFAULT_IMAGE_TOKEN
+   lmflow.utils.constants.DEFAULT_IMAGE_PATCH_TOKEN
+   lmflow.utils.constants.DEFAULT_IM_START_TOKEN
+   lmflow.utils.constants.DEFAULT_IM_END_TOKEN
+   lmflow.utils.constants.LMFLOW_LORA_TARGET_MODULES_MAPPING
+   lmflow.utils.constants.MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG
+   lmflow.utils.constants.RETURN_CODE_ERROR_BUFFER
+   lmflow.utils.constants.MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE
+   lmflow.utils.constants.MEMORY_SAFE_DPOV2_ALIGN_ENV_VAR_TO_REMOVE
+
+
+Module Contents
+---------------
+
+.. py:data:: TEXT_ONLY_DATASET_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: TEXT_TO_SCORED_TEXTLIST_DATASET_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: PAIRED_TEXT_TO_TEXT_DATASET_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: TEXT_ONLY_DATASET_DETAILS
+   :value: ''
+
+
+.. py:data:: TEXT2TEXT_DATASET_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: CONVERSATION_DATASET_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: PAIRED_CONVERSATION_DATASET_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: TEXT_TO_TEXTLIST_DATASET_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: TEXT2TEXT_DATASET_DETAILS
+   :value: ''
+
+
+.. py:data:: FLOAT_ONLY_DATASET_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: TEXT_ONLY_DATASET_LONG_DESCRITION
+   :value: ''
+
+
+.. py:data:: TEXT2TEXT_DATASET_LONG_DESCRITION
+   :value: ''
+
+
+.. py:data:: DATASET_DESCRIPTION_MAP
+
+.. py:data:: INSTANCE_FIELDS_MAP
+
+.. py:data:: CONVERSATION_ROLE_NAMES
+
+.. py:data:: CONTROLLER_HEART_BEAT_EXPIRATION
+   :value: 30
+
+
+.. py:data:: WORKER_HEART_BEAT_INTERVAL
+   :value: 15
+
+
+.. py:data:: LOGDIR
+   :value: '.'
+
+
+.. py:data:: IGNORE_INDEX
+   :value: -100
+
+
+.. py:data:: IMAGE_TOKEN_INDEX
+   :value: -200
+
+
+.. py:data:: DEFAULT_IMAGE_TOKEN
+   :value: '<image>'
+
+
+.. py:data:: DEFAULT_IMAGE_PATCH_TOKEN
+   :value: '<im_patch>'
+
+
+.. py:data:: DEFAULT_IM_START_TOKEN
+   :value: '<im_start>'
+
+
+.. py:data:: DEFAULT_IM_END_TOKEN
+   :value: '<im_end>'
+
+
+.. py:data:: LMFLOW_LORA_TARGET_MODULES_MAPPING
+
+.. py:data:: MEMORY_SAFE_VLLM_INFERENCE_FINISH_FLAG
+   :value: 'MEMORY_SAFE_VLLM_INFERENCE_DONE'
+
+
+.. py:data:: RETURN_CODE_ERROR_BUFFER
+   :value: [134]
+
+
+.. py:data:: MEMORY_SAFE_VLLM_INFERENCE_ENV_VAR_TO_REMOVE
+   :value: ['OMP_NUM_THREADS', 'LOCAL_RANK', 'RANK', 'GROUP_RANK', 'ROLE_RANK', 'ROLE_NAME',...
+
+
+.. py:data:: MEMORY_SAFE_DPOV2_ALIGN_ENV_VAR_TO_REMOVE
+   :value: ['OMP_NUM_THREADS', 'LOCAL_RANK', 'RANK', 'GROUP_RANK', 'ROLE_RANK', 'ROLE_NAME',...
+
+

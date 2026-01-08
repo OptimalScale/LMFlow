@@ -1,0 +1,53 @@
+lmflow.optim.sophia
+===================
+
+.. py:module:: lmflow.optim.sophia
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.sophia.SophiaG
+
+
+Module Contents
+---------------
+
+.. py:class:: SophiaG(params, lr=0.0001, betas=(0.965, 0.99), rho=0.04, weight_decay=0.1, *, maximize: bool = False, capturable: bool = False)
+
+   Bases: :py:obj:`torch.optim.optimizer.Optimizer`
+
+
+   
+   Sophia: A Scalable Stochastic Second-order Optimizer for Language Model Pre-training.
+   Code from: https://github.com/Liuhong99/Sophia/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: __setstate__(state)
+
+
+   .. py:method:: update_hessian()
+
+
+   .. py:method:: step(closure=None, bs=5120)
+
+

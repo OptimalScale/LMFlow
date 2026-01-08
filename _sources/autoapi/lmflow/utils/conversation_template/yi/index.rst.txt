@@ -1,0 +1,19 @@
+lmflow.utils.conversation_template.yi
+=====================================
+
+.. py:module:: lmflow.utils.conversation_template.yi
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.yi.YI1_5_TEMPLATE
+
+
+Module Contents
+---------------
+
+.. py:data:: YI1_5_TEMPLATE
+

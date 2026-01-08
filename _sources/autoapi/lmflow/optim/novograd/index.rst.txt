@@ -1,0 +1,28 @@
+lmflow.optim.novograd
+=====================
+
+.. py:module:: lmflow.optim.novograd
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.novograd.NovoGrad
+
+
+Module Contents
+---------------
+
+.. py:class:: NovoGrad(params, lr=0.01, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, grad_averaging=False, amsgrad=False)
+
+   Bases: :py:obj:`torch.optim.Optimizer`
+
+
+   .. py:method:: __setstate__(state)
+
+
+   .. py:method:: step(closure=None)
+
+

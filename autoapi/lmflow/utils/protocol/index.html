@@ -1,0 +1,1207 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>lmflow.utils.protocol &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/lmflow/utils/protocol/index';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="lmflow.utils.test_utils" href="../test_utils/index.html" />
+    <link rel="prev" title="lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch" href="../position_interpolation/llama_rope_scaled_monkey_patch/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">lmflow</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../args/index.html">lmflow.args</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../datasets/index.html">lmflow.datasets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../datasets/dataset/index.html">lmflow.datasets.dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../datasets/multi_modal_dataset/index.html">lmflow.datasets.multi_modal_dataset</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../models/index.html">lmflow.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../models/auto_model/index.html">lmflow.models.auto_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/base_model/index.html">lmflow.models.base_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/decoder_model/index.html">lmflow.models.decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/encoder_decoder_model/index.html">lmflow.models.encoder_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/hf_decoder_model/index.html">lmflow.models.hf_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/hf_model_mixin/index.html">lmflow.models.hf_model_mixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/hf_text_regression_model/index.html">lmflow.models.hf_text_regression_model</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/interfaces/index.html">lmflow.models.interfaces</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/interfaces/tunable/index.html">lmflow.models.interfaces.tunable</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/regression_model/index.html">lmflow.models.regression_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/text_regression_model/index.html">lmflow.models.text_regression_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../models/vision2seq_model/index.html">lmflow.models.vision2seq_model</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/vision_encoder/index.html">lmflow.models.vision_encoder</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/vision_encoder/clip_encoder/index.html">lmflow.models.vision_encoder.clip_encoder</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../optim/index.html">lmflow.optim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adabelief/index.html">lmflow.optim.adabelief</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adabound/index.html">lmflow.optim.adabound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adadelta/index.html">lmflow.optim.adadelta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adagrad/index.html">lmflow.optim.adagrad</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adam/index.html">lmflow.optim.adam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adamax/index.html">lmflow.optim.adamax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adamp/index.html">lmflow.optim.adamp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adamw_schedule_free/index.html">lmflow.optim.adamw_schedule_free</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/adan/index.html">lmflow.optim.adan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/dummy/index.html">lmflow.optim.dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/lamb/index.html">lmflow.optim.lamb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/lars/index.html">lmflow.optim.lars</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/muon/index.html">lmflow.optim.muon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/nadam/index.html">lmflow.optim.nadam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/novograd/index.html">lmflow.optim.novograd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/optimizers/index.html">lmflow.optim.optimizers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/radam/index.html">lmflow.optim.radam</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/sgd_schedule_free/index.html">lmflow.optim.sgd_schedule_free</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/sgdp/index.html">lmflow.optim.sgdp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/sophia/index.html">lmflow.optim.sophia</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/utils/index.html">lmflow.optim.utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../optim/yogi/index.html">lmflow.optim.yogi</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../pipeline/index.html">lmflow.pipeline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/auto_pipeline/index.html">lmflow.pipeline.auto_pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/base_aligner/index.html">lmflow.pipeline.base_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/base_pipeline/index.html">lmflow.pipeline.base_pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/base_tuner/index.html">lmflow.pipeline.base_tuner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/dpo_aligner/index.html">lmflow.pipeline.dpo_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/dpov2_aligner/index.html">lmflow.pipeline.dpov2_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/evaluator/index.html">lmflow.pipeline.evaluator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/finetuner/index.html">lmflow.pipeline.finetuner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/inferencer/index.html">lmflow.pipeline.inferencer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/iterative_dpo_aligner/index.html">lmflow.pipeline.iterative_dpo_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/raft_aligner/index.html">lmflow.pipeline.raft_aligner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/rm_inferencer/index.html">lmflow.pipeline.rm_inferencer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/rm_tuner/index.html">lmflow.pipeline.rm_tuner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/sglang_inferencer/index.html">lmflow.pipeline.sglang_inferencer</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../pipeline/utils/index.html">lmflow.pipeline.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/dpov2_dataprocessor/index.html">lmflow.pipeline.utils.dpov2_dataprocessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/dpov2_trainer/index.html">lmflow.pipeline.utils.dpov2_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/lisa_trainer/index.html">lmflow.pipeline.utils.lisa_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/memory_safe_dpov2_align/index.html">lmflow.pipeline.utils.memory_safe_dpov2_align</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/memory_safe_vllm_inference/index.html">lmflow.pipeline.utils.memory_safe_vllm_inference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/raft_trainer/index.html">lmflow.pipeline.utils.raft_trainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/rm_dataprocessor/index.html">lmflow.pipeline.utils.rm_dataprocessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pipeline/utils/rm_trainer/index.html">lmflow.pipeline.utils.rm_trainer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../pipeline/vllm_inferencer/index.html">lmflow.pipeline.vllm_inferencer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../tokenization/index.html">lmflow.tokenization</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tokenization/hf_decoder_model/index.html">lmflow.tokenization.hf_decoder_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tokenization/hf_text_regression_model/index.html">lmflow.tokenization.hf_text_regression_model</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">lmflow.utils</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../common/index.html">lmflow.utils.common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../constants/index.html">lmflow.utils.constants</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../conversation_template/index.html">lmflow.utils.conversation_template</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/base/index.html">lmflow.utils.conversation_template.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/chatglm/index.html">lmflow.utils.conversation_template.chatglm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/chatml/index.html">lmflow.utils.conversation_template.chatml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/deepseek/index.html">lmflow.utils.conversation_template.deepseek</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/gemma/index.html">lmflow.utils.conversation_template.gemma</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/hymba/index.html">lmflow.utils.conversation_template.hymba</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/internlm/index.html">lmflow.utils.conversation_template.internlm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/llama/index.html">lmflow.utils.conversation_template.llama</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/phi/index.html">lmflow.utils.conversation_template.phi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/qwen/index.html">lmflow.utils.conversation_template.qwen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/yi/index.html">lmflow.utils.conversation_template.yi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../conversation_template/zephyr/index.html">lmflow.utils.conversation_template.zephyr</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../data_utils/index.html">lmflow.utils.data_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../deprecated/index.html">lmflow.utils.deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../envs/index.html">lmflow.utils.envs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../llava_conversation_lib/index.html">lmflow.utils.llava_conversation_lib</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../model/index.html">lmflow.utils.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../multimodal/index.html">lmflow.utils.multimodal</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../position_interpolation/index.html">lmflow.utils.position_interpolation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../position_interpolation/llama_rope_scaled_monkey_patch/index.html">lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">lmflow.utils.protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../test_utils/index.html">lmflow.utils.test_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../versioning/index.html">lmflow.utils.versioning</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version/index.html">lmflow.version</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../profiler/index.html">profiler</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">lmflow</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">lmflow.utils</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.utils.protocol</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-lmflow.utils.protocol">
+<span id="lmflow-utils-protocol"></span><h1>lmflow.utils.protocol<a class="headerlink" href="#module-lmflow.utils.protocol" title="Link to this heading">#</a></h1>
+<p>ref: <a class="github reference external" href="https://github.com/volcengine/verl/blob/main/verl/protocol.py">volcengine/verl</a>
+Implement base data transfer protocol between any two functions, modules.
+We can subclass Protocol to define more detailed batch info with specific keys</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.protocol.logger" title="lmflow.utils.protocol.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.protocol.DataProtoItem" title="lmflow.utils.protocol.DataProtoItem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataProtoItem</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataProto</span></code></a></p></td>
+<td><p>A DataProto is a data structure that aims to provide a standard protocol for data exchange between functions.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.protocol.union_python_dict" title="lmflow.utils.protocol.union_python_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_python_dict</span></code></a>(dict1, dict2)</p></td>
+<td><p>Union two dict. Will throw an error if there is an item not the same object with the same key.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.protocol.union_tensor_dict" title="lmflow.utils.protocol.union_tensor_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_tensor_dict</span></code></a>(→ tensordict.TensorDict)</p></td>
+<td><p>Union two tensordicts.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.protocol._array_equal" title="lmflow.utils.protocol._array_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_array_equal</span></code></a>(→ bool)</p></td>
+<td><p>Recursively compares two NumPy arrays for strict equality, with special</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.protocol._deep_equal" title="lmflow.utils.protocol._deep_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_deep_equal</span></code></a>(→ bool)</p></td>
+<td><p>Recursively performs a deep comparison between two Python objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.protocol.union_numpy_dict" title="lmflow.utils.protocol.union_numpy_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">union_numpy_dict</span></code></a>(→ dict[str, numpy.ndarray])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.protocol.list_of_dict_to_dict_of_list" title="lmflow.utils.protocol.list_of_dict_to_dict_of_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_of_dict_to_dict_of_list</span></code></a>(list_of_dict)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lmflow.utils.protocol.collate_fn" title="lmflow.utils.protocol.collate_fn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collate_fn</span></code></a>(x)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lmflow.utils.protocol.get_tensordict" title="lmflow.utils.protocol.get_tensordict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tensordict</span></code></a>(→ tensordict.TensorDict)</p></td>
+<td><p>Create a TensorDict from tensors and non-tensor data.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.logger">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.logger" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.union_python_dict">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">union_python_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#union_python_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.union_python_dict" title="Link to this definition">#</a></dt>
+<dd><p>Union two dict. Will throw an error if there is an item not the same object with the same key.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>dict1:
+dict2:</p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.union_tensor_dict">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">union_tensor_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_dict1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tensordict.TensorDict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensor_dict2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tensordict.TensorDict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tensordict.TensorDict</span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#union_tensor_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.union_tensor_dict" title="Link to this definition">#</a></dt>
+<dd><p>Union two tensordicts.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.protocol._array_equal">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">_array_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visited</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#_array_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol._array_equal" title="Link to this definition">#</a></dt>
+<dd><p>Recursively compares two NumPy arrays for strict equality, with special
+handling for object-dtype arrays, NaN values, and circular references.
+This function assumes that the two arguments provided are NumPy arrays.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>array1: The first NumPy array.
+array2: The second NumPy array.</p>
+</dd>
+<dt>Returns:</dt><dd><p>True if the arrays’ dtypes, shapes, and all elements are equal.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.protocol._deep_equal">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">_deep_equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visited</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#_deep_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol._deep_equal" title="Link to this definition">#</a></dt>
+<dd><p>Recursively performs a deep comparison between two Python objects.
+- Handles NaN values correctly (NaN == NaN evaluates to True).
+- Handling circular references.
+- Dispatches to _array_equal if both objects are NumPy arrays.
+- Otherwise, uses standard ‘==’ comparison.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.union_numpy_dict">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">union_numpy_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_dict1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensor_dict2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#union_numpy_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.union_numpy_dict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.list_of_dict_to_dict_of_list">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">list_of_dict_to_dict_of_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_of_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#list_of_dict_to_dict_of_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.list_of_dict_to_dict_of_list" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.collate_fn">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">collate_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#lmflow.utils.protocol.DataProtoItem" title="lmflow.utils.protocol.DataProtoItem"><span class="pre">DataProtoItem</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#collate_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.collate_fn" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.get_tensordict">
+<span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">get_tensordict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_tensor_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tensordict.TensorDict</span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#get_tensordict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.get_tensordict" title="Link to this definition">#</a></dt>
+<dd><p>Create a TensorDict from tensors and non-tensor data.</p>
+<p>Automatically handles nested structures in lists by converting them to NonTensorStack.
+This enables support for:
+- Lists of lists: [[], [0.5, 0.8], [0.9]]
+- Lists of dicts: [{“acc”: 1.0}, {“acc”: 0.0}]
+- Lists of lists of dicts: [[{“content”: “…”, “role”: “user”}]]</p>
+<dl>
+<dt>Args:</dt><dd><p>tensor_dict: Dictionary of tensors and lists to include in the TensorDict
+non_tensor_dict: Dictionary of metadata to store as NonTensorData</p>
+</dd>
+<dt>Returns:</dt><dd><p>TensorDict with proper handling of nested structures</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">get_tensordict</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">tensor_dict</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;obs&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="s2">&quot;turn_scores&quot;</span><span class="p">:</span> <span class="p">[[],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">]]</span>  <span class="c1"># Nested list</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="n">non_tensor_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;experiment&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProtoItem">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">DataProtoItem</span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProtoItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProtoItem" title="Link to this definition">#</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProtoItem.batch">
+<span class="sig-name descname"><span class="pre">batch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tensordict.TensorDict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProtoItem.batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProtoItem.batch" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProtoItem.non_tensor_batch">
+<span class="sig-name descname"><span class="pre">non_tensor_batch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProtoItem.non_tensor_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProtoItem.non_tensor_batch" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProtoItem.meta_info">
+<span class="sig-name descname"><span class="pre">meta_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProtoItem.meta_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProtoItem.meta_info" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lmflow.utils.protocol.</span></span><span class="sig-name descname"><span class="pre">DataProto</span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto" title="Link to this definition">#</a></dt>
+<dd><p>A DataProto is a data structure that aims to provide a standard protocol for data exchange between functions.
+It contains a batch (TensorDict) and a meta_info (Dict). The batch is a TensorDict <a class="reference external" href="https://pytorch.org/tensordict/">https://pytorch.org/tensordict/</a>.
+TensorDict allows you to manipulate a dictionary of Tensors like a single Tensor. Ideally, the tensors with the
+same batch size should be put inside batch.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.batch">
+<span class="sig-name descname"><span class="pre">batch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tensordict.TensorDict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.batch" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.non_tensor_batch">
+<span class="sig-name descname"><span class="pre">non_tensor_batch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.non_tensor_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.non_tensor_batch" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.meta_info">
+<span class="sig-name descname"><span class="pre">meta_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.meta_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.meta_info" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.__post_init__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.__len__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.__getitem__" title="Link to this definition">#</a></dt>
+<dd><p>Enhanced indexing for DataProto objects.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>item: Can be one of:</dt><dd><ul class="simple">
+<li><p>int: A single index</p></li>
+<li><p>slice: A slice object (start:stop:step)</p></li>
+<li><p>list: A list of indices</p></li>
+<li><p>numpy.ndarray: An array of indices</p></li>
+<li><p>torch.Tensor: A tensor of indices</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: For all indexing types except single integers
+DataProtoItem: Only for single integer indices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.__getstate__">
+<span class="sig-name descname"><span class="pre">__getstate__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.__getstate__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.__getstate__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.__setstate__">
+<span class="sig-name descname"><span class="pre">__setstate__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.__setstate__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.__setstate__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.save_to_disk">
+<span class="sig-name descname"><span class="pre">save_to_disk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.save_to_disk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.save_to_disk" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.load_from_disk">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_from_disk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.load_from_disk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.load_from_disk" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.print_size">
+<span class="sig-name descname"><span class="pre">print_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.print_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.print_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.check_consistency">
+<span class="sig-name descname"><span class="pre">check_consistency</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.check_consistency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.check_consistency" title="Link to this definition">#</a></dt>
+<dd><p>Check the consistency of the DataProto. Mainly for batch and non_tensor_batch
+We expose this function as a public one so that user can call themselves directly</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.from_single_dict">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_single_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.from_single_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.from_single_dict" title="Link to this definition">#</a></dt>
+<dd><p>Create a DataProto from a dict of tensors and non_tensors</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.from_dict">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_tensors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_batch_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.from_dict" title="Link to this definition">#</a></dt>
+<dd><p>Create a DataProto from a dict of tensors. This assumes that
+1. All the tensor in tensors have the same dim0
+2. Only dim0 is the batch dim</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.from_tensordict">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_tensordict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tensordict.TensorDict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_batch_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.from_tensordict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.from_tensordict" title="Link to this definition">#</a></dt>
+<dd><p>Create a DataProto from a TensorDict. This assumes that
+1. All the tensor in tensor_dict have the same dim0
+2. Only dim0 is the batch dim</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.to">
+<span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.to" title="Link to this definition">#</a></dt>
+<dd><p>move the batch to device</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>device (torch.device, str): torch device</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: the current DataProto</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.select">
+<span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_tensor_batch_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_info_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deepcopy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.select" title="Link to this definition">#</a></dt>
+<dd><p>Select a subset of the DataProto via batch_keys and meta_info_keys</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>batch_keys (list, optional): a list of strings indicating the keys in batch to select
+meta_info_keys (list, optional): a list of keys indicating the meta info to select</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: the DataProto with the selected batch_keys and meta_info_keys</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.select_idxs">
+<span class="sig-name descname"><span class="pre">select_idxs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idxs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.select_idxs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.select_idxs" title="Link to this definition">#</a></dt>
+<dd><p>Select specific indices from the DataProto.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>idxs (torch.Tensor or numpy.ndarray or list): Indices to select</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: A new DataProto containing only the selected indices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.slice">
+<span class="sig-name descname"><span class="pre">slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.slice" title="Link to this definition">#</a></dt>
+<dd><p>Slice the DataProto and return a new DataProto object.
+This is an improved version of direct slicing which returns a DataProtoItem.</p>
+<dl>
+<dt>Args:</dt><dd><p>start (int, optional): Start index. Defaults to None (start from beginning).
+end (int, optional): End index (exclusive). Defaults to None (go to end).
+step (int, optional): Step size. Defaults to None (step=1).</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: A new DataProto containing the sliced data</p>
+</dd>
+<dt>Examples:</dt><dd><p># Using the slice method directly
+sliced_data = data_proto.slice(10, 20)</p>
+<p># Using enhanced indexing (returns DataProto)
+sliced_data = data_proto[10:20]
+sliced_data = data_proto[::2]  # Every other element</p>
+<p># Using list indexing (returns DataProto)
+indices = [1, 5, 10]
+selected_data = data_proto[indices]</p>
+<p># Single index still returns DataProtoItem
+single_item = data_proto[5]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_tensor_batch_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_info_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.pop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.pop" title="Link to this definition">#</a></dt>
+<dd><p>Pop a subset of the DataProto via <cite>batch_keys</cite> and <cite>meta_info_keys</cite></p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>batch_keys (list, optional): a list of strings indicating the keys in batch to pop
+meta_info_keys (list, optional): a list of keys indicating the meta info to pop</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: the DataProto with the poped batch_keys and meta_info_keys</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.rename" title="Link to this definition">#</a></dt>
+<dd><p>Note that this function only rename the key in the batch</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.union">
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.union" title="Link to this definition">#</a></dt>
+<dd><p>Union with another DataProto. Union batch and meta_info separately.
+Throw an error if</p>
+<ul class="simple">
+<li><p>there are conflict keys in batch and they are not equal</p></li>
+<li><p>the batch size of two data batch is not the same</p></li>
+<li><p>there are conflict keys in meta_info and they are not the same.</p></li>
+</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>other (DataProto): another DataProto to union</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: the DataProto after union</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.make_iterator">
+<span class="sig-name descname"><span class="pre">make_iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mini_batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloader_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.make_iterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.make_iterator" title="Link to this definition">#</a></dt>
+<dd><p>Make an iterator from the DataProto. This is built upon that TensorDict can be used as a normal Pytorch
+dataset. See <a class="reference external" href="https://pytorch.org/tensordict/tutorials/data_fashion">https://pytorch.org/tensordict/tutorials/data_fashion</a> for more details.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>mini_batch_size (int): mini-batch size when iterating the dataset. We require that</dt><dd><p><code class="docutils literal notranslate"><span class="pre">batch.batch_size[0]</span> <span class="pre">%</span> <span class="pre">mini_batch_size</span> <span class="pre">==</span> <span class="pre">0</span></code>.</p>
+</dd>
+</dl>
+<p>epochs (int): number of epochs when iterating the dataset.
+dataloader_kwargs (Any): internally, it returns a DataLoader over the batch. The</p>
+<blockquote>
+<div><p>dataloader_kwargs is the kwargs passed to the DataLoader.</p>
+</div></blockquote>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>Iterator: an iterator that yields a mini-batch data at a time. The total number of iteration</dt><dd><p>steps is <code class="docutils literal notranslate"><span class="pre">self.batch.batch_size</span> <span class="pre">*</span> <span class="pre">epochs</span> <span class="pre">//</span> <span class="pre">mini_batch_size</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.padding">
+<span class="sig-name descname"><span class="pre">padding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">padding_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding_candidate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.padding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.padding" title="Link to this definition">#</a></dt>
+<dd><p>Pad the DataProto by concating with padding_candidate.repeat(padding_size)</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>padding_size (int): the number of repeated padding_candidate
+padding_candidate: the item to be repeated and appended to the DataProto, only supporting [“first”, “last”]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.chunk">
+<span class="sig-name descname"><span class="pre">chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.chunk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.chunk" title="Link to this definition">#</a></dt>
+<dd><p>Split the batch among dim=0 into chunks. The meta_info is passed to each DataProto after split.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>chunks (int): the number of chunks to split on dim=0</p>
+</dd>
+<dt>Returns:</dt><dd><p>List[DataProto]: a list of DataProto after splitting</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.split">
+<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.split" title="Link to this definition">#</a></dt>
+<dd><p>Split the batch among dim=0 into chunks. The meta_info is passed to each DataProto after split.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>split_size (int): the size of each split</p>
+</dd>
+<dt>Returns:</dt><dd><p>List[DataProto]: a list of DataProto after splitting</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.concat">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">concat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lmflow.utils.protocol.DataProto" title="lmflow.utils.protocol.DataProto"><span class="pre">DataProto</span></a></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.concat" title="Link to this definition">#</a></dt>
+<dd><p>Concat a list of DataProto. The batch is concatenated among dim=0.
+The meta_info is merged, with special handling for metrics from different workers.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>data (List[DataProto]): list of DataProto</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: concatenated DataProto</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.reorder">
+<span class="sig-name descname"><span class="pre">reorder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.reorder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.reorder" title="Link to this definition">#</a></dt>
+<dd><p>Note that this operation is in-place</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.repeat">
+<span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repeat_times</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interleave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.repeat" title="Link to this definition">#</a></dt>
+<dd><p>Repeat the batch data a specified number of times.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>repeat_times (int): Number of times to repeat the data.
+interleave (bool): Whether to interleave the repeated data.</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: A new DataProto with repeated data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.unfold_column_chunks">
+<span class="sig-name descname"><span class="pre">unfold_column_chunks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.unfold_column_chunks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.unfold_column_chunks" title="Link to this definition">#</a></dt>
+<dd><p>Split along the second dim into <cite>n_split</cite>, unfold it to the first dim (batch dim)
+Useful in passing grouped tensors that doesn’t want to be shuffled in dataset.
+keys not in split_keys are repeated to match the shape
+Note that if the <cite>split_keys</cite> is not provided, it will repeat all the keys in the second dim.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.sample_level_repeat">
+<span class="sig-name descname"><span class="pre">sample_level_repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repeat_times</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.sample_level_repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.sample_level_repeat" title="Link to this definition">#</a></dt>
+<dd><p>Repeat each row of the batch data a specified number of times.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>repeat_times (torch.tensor, list, tuple, ndarray):  Number of times to repeat the data.</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataProto: A new DataProto with repeated data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.to_tensordict">
+<span class="sig-name descname"><span class="pre">to_tensordict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tensordict.TensorDict</span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.to_tensordict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.to_tensordict" title="Link to this definition">#</a></dt>
+<dd><p>Convert this DataProto to TensorDict. Note that this requires tensordict version at least 0.10</p>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto.get_data_info">
+<span class="sig-name descname"><span class="pre">get_data_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto.get_data_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto.get_data_info" title="Link to this definition">#</a></dt>
+<dd><p>Return formatted information about stored data with nested type details.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: Formatted string showing tensor details and recursive metadata types</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lmflow.utils.protocol.DataProto._get_type_info">
+<span class="sig-name descname"><span class="pre">_get_type_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/lmflow/utils/protocol.html#DataProto._get_type_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lmflow.utils.protocol.DataProto._get_type_info" title="Link to this definition">#</a></dt>
+<dd><p>Recursively get type information for nested structures</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../position_interpolation/llama_rope_scaled_monkey_patch/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../test_utils/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">lmflow.utils.test_utils</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.union_python_dict"><code class="docutils literal notranslate"><span class="pre">union_python_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.union_tensor_dict"><code class="docutils literal notranslate"><span class="pre">union_tensor_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol._array_equal"><code class="docutils literal notranslate"><span class="pre">_array_equal()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol._deep_equal"><code class="docutils literal notranslate"><span class="pre">_deep_equal()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.union_numpy_dict"><code class="docutils literal notranslate"><span class="pre">union_numpy_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.list_of_dict_to_dict_of_list"><code class="docutils literal notranslate"><span class="pre">list_of_dict_to_dict_of_list()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.collate_fn"><code class="docutils literal notranslate"><span class="pre">collate_fn()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.get_tensordict"><code class="docutils literal notranslate"><span class="pre">get_tensordict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProtoItem"><code class="docutils literal notranslate"><span class="pre">DataProtoItem</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProtoItem.batch"><code class="docutils literal notranslate"><span class="pre">DataProtoItem.batch</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProtoItem.non_tensor_batch"><code class="docutils literal notranslate"><span class="pre">DataProtoItem.non_tensor_batch</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProtoItem.meta_info"><code class="docutils literal notranslate"><span class="pre">DataProtoItem.meta_info</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto"><code class="docutils literal notranslate"><span class="pre">DataProto</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.batch"><code class="docutils literal notranslate"><span class="pre">DataProto.batch</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.non_tensor_batch"><code class="docutils literal notranslate"><span class="pre">DataProto.non_tensor_batch</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.meta_info"><code class="docutils literal notranslate"><span class="pre">DataProto.meta_info</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.__post_init__"><code class="docutils literal notranslate"><span class="pre">DataProto.__post_init__()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.__len__"><code class="docutils literal notranslate"><span class="pre">DataProto.__len__()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.__getitem__"><code class="docutils literal notranslate"><span class="pre">DataProto.__getitem__()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.__getstate__"><code class="docutils literal notranslate"><span class="pre">DataProto.__getstate__()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.__setstate__"><code class="docutils literal notranslate"><span class="pre">DataProto.__setstate__()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.save_to_disk"><code class="docutils literal notranslate"><span class="pre">DataProto.save_to_disk()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.load_from_disk"><code class="docutils literal notranslate"><span class="pre">DataProto.load_from_disk()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.print_size"><code class="docutils literal notranslate"><span class="pre">DataProto.print_size()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.check_consistency"><code class="docutils literal notranslate"><span class="pre">DataProto.check_consistency()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.from_single_dict"><code class="docutils literal notranslate"><span class="pre">DataProto.from_single_dict()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.from_dict"><code class="docutils literal notranslate"><span class="pre">DataProto.from_dict()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.from_tensordict"><code class="docutils literal notranslate"><span class="pre">DataProto.from_tensordict()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.to"><code class="docutils literal notranslate"><span class="pre">DataProto.to()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.select"><code class="docutils literal notranslate"><span class="pre">DataProto.select()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.select_idxs"><code class="docutils literal notranslate"><span class="pre">DataProto.select_idxs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.slice"><code class="docutils literal notranslate"><span class="pre">DataProto.slice()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.pop"><code class="docutils literal notranslate"><span class="pre">DataProto.pop()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.rename"><code class="docutils literal notranslate"><span class="pre">DataProto.rename()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.union"><code class="docutils literal notranslate"><span class="pre">DataProto.union()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.make_iterator"><code class="docutils literal notranslate"><span class="pre">DataProto.make_iterator()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.padding"><code class="docutils literal notranslate"><span class="pre">DataProto.padding()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.chunk"><code class="docutils literal notranslate"><span class="pre">DataProto.chunk()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.split"><code class="docutils literal notranslate"><span class="pre">DataProto.split()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.concat"><code class="docutils literal notranslate"><span class="pre">DataProto.concat()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.reorder"><code class="docutils literal notranslate"><span class="pre">DataProto.reorder()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.repeat"><code class="docutils literal notranslate"><span class="pre">DataProto.repeat()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.unfold_column_chunks"><code class="docutils literal notranslate"><span class="pre">DataProto.unfold_column_chunks()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.sample_level_repeat"><code class="docutils literal notranslate"><span class="pre">DataProto.sample_level_repeat()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.to_tensordict"><code class="docutils literal notranslate"><span class="pre">DataProto.to_tensordict()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto.get_data_info"><code class="docutils literal notranslate"><span class="pre">DataProto.get_data_info()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lmflow.utils.protocol.DataProto._get_type_info"><code class="docutils literal notranslate"><span class="pre">DataProto._get_type_info()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../_sources/autoapi/lmflow/utils/protocol/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2025.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+lmflow.utils.deprecated
+=======================
+
+.. py:module:: lmflow.utils.deprecated
+
+.. autoapi-nested-parse::
+
+   Utilities for handling deprecated APIs and maintaining backwards compatibility.
+
+   ..
+       !! processed by numpydoc !!
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.utils.deprecated.deprecated_args
+
+
+Module Contents
+---------------
+
+.. py:function:: deprecated_args(**deprecated_params: dict[str, Any])
+
+   
+   Decorator to handle deprecated function arguments.
+
+   Args:
+       **deprecated_params: Mapping of deprecated argument names to their configuration.
+           Each value should be a dict with:
+           - 'replacement': Name of the new argument (optional)
+           - 'mapper': Function to map old value to new value (optional)
+           - 'message': Custom deprecation message (optional)
+
+   Example:
+       @deprecated_args(
+           use_vllm={
+               'replacement': 'inference_engine',
+               'mapper': lambda x: 'vllm' if x else 'huggingface',
+               'message': "use_vllm is deprecated. Use inference_engine='vllm' instead."
+           }
+       )
+       def my_function(inference_engine='huggingface', **kwargs):
+           pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

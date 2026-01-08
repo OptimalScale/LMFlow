@@ -1,0 +1,74 @@
+lmflow.optim.yogi
+=================
+
+.. py:module:: lmflow.optim.yogi
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.yogi.Yogi
+
+
+Module Contents
+---------------
+
+.. py:class:: Yogi(params, lr: float = 0.01, betas=(0.9, 0.999), eps: float = 0.001, initial_accumulator: float = 1e-06, weight_decay: float = 0)
+
+   Bases: :py:obj:`torch.optim.optimizer.Optimizer`
+
+
+   
+   Implements Yogi Optimizer Algorithm.
+   It has been proposed in `Adaptive methods for Nonconvex Optimization`.
+
+   https://papers.nips.cc/paper/8186-adaptive-methods-for-nonconvex-optimization  # noqa
+
+   Note:
+       Reference code: https://github.com/4rtemi5/Yogi-Optimizer_Keras
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: step(closure=None)
+
+      
+      Performs a single optimization step.
+
+      Arguments:
+          closure: A closure that reevaluates the model and returns the loss.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

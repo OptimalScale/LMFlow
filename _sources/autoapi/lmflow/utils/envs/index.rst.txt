@@ -1,0 +1,89 @@
+lmflow.utils.envs
+=================
+
+.. py:module:: lmflow.utils.envs
+
+.. autoapi-nested-parse::
+
+   ref: https://github.com/pytorch/torchtune/blob/main/torchtune/utils/_device.py
+
+   ..
+       !! processed by numpydoc !!
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.envs.logger
+   lmflow.utils.envs.is_cuda_available
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.utils.envs.is_accelerate_env
+   lmflow.utils.envs.get_device_name
+   lmflow.utils.envs.get_torch_device
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: is_cuda_available
+
+.. py:function:: is_accelerate_env()
+
+.. py:function:: get_device_name() -> str
+
+   
+   Get the device name based on the current machine.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_torch_device() -> any
+
+   
+   Return the corresponding torch attribute based on the device type string.
+   Returns:
+       module: The corresponding torch device namespace, or torch.cuda if not found.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

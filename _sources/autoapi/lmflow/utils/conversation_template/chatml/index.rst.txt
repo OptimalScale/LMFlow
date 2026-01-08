@@ -1,0 +1,19 @@
+lmflow.utils.conversation_template.chatml
+=========================================
+
+.. py:module:: lmflow.utils.conversation_template.chatml
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.chatml.CHATML_TEMPLATE
+
+
+Module Contents
+---------------
+
+.. py:data:: CHATML_TEMPLATE
+

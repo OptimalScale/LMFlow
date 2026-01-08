@@ -1,0 +1,1649 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lmflow.utils.protocol &#8212; LMFlow  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lmflow/utils/protocol';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">We've released our memory-efficient finetuning algorithm LISA, check out [<a href='https://arxiv.org/pdf/2403.17919.pdf'>Paper</a>][<a href='https://github.com/OptimalScale/LMFlow#finetuning-lisa'>User Guide</a>] for more details!</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">LMFlow</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../blogs/index.html">
+    Blogs
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../about/index.html">
+    About
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+            
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/OptimalScale/LMFlow" title="LMFlow" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><img src="../../../_static/logo5.svg" class="icon-link-image" alt="LMFlow"/></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">lmflow.utils.protocol</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lmflow.utils.protocol</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">ref: https://github.com/volcengine/verl/blob/main/verl/protocol.py</span>
+<span class="sd">Implement base data transfer protocol between any two functions, modules.</span>
+<span class="sd">We can subclass Protocol to define more detailed batch info with specific keys</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tensordict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">packaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">parse_version</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensordict</span><span class="w"> </span><span class="kn">import</span> <span class="n">TensorDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensordict.tensorclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">NonTensorData</span><span class="p">,</span> <span class="n">NonTensorStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataLoader</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">lmflow.utils.envs</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_torch_device</span>
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+<span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="n">tensordict</span><span class="o">.</span><span class="n">set_lazy_legacy</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">parse_version</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">parse_version</span><span class="p">(</span><span class="s2">&quot;0.10.0&quot;</span><span class="p">):</span>
+        <span class="n">tensordict</span><span class="o">.</span><span class="n">set_list_to_stack</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="union_python_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.union_python_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">union_python_dict</span><span class="p">(</span><span class="n">dict1</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">dict2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Union two dict. Will throw an error if there is an item not the same object with the same key.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dict1:</span>
+<span class="sd">        dict2:</span>
+
+<span class="sd">    Returns:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">dict2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dict1</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">dict2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="n">dict1</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> in meta_dict1 and meta_dict2 are not the same object&quot;</span>
+        <span class="n">dict1</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">return</span> <span class="n">dict1</span></div>
+
+
+
+<div class="viewcode-block" id="union_tensor_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.union_tensor_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">union_tensor_dict</span><span class="p">(</span><span class="n">tensor_dict1</span><span class="p">:</span> <span class="n">TensorDict</span><span class="p">,</span> <span class="n">tensor_dict2</span><span class="p">:</span> <span class="n">TensorDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Union two tensordicts.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">tensor_dict1</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">==</span> <span class="n">tensor_dict2</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Two tensor dict must have identical batch size. Got </span><span class="si">{</span><span class="n">tensor_dict1</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">tensor_dict2</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tensor_dict2</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tensor_dict1</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">tensor_dict1</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tensor_dict2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">tensor_dict1</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">tensor_dict2</span><span class="p">[</span><span class="n">key</span><span class="p">]),</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> in tensor_dict1 and tensor_dict2 are not the same object&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tensor_dict1</span></div>
+
+
+
+<div class="viewcode-block" id="_array_equal">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol._array_equal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_array_equal</span><span class="p">(</span><span class="n">array1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">array2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">visited</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursively compares two NumPy arrays for strict equality, with special</span>
+<span class="sd">    handling for object-dtype arrays, NaN values, and circular references.</span>
+<span class="sd">    This function assumes that the two arguments provided are NumPy arrays.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        array1: The first NumPy array.</span>
+<span class="sd">        array2: The second NumPy array.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if the arrays&#39; dtypes, shapes, and all elements are equal.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check dtype and shape first, as this is the fastest failure path.</span>
+    <span class="k">if</span> <span class="n">array1</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">array2</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">or</span> <span class="n">array1</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">array2</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># For non-object dtypes, use NumPy&#39;s implementation with equal_nan=True.</span>
+    <span class="k">if</span> <span class="n">array1</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s2">&quot;object&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">array1</span><span class="p">,</span> <span class="n">array2</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># For object-dtype arrays, we must recursively compare each element.</span>
+    <span class="c1"># We delegate to _deep_equal to handle elements, as they could be any</span>
+    <span class="c1"># type, including other nested arrays or NaNs.</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">_deep_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">array1</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="n">array2</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="_deep_equal">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol._deep_equal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_deep_equal</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">visited</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursively performs a deep comparison between two Python objects.</span>
+<span class="sd">    - Handles NaN values correctly (NaN == NaN evaluates to True).</span>
+<span class="sd">    - Handling circular references.</span>
+<span class="sd">    - Dispatches to _array_equal if both objects are NumPy arrays.</span>
+<span class="sd">    - Otherwise, uses standard &#39;==&#39; comparison.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># If we have seen this object ID before on this path, it&#39;s a cycle.</span>
+    <span class="c1"># Since we already know the types match, we can safely assume this part</span>
+    <span class="c1"># of the structure is equal.</span>
+    <span class="n">obj_id</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj_id</span><span class="p">)</span>
+
+    <span class="c1"># Perform the specific comparison based on type</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="c1"># We know b is also an ndarray due to the initial type check</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_array_equal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Standard equality for all other types</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span>
+
+    <span class="c1"># Clean up the visited set on the way out of the recursion</span>
+    <span class="n">visited</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">obj_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="union_numpy_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.union_numpy_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">union_numpy_dict</span><span class="p">(</span><span class="n">tensor_dict1</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">tensor_dict2</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">tensor_dict2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tensor_dict1</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tensor_dict2</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tensor_dict1</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+            <span class="c1"># to properly deal with nan and object type</span>
+            <span class="k">assert</span> <span class="n">_deep_equal</span><span class="p">(</span><span class="n">tensor_dict1</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">tensor_dict2</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">visited</span><span class="o">=</span><span class="nb">set</span><span class="p">()),</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">` in tensor_dict1 and tensor_dict2 are not the same object.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">tensor_dict1</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="k">return</span> <span class="n">tensor_dict1</span></div>
+
+
+
+<div class="viewcode-block" id="list_of_dict_to_dict_of_list">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.list_of_dict_to_dict_of_list">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_of_dict_to_dict_of_list</span><span class="p">(</span><span class="n">list_of_dict</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">list_of_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">list_of_dict</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">output</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+
+<div class="viewcode-block" id="collate_fn">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.collate_fn">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">collate_fn</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;DataProtoItem&quot;</span><span class="p">]):</span>
+    <span class="n">batch</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+        <span class="n">batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="p">)</span>
+    <span class="n">batch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+    <span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="n">list_of_dict_to_dict_of_list</span><span class="p">(</span><span class="n">non_tensor_batch</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">non_tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DataProto</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">,</span> <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">non_tensor_batch</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_tensordict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.get_tensordict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tensordict</span><span class="p">(</span><span class="n">tensor_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="nb">list</span><span class="p">],</span> <span class="n">non_tensor_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a TensorDict from tensors and non-tensor data.</span>
+
+<span class="sd">    Automatically handles nested structures in lists by converting them to NonTensorStack.</span>
+<span class="sd">    This enables support for:</span>
+<span class="sd">    - Lists of lists: [[], [0.5, 0.8], [0.9]]</span>
+<span class="sd">    - Lists of dicts: [{&quot;acc&quot;: 1.0}, {&quot;acc&quot;: 0.0}]</span>
+<span class="sd">    - Lists of lists of dicts: [[{&quot;content&quot;: &quot;...&quot;, &quot;role&quot;: &quot;user&quot;}]]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tensor_dict: Dictionary of tensors and lists to include in the TensorDict</span>
+<span class="sd">        non_tensor_dict: Dictionary of metadata to store as NonTensorData</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        TensorDict with proper handling of nested structures</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; td = get_tensordict(</span>
+<span class="sd">        ...     tensor_dict={</span>
+<span class="sd">        ...         &quot;obs&quot;: torch.randn(3, 4),</span>
+<span class="sd">        ...         &quot;turn_scores&quot;: [[], [0.5, 0.8], [0.9]]  # Nested list</span>
+<span class="sd">        ...     },</span>
+<span class="sd">        ...     non_tensor_dict={&quot;experiment&quot;: &quot;test&quot;}</span>
+<span class="sd">        ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tensor_dict</span> <span class="o">=</span> <span class="n">tensor_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">non_tensor_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">non_tensor_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">tensor_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">is_nested</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">val</span><span class="o">.</span><span class="n">is_contiguous</span><span class="p">(),</span> <span class="s2">&quot;Nested tensors must be contiguous. Try setting layout=torch.jagged&quot;</span>
+            <span class="k">assert</span> <span class="n">val</span><span class="o">.</span><span class="n">layout</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">jagged</span><span class="p">,</span> <span class="s2">&quot;Nested tensors must be jagged.&quot;</span>
+
+        <span class="c1"># Skip validation for NonTensorStack as it&#39;s already properly formatted</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">NonTensorStack</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="n">batch_size</span><span class="p">,</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Batch size of NonTensorStack </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is not consistent with other tensors. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">),</span> <span class="p">(</span>
+                    <span class="s2">&quot;Passing a list makes the data NonTensorStack, &quot;</span>
+                    <span class="s2">&quot;which doesn&#39;t support torch.Tensor. Please convert to numpy first&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Convert to NonTensorStack to handle nested structures</span>
+            <span class="n">tensor_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">NonTensorStack</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="n">NonTensorData</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span><span class="p">])</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="nb">list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_batch_size</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">val_batch_size</span> <span class="o">==</span> <span class="n">batch_size</span><span class="p">,</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Batch size of tensor </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is not consistent with other tensors. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">val_batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">non_tensor_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">assert</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tensor_dict</span>
+        <span class="n">tensor_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">NonTensorData</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">tensor_dict</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="DataProtoItem">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProtoItem">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataProtoItem</span><span class="p">:</span>
+<div class="viewcode-block" id="DataProtoItem.batch">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProtoItem.batch">[docs]</a>
+    <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDict</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataProtoItem.non_tensor_batch">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProtoItem.non_tensor_batch">[docs]</a>
+    <span class="n">non_tensor_batch</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataProtoItem.meta_info">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProtoItem.meta_info">[docs]</a>
+    <span class="n">meta_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="DataProto">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataProto</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A DataProto is a data structure that aims to provide a standard protocol for data exchange between functions.</span>
+<span class="sd">    It contains a batch (TensorDict) and a meta_info (Dict). The batch is a TensorDict https://pytorch.org/tensordict/.</span>
+<span class="sd">    TensorDict allows you to manipulate a dictionary of Tensors like a single Tensor. Ideally, the tensors with the</span>
+<span class="sd">    same batch size should be put inside batch.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DataProto.batch">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.batch">[docs]</a>
+    <span class="n">batch</span><span class="p">:</span> <span class="n">TensorDict</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataProto.non_tensor_batch">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.non_tensor_batch">[docs]</a>
+    <span class="n">non_tensor_batch</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataProto.meta_info">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.meta_info">[docs]</a>
+    <span class="n">meta_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.__post_init__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.__post_init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># perform necessary checking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_consistency</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DataProto.__len__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.__len__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">random_key</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="p">[</span><span class="n">random_key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="DataProto.__getitem__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.__getitem__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enhanced indexing for DataProto objects.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item: Can be one of:</span>
+<span class="sd">                - int: A single index</span>
+<span class="sd">                - slice: A slice object (start:stop:step)</span>
+<span class="sd">                - list: A list of indices</span>
+<span class="sd">                - numpy.ndarray: An array of indices</span>
+<span class="sd">                - torch.Tensor: A tensor of indices</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: For all indexing types except single integers</span>
+<span class="sd">            DataProtoItem: Only for single integer indices</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Case 1: Slice object - use the slice method</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+
+        <span class="c1"># Case 2: List, numpy array, or torch tensor - use sel_idxs</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_idxs</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Case 3: Single integer - return DataProtoItem for backward compatibility</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="n">tensor_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">non_tensor_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">return</span> <span class="n">DataProtoItem</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="n">tensor_data</span><span class="p">,</span> <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">non_tensor_data</span><span class="p">,</span> <span class="n">meta_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span>
+
+        <span class="c1"># # Case 4: Unsupported type</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Indexing with </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not supported&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.__getstate__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.__getstate__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+        <span class="n">buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tensordict</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s2">&quot;0.5.0&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">consolidate</span><span class="p">()</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span> <span class="n">buffer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">buffer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span></div>
+
+
+<div class="viewcode-block" id="DataProto.__setstate__">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.__setstate__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">batch_deserialized</span><span class="p">,</span> <span class="n">non_tensor_batch</span><span class="p">,</span> <span class="n">meta_info</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">batch_deserialized</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="n">batch_deserialized</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">get_torch_device</span><span class="p">()</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="n">non_tensor_batch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span> <span class="o">=</span> <span class="n">meta_info</span></div>
+
+
+<div class="viewcode-block" id="DataProto.save_to_disk">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.save_to_disk">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="DataProto.load_from_disk">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.load_from_disk">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_from_disk</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataProto&quot;</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="DataProto.print_size">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.print_size">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">size_of_tensordict</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">size_of_tensordict</span> <span class="o">+=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">element_size</span><span class="p">()</span> <span class="o">*</span> <span class="n">tensor</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
+        <span class="n">size_of_numpy_array</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">numpy_array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">size_of_numpy_array</span> <span class="o">+=</span> <span class="n">numpy_array</span><span class="o">.</span><span class="n">nbytes</span>
+
+        <span class="n">size_of_numpy_array</span> <span class="o">/=</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">3</span>
+        <span class="n">size_of_tensordict</span> <span class="o">/=</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">3</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Size of tensordict: </span><span class="si">{</span><span class="n">size_of_tensordict</span><span class="si">}</span><span class="s2"> GB, size of non_tensor_batch: </span><span class="si">{</span><span class="n">size_of_numpy_array</span><span class="si">}</span><span class="s2"> GB&quot;</span>
+
+        <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">, &quot;</span> <span class="o">+</span> <span class="n">message</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.check_consistency">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.check_consistency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the consistency of the DataProto. Mainly for batch and non_tensor_batch</span>
+<span class="sd">        We expose this function as a public one so that user can call themselves directly</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;only support num_batch_dims=1&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># TODO: we can actually lift this restriction if needed</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;only support num_batch_dims=1 when non_tensor_batch is not empty.&quot;</span>
+
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">),</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;data in the non_tensor_batch must be a numpy.array with dtype=object, but for &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">=}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="k">assert</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">batch_size</span><span class="p">,</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;key </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not equal to batch size </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="DataProto.from_single_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.from_single_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_single_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">meta_info</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a DataProto from a dict of tensors and non_tensors&quot;&quot;&quot;</span>
+        <span class="n">tensors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">non_tensors</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+                <span class="n">tensors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">non_tensors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported type in data </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">tensors</span><span class="o">=</span><span class="n">tensors</span><span class="p">,</span> <span class="n">non_tensors</span><span class="o">=</span><span class="n">non_tensors</span><span class="p">,</span> <span class="n">meta_info</span><span class="o">=</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="DataProto.from_dict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.from_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">non_tensors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">meta_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_batch_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a DataProto from a dict of tensors. This assumes that</span>
+<span class="sd">        1. All the tensor in tensors have the same dim0</span>
+<span class="sd">        2. Only dim0 is the batch dim</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="n">num_batch_dims</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;num_batch_dims must be greater than zero&quot;</span>
+        <span class="k">if</span> <span class="n">non_tensors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">num_batch_dims</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;only support num_batch_dims=1 when non_tensors is not None.&quot;</span>
+
+        <span class="k">if</span> <span class="n">tensors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tensors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">meta_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">meta_info</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">non_tensors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">non_tensors</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">non_tensors</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+
+        <span class="c1"># get and check batch size</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">pivot_key</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="n">tensors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">batch_size</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="n">num_batch_dims</span><span class="p">]</span>
+                <span class="n">pivot_key</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">current_batch</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="n">num_batch_dims</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="n">current_batch</span><span class="p">,</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Not all the tensor in tensors have the same batch size with batch_dims=</span><span class="si">{</span><span class="n">num_batch_dims</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Got </span><span class="si">{</span><span class="n">pivot_key</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">current_batch</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">non_tensors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">non_tensors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+        <span class="n">tensor_dict</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">tensors</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span> <span class="k">if</span> <span class="n">tensors</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="n">tensor_dict</span><span class="p">,</span> <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">non_tensors</span><span class="p">,</span> <span class="n">meta_info</span><span class="o">=</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="DataProto.from_tensordict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.from_tensordict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_tensordict</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">tensor_dict</span><span class="p">:</span> <span class="n">TensorDict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">meta_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_batch_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a DataProto from a TensorDict. This assumes that</span>
+<span class="sd">        1. All the tensor in tensor_dict have the same dim0</span>
+<span class="sd">        2. Only dim0 is the batch dim</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;0.10.0&quot;</span><span class="p">),</span> <span class="p">(</span>
+            <span class="s2">&quot;Build DataProto from TensorDict at least requires tensordict version 0.10.0&quot;</span>
+        <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">tensordict</span><span class="w"> </span><span class="kn">import</span> <span class="n">NonTensorData</span><span class="p">,</span> <span class="n">NonTensorStack</span>
+
+        <span class="k">assert</span> <span class="n">num_batch_dims</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;num_batch_dims must be greater than zero&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">tensor_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="k">assert</span> <span class="n">num_batch_dims</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;only support num_batch_dims=1 when tensor_dict contains non tensor data.&quot;</span>
+
+        <span class="k">if</span> <span class="n">meta_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">meta_info</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">tensor_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+                <span class="n">batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="n">num_batch_dims</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">NonTensorStack</span><span class="p">):</span>
+                <span class="n">non_tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">elem</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">val</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">NonTensorData</span><span class="p">):</span>
+                <span class="n">meta_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">batch</span><span class="o">=</span><span class="n">TensorDict</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">),</span>
+            <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">non_tensor_batch</span><span class="p">,</span>
+            <span class="n">meta_info</span><span class="o">=</span><span class="n">meta_info</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.to">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.to">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataProto&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;move the batch to device</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            device (torch.device, str): torch device</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: the current DataProto</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="DataProto.select">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.select">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">non_tensor_batch_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta_info_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deepcopy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataProto&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select a subset of the DataProto via batch_keys and meta_info_keys</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            batch_keys (list, optional): a list of strings indicating the keys in batch to select</span>
+<span class="sd">            meta_info_keys (list, optional): a list of keys indicating the meta info to select</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: the DataProto with the selected batch_keys and meta_info_keys</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO (zhangchi.usc1992) whether to copy</span>
+        <span class="k">if</span> <span class="n">batch_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_keys</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">batch_keys</span><span class="p">)</span>
+            <span class="n">sub_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">batch_keys</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sub_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span>
+
+        <span class="k">if</span> <span class="n">non_tensor_batch_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">non_tensor_batch_keys</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span>
+
+        <span class="k">if</span> <span class="n">deepcopy</span><span class="p">:</span>
+            <span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">non_tensor_batch</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">meta_info_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sub_meta_info</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">meta_info_keys</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sub_meta_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span>
+
+        <span class="k">if</span> <span class="n">deepcopy</span><span class="p">:</span>
+            <span class="n">sub_meta_info</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sub_meta_info</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">batch</span><span class="o">=</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">non_tensor_batch</span><span class="p">,</span> <span class="n">meta_info</span><span class="o">=</span><span class="n">sub_meta_info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.select_idxs">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.select_idxs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_idxs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idxs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select specific indices from the DataProto.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            idxs (torch.Tensor or numpy.ndarray or list): Indices to select</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: A new DataProto containing only the selected indices</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idxs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">idxs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">idxs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">idxs</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">:</span>
+                <span class="n">idxs</span> <span class="o">=</span> <span class="n">idxs</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idxs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">idxs_np</span> <span class="o">=</span> <span class="n">idxs</span>
+            <span class="n">idxs_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">idxs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># torch.Tensor</span>
+            <span class="n">idxs_torch</span> <span class="o">=</span> <span class="n">idxs</span>
+            <span class="n">idxs_np</span> <span class="o">=</span> <span class="n">idxs</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">idxs_np</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="k">if</span> <span class="n">idxs_np</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">bool</span> <span class="k">else</span> <span class="n">idxs_np</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use TensorDict&#39;s built-in indexing capabilities</span>
+            <span class="n">selected_batch</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+                <span class="n">source</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">tensor</span><span class="p">[</span><span class="n">idxs_torch</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,),</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">selected_batch</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">selected_non_tensor</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">selected_non_tensor</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="n">idxs_np</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">batch</span><span class="o">=</span><span class="n">selected_batch</span><span class="p">,</span> <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">selected_non_tensor</span><span class="p">,</span> <span class="n">meta_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.slice">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.slice">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Slice the DataProto and return a new DataProto object.</span>
+<span class="sd">        This is an improved version of direct slicing which returns a DataProtoItem.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start (int, optional): Start index. Defaults to None (start from beginning).</span>
+<span class="sd">            end (int, optional): End index (exclusive). Defaults to None (go to end).</span>
+<span class="sd">            step (int, optional): Step size. Defaults to None (step=1).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: A new DataProto containing the sliced data</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            # Using the slice method directly</span>
+<span class="sd">            sliced_data = data_proto.slice(10, 20)</span>
+
+<span class="sd">            # Using enhanced indexing (returns DataProto)</span>
+<span class="sd">            sliced_data = data_proto[10:20]</span>
+<span class="sd">            sliced_data = data_proto[::2]  # Every other element</span>
+
+<span class="sd">            # Using list indexing (returns DataProto)</span>
+<span class="sd">            indices = [1, 5, 10]</span>
+<span class="sd">            selected_data = data_proto[indices]</span>
+
+<span class="sd">            # Single index still returns DataProtoItem</span>
+<span class="sd">            single_item = data_proto[5]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create a slice object</span>
+        <span class="n">slice_obj</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+
+        <span class="c1"># Handle the batch data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use TensorDict&#39;s built-in slicing capabilities</span>
+            <span class="n">sliced_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sliced_batch</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Handle the non-tensor batch data</span>
+        <span class="n">sliced_non_tensor</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sliced_non_tensor</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]</span>
+
+        <span class="c1"># Return a new DataProto object</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">batch</span><span class="o">=</span><span class="n">sliced_batch</span><span class="p">,</span> <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">sliced_non_tensor</span><span class="p">,</span> <span class="n">meta_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.pop">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.pop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">non_tensor_batch_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta_info_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataProto&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pop a subset of the DataProto via `batch_keys` and `meta_info_keys`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            batch_keys (list, optional): a list of strings indicating the keys in batch to pop</span>
+<span class="sd">            meta_info_keys (list, optional): a list of keys indicating the meta info to pop</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: the DataProto with the poped batch_keys and meta_info_keys</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">batch_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">meta_info_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">meta_info_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">non_tensor_batch_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">non_tensor_batch_keys</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">tensors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># tensor batch</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">batch_keys</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="n">tensors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">non_tensors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># non tensor batch</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">non_tensor_batch_keys</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="n">non_tensors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">meta_info</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">meta_info_keys</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="n">meta_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DataProto</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">tensors</span><span class="o">=</span><span class="n">tensors</span><span class="p">,</span> <span class="n">non_tensors</span><span class="o">=</span><span class="n">non_tensors</span><span class="p">,</span> <span class="n">meta_info</span><span class="o">=</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.rename">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.rename">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataProto&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Note that this function only rename the key in the batch</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">validate_input</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">keys</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;keys must be a list or a string, but got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">keys</span>
+
+        <span class="n">old_keys</span> <span class="o">=</span> <span class="n">validate_input</span><span class="p">(</span><span class="n">old_keys</span><span class="p">)</span>
+        <span class="n">new_keys</span> <span class="o">=</span> <span class="n">validate_input</span><span class="p">(</span><span class="n">new_keys</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_keys</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_keys</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;new_keys and old_keys must have the same length, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">new_keys</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">old_keys</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">rename_key_</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">old_keys</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_keys</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="DataProto.union">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.union">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;DataProto&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataProto&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Union with another DataProto. Union batch and meta_info separately.</span>
+<span class="sd">        Throw an error if</span>
+
+<span class="sd">        - there are conflict keys in batch and they are not equal</span>
+<span class="sd">        - the batch size of two data batch is not the same</span>
+<span class="sd">        - there are conflict keys in meta_info and they are not the same.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other (DataProto): another DataProto to union</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: the DataProto after union</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">union_tensor_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="n">union_numpy_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span> <span class="o">=</span> <span class="n">union_python_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="DataProto.make_iterator">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.make_iterator">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mini_batch_size</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataloader_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Make an iterator from the DataProto. This is built upon that TensorDict can be used as a normal Pytorch</span>
+<span class="sd">        dataset. See https://pytorch.org/tensordict/tutorials/data_fashion for more details.</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            mini_batch_size (int): mini-batch size when iterating the dataset. We require that</span>
+<span class="sd">                ``batch.batch_size[0] % mini_batch_size == 0``.</span>
+<span class="sd">            epochs (int): number of epochs when iterating the dataset.</span>
+<span class="sd">            dataloader_kwargs (Any): internally, it returns a DataLoader over the batch. The</span>
+<span class="sd">                dataloader_kwargs is the kwargs passed to the DataLoader.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Iterator: an iterator that yields a mini-batch data at a time. The total number of iteration</span>
+<span class="sd">                steps is ``self.batch.batch_size * epochs // mini_batch_size``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span> <span class="n">mini_batch_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> % </span><span class="si">{</span><span class="n">mini_batch_size</span><span class="si">}</span><span class="s2"> != 0&quot;</span>
+        <span class="c1"># we can directly create a dataloader from TensorDict</span>
+        <span class="k">if</span> <span class="n">dataloader_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataloader_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span>
+            <span class="n">generator</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataloader_kwargs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+            <span class="n">dataset</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">mini_batch_size</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="n">generator</span><span class="p">,</span> <span class="o">**</span><span class="n">dataloader_kwargs</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">train_dataloader</span><span class="p">:</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">meta_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span>
+                    <span class="k">yield</span> <span class="n">d</span>
+
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">get_data</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="DataProto.padding">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.padding">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">padding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">padding_size</span><span class="p">,</span> <span class="n">padding_candidate</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pad the DataProto by concating with padding_candidate.repeat(padding_size)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            padding_size (int): the number of repeated padding_candidate</span>
+<span class="sd">            padding_candidate: the item to be repeated and appended to the DataProto, only supporting [&quot;first&quot;, &quot;last&quot;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">padding_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">padding_candidate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_idxs</span><span class="p">([</span><span class="mi">0</span> <span class="k">if</span> <span class="n">padding_candidate</span> <span class="o">==</span> <span class="s2">&quot;first&quot;</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">padding_part</span> <span class="o">=</span> <span class="n">padding_candidate</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">padding_size</span><span class="p">)</span>
+        <span class="n">padded_dp</span> <span class="o">=</span> <span class="n">DataProto</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">padding_part</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">padded_dp</span><span class="o">.</span><span class="n">batch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="n">padded_dp</span><span class="o">.</span><span class="n">non_tensor_batch</span></div>
+
+
+<div class="viewcode-block" id="DataProto.chunk">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.chunk">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">chunk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunks</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;DataProto&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split the batch among dim=0 into chunks. The meta_info is passed to each DataProto after split.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chunks (int): the number of chunks to split on dim=0</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[DataProto]: a list of DataProto after splitting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_padding_enabled</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">%</span> <span class="n">chunks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;only support equal chunk. Got size of DataProto </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> and chunk </span><span class="si">{</span><span class="n">chunks</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">bsz_in_batch</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_lst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="n">chunks</span><span class="o">=</span><span class="n">chunks</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">bsz_in_batch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">batch_lst</span><span class="p">])</span>
+            <span class="n">chunk_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">bsz_in_batch</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">batch_lst</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">chunks</span><span class="p">)]</span>
+
+        <span class="n">non_tensor_batch_lst</span> <span class="o">=</span> <span class="p">[{}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">chunks</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bsz_in_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">non_tensor_lst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">chunk_indices</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">non_tensor_lst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">chunks</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_tensor_lst</span><span class="p">)</span> <span class="o">==</span> <span class="n">chunks</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">chunks</span><span class="p">):</span>
+                <span class="n">non_tensor_batch_lst</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_tensor_lst</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">chunks</span><span class="p">):</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">batch</span><span class="o">=</span><span class="n">batch_lst</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">non_tensor_batch_lst</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">meta_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="DataProto.split">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.split">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">split_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;DataProto&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split the batch among dim=0 into chunks. The meta_info is passed to each DataProto after split.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            split_size (int): the size of each split</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[DataProto]: a list of DataProto after splitting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">split_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">split_size</span><span class="p">)]</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="DataProto.concat">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.concat">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;DataProto&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataProto&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concat a list of DataProto. The batch is concatenated among dim=0.</span>
+<span class="sd">        The meta_info is merged, with special handling for metrics from different workers.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (List[DataProto]): list of DataProto</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: concatenated DataProto</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_lst</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">batch_lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span>
+        <span class="n">new_batch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">batch_lst</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">batch_lst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="n">list_of_dict_to_dict_of_list</span><span class="p">(</span><span class="n">list_of_dict</span><span class="o">=</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">non_tensor_batch</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">non_tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Merge meta_info with special handling for metrics</span>
+        <span class="n">merged_meta_info</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+            <span class="c1"># Merge non-metric meta_info and aggregate metrics from all workers.</span>
+            <span class="n">all_metrics</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;metrics&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                                <span class="n">all_metrics</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">all_metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">merged_meta_info</span><span class="p">:</span>
+                            <span class="c1"># Ensure consistency for overlapping non-metric keys</span>
+                            <span class="k">assert</span> <span class="n">merged_meta_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Conflicting values for meta_info key &#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">merged_meta_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="c1"># Flatten list of dicts to dict of lists for consistent metrics structure</span>
+            <span class="k">if</span> <span class="n">all_metrics</span><span class="p">:</span>
+                <span class="n">merged_meta_info</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">list_of_dict_to_dict_of_list</span><span class="p">(</span><span class="n">all_metrics</span><span class="p">)</span>
+
+        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">DataProto</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="n">new_batch</span><span class="p">,</span> <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">non_tensor_batch</span><span class="p">,</span> <span class="n">meta_info</span><span class="o">=</span><span class="n">merged_meta_info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.reorder">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.reorder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reorder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Note that this operation is in-place</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices_np</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="n">indices_np</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+
+
+<div class="viewcode-block" id="DataProto.repeat">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.repeat">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repeat_times</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">interleave</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Repeat the batch data a specified number of times.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            repeat_times (int): Number of times to repeat the data.</span>
+<span class="sd">            interleave (bool): Whether to interleave the repeated data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: A new DataProto with repeated data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">interleave</span><span class="p">:</span>
+                <span class="c1"># Interleave the data</span>
+                <span class="n">repeated_tensors</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">key</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Stack the data</span>
+                <span class="n">repeated_tensors</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">key</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">,</span> <span class="o">*</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+
+            <span class="n">repeated_batch</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">repeated_tensors</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">repeat_times</span><span class="p">,),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">repeated_batch</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">repeated_non_tensor_batch</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">interleave</span><span class="p">:</span>
+                <span class="n">repeated_non_tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">repeat_times</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">repeated_non_tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="n">repeat_times</span><span class="p">,)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">ndim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+            <span class="n">batch</span><span class="o">=</span><span class="n">repeated_batch</span><span class="p">,</span>
+            <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">repeated_non_tensor_batch</span><span class="p">,</span>
+            <span class="n">meta_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.unfold_column_chunks">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.unfold_column_chunks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unfold_column_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_split</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">split_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split along the second dim into `n_split`, unfold it to the first dim (batch dim)</span>
+<span class="sd">        Useful in passing grouped tensors that doesn&#39;t want to be shuffled in dataset.</span>
+<span class="sd">        keys not in split_keys are repeated to match the shape</span>
+<span class="sd">        Note that if the `split_keys` is not provided, it will repeat all the keys in the second dim.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">unfolded_batch</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">split_keys</span> <span class="k">if</span> <span class="n">split_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                    <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_split</span>
+                    <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">n_split</span>
+                    <span class="n">unfolded_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">unfolded_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">n_split</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># locate the `unfolded_batch` as a TensorDict on the same device as the original batch</span>
+            <span class="n">unfolded_batch</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">unfolded_batch</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_split</span><span class="p">,),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unfolded_batch</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">repeated_non_tensor_batch</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">split_keys</span><span class="p">:</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_split</span>
+                <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">n_split</span>
+                <span class="n">repeated_non_tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">shape</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">repeated_non_tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">n_split</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+            <span class="n">batch</span><span class="o">=</span><span class="n">unfolded_batch</span><span class="p">,</span>
+            <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">repeated_non_tensor_batch</span><span class="p">,</span>
+            <span class="n">meta_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.sample_level_repeat">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.sample_level_repeat">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample_level_repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repeat_times</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Repeat each row of the batch data a specified number of times.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            repeat_times (torch.tensor, list, tuple, ndarray):  Number of times to repeat the data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataProto: A new DataProto with repeated data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">repeat_times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">repeat_times</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="n">repeat_times</span> <span class="o">=</span> <span class="n">repeat_times</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">repeat_times</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="n">repeat_times</span> <span class="o">=</span> <span class="n">repeat_times</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;repeat_times type must be in [list, torch.Tensor, np.ndarray, tuple], got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">repeat_times</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Interleave the data</span>
+            <span class="n">repeated_tensors</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">key</span><span class="p">:</span> <span class="n">tensor</span><span class="o">.</span><span class="n">repeat_interleave</span><span class="p">(</span><span class="n">repeat_times</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+
+            <span class="n">repeated_batch</span> <span class="o">=</span> <span class="n">TensorDict</span><span class="p">(</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">repeated_tensors</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="p">(</span><span class="n">repeat_times</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),),</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">repeated_batch</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">repeated_non_tensor_batch</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">repeated_non_tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">repeat_times</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+            <span class="n">batch</span><span class="o">=</span><span class="n">repeated_batch</span><span class="p">,</span>
+            <span class="n">non_tensor_batch</span><span class="o">=</span><span class="n">repeated_non_tensor_batch</span><span class="p">,</span>
+            <span class="n">meta_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto.to_tensordict">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.to_tensordict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_tensordict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TensorDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this DataProto to TensorDict. Note that this requires tensordict version at least 0.10</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">parse_version</span><span class="p">(</span><span class="n">tensordict</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">parse_version</span><span class="p">(</span><span class="s2">&quot;0.10&quot;</span><span class="p">),</span> <span class="p">(</span>
+            <span class="s2">&quot;Convert DataProto to TensorDict at least requires tensordict version 0.10&quot;</span>
+        <span class="p">)</span>
+        <span class="n">tensor_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">non_tensor_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">tensordict.tensorclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">NonTensorData</span><span class="p">,</span> <span class="n">NonTensorStack</span>
+
+        <span class="n">common_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tensor_batch</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">common_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;tensor_batch and non_tensor_batch have common keys </span><span class="si">{</span><span class="n">common_keys</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+            <span class="c1"># Convert to NonTensorStack instead of plain list to handle nested structures</span>
+            <span class="n">tensor_batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">NonTensorStack</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="n">NonTensorData</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span><span class="p">])</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">get_tensordict</span><span class="p">(</span><span class="n">tensor_dict</span><span class="o">=</span><span class="n">tensor_batch</span><span class="p">,</span> <span class="n">non_tensor_dict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="DataProto.get_data_info">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto.get_data_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_data_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return formatted information about stored data with nested type details.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Formatted string showing tensor details and recursive metadata types</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;batch&quot;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="s2">&quot;device&quot;</span><span class="p">):</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">tensor</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">) </span><span class="si">{</span><span class="n">tensor</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">):</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">tensor</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;non_tensor_batch&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_tensor_batch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: ndarray</span><span class="si">{</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;meta_info&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">type_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_info</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">type_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DataProto._get_type_info">
+<a class="viewcode-back" href="../../../autoapi/lmflow/utils/protocol/index.html#lmflow.utils.protocol.DataProto._get_type_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_type_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively get type information for nested structures&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">elem_types</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_type_info</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">[:</span><span class="mi">3</span><span class="p">]}</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;list[</span><span class="si">{</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">elem_types</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">elem_types</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;...&#39;</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">elem_types</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_type_info</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;tuple(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">elem_types</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;dict&quot;</span>
+            <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;dict[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_type_info</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_type_info</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;ndarray</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">value</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span></div>
+</div>
+
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright LMFlow 2025.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

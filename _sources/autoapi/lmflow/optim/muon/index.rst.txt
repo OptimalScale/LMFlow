@@ -1,0 +1,107 @@
+lmflow.optim.muon
+=================
+
+.. py:module:: lmflow.optim.muon
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.muon.Muon
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.optim.muon.zeropower_via_newtonschulz5
+
+
+Module Contents
+---------------
+
+.. py:function:: zeropower_via_newtonschulz5(G: torch.Tensor, steps: int) -> torch.Tensor
+
+   
+   Newton-Schulz iteration to compute the zeroth power / orthogonalization of G. We opt to use a
+   quintic iteration whose coefficients are selected to maximize the slope at zero. For the purpose
+   of minimizing steps, it turns out to be empirically effective to keep increasing the slope at
+   zero even beyond the point where the iteration no longer converges all the way to one everywhere
+   on the interval. This iteration therefore does not produce UV^T but rather something like US'V^T
+   where S' is diagonal with S_{ii}' ~ Uniform(0.5, 1.5), which turns out not to hurt model
+   performance at all relative to UV^T, where USV^T = G is the SVD.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:class:: Muon(params, lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, ns_steps=5)
+
+   Bases: :py:obj:`torch.optim.Optimizer`
+
+
+   
+   Adam optimizer with orthogonalization step.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+   .. py:method:: step(closure=None)
+
+      
+      Performs a single optimization step.
+
+      Args:
+          closure (callable, optional): A closure that reevaluates the model
+              and returns the loss.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
