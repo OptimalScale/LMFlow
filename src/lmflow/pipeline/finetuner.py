@@ -107,7 +107,7 @@ class Finetuner(BaseTuner):
         if (
             os.path.isdir(finetuner_args.output_dir)
             and finetuner_args.do_train
-            and not finetuner_args.overwrite_output_dir
+            and not getattr(finetuner_args, "overwrite_output_dir", False)
         ):
             last_checkpoint = get_last_checkpoint(finetuner_args.output_dir)
             if last_checkpoint is None and len(os.listdir(finetuner_args.output_dir)) > 0:
@@ -321,6 +321,31 @@ class Finetuner(BaseTuner):
             if data_args.max_train_samples is not None:
                 max_train_samples = min(len(train_dataset), data_args.max_train_samples)
                 train_dataset = train_dataset.select(range(max_train_samples))
+
+        if getattr(finetuner_args, "bf16", False) and not torch.cuda.is_bf16_supported():
+            logger.warning(
+                "Hardware does not support bfloat16 (requires Ampere architecture or newer). "
+                "Automatically falling back to fp16 to prevent CUDA crashes."
+            )
+            finetuner_args.bf16 = False
+            finetuner_args.fp16 = True
+
+        if getattr(finetuner_args, "gradient_checkpointing", False):
+            backend_model = model.get_backend_model()
+            if hasattr(backend_model, "config") and getattr(backend_model.config, "use_cache", False):
+                logger.info("Gradient checkpointing is enabled. Automatically setting use_cache=False for the model.")
+                backend_model.config.use_cache = False
+
+        backend_model = model.get_backend_model()
+        tokenizer = model.get_tokenizer()
+        if hasattr(backend_model, "get_input_embeddings") and tokenizer is not None:
+            embeddings = backend_model.get_input_embeddings()
+            if embeddings is not None and len(tokenizer) > embeddings.weight.shape[0]:
+                logger.warning(
+                    f"Tokenizer vocabulary size ({len(tokenizer)}) is greater than model embedding dimension "
+                    f"({embeddings.weight.shape[0]}). Resizing model embeddings to prevent CUDA out-of-bounds crashes."
+                )
+                backend_model.resize_token_embeddings(len(tokenizer))
 
         # Initialize our Trainer
         training_args = finetuner_args
