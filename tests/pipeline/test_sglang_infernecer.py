@@ -1,5 +1,8 @@
 import numpy as np
 import pytest
+
+pytest.importorskip("sglang")
+
 from sglang.srt.entrypoints.engine import Engine
 from sglang.srt.server_args import ServerArgs
 

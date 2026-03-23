@@ -3389,7 +3389,7 @@ class RaftTrainer:
         Initializes a git repo in `self.args.hub_model_id`.
         Args:
             at_init (`bool`, *optional*, defaults to `False`):
-                Whether this function is called before any training or not. If `self.args.overwrite_output_dir` is
+                Whether this function is called before any training or not. If `getattr(self.args, "overwrite_output_dir", False)` is
                 `True` and `at_init` is `True`, the path to the repo (which is `self.args.output_dir`) might be wiped
                 out.
         """
@@ -3407,7 +3407,7 @@ class RaftTrainer:
         try:
             self.repo = Repository(self.args.output_dir, clone_from=repo_name, token=self.args.hub_token)
         except OSError:
-            if self.args.overwrite_output_dir and at_init:
+            if getattr(self.args, "overwrite_output_dir", False) and at_init:
                 # Try again after wiping output_dir
                 shutil.rmtree(self.args.output_dir)
                 self.repo = Repository(self.args.output_dir, clone_from=repo_name, token=self.args.hub_token)
