@@ -32,7 +32,7 @@ from lmflow.args import DatasetArguments, EvaluatorArguments, ModelArguments
 from lmflow.datasets.dataset import Dataset
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.utils.data_utils import answer_extraction, batchlize, set_random_seed
-from lmflow.utils.envs import is_accelerate_env
+from lmflow.utils.envs import is_accelerate_env, set_cuda_device
 from lmflow.utils.versioning import is_deepspeed_available
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
@@ -74,7 +74,7 @@ class Evaluator(BasePipeline):
         set_random_seed(self.evaluator_args.random_seed)
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
-        torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
+        set_cuda_device(self.local_rank)
 
         if is_accelerate_env():
             self.accelerator = Accelerator()
