@@ -38,6 +38,11 @@ from lmflow.utils.versioning import is_deepspeed_available
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
 
 
+def _nll_unsupported_dataset_message(dataset_type: str) -> str:
+    """Error text when NLL evaluation does not support this dataset type."""
+    return f"{dataset_type} typed datasets are not supported in negative log likelihood evaluation"
+
+
 class Evaluator(BasePipeline):
     """
     Initializes the `Evaluator` class with given arguments.
@@ -543,7 +548,7 @@ class Evaluator(BasePipeline):
                             f" {current_output_nll}"
                         )
                     else:
-                        raise NotImplementedError("f{dataset.get_type()} typed datasets are not supported")
+                        raise NotImplementedError(_nll_unsupported_dataset_message(dataset.get_type()))
 
                 if end_loc == seq_len:
                     break
