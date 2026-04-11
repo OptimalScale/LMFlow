@@ -37,12 +37,10 @@ def main():
         pipeline_name=pipeline_name, model_args=model_args, data_args=data_args, pipeline_args=pipeline_args
     )
 
-    inferencer.inference(
+    res = inferencer.inference(
         model,
         dataset,
-        release_gpu=False,
-        enable_decode_inference_result=pipeline_args.enable_decode_inference_result,
-        enable_distributed_vllm_inference=pipeline_args.enable_distributed_vllm_inference,
+        release_gpu=True,
     )
 
 

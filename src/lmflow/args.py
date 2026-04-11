@@ -1041,8 +1041,26 @@ class InferencerArguments:
     inference_tensor_parallel_size: Optional[int] = field(
         default=1, metadata={"help": "The tensor parallel size for inference."}
     )
+    inference_data_parallel_size: Optional[int] = field(
+        default=1,
+        metadata={
+            "help": (
+                "The data parallel size for inference. Only supported for vLLM (>= 0.8) inference engine. "
+                "Total GPUs used = tensor_parallel_size * data_parallel_size."
+            )
+        },
+    )
     inference_gpu_memory_utilization: Optional[float] = field(
         default=0.95, metadata={"help": "The GPU memory utilization for inference."}
+    )
+    inference_max_model_len: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Maximum model context length for inference. If not set, uses the model's default. "
+                "Reduce this if the model's default exceeds available GPU memory."
+            )
+        },
     )
     enable_deterministic_inference: bool = field(
         default=False,
@@ -1065,7 +1083,14 @@ class InferencerArguments:
     results_path: Optional[str] = field(default=None, metadata={"help": "The path of results."})
     
     save_inference_results: Optional[bool] = field(default=False, metadata={"help": "Whether to save inference results."})
-    inference_results_path: Optional[str] = field(default=None, metadata={"help": "The path of inference results."})
+    inference_results_path: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Directory to save inference results. Results are saved as 'inference_results.pkl' inside this directory."
+            )
+        },
+    )
 
     def __post_init__(self):
         if self.use_accelerator is not None:
@@ -1087,10 +1112,7 @@ class InferencerArguments:
             if self.inference_results_path is None:
                 raise ValueError("Need to specify inference_results_path when save_inference_results is True.")
             else:
-                if not self.inference_results_path.endswith(".json"):
-                    raise ValueError("The inference_results_path must be a json file.")
-                else:
-                    Path(self.inference_results_path).parent.mkdir(parents=True, exist_ok=True)
+                Path(self.inference_results_path).mkdir(parents=True, exist_ok=True)
 
         if self.use_vllm is True:
             logger.warning(

@@ -448,20 +448,27 @@ class HFModelMixin(BaseModel):
         model_args: ModelArguments,
         gpu_memory_utilization: float,
         tensor_parallel_size: int,
+        data_parallel_size: int = 1,
+        max_model_len: Optional[int] = None,
     ):
         if not is_vllm_available():
             raise ImportError('VLLM is not available. Please install via `pip install -e ".[vllm]"`.')
 
         from vllm import LLM
 
-        self.backend_model_for_inference = LLM(
+        kwargs = dict(
             model=model_args.model_name_or_path,
             tokenizer=model_args.model_name_or_path,
             dtype=model_args.torch_dtype if model_args.torch_dtype else "auto",
             load_format="auto",
             gpu_memory_utilization=gpu_memory_utilization,
             tensor_parallel_size=tensor_parallel_size,
+            data_parallel_size=data_parallel_size,
         )
+        if max_model_len is not None:
+            kwargs["max_model_len"] = max_model_len
+
+        self.backend_model_for_inference = LLM(**kwargs)
 
     def __prepare_model_for_sglang_inference(
         self,
@@ -513,6 +520,8 @@ class HFModelMixin(BaseModel):
         inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
         gpu_memory_utilization: Optional[float] = None,
         tensor_parallel_size: Optional[int] = None,
+        data_parallel_size: int = 1,
+        max_model_len: Optional[int] = None,
         enable_deterministic_inference: bool = False,
         attention_backend: Optional[str] = None,
     ):
@@ -525,6 +534,8 @@ class HFModelMixin(BaseModel):
                 model_args=self.model_args,
                 gpu_memory_utilization=gpu_memory_utilization,
                 tensor_parallel_size=tensor_parallel_size,
+                data_parallel_size=data_parallel_size,
+                max_model_len=max_model_len,
             )
         elif inference_engine == "sglang":
             self.__prepare_model_for_sglang_inference(
@@ -558,10 +569,13 @@ class HFModelMixin(BaseModel):
             return
 
         if inference_engine == "vllm":
-            from vllm.distributed.parallel_state import destroy_model_parallel
-
-            destroy_model_parallel()
-            del self.backend_model_for_inference.llm_engine.model_executor.driver_worker
+            # vllm still cannot fully release GPU memory in-process.
+            # See: https://github.com/vllm-project/vllm/issues/1908
+            try:
+                from vllm.distributed.parallel_state import destroy_model_parallel
+                destroy_model_parallel()
+            except Exception:
+                pass
             del self.backend_model_for_inference
             gc.collect()
             torch.cuda.empty_cache()
