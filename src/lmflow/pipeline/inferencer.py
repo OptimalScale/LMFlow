@@ -23,7 +23,7 @@ from lmflow.models.hf_decoder_model import HFDecoderModel
 from lmflow.pipeline.base_pipeline import BasePipeline
 from lmflow.utils.constants import IMAGE_TOKEN_INDEX
 from lmflow.utils.data_utils import batchlize, set_random_seed
-from lmflow.utils.envs import is_accelerate_env
+from lmflow.utils.envs import is_accelerate_env, set_cuda_device
 from lmflow.utils.versioning import is_deepspeed_available
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # To avoid warnings about parallelism in tokenizers
@@ -74,7 +74,7 @@ class Inferencer(BasePipeline):
         self.local_rank = int(os.getenv("LOCAL_RANK", "0"))
         self.world_size = int(os.getenv("WORLD_SIZE", "1"))
         if inferencer_args.device == "gpu":  # FIXME: a bit weird here
-            torch.cuda.set_device(self.local_rank)  # NOTE: cpu-only machine will have error
+            set_cuda_device(self.local_rank)
             if not is_accelerate_env() and is_deepspeed_available():
                 import deepspeed
 
