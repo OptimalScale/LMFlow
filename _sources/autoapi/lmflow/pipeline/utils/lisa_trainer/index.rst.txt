@@ -1,0 +1,48 @@
+lmflow.pipeline.utils.lisa_trainer
+==================================
+
+.. py:module:: lmflow.pipeline.utils.lisa_trainer
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.utils.lisa_trainer.DynamicLayerActivationCallback
+
+
+Module Contents
+---------------
+
+.. py:class:: DynamicLayerActivationCallback(n_layers: int, interval_steps: int, model: transformers.PreTrainedModel, lisa_layers_attribute: Optional[str] = None)
+
+   Bases: :py:obj:`transformers.trainer_callback.TrainerCallback`
+
+
+   .. py:attribute:: n_layers
+
+
+   .. py:attribute:: interval_steps
+
+
+   .. py:attribute:: model
+
+
+   .. py:attribute:: total_layers
+
+
+   .. py:attribute:: active_layers_indices
+      :value: []
+
+
+
+   .. py:method:: freeze_all_layers()
+
+
+   .. py:method:: on_step_begin(args, state, control, **kwargs)
+
+
+   .. py:method:: switch_active_layers()
+
+

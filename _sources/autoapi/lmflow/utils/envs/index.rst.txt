@@ -1,0 +1,145 @@
+lmflow.utils.envs
+=================
+
+.. py:module:: lmflow.utils.envs
+
+.. autoapi-nested-parse::
+
+   ref: https://github.com/pytorch/torchtune/blob/main/torchtune/utils/_device.py
+
+   ..
+       !! processed by numpydoc !!
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.utils.envs.is_accelerate_env
+   lmflow.utils.envs.require_cuda_for_gpu_mode
+   lmflow.utils.envs.set_cuda_device
+   lmflow.utils.envs.get_device_name
+   lmflow.utils.envs.get_torch_device
+
+
+Module Contents
+---------------
+
+.. py:function:: is_accelerate_env()
+
+   
+   Return True if any environment variable *name* starts with ``ACCELERATE_``.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: require_cuda_for_gpu_mode() -> None
+
+   
+   Raise if GPU execution was requested but CUDA is not available.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: set_cuda_device(local_rank: int) -> None
+
+   
+   Bind this process to ``local_rank`` on CUDA; raises if CUDA is unavailable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_device_name() -> str
+
+   
+   Get the device name based on the current machine.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: get_torch_device() -> Any
+
+   
+   Return ``torch.<device_name>`` for the current device name.
+
+   If ``torch`` has no attribute with that name, logs a warning and returns
+   ``torch.cuda`` as fallback.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

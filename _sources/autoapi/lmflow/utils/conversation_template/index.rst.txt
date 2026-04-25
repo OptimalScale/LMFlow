@@ -1,0 +1,321 @@
+lmflow.utils.conversation_template
+==================================
+
+.. py:module:: lmflow.utils.conversation_template
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/lmflow/utils/conversation_template/base/index
+   /autoapi/lmflow/utils/conversation_template/chatglm/index
+   /autoapi/lmflow/utils/conversation_template/chatml/index
+   /autoapi/lmflow/utils/conversation_template/deepseek/index
+   /autoapi/lmflow/utils/conversation_template/gemma/index
+   /autoapi/lmflow/utils/conversation_template/hymba/index
+   /autoapi/lmflow/utils/conversation_template/internlm/index
+   /autoapi/lmflow/utils/conversation_template/llama/index
+   /autoapi/lmflow/utils/conversation_template/phi/index
+   /autoapi/lmflow/utils/conversation_template/qwen/index
+   /autoapi/lmflow/utils/conversation_template/yi/index
+   /autoapi/lmflow/utils/conversation_template/zephyr/index
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.conversation_template.ConversationTemplate
+   lmflow.utils.conversation_template.ConversationTemplateForTool
+
+
+Package Contents
+----------------
+
+.. py:class:: ConversationTemplate
+
+   .. py:attribute:: user_formatter
+      :type:  Formatter
+
+
+   .. py:attribute:: assistant_formatter
+      :type:  Formatter
+
+
+   .. py:attribute:: function_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: observation_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: system_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: force_system
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: tools_formatter
+      :type:  Optional[Formatter]
+      :value: None
+
+
+
+   .. py:attribute:: separator
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: remove_last_sep
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: special_starter
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: special_stopper
+      :type:  Optional[TemplateComponent]
+      :value: None
+
+
+
+   .. py:attribute:: template_name
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:attribute:: system_default
+      :type:  Optional[str]
+      :value: None
+
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: encode_conversation(tokenizer: transformers.PreTrainedTokenizer, messages: list[dict[str, str]], system: Optional[str] = None, tools: Optional[list[str]] = None, **kwargs) -> collections.abc.Sequence[tuple[list[int], list[int]]]
+
+      
+      Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+      Data example:
+      ```json
+      {
+          "conversation_id": 2,
+          "system": "sysinfo1",
+          "tools": ["tool_1_desc"],
+          "messages": [
+              {
+                  "role": "user",
+                  "content": "hi"
+              },
+              {
+                  "role": "assistant",
+                  "content": "Hello!"
+              }
+          ]
+      }
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: list[dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> collections.abc.Sequence[tuple[list[int], list[int]]]
+
+
+   .. py:method:: _encode_template(template: list[TemplateComponent], tokenizer: transformers.PreTrainedTokenizer, **kwargs) -> list[int]
+
+      
+      Encode template components into token ids.
+
+
+      :Parameters:
+
+          **template** : list[TemplateComponent]
+              Formatted template components.
+
+          **tokenizer** : PreTrainedTokenizer
+              Tokenizer to convert tokens into token ids.
+
+
+
+      :Returns:
+
+          list[int]
+              Encoded token ids.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: post_process_pairs(encoded_pairs, tokenizer)
+
+
+   .. py:method:: remove_last_separator(encoded_pairs: collections.abc.Sequence[tuple[list[int], list[int]]], tokenizer: transformers.PreTrainedTokenizer) -> collections.abc.Sequence[tuple[list[int], list[int]]]
+
+
+   .. py:method:: add_special_starter(encoded_pairs: collections.abc.Sequence[tuple[list[int], list[int]]], tokenizer: transformers.PreTrainedTokenizer) -> collections.abc.Sequence[tuple[list[int], list[int]]]
+
+
+   .. py:method:: add_special_stopper(encoded_pairs: collections.abc.Sequence[tuple[list[int], list[int]]], tokenizer: transformers.PreTrainedTokenizer) -> collections.abc.Sequence[tuple[list[int], list[int]]]
+
+
+   .. py:method:: _ensure_id_list(obj: Union[int, list[int]]) -> list[int]
+
+      
+      Make sure the object is a list of integers. Useful for handling token ids.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: ConversationTemplateForTool
+
+   Bases: :py:obj:`ConversationTemplate`
+
+
+   .. py:method:: encode_conversation(tokenizer: transformers.PreTrainedTokenizer, messages: list[dict[str, str]], system: Optional[str] = None, tools: Optional[list[str]] = None, **kwargs) -> collections.abc.Sequence[tuple[list[int], list[int]]]
+
+      
+      Messages here should be guaranteed to be in pairs, with the first message being the user message and the second message being the system message.
+      Data example:
+      ```json
+      {
+          "conversation_id": 2,
+          "system": "sysinfo1",
+          "tools": ["tool_1_desc"],
+          "messages": [
+              {
+                  "role": "user",
+                  "content": "hi"
+              },
+              {
+                  "role": "assistant",
+                  "content": "Hello!"
+              }
+          ]
+      }
+      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _encode(tokenizer: transformers.PreTrainedTokenizer, messages: list[dict[str, str]], system: Optional[str] = None, tools: Optional[str] = None, **kwargs) -> collections.abc.Sequence[tuple[list[int], list[int]]]
+
+
+   .. py:method:: _encode_template(template: list[TemplateComponent], tokenizer: transformers.PreTrainedTokenizer, **kwargs) -> list[int]
+
+      
+      Encode template components into token ids.
+
+
+      :Parameters:
+
+          **template** : list[TemplateComponent]
+              Formatted template components.
+
+          **tokenizer** : PreTrainedTokenizer
+              Tokenizer to convert tokens into token ids.
+
+
+
+      :Returns:
+
+          list[int]
+              Encoded token ids.
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: _handle_tools(tools: Optional[list[str]]) -> str
+
+
