@@ -2,6 +2,7 @@
 # Copyright 2024 Statistics and Machine Learning Research Group. All rights reserved.
 import json
 import logging
+import os
 from typing import Optional, Union
 
 from transformers import AutoTokenizer
@@ -101,14 +102,13 @@ class SGLangInferencer(BasePipeline):
         outputs: DataProto,
         inference_results_path: str,
     ):
-        if not inference_results_path.endswith(".pkl"):
-            logger.warning(f"The inference results path must be a pickle file. Change the path to {inference_results_path}.pkl")
-            inference_results_path = inference_results_path + ".pkl"
-        outputs.save_to_disk(inference_results_path)
-        logger.info(f"Inference results are saved to {inference_results_path}.")
+        save_path = os.path.join(inference_results_path, "inference_results.pkl")
+        outputs.save_to_disk(save_path)
+        logger.info(f"Inference results are saved to {save_path}.")
 
     def load_inference_results(
         self,
         inference_results_path: str,
     ) -> DataProto:
-        return DataProto.load_from_disk(inference_results_path)
+        load_path = os.path.join(inference_results_path, "inference_results.pkl")
+        return DataProto.load_from_disk(load_path)

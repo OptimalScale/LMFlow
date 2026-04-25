@@ -37,10 +37,9 @@ from lmflow.utils.constants import (
     TEXT_ONLY_DATASET_DESCRIPTION,
 )
 from lmflow.utils.conversation_template import PRESET_TEMPLATES
-from lmflow.utils.data_utils import VLLMInferenceResultWithInput
 from lmflow.utils.deprecated import deprecated_args
 from lmflow.utils.envs import is_accelerate_env
-from lmflow.utils.versioning import is_flash_attn_available, is_ray_available, is_vllm_available
+from lmflow.utils.versioning import is_flash_attn_available, is_vllm_available
 from lmflow.utils.protocol import DataProto
 
 logger = logging.getLogger(__name__)
@@ -53,10 +52,6 @@ else:
 
 if is_vllm_available():
     from vllm import SamplingParams
-
-if is_ray_available():
-    import ray
-    import ray.data
 
 
 class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
@@ -321,10 +316,12 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
         gpu_memory_utilization: Optional[float] = None,
         tensor_parallel_size: Optional[int] = None,
+        data_parallel_size: int = 1,
+        max_model_len: Optional[int] = None,
         enable_deterministic_inference: bool = False,
         attention_backend: Optional[str] = None,
         **kwargs,
-    ) -> Union[list[VLLMInferenceResultWithInput] | DataProto]:
+    ) -> Union[list, DataProto]:
         """
         Perform generation process of the model.
 
@@ -332,9 +329,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         ------------
         inputs : Union[str, list[str], torch.Tensor, DataProto]
             The sequence used as a prompt for the generation or as model inputs to the model.
-            When the inference engine is "vllm", this should be a string or a list of strings.
+            When the inference engine is "vllm" or "sglang", this should be a DataProto.
             When the inference engine is "huggingface", this should be a tensor.
-            When the inference engine is "sglang", this should be a DataProto.
         sampling_params : Optional[Union[dict, "SamplingParams"]], optional
             The sampling parameters to use, by default None.
         return_logprob : bool, optional
@@ -347,6 +343,10 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
             The GPU memory utilization to use, by default None.
         tensor_parallel_size : int, optional
             The tensor parallel size to use, by default None.
+        data_parallel_size : int, optional
+            The data parallel size for vllm inference, by default 1.
+        max_model_len : int, optional
+            Maximum model context length for vllm inference, by default None.
         enable_deterministic_inference : bool, optional
             Whether to enable deterministic inference, by default False.
         attention_backend : Optional[str], optional
@@ -365,12 +365,14 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
                 inference_engine=inference_engine,
                 gpu_memory_utilization=gpu_memory_utilization,
                 tensor_parallel_size=tensor_parallel_size,
+                data_parallel_size=data_parallel_size,
+                max_model_len=max_model_len,
                 enable_deterministic_inference=enable_deterministic_inference,
                 attention_backend=attention_backend,
             )
 
         if inference_engine == "vllm":
-            res = self.__vllm_inference(inputs=inputs, sampling_params=sampling_params)
+            res = self.__vllm_inference(inputs=inputs)
         elif inference_engine == "sglang":
             res = self.__sglang_inference(
                 inputs=inputs,
@@ -424,46 +426,29 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
     def __vllm_inference(
         self,
-        inputs: list[str],
-        sampling_params: Optional["SamplingParams"] = None,
-    ) -> list[VLLMInferenceResultWithInput]:
-        """Perform VLLM inference process of the model.
+        inputs: DataProto,
+    ) -> DataProto:
+        """Perform VLLM inference process of the model."""
+        prompts = inputs.non_tensor_batch["inputs"].tolist()
+        sampling_params_dict = inputs.meta_info["sampling_params"]
 
-        Parameters
-        ----------
-        inputs : list[str]
-            Prompt(s), string or a list of strings.
-        sampling_params : Optional[SamplingParams], optional
-            vllm SamplingParams object, by default None.
+        vllm_sampling_params = SamplingParams(
+            n=sampling_params_dict.get("n", 1),
+            temperature=sampling_params_dict.get("temperature", 0.0),
+            max_tokens=sampling_params_dict.get("max_new_tokens", 100),
+            seed=sampling_params_dict.get("seed"),
+            top_p=sampling_params_dict.get("top_p", 1.0),
+            top_k=sampling_params_dict.get("top_k", 0),
+            stop_token_ids=sampling_params_dict.get("stop_token_ids"),
+        )
 
-        Returns
-        -------
-        list[VLLMInferenceResultWithInput]
-            Return a list of VLLMInferenceResultWithInput, where each
-            element contains the input prompt and the corresponding output.
-
-            When `sampling_params.detokenize = True`, the output would be a list of strings,
-            contains sampling_params.n samples for the corresponding prompt.
-
-            When `sampling_params.detokenize = False`, return a list of list of ints
-            (token ids, no decoding after generation).
-        """
         vllm_outputs = self.backend_model_for_inference.generate(
-            inputs,
-            sampling_params=sampling_params,
+            prompts,
+            sampling_params=vllm_sampling_params,
             use_tqdm=True,
         )
-        # TODO: unified lmflow sample format
-        final_output = []
-        for output in vllm_outputs:
-            if sampling_params.detokenize:
-                output_list = [sentence.text for sentence in output.outputs]
-            else:
-                output_list = [sentence.token_ids for sentence in output.outputs]
-
-            final_output.append({"input": output.prompt, "output": output_list})
-
-        return final_output
+        inputs.non_tensor_batch["outputs"] = [output.outputs[0].text for output in vllm_outputs]
+        return inputs
 
     def __sglang_inference(
         self,
@@ -495,9 +480,8 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
         dataset: Dataset,
         apply_chat_template: bool = True,
         inference_engine: Literal["huggingface", "vllm", "sglang"] = "huggingface",
-        enable_distributed_inference: bool = False,
         sampling_params: Optional[dict] = None,
-    ) -> Union[list[str], "ray.data.Dataset", DataProto]:
+    ) -> Union[list[str], DataProto]:
         if dataset.get_type() == "text_only":
             if apply_chat_template:
                 dataset = dataset.map(
@@ -572,24 +556,17 @@ class HFDecoderModel(DecoderModel, HFModelMixin, Tunable):
 
         inference_inputs = [sentence for sentence in inference_inputs if len(sentence) > 0]
 
-        if inference_engine == "vllm" and enable_distributed_inference:
-            inference_inputs = ray.data.from_items(
-                inference_inputs
-            )  # -> dict[str, np.ndarray], {"item": array(['...', '...', '...'])}
-
-        if inference_engine == "sglang":
+        if inference_engine in ("sglang", "vllm"):
             if self.tokenizer.bos_token:
-                # in consistent with sglang bench_serving.py demo
                 inference_inputs = [sentence.replace(self.tokenizer.bos_token, "") for sentence in inference_inputs]
 
-            # currently only test dataproto on sglang inference
             inference_inputs = np.array(inference_inputs)
             inference_inputs = DataProto.from_single_dict(
                 data={"inputs": inference_inputs},
                 meta_info={"sampling_params": {**sampling_params, "n": 1}, "actual_n_rollouts": sampling_params["n"]}
             )
-            
-            # handling n>1 since we don't want one-to-many mapping. Later this will be applied to all inference engines.
+
+            # handling n>1 since we don't want one-to-many mapping
             inference_inputs = inference_inputs.repeat(sampling_params["n"])
 
         return inference_inputs
