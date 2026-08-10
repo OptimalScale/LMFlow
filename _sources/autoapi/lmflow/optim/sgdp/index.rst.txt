@@ -1,0 +1,39 @@
+lmflow.optim.sgdp
+=================
+
+.. py:module:: lmflow.optim.sgdp
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.sgdp.SGDP
+
+
+Module Contents
+---------------
+
+.. py:class:: SGDP(params, lr: float = 0.001, momentum: float = 0, dampening: float = 0, eps: float = 1e-08, weight_decay: float = 0, delta: float = 0.1, wd_ratio: float = 0.1, nesterov: bool = False)
+
+   Bases: :py:obj:`torch.optim.optimizer.Optimizer`
+
+
+   Implements SGDP algorithm.
+
+   It has been proposed in `Slowing Down the Weight Norm Increase in
+   Momentum-based Optimizers`.
+   https://arxiv.org/abs/2006.08217
+
+   .. note:: Reference code: https://github.com/clovaai/AdamP
+
+
+   .. py:method:: step(closure=None)
+
+      Performs a single optimization step.
+
+      :param closure: A closure that reevaluates the model and returns the loss.
+
+
+

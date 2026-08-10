@@ -1,0 +1,88 @@
+lmflow.utils.common
+===================
+
+.. py:module:: lmflow.utils.common
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.utils.common.logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.utils.common.make_shell_args_from_dataclass
+   lmflow.utils.common.create_copied_dataclass
+   lmflow.utils.common.remove_dataclass_attr_prefix
+   lmflow.utils.common.add_dataclass_attr_prefix
+   lmflow.utils.common.print_banner
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:function:: make_shell_args_from_dataclass(dataclass_objects: list, format: str = 'subprocess', skip_default: bool = True, ignored_args_list: Optional[list[str]] = None) -> Union[str, list[str]]
+
+   Return a string or a list of strings that can be used as shell arguments.
+
+   :param dataclass_objects: A list of dataclass objects.
+   :type dataclass_objects: list
+   :param format: Return format, can be "shell" or "subprocess", by default "subprocess".
+   :type format: str, optional
+   :param skip_default: Whether to skip attributes with default values, by default True.
+   :type skip_default: bool, optional
+
+   :rtype: Union[str, list[str]]
+
+
+.. py:function:: create_copied_dataclass(original_dataclass, field_prefix: str, class_prefix: str, new_default: dict = None)
+
+   Create a copied dataclass with new field names and default values.
+
+   :param original_dataclass:
+   :type original_dataclass: dataclass
+   :param field_prefix: The prefix to add to the **field** names of the copied dataclass.
+   :type field_prefix: str
+   :param class_prefix: The prefix to add to the **class** name of the copied dataclass.
+   :type class_prefix: str
+   :param new_default: The new default values for the copied dataclass. When None, the
+                       default values of the original dataclass are used.
+   :type new_default: dict, optional
+
+   :rtype: dataclass
+
+
+.. py:function:: remove_dataclass_attr_prefix(data_instance, prefix: str) -> dict
+
+   Remove the prefix from the attribute names of a dataclass instance.
+
+   :param data_instance:
+   :type data_instance: dataclass
+   :param prefix: The prefix to remove from the attribute names of the dataclass instance.
+   :type prefix: str
+
+   :rtype: dict
+
+
+.. py:function:: add_dataclass_attr_prefix(data_instance, prefix: str) -> dict
+
+   Add the prefix to the attribute names of a dataclass instance.
+
+   :param data_instance:
+   :type data_instance: dataclass
+   :param prefix: The prefix to add to the attribute names of the dataclass instance.
+   :type prefix: str
+
+   :rtype: dict
+
+
+.. py:function:: print_banner(message: str)
+

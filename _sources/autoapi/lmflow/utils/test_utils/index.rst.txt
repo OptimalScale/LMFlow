@@ -1,0 +1,19 @@
+lmflow.utils.test_utils
+=======================
+
+.. py:module:: lmflow.utils.test_utils
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.utils.test_utils.compare_model
+
+
+Module Contents
+---------------
+
+.. py:function:: compare_model(model_ref: torch.nn.Module, model_trained: torch.nn.Module, module_trained: Optional[list[str]] = None) -> None
+

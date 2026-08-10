@@ -1,0 +1,85 @@
+lmflow.pipeline.evaluator
+=========================
+
+.. py:module:: lmflow.pipeline.evaluator
+
+.. autoapi-nested-parse::
+
+   The Evaluator class simplifies the process of running evaluation on a language model provided
+   by a HFDecoderModel instance imported from the lmflow package. The class constructor takes three
+   dictionaries as arguments: model_args containing arguments related to the language model,
+   data_args containing arguments related to the data used for evaluation, and evaluator_args
+   containing other arguments for the evaluation process.
+
+   The class has two methods: create_dataloader() that loads the data from the test file, creates
+   a data loader, and returns it with the size of the data, and evaluate(model) that generates
+   output text given input text. It uses the create_dataloader() method to load the data, iterates
+   over the data in mini-batches, and encodes the input text with the encode() method of the
+   HFDecoderModel class. Then, it generates output text using the evaluate() method of the HFDecoderModel
+   class, decodes the generated output text using the decode() method of the HFDecoderModel class, and
+   writes the output to a file in the output directory. The method also logs some information to the
+   console and Weights and Biases if the use_wandb argument is True.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.evaluator.Evaluator
+
+
+Module Contents
+---------------
+
+.. py:class:: Evaluator(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, evaluator_args: lmflow.args.EvaluatorArguments)
+
+   Bases: :py:obj:`lmflow.pipeline.base_pipeline.BasePipeline`
+
+
+   Initializes the `Evaluator` class with given arguments.
+
+   :param model_args: Contains the arguments required to load the model.
+   :type model_args: ModelArguments object.
+   :param data_args: Contains the arguments required to load the dataset.
+   :type data_args: DatasetArguments object.
+   :param evaluator_args: Contains the arguments required to perform evaluation.
+   :type evaluator_args: EvaluatorArguments object.
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: evaluator_args
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: local_rank
+
+
+   .. py:attribute:: world_size
+
+
+   .. py:attribute:: config
+
+
+   .. py:attribute:: block_size
+
+
+   .. py:method:: create_dataloader(dataset: lmflow.datasets.dataset.Dataset)
+
+
+   .. py:method:: evaluate(model, dataset: lmflow.datasets.dataset.Dataset, metric='accuracy', verbose=True)
+
+      Perform Evaluation for a model
+
+      :param model: TunableModel to perform inference
+      :type model: TunableModel object.
+      :param dataset:
+      :type dataset: Dataset object.
+
+
+

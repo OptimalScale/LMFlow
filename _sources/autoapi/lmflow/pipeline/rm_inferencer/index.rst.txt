@@ -1,0 +1,66 @@
+lmflow.pipeline.rm_inferencer
+=============================
+
+.. py:module:: lmflow.pipeline.rm_inferencer
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.rm_inferencer.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.rm_inferencer.RewardModelInferencer
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: RewardModelInferencer(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, inferencer_args: lmflow.args.InferencerArguments, **kwargs)
+
+   Bases: :py:obj:`lmflow.pipeline.base_pipeline.BasePipeline`
+
+
+   Initializes the `Inferencer` class with given arguments.
+
+   :param model_args: Contains the arguments required to load the model.
+   :type model_args: ModelArguments object.
+   :param data_args: Contains the arguments required to load the dataset.
+   :type data_args: DatasetArguments object.
+   :param inferencer_args: Contains the arguments required to perform inference.
+   :type inferencer_args: InferencerArguments object.
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: inferencer_args
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: local_rank
+
+
+   .. py:attribute:: world_size
+
+
+   .. py:method:: inference(model: lmflow.models.hf_text_regression_model.HFTextRegressionModel, dataset: lmflow.datasets.dataset.Dataset, transform_dataset_in_place: bool = True, use_vllm: bool = False, enable_distributed_inference: bool = False, **kwargs) -> lmflow.datasets.dataset.Dataset
+
+
+   .. py:method:: flatten_list(list_of_list: list[list]) -> tuple[list, list[int]]
+
+
+   .. py:method:: compress_list(list_to_compress: list, sublist_lengths: list[int]) -> list[list]
+
+

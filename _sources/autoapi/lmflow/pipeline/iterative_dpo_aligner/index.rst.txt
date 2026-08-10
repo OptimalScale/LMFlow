@@ -1,0 +1,50 @@
+lmflow.pipeline.iterative_dpo_aligner
+=====================================
+
+.. py:module:: lmflow.pipeline.iterative_dpo_aligner
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.iterative_dpo_aligner.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.iterative_dpo_aligner.IterativeDPOAligner
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: IterativeDPOAligner(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, aligner_args: lmflow.args.IterativeDPOAlignerArguments, ref_model_args: lmflow.args.ModelArguments, reward_model_args: lmflow.args.ModelArguments, **kwargs)
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: aligner_args
+
+
+   .. py:attribute:: ref_model_args
+
+
+   .. py:attribute:: reward_model_args
+
+
+   .. py:attribute:: workspace_path
+
+
+   .. py:method:: align(dataset_list: list[lmflow.datasets.dataset.Dataset])
+
+

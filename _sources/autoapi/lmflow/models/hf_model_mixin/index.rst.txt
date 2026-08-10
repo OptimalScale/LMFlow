@@ -1,0 +1,111 @@
+lmflow.models.hf_model_mixin
+============================
+
+.. py:module:: lmflow.models.hf_model_mixin
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.models.hf_model_mixin.logger
+   lmflow.models.hf_model_mixin.HF_AUTOMODEL_MAPPING
+   lmflow.models.hf_model_mixin.HF_AUTOMODEL_TYPE
+   lmflow.models.hf_model_mixin.LORA_TARGET_MODULES_MAPPING
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.models.hf_model_mixin.HFModelMixin
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: HF_AUTOMODEL_MAPPING
+
+.. py:data:: HF_AUTOMODEL_TYPE
+
+.. py:data:: LORA_TARGET_MODULES_MAPPING
+
+.. py:class:: HFModelMixin(model_args: lmflow.args.ModelArguments, do_train: bool, device: Optional[str] = 'gpu', hf_auto_model_additional_args: Optional[dict] = None, *args, **kwargs)
+
+   Bases: :py:obj:`lmflow.models.base_model.BaseModel`
+
+
+   .. py:attribute:: device
+      :value: 'gpu'
+
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: hf_auto_model
+
+
+   .. py:attribute:: do_train
+
+
+   .. py:attribute:: tokenizer
+
+
+   .. py:attribute:: torch_dtype
+
+
+   .. py:attribute:: hf_model_config
+
+
+   .. py:attribute:: quant_config
+      :value: None
+
+
+
+   .. py:attribute:: peft_config
+      :value: None
+
+
+
+   .. py:method:: activate_model_for_inference(inference_engine: Literal['huggingface', 'vllm', 'sglang'] = 'huggingface', gpu_memory_utilization: Optional[float] = None, tensor_parallel_size: Optional[int] = None, data_parallel_size: int = 1, max_model_len: Optional[int] = None, enable_deterministic_inference: bool = False, attention_backend: Optional[str] = None)
+
+
+   .. py:method:: deactivate_model_for_inference(inference_engine: Literal['huggingface', 'vllm', 'sglang'] = 'huggingface')
+
+      Deactivate the model and release the resources.
+
+      NOTE: For vllm (>=0.8), the best-effort release below works for most
+      single-GPU, inference-only use cases. It remains unreliable when
+      ``tensor_parallel_size > 1``, CUDA graphs are enabled, or the same
+      process also holds an HF training model — in those cases use
+      :class:`MemorySafeVLLMInferencer`, which isolates inference in a
+      subprocess. vllm still has no official in-process shutdown API
+      (RFC vllm-project/vllm#24885); ``MemorySafeVLLMInferencer`` is kept
+      for backward compatibility and will be migrated to vllm sleep mode
+      in a follow-up.
+
+
+
+   .. py:method:: get_max_length()
+
+      Return max acceptable input length in terms of tokens.
+
+
+
+   .. py:method:: get_tokenizer()
+
+      Return the tokenizer of the model.
+
+
+
+   .. py:method:: get_backend_model()
+
+      Return the backend model.
+
+
+

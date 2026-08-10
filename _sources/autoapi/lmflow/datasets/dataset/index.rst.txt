@@ -1,0 +1,267 @@
+lmflow.datasets.dataset
+=======================
+
+.. py:module:: lmflow.datasets.dataset
+
+.. autoapi-nested-parse::
+
+   This Python code defines a class Dataset with methods for initializing, loading,
+   and manipulating datasets from different backends such as Hugging Face and JSON.
+
+   The `Dataset` class includes methods for loading datasets from a dictionary and a Hugging
+   Face dataset, mapping datasets, and retrieving the backend dataset and arguments.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.datasets.dataset.logger
+   lmflow.datasets.dataset.DATASET_TYPES
+   lmflow.datasets.dataset.KEY_TYPE
+   lmflow.datasets.dataset.KEY_INSTANCES
+   lmflow.datasets.dataset.KEY_SCORE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.datasets.dataset.Dataset
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: DATASET_TYPES
+   :value: ['text_only', 'text2text', 'float_only', 'image_text', 'conversation', 'paired_conversation',...
+
+
+.. py:data:: KEY_TYPE
+   :value: 'type'
+
+
+.. py:data:: KEY_INSTANCES
+   :value: 'instances'
+
+
+.. py:data:: KEY_SCORE
+   :value: 'score'
+
+
+.. py:class:: Dataset(data_args: lmflow.args.DatasetArguments = None, backend: str = 'huggingface', *args, **kwargs)
+
+   Initializes the Dataset object with the given parameters.
+
+   :param data_args: Contains the arguments required to load the dataset.
+   :type data_args: DatasetArguments object.
+   :param backend: A string representing the dataset backend. Defaults to "huggingface".
+   :type backend: str,  default="huggingface"
+   :param args: Positional arguments.
+   :type args: Optional.
+   :param kwargs: Keyword arguments.
+   :type kwargs: Optional.
+
+
+   .. py:attribute:: data_args
+      :value: None
+
+
+
+   .. py:attribute:: backend
+      :value: 'huggingface'
+
+
+
+   .. py:attribute:: backend_dataset
+      :value: None
+
+
+
+   .. py:attribute:: type
+      :value: None
+
+
+
+   .. py:attribute:: dataset_path
+
+
+   .. py:method:: __len__()
+
+
+   .. py:method:: from_dict(dict_obj: dict, *args, **kwargs)
+
+      Populate this dataset from an LMFlow dataset dictionary.
+
+      The expected dictionary shape is::
+
+          {
+              "type": TYPE,
+              "instances": [
+                  {
+                      "key_1": VALUE_1_1,
+                      "key_2": VALUE_1_2,
+                      ...
+                  },
+                  {
+                      "key_1": VALUE_2_1,
+                      "key_2": VALUE_2_2,
+                      ...
+                  },
+                  ...
+              ]
+          }
+
+      :param dict_obj: Dataset data containing ``type`` and ``instances`` keys.
+      :type dict_obj: dict
+      :param \*args: Positional arguments passed to the selected dataset backend.
+      :param \*\*kwargs: Keyword arguments passed to the selected dataset backend.
+
+      :returns: This dataset instance.
+      :rtype: Dataset
+
+
+
+   .. py:method:: create_from_dict(dict_obj, *args, **kwargs)
+      :classmethod:
+
+
+      :rtype: Returns a Dataset object given a dict.
+
+
+
+   .. py:method:: to_dict()
+
+      Convert this dataset to the LMFlow dictionary format.
+
+      The returned dictionary has the following shape::
+
+          {
+              "type": TYPE,
+              "instances": [
+                  {
+                      "key_1": VALUE_1_1,
+                      "key_2": VALUE_1_2,
+                      ...
+                  },
+                  {
+                      "key_1": VALUE_2_1,
+                      "key_2": VALUE_2_2,
+                      ...
+                  },
+                  ...
+              ]
+          }
+
+      :returns: Dataset data containing ``type`` and ``instances`` keys.
+      :rtype: dict
+
+
+
+   .. py:method:: to_list()
+
+      Returns a list of instances.
+
+
+
+   .. py:method:: map(*args, **kwargs)
+
+      :param args: Positional arguments.
+      :type args: Optional.
+      :param kwargs: Keyword arguments.
+      :type kwargs: Optional.
+
+      :returns: **self**
+      :rtype: Dataset object.
+
+
+
+   .. py:method:: get_backend() -> Optional[str]
+
+      :rtype: self.backend
+
+
+
+   .. py:method:: get_backend_dataset()
+
+      :rtype: self.backend_dataset
+
+
+
+   .. py:method:: get_fingerprint()
+
+      :rtype: Fingerprint of the backend_dataset which controls the cache
+
+
+
+   .. py:method:: get_data_args()
+
+      :rtype: self.data_args
+
+
+
+   .. py:method:: get_type() -> str
+
+      :rtype: self.type
+
+
+
+   .. py:method:: save(file_path: str, format: str = 'json')
+
+      Save the dataset to a json file.
+
+      :param file_path: The path to the file where the dataset will be saved.
+      :type file_path: str.
+
+
+
+   .. py:method:: sample(n: int, seed: int = 42)
+
+      Sample n instances from the dataset.
+
+      :param n: The number of instances to sample from the dataset.
+      :type n: int.
+
+      :returns: **sample_dataset** -- A new dataset object containing the sampled instances.
+      :rtype: Dataset object.
+
+
+
+   .. py:method:: train_test_split(test_size: float = 0.2, shuffle: bool = True, seed: int = 42)
+
+      Split the dataset into training and testing sets.
+
+      :param test_size: The proportion of the dataset that will be used for testing.
+      :type test_size: float, default=0.2.
+
+      :returns: * **train_dataset** (*Dataset object.*) -- A new dataset object containing the training instances.
+                * **test_dataset** (*Dataset object.*) -- A new dataset object containing the testing instances.
+
+
+
+   .. py:method:: drop_instances(indices: list)
+
+      Drop instances from the dataset.
+
+      :param indices: A list of indices of the instances to drop from the dataset.
+      :type indices: list.
+
+
+
+   .. py:method:: sanity_check(drop_invalid: bool = True)
+
+      Perform a sanity check on the dataset.
+
+
+
+   .. py:method:: hf_dataset_sanity_check(drop_invalid: bool = True)
+
+      Perform a sanity check on the HuggingFace dataset.
+
+
+

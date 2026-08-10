@@ -1,0 +1,42 @@
+lmflow.optim.adan
+=================
+
+.. py:module:: lmflow.optim.adan
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.optim.adan.Adan
+
+
+Module Contents
+---------------
+
+.. py:class:: Adan(params, lr=0.001, betas=(0.98, 0.92, 0.99), eps=1e-08, weight_decay=0.0, max_grad_norm=0.0, no_prox=False, foreach: bool = True)
+
+   Bases: :py:obj:`torch.optim.optimizer.Optimizer`
+
+
+   Implements a pytorch variant of Adan.
+
+   Adan was proposed in
+   Adan : Adaptive Nesterov Momentum Algorithm for Faster Optimizing Deep Models.
+   https://arxiv.org/abs/2208.06677
+
+
+
+   .. py:method:: __setstate__(state)
+
+
+   .. py:method:: restart_opt()
+
+
+   .. py:method:: step()
+
+      Performs a single optimization step.
+
+
+

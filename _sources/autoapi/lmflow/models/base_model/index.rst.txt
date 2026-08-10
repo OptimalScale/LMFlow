@@ -1,0 +1,24 @@
+lmflow.models.base_model
+========================
+
+.. py:module:: lmflow.models.base_model
+
+.. autoapi-nested-parse::
+
+   Base model class.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.models.base_model.BaseModel
+
+
+Module Contents
+---------------
+
+.. py:class:: BaseModel
+

@@ -1,0 +1,104 @@
+lmflow.datasets.multi_modal_dataset
+===================================
+
+.. py:module:: lmflow.datasets.multi_modal_dataset
+
+.. autoapi-nested-parse::
+
+   This Python code defines a class Multi Modal Dataset.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.datasets.multi_modal_dataset.CustomMultiModalDataset
+   lmflow.datasets.multi_modal_dataset.DataCollatorForSupervisedDataset
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.datasets.multi_modal_dataset.preprocess_multimodal_llava
+   lmflow.datasets.multi_modal_dataset.tokenizer_image_token
+   lmflow.datasets.multi_modal_dataset.preprocess_llama_from_llava_plain
+   lmflow.datasets.multi_modal_dataset.preprocess_llama_from_llava_v1
+
+
+Module Contents
+---------------
+
+.. py:class:: CustomMultiModalDataset(dataset_path: str, data_args: lmflow.args.DatasetArguments)
+
+   Bases: :py:obj:`torch.utils.data.Dataset`
+
+
+   Dataset for Multi Modal data
+
+
+   .. py:attribute:: data_dict
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: image_folder
+
+
+   .. py:method:: __len__()
+
+
+   .. py:method:: register_tokenizer(tokenizer, image_processor=None)
+
+
+   .. py:method:: __getitem__(i)
+
+
+.. py:function:: preprocess_multimodal_llava(sources, data_args)
+
+.. py:function:: tokenizer_image_token(prompt, tokenizer, image_token_index=IMAGE_TOKEN_INDEX, return_tensors=None)
+
+.. py:function:: preprocess_llama_from_llava_plain(sources, tokenizer: transformers.PreTrainedTokenizer, has_image: bool = False)
+
+   Preprocess plain LLaVA samples without adding a prompt.
+
+   :param sources: Input samples containing text and image placeholders.
+   :param tokenizer: Tokenizer used to encode text.
+   :type tokenizer: transformers.PreTrainedTokenizer
+   :param has_image: Whether the samples contain images.
+   :type has_image: bool
+
+   :returns: Model ``input_ids`` and ``labels``.
+   :rtype: dict
+
+
+.. py:function:: preprocess_llama_from_llava_v1(sources, tokenizer: transformers.PreTrainedTokenizer, has_image: bool = False)
+
+   Preprocess LLaVA v1 samples and generate target labels.
+
+   :param sources: Input samples containing text and image placeholders.
+   :param tokenizer: Tokenizer used to encode text.
+   :type tokenizer: transformers.PreTrainedTokenizer
+   :param has_image: Whether the samples contain images.
+   :type has_image: bool
+
+   :returns: Model ``input_ids`` and ``labels``.
+   :rtype: dict
+
+
+.. py:class:: DataCollatorForSupervisedDataset
+
+   Collate examples for supervised fine-tuning.
+
+
+   .. py:attribute:: tokenizer
+      :type:  transformers.PreTrainedTokenizer
+
+
+   .. py:method:: __call__(instances)
+
+

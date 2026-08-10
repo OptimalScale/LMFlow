@@ -1,0 +1,44 @@
+lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch
+==================================================================
+
+.. py:module:: lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch.CondenseRotaryEmbedding
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   lmflow.utils.position_interpolation.llama_rope_scaled_monkey_patch.replace_llama_with_condense
+
+
+Module Contents
+---------------
+
+.. py:class:: CondenseRotaryEmbedding(dim, pi_ratio, ntk_ratio, max_position_embeddings=2048, base=10000, device=None)
+
+   Bases: :py:obj:`torch.nn.Module`
+
+
+   .. py:attribute:: ntk_ratio
+
+
+   .. py:attribute:: pi_ratio
+
+
+   .. py:attribute:: max_seq_len_cached
+
+
+   .. py:method:: forward(x, seq_len=None)
+
+
+.. py:function:: replace_llama_with_condense(pi_ratio, ntk_ratio)
+

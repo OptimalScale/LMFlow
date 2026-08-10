@@ -1,0 +1,81 @@
+lmflow.pipeline.raft_aligner
+============================
+
+.. py:module:: lmflow.pipeline.raft_aligner
+
+.. autoapi-nested-parse::
+
+   The Aligner class simplifies the process of running alignment.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.raft_aligner.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.raft_aligner.RaftAligner
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: RaftAligner(model_args, data_args, aligner_args, *args, **kwargs)
+
+   Bases: :py:obj:`lmflow.pipeline.base_aligner.BaseAligner`
+
+
+   Initializes the `RaftAligner` class with given arguments.
+
+   :param model_args: Contains the arguments required to load the model.
+   :type model_args: ModelArguments object.
+   :param data_args: Contains the arguments required to load the dataset.
+   :type data_args: DatasetArguments object.
+   :param raft_aligner_args: Contains the arguments required to perform alignment.
+   :type raft_aligner_args: RaftAlignerArguments object.
+   :param args: Positional arguments.
+   :type args: Optional.
+   :param kwargs: Keyword arguments.
+   :type kwargs: Optional.
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: aligner_args
+
+
+   .. py:attribute:: INF
+      :value: 888888888
+
+
+
+   .. py:method:: align(model, dataset, reward_model)
+
+      Perform alignment for a model
+
+      :param model:
+      :type model: BaseModel object.
+      :param dataset:
+                      Input dataset for model to generate outputs. The input and output
+                          will then be feed into reward model to get the reward for
+                          alignment.
+      :type dataset: Dataset object.
+      :param reward_model:
+      :type reward_model: RegressionModel object.
+
+
+

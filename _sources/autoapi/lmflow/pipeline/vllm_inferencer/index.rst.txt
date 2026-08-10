@@ -1,0 +1,80 @@
+lmflow.pipeline.vllm_inferencer
+===============================
+
+.. py:module:: lmflow.pipeline.vllm_inferencer
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   lmflow.pipeline.vllm_inferencer.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   lmflow.pipeline.vllm_inferencer.VLLMInferencer
+   lmflow.pipeline.vllm_inferencer.MemorySafeVLLMInferencer
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: VLLMInferencer(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, inferencer_args: lmflow.args.InferencerArguments)
+
+   Bases: :py:obj:`lmflow.pipeline.base_pipeline.BasePipeline`
+
+
+   .. py:attribute:: model_args
+
+
+   .. py:attribute:: data_args
+
+
+   .. py:attribute:: inferencer_args
+
+
+   .. py:attribute:: eos_token_id
+
+
+   .. py:attribute:: sampling_params
+
+
+   .. py:method:: inference(model: lmflow.models.hf_decoder_model.HFDecoderModel, dataset: lmflow.datasets.Dataset, release_gpu: bool = False, inference_args: Optional[lmflow.args.InferencerArguments] = None) -> lmflow.utils.protocol.DataProto
+
+
+   .. py:method:: save_inference_results(outputs: lmflow.utils.protocol.DataProto, inference_results_path: str)
+
+
+   .. py:method:: load_inference_results(inference_results_path: str) -> lmflow.utils.protocol.DataProto
+
+
+.. py:class:: MemorySafeVLLMInferencer(model_args: lmflow.args.ModelArguments, data_args: lmflow.args.DatasetArguments, inferencer_args: lmflow.args.InferencerArguments)
+
+   Bases: :py:obj:`VLLMInferencer`
+
+
+   Run VLLM inference in a subprocess for memory safety.
+
+   .. deprecated::
+       Scheduled for removal in lmflow 1.1.0. Use :class:`VLLMInferencer`
+       with ``release_gpu=True`` for the common single-GPU case, or wait
+       for the sleep-mode-based replacement that will land alongside the
+       vllm>=0.11 pin. This subprocess wrapper was a workaround for vllm's
+       inability to release GPU memory in-process
+       (https://github.com/vllm-project/vllm/issues/1908); the in-process
+       path is now reliable for most use cases.
+
+
+   .. py:attribute:: inferencer_file_path
+
+
+   .. py:method:: inference() -> lmflow.utils.protocol.DataProto
+
+
