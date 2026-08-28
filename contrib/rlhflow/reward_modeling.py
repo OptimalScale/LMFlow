@@ -19,6 +19,15 @@ from lmflow.args import (
     DatasetArguments,
     ModelArguments,
 )
+import transformers
+from packaging.version import Version
+
+def _dtype_kwargs(dtype):
+    """`dtype` keyword of `from_pretrained` exists since transformers 4.56 (PR #39782);
+    older versions use `torch_dtype`."""
+    if Version(transformers.__version__) >= Version("4.56"):
+        return {"dtype": dtype}
+    return {"torch_dtype": dtype}
 
 ## Prepare training_args
 pipeline_name = "finetuner"
@@ -42,7 +51,7 @@ peft_config = LoraConfig(
 )
 # trust_remote_code=True if you want to use chatglm
 model = AutoModelForSequenceClassification.from_pretrained(
-    model_args.model_name_or_path, num_labels=1, torch_dtype=torch.bfloat16
+    model_args.model_name_or_path, num_labels=1, **_dtype_kwargs(torch.bfloat16),
 )
 model_lora = get_peft_model(model, peft_config)
 model_lora.print_trainable_parameters()
