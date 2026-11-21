@@ -377,7 +377,7 @@ class SpeculativeInferencer(Inferencer):
         if temperature <= 1e-6:
             final_prob = F.one_hot(scores.argmax(dim=1), num_classes=scores.size(1)).float()
         else:
-            scores /= temperature
+            scores = scores / temperature
             if top_p < 1.0:
                 sorted_scores, _ = torch.sort(scores, descending=True)
                 probs = sorted_scores.softmax(dim=1)
@@ -427,8 +427,9 @@ class SpeculativeInferencer(Inferencer):
         new_tokens = []
 
         for _ in range(num_new_tokens):
-            pred = self.predict_next_token(model=model, input_ids=sequence, num_new_tokens=1)  # predict next one token
-            prob = self.score_to_prob(pred.scores[0], temperature=temperature)
+            with torch.no_grad():
+                logits = model.get_backend_model()(input_ids=sequence, return_dict=True).logits[:, -1, :]
+            prob = self.score_to_prob(logits, temperature=temperature)
             sampled = self.sample(prob=prob, num_samples=1)
             new_tokens.append(sampled)
             sequence = torch.cat([sequence, sampled["sampled_token"]], dim=1)
@@ -498,13 +499,16 @@ class SpeculativeInferencer(Inferencer):
             logger.debug(f"len of input_ids: {len_input_ids}")
 
             # STEP 1: Sample γ guesses x1, ..., xγ from Mq (draft model) autoregressively
-            output_draft = self.autoregressive_sampling(input_ids=input_ids, model=draft_model, num_new_tokens=gamma)
+            output_draft = self.autoregressive_sampling(
+                input_ids=input_ids, model=draft_model, temperature=temperature, num_new_tokens=gamma
+            )
             logger.debug(f"draft result: {output_draft['sequence']}")
             logger.debug(f"draft result decoded: {draft_model.decode(output_draft['sequence'][0])}")
 
             # STEP 2: Run Mp (target model) in parallel
             # generate sequences [prefix, x1, x2, ..., xγ]
-            output = model.get_backend_model()(input_ids=output_draft["sequence"], return_dict=True)
+            with torch.no_grad():
+                output = model.get_backend_model()(input_ids=output_draft["sequence"], return_dict=True)
             logger.debug(f"shape of output: {output.logits.shape}")
 
             # STEP 3: Determine the number of accepted guesses n
