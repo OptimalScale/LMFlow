@@ -140,7 +140,7 @@ class CustomAutoVision2SeqModel(Blip2ForConditionalGeneration, BaseModel):
         elif self.select_vision_feature_type == "cls_patch":
             image_features = image_features
         else:
-            raise ValueError(f"Unexpected select feature: {self.select_feature}")
+            raise ValueError(f"Unexpected select feature: {self.select_vision_feature_type}")
         return image_features
 
     def register_prompt_cache(self, prompt_ids, prompt_keys_values):

@@ -1836,13 +1836,13 @@ class RaftTrainer:
                         elif hasattr(self.optimizer, "clip_grad_norm"):
                             # Some optimizers (like the sharded optimizer) have a specific way to do gradient clipping
                             self.optimizer.clip_grad_norm(args.max_grad_norm)
-                        elif hasattr(model, "clip_grad_norm_"):
+                        elif hasattr(self.tmp_model, "clip_grad_norm_"):
                             # Some models (like FullyShardedDDP) have a specific way to do gradient clipping
-                            model.clip_grad_norm_(args.max_grad_norm)
+                            self.tmp_model.clip_grad_norm_(args.max_grad_norm)
                         else:
                             # Revert to normal clipping otherwise, handling Apex or full precision
                             nn.utils.clip_grad_norm_(
-                                amp.master_params(self.optimizer) if self.use_apex else model.parameters(),
+                                amp.master_params(self.optimizer) if self.use_apex else self.tmp_model.parameters(),
                                 args.max_grad_norm,
                             )
 
